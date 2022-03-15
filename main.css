@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
 html,body{
-    width: 85%;
+    width: 99%;
+    align-items: center;
     font-family: 'Open Sans', sans-serif;
 }
