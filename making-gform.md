@@ -13,8 +13,8 @@ These should also be made as usual, but the form will use the `<textarea>` eleme
 ## Checkboxes (Yes/No)
 
 Ex: Do you like to read long README files?<br><br><input type="checkbox"> YES<br><input type="checkbox"> NO<br><br>
-Instead of using the boxes, use a dropdown menu with "on" and "off", off being the default selection. On the HTMl document, we would re-word the question and remove the NO box. If the box is selected, Google selects the "on" option, if it is not selected, the default "off" remains.<br><br>
-<input type="checkbox" checked> I like to read long README files -> on<br> <input type="checkbox"> I like to read long README files -> off
+Instead of using the boxes, use a text input. On the HTMl document, we would re-word the question and remove the NO box. If the box is selected, the form output will read "false, true", if it is not selected, "FALSE"".<br><br>
+<input type="checkbox" checked> I like to read long README files -> false, true<br> <input type="checkbox"> I like to read long README files -> FALSE
 
 ## Dropdown Menus
 
