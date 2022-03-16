@@ -5,7 +5,6 @@
     font-style: normal;
 }
 html,body{
-    width: 99%;
     font-family: 'Open Sans';
 }
 body {
@@ -23,4 +22,10 @@ fieldset {
 }
 h1 {
     text-align: center;
+}
+.container {
+    justify-content: center;
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
