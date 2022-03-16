@@ -2,7 +2,7 @@
 
 ## Uploading and starting
 
-Upload `submit.php` and `data.db` to your webserver. Secure it if you would like.
+Upload `submit.php` and `data.db` to your webserver. Rename `TEAMKEYHERE` on line 2 to whatever you would like the form password to be. If you do not want one, delete the entire if statement.
 
 ## Updating the frontend
 
