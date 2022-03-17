@@ -1,5 +1,5 @@
 <?php 
-        if ($_POST['entry_key'] === 'TEAMKEYHERE') {
+        if ($_POST['entry_key'] === 'team766bears') {
         $name = $_POST['entry_398176575'];
         $teamnum = $_POST['entry_1638702746'];
         $teamnam = $_POST['entry_215295328'];
@@ -51,6 +51,6 @@
 </html>
 <?php 
 } else {
- die('There was a critical error');   
+ die('There was a critical error: Bad form password');   
 }
 ?>
