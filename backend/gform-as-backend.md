@@ -21,3 +21,7 @@ Instead of using the boxes, use a text input. On the HTMl document, we would re-
 EX: <select><option>SELECT MENU</option><option>SELECT MENU</option></select>
 <br><br>
 In the google form, use text entry rather than dropdowns. In the html, however, you will make it a dropdown menu that fills the Google Form text.
+
+## Making the HTML
+
+Please read the comments in index.html

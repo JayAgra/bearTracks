@@ -1,5 +1,7 @@
 <?php 
+        if ($_POST['entry_key'] === 'team766bears') {
         $name = $_POST['entry_398176575'];
+        $eventcode = $_POST['entry_event'];
         $teamnum = $_POST['entry_1638702746'];
         $teamnam = $_POST['entry_215295328'];
         $match = $_POST['entry_508602665'];
@@ -35,6 +37,21 @@
             }
         }
         $db = new formDB();
-        $db->exec("INSERT INTO data(name,teamnum,teamnam,match,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,traversalbar,taxigetscore,shootauto,getauto,failauto,attupper,attlower,noatt,points,violate,human,performance,matchpts,rankingpts,teleop,driving,overall) VALUES ('$name','$teamnum','$teamnam','$match','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$traversalbar','$taxigetscore','$shootauto','$getauto','$failauto','$attupper','$attlower','$noatt','$points','$violate','$human','$performance','$matchpts','$rankingpts','$teleop','$driving','$overall')");
+        $db->exec("INSERT INTO data(eventcode, name,teamnum,teamnam,match,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,traversalbar,taxigetscore,shootauto,getauto,failauto,attupper,attlower,noatt,points,violate,human,performance,matchpts,rankingpts,teleop,driving,overall) VALUES ('$eventcode','$name','$teamnum','$teamnam','$match','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$traversalbar','$taxigetscore','$shootauto','$getauto','$failauto','$attupper','$attlower','$noatt','$points','$violate','$human','$performance','$matchpts','$rankingpts','$teleop','$driving','$overall')");
         $db->close();
+?>
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="main.css" type="text/css">
+<meta http-equiv="refresh" content="2;index.html" />
+</head>
+<h1>Submitted!</h1>
+<h3 style="color: lightslategray; text-align: center;">Redirecting...</h3>
+</html>
+<?php 
+} else {
+ die('There was a critical error: Bad form password');   
+}
 ?>
