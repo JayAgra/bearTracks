@@ -27,7 +27,3 @@ h1 {
     justify-content: center;
     display: flex;
 }
-
-@media (max-width : 520px) {
-    .fieldset {width: 98%;}
-}
