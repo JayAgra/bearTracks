@@ -26,6 +26,8 @@ h1 {
 .container {
     justify-content: center;
     display: flex;
-    flex-grow: 1;
-    flex-shrink: 1;
+}
+
+@media (max-width : 520px) {
+    .fieldset {width: 98%;}
 }
