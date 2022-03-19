@@ -1,5 +1,5 @@
 <?php 
-        if ($_POST['entry_key'] === 'FORMKEYHERE') {
+        if ($_POST['entry_key'] === 'team766bears') {
         $name = $_POST['entry_398176575'];
         $eventcode = $_POST['entry_event'];
         $teamnum = $_POST['entry_1638702746'];
@@ -35,6 +35,7 @@
         $missedlower = $_POST['missedlower'];
         $barsatt = $_POST['barsatt'];
         $barsdone = $_POST['barsdone'];
+        $defend = $_POST['entry_012504115'];
         class formDB extends SQLite3
         {
             function __construct()
@@ -43,7 +44,7 @@
             }
         }
         $db = new formDB();
-        $db->exec("INSERT INTO data(eventcode, name,teamnum,teamnam,match,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,traversalbar,madeupper,missedupper,madelower,missedlower,barsatt,barsdone,taxigetscore,shootauto,getauto,failauto,attupper,attlower,noatt,points,violate,human,performance,matchpts,rankingpts,teleop,driving,overall) VALUES ('$eventcode','$name','$teamnum','$teamnam','$match','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$traversalbar','$madeupper','$missedupper','$madelower','$missedlower','$barsatt','$barsdone','$taxigetscore','$shootauto','$getauto','$failauto','$attupper','$attlower','$noatt','$points','$violate','$human','$performance','$matchpts','$rankingpts','$teleop','$driving','$overall')");
+        $db->exec("INSERT INTO data(eventcode, name,teamnum,teamnam,match,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,traversalbar,madeupper,missedupper,madelower,missedlower,barsatt,barsdone,taxigetscore,shootauto,getauto,failauto,attupper,attlower,noatt,points,violate,human,performance,matchpts,rankingpts,defend,teleop,driving,overall) VALUES ('$eventcode','$name','$teamnum','$teamnam','$match','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$traversalbar','$madeupper','$missedupper','$madelower','$missedlower','$barsatt','$barsdone','$taxigetscore','$shootauto','$getauto','$failauto','$attupper','$attlower','$noatt','$points','$violate','$human','$performance','$matchpts','$rankingpts','$defend','$teleop','$driving','$overall')");
         $db->close();
 ?>
 <!DOCTYPE html>

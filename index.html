@@ -291,13 +291,14 @@ name="barsdone"
         name="entry.947038770"
         >&emsp;The robot did not attempt to score<br>
 </fieldset>
-<fieldset>
+<fieldset required>
     <label for="How many points did the team receive in End Game?">How many points did the team receive in End Game?<br></label>
-    <input
-        placeholder="7"
-        type="number"
-        name="entry.699092517"
-        required> points
+    <select name="entry.699092517">
+        <option value="4">4 - Low Bar</option>
+        <option value="6">6 - Mid Bar</option>
+        <option value="10">10 - High Bar</option>
+        <option value="15">15 - Traversal Bar</option>
+    </select>
 </fieldset>
 <fieldset>
     <label for="Rule Violations?">Rule Violations?<br></label>
@@ -339,6 +340,10 @@ name="barsdone"
 <fieldset>
     <label for="Any other thoughts about the teleop phase? Actions it took during so?">Any other thoughts about the teleop phase? Actions it took during so?<br></label>
     <textarea rows="2" cols="35" name="entry.711121407" placeholder="No"></textarea>
+</fieldset>
+<fieldset>
+    <label for="If present, what types of defense was used, and was it effective?">If present, what types of defense was used, and was it effective?<br></label>
+    <textarea rows="2" cols="35" name="entry.309796794" placeholder="No"></textarea>
 </fieldset>
 <fieldset>
     <label for="Any thoughts about the driving?">Any thoughts about the driving?<br></label>
