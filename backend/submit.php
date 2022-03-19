@@ -52,6 +52,6 @@
 </html>
 <?php 
 } else {
- die('There was a critical error: Bad form password');   
+ die('There was a critical error: Bad form password or bad POST data');   
 }
 ?>
