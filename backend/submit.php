@@ -1,5 +1,5 @@
 <?php 
-        if ($_POST['entry_key'] === 'team766bears') {
+        if ($_POST['entry_key'] === 'FORMKEYHERE') {
         $name = $_POST['entry_398176575'];
         $eventcode = $_POST['entry_event'];
         $teamnum = $_POST['entry_1638702746'];
@@ -29,6 +29,12 @@
         $teleop = $_POST['entry_711121407'];
         $driving = $_POST['entry_177753238'];
         $overall = $_POST['entry_1013139442'];
+        $madeupper = $_POST['madeupper'];
+        $missedupper = $_POST['missedupper'];
+        $madelower = $_POST['madelower'];
+        $missedlower = $_POST['missedlower'];
+        $barsatt = $_POST['barsatt'];
+        $barsdone = $_POST['barsdone'];
         class formDB extends SQLite3
         {
             function __construct()
@@ -37,7 +43,7 @@
             }
         }
         $db = new formDB();
-        $db->exec("INSERT INTO data(eventcode, name,teamnum,teamnam,match,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,traversalbar,taxigetscore,shootauto,getauto,failauto,attupper,attlower,noatt,points,violate,human,performance,matchpts,rankingpts,teleop,driving,overall) VALUES ('$eventcode','$name','$teamnum','$teamnam','$match','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$traversalbar','$taxigetscore','$shootauto','$getauto','$failauto','$attupper','$attlower','$noatt','$points','$violate','$human','$performance','$matchpts','$rankingpts','$teleop','$driving','$overall')");
+        $db->exec("INSERT INTO data(eventcode, name,teamnum,teamnam,match,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,traversalbar,madeupper,missedupper,madelower,missedlower,barsatt,barsdone,taxigetscore,shootauto,getauto,failauto,attupper,attlower,noatt,points,violate,human,performance,matchpts,rankingpts,teleop,driving,overall) VALUES ('$eventcode','$name','$teamnum','$teamnam','$match','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$traversalbar','$madeupper','$missedupper','$madelower','$missedlower','$barsatt','$barsdone','$taxigetscore','$shootauto','$getauto','$failauto','$attupper','$attlower','$noatt','$points','$violate','$human','$performance','$matchpts','$rankingpts','$teleop','$driving','$overall')");
         $db->close();
 ?>
 <!DOCTYPE html>
@@ -52,6 +58,6 @@
 </html>
 <?php 
 } else {
- die('There was a critical error: Bad form password or bad POST data');   
+ die('There was a critical error: Bad form password');   
 }
 ?>
