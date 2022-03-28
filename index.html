@@ -3,6 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="main.css" type="text/css">
+<style>
+.formOne {
+    width: 100%;
+    color: #fff;
+    background-color: #737373;
+    border: 1rem solid #737373;
+    border-radius: 2rem;
+}
+.formOneContent {
+    display: inline-block;
+    width: 100%;
+    border: 1px #737373 solid;
+    border-radius: 1rem;
+}
+</style>
 </head>
 <body>
 <div class="container">
@@ -87,7 +102,7 @@ hidden
 <!--END OVERRIDES-->
 <h1>2022 Scouting: RAPID REACT℠</h1>
 <br>
-<h2>Pre-Match:<h4 style="color: #a9a9a9;">&emsp;Get this done <b>before</b> the match starts!</h4></h2>
+<h2>Pre-Match:</h2><h4 style="color: #a9a9a9;">&emsp;Get this done <b>before</b> the match starts!</h4>
 <fieldset>
 <label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
 <input
@@ -136,24 +151,26 @@ required>
         placeholder="01"
         type="number"
         name="entry.508602665"
-        required>
-</fieldset>
-<h2>Pit Scouting<h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4></h2>
+        >
+</fieldset><br>
+<button type="button" class="formOne">Pit Scouting | Click to expand</button>
+<div class="formOneContent" style="display: none">
+<h2>Pit Scouting</h2><h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
 <fieldset>
     <label for="How much cargo can the robot hold at a time?">How much cargo can the robot hold at a time?<br></label>
     <input
         placeholder="1 or 2"
         type="number"
         name="entry.1565854744"
-        required>
+        >
 </fieldset>
 <fieldset>
     <label for="How much does the robot weight?">How much does the robot weigh?<br></label>
     <input
-        placeholder="29"
+        placeholder="150"
         type="number"
         name="entry.177680938"
-        required> lbs
+        > lbs
 </fieldset>
 <fieldset>
     <label>Robot Capabilities<br></label>
@@ -195,7 +212,8 @@ required>
         name="entry.332731239"
         >&emsp;The robot can climb to the traversal bar<br>
 </fieldset>
-<h2>Match Scouting<h4 style="color: #a9a9a9;">&emsp;Record as the game goes on</h4></h2>
+</div>
+<h2>Match Scouting</h2><h4 style="color: #a9a9a9;">&emsp;Record as the game goes on</h4>
 <fieldset>
 <label>Do this section for the duration of the match, fill out the rest at the end.<br></label><br>
 Made Upper Hub shots:<br><input
@@ -291,9 +309,10 @@ name="barsdone"
         name="entry.947038770"
         >&emsp;The robot did not attempt to score<br>
 </fieldset>
-<fieldset required>
+<fieldset>
     <label for="How many points did the team receive in End Game?">How many points did the team receive in End Game?<br></label>
     <select name="entry.699092517">
+        <option value="0">0 - No Bars</option>
         <option value="4">4 - Low Bar</option>
         <option value="6">6 - Mid Bar</option>
         <option value="10">10 - High Bar</option>
@@ -317,7 +336,7 @@ name="barsdone"
     >&emsp;The robot interacts with the Human Player<br>
 </fieldset>
 <br>
-<h2>Post Game<h4 style="color: gray;">&emsp;Fill this out after the game. Watch the game closely, and take note of important events.</h4></h2>
+<h2>Post Game</h2><h4 style="color: gray;">&emsp;Fill this out after the game. Watch the game closely, and take note of important events.</h4>
 <fieldset>
     <label>How would you estimate the consistency of the team's performance in the auton?</label><br>
     <select
@@ -358,11 +377,26 @@ name="barsdone"
 <input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
 <input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
 </p>
-<p style="font-size:x-small">©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
+<p style="font-size:x-small">Version 1.4.1 - ©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
     Recognition of Science and Technology (FIRST). ©2021 FIRST. All rights reserved. Used with non-exclusive permission.</p>
 </form>
 <br><br>
     <script src="form.js"></script>
     </div>
+<script>
+var coll = document.getElementsByClassName("formOne");
+var i;
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "inline-block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "inline-block";
+    }
+  });
+}
+</script>
     </body>
 </html>
