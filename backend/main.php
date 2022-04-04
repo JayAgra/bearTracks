@@ -1,5 +1,5 @@
 <?php 
-        if ($_POST['entry_key'] === 'FORMKEYHERE') {
+        if ($_POST['entry_key'] === 'team766bears') {
         $name = $_POST['entry_398176575'];
         $eventcode = $_POST['entry_event'];
         $teamnum = $_POST['entry_1638702746'];
