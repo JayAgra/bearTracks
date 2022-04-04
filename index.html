@@ -4,399 +4,45 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="main.css" type="text/css">
 <style>
-.formOne {
-    width: 100%;
-    color: #fff;
-    background-color: #737373;
-    border: 1rem solid #737373;
-    border-radius: 2rem;
-}
-.formOneContent {
-    display: inline-block;
-    width: 100%;
-    border: 1px #737373 solid;
+a {
+    border: #515151;
+    border-width: 0.55rem;
+    border-style: solid;
     border-radius: 1rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    padding-right: 7rem;
+    padding-left: 7rem;
+    background-color: #515151;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: x-large;
+}
+body {
+    text-align: center;
 }
 </style>
 </head>
 <body>
 <div class="container">
 <form 
-    action="https://jayagra.com/scout/submit.php"
-    target="_self"
-    method="POST"
-    name="mainForm"
 >
-<!--onclick="window.location.href = 'done.html';"-->
-<!--FORM CHECKBOX OVERRIDES TO WRITE OFF ON UNBOXES-->
-<input
-type="text" value="false"
-name="entry.321248479"
-hidden
->
-<input
-type="text" value="false"
-name="entry.1745221229"
-hidden
->
-<input
-type="text" value="false"
-name="entry.189327560"
-hidden
->
-<input
-type="text" value="false"
-name="entry.51519363"
-hidden
->
-<input
-type="text" value="false"
-name="entry.1343844870"
-hidden
->
-<input
-type="text" value="false"
-name="entry.332731239"
-hidden
->
-<input
-type="text" value="false"
-name="entry.412041471"
-hidden
->
-<input
-type="text" value="false"
-name="entry.984983966"
-hidden
->
-<input
-type="text" value="false"
-name="entry.1220637130"
-hidden
->
-<input
-type="text" value="false"
-name="entry.1277000981"
-hidden
->
-<input
-type="text" value="false"
-name="entry.1157236568"
-hidden
->
-<input
-type="text" value="false"
-name="entry.794477414"
-hidden
->
-<input
-type="text" value="false"
-name="entry.947038770"
-hidden
->
-<input
-type="text" value="false"
-name="entry.1080933142"
-hidden
->
-<!--END OVERRIDES-->
-<h1>2022 Scouting: RAPID REACT℠</h1>
+<h1 style="font-size: xx-large;">2022 Scouting: RAPID REACT℠</h1>
+<h3>The forms have been split. Select one below.</h3><br>
+<a href="pit.html">
+    Pit Form<br>
+</a><br>
+<a href="main.html">
+    Main Form<br>
+</a><br>
 <br>
-<h2>Pre-Match:</h2><h4 style="color: #a9a9a9;">&emsp;Get this done <b>before</b> the match starts!</h4>
-<fieldset>
-<label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
-<input
-placeholder="xxxxxxxxxxxx"
-type="text"
-name="entry.key"
-id="psw1"
-required>
-</fieldset>
-<fieldset>
-    <label for="Event Code">Event Code</label><br>
-<select name="entry.event" required>
-    <option value="CADA">CADA - Sacramento Regional</option>
-    <option value="CASJ">CASJ - Silicon Valley Regional</option>
-</select>
-</fieldset>
-<fieldset>
-<label for="Your Name">Your Name<br></label>
-<input
-placeholder="Amon Gus"
-type="text"
-name="entry.398176575"
-required>
-</fieldset>
-
-<fieldset>
-<label for="Number of the Team you are Scouting">Number of the Team you are Scouting<br></label>
-<input
-    placeholder="766"
-    type="number"
-    name="entry.1638702746"
-    required>
-</fieldset>
-
-<fieldset>
-<label for="Name of the Team you are Scouting">Name of the Team you are Scouting<br></label>
-<input
-    placeholder="Bears"
-    type="text"
-    name="entry.215295328"
-    required>
-</fieldset>
-<fieldset>
-    <label for="Match Number">Match Number<br></label>
-    <input
-        placeholder="01"
-        type="number"
-        name="entry.508602665"
-        >
-</fieldset><br>
-<button type="button" class="formOne">Pit Scouting | Click to expand</button>
-<div class="formOneContent" style="display: none">
-<h2>Pit Scouting</h2><h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
-<fieldset>
-    <label for="How much cargo can the robot hold at a time?">How much cargo can the robot hold at a time?<br></label>
-    <input
-        placeholder="1 or 2"
-        type="number"
-        name="entry.1565854744"
-        >
-</fieldset>
-<fieldset>
-    <label for="How much does the robot weight?">How much does the robot weigh?<br></label>
-    <input
-        placeholder="150"
-        type="number"
-        name="entry.177680938"
-        > lbs
-</fieldset>
-<fieldset>
-    <label>Robot Capabilities<br></label>
-    <br>
-    <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.321248479"
-        >&emsp;The robot can score in the Upper Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1745221229"
-        >&emsp;The robot can score in the Lower Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.189327560"
-        >&emsp;The robot can climb to the low bar<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.51519363"
-        >&emsp;The robot can climb to the mid bar<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1343844870"
-        >&emsp;The robot can climb to the high bar<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.332731239"
-        >&emsp;The robot can climb to the traversal bar<br>
-</fieldset>
-</div>
-<h2>Match Scouting</h2><h4 style="color: #a9a9a9;">&emsp;Record as the game goes on</h4>
-<fieldset>
-<label>Do this section for the duration of the match, fill out the rest at the end.<br></label><br>
-Made Upper Hub shots:<br><input
-id="madeupper"
-type="text"
-value="0"
-name="madeupper"
-><br>
-<button onclick="incValueMadeUpper()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
-Missed Upper Hub shots:<br><input
-id="missedupper"
-type="text"
-value="0"
-name="missedupper"
-><br>
-<button onclick="incValueMissedUpper()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
-Made Lower Hub shots:<br><input
-id="madelower"
-type="text"
-value="0"
-name="madelower"
-><br>
-<button onclick="incValueMadeLower()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
-Missed Lower Hub shots:<br><input
-id="missedlower"
-type="text"
-value="0"
-name="missedlower"
-><br>
-<button onclick="incValueMissedLower()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
-Bars attempted:<br><input
-id="barsatt"
-type="text"
-value="0"
-name="barsatt"
-><br>
-<button onclick="incValueBarsAtt()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
-Bars climbed:<br><input
-id="barsdone"
-type="text"
-value="0"
-name="barsdone"
-><br>
-<button onclick="incValueBarsDone()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
-</fieldset>
-<fieldset>
-    <label>Auton<br></label>
-    <br>
-    <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.412041471"
-        >&emsp;During Auton, the robot successfully taxied from their tarmac, retrieved and scored their assigned cargo into the hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.984983966"
-        >&emsp;During Auton, the robot successfully shoot cargo into the hubs<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1220637130"
-        >&emsp;During Auton, the robot retrieved cargo from the field<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1277000981"
-        >&emsp;During Auton, the robot failed to score points<br>
-</fieldset>
-<fieldset>
-    <label>Attempted Actions<br></label>
-    <br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1157236568"
-        >&emsp;The robot made an ATTEMPT to score in the Upper Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.794477414"
-        >&emsp;The robot made an ATTEMPT to score in the Lower Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.947038770"
-        >&emsp;The robot did not attempt to score<br>
-</fieldset>
-<fieldset>
-    <label for="How many points did the team receive in End Game?">How many points did the team receive in End Game?<br></label>
-    <select name="entry.699092517">
-        <option value="0">0 - No Bars</option>
-        <option value="4">4 - Low Bar</option>
-        <option value="6">6 - Mid Bar</option>
-        <option value="10">10 - High Bar</option>
-        <option value="15">15 - Traversal Bar</option>
-    </select>
-</fieldset>
-<fieldset>
-    <label for="Rule Violations?">Rule Violations?<br></label>
-    <input
-        placeholder="0"
-        type="number"
-        name="entry.1019141500"
-        required>
-</fieldset>
-<fieldset>
-    <input
-    placeholder="off"
-    value="true"
-    type="checkbox"
-    name="entry.1080933142"
-    >&emsp;The robot interacts with the Human Player<br>
-</fieldset>
-<br>
-<h2>Post Game</h2><h4 style="color: gray;">&emsp;Fill this out after the game. Watch the game closely, and take note of important events.</h4>
-<fieldset>
-    <label>How would you estimate the consistency of the team's performance in the auton?</label><br>
-    <select
-    name="entry.1152778382"
-    required>
-    <option value="Their performance seems promising and consistent">Their performance seems promising and consistent</option>
-    <option value="Their performance seems somewhat consistent">Their performance seems somewhat consistent</option>
-    <option value="Their performance may change across different trials">Their performance may change across different trials</option>
-    <option value="Their performance will probably be different next time">Their performance will probably be different next time</option>
-</select>
-</fieldset>
-<fieldset>
-    <label for="Were there any ways not mentioned previously in which the robot received MATCH points?">Were there any ways not mentioned previously in which the robot received MATCH points?<br></label>
-    <textarea rows="2" cols="35" name="entry.309796794" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label for="Were there any ways not mentioned previously in which the robot received RANKING points?">Were there any ways not mentioned previously in which the robot received RANKING points?<br></label>
-    <textarea rows="2" cols="35" name="entry.638763658" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label for="Any other thoughts about the teleop phase? Actions it took during so?">Any other thoughts about the teleop phase? Actions it took during so?<br></label>
-    <textarea rows="2" cols="35" name="entry.711121407" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label for="If present, what types of defense was used, and was it effective?">If present, what types of defense was used, and was it effective?<br></label>
-    <textarea rows="2" cols="35" name="entry.309796794" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label for="Any thoughts about the driving?">Any thoughts about the driving?<br></label>
-    <textarea rows="2" cols="35" name="entry.177753238" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label for="Overall assessment? (Would we want to be in an alliance with them?)">Overall assessment? (Would we want to be in an alliance with them?)<br></label>
-    <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..."></textarea>
-</fieldset>
-<br>
-<p style="text-align:center">
-<input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
-<input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
+<p style="text-align:center; display:none;">
 </p>
-<p style="font-size:x-small">Version 1.4.1 - ©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
+<p style="font-size:x-small">This site is built for mobile devices. Version 2.0.0 - ©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
     Recognition of Science and Technology (FIRST). ©2021 FIRST. All rights reserved. Used with non-exclusive permission.</p>
 </form>
 <br><br>
-    <script src="form.js"></script>
     </div>
-<script>
-var coll = document.getElementsByClassName("formOne");
-var i;
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "inline-block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "inline-block";
-    }
-  });
-}
-</script>
     </body>
 </html>
