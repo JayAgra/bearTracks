@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="main.css" type="text/css">
+</head>
+<body>
+<div class="container">
+<form 
+    action="https://jayagra.com/scout/pit.php"
+    target="_self"
+    method="POST"
+    name="mainForm"
+>
+<!--onclick="window.location.href = 'done.html';"-->
+<!--FORM CHECKBOX OVERRIDES TO WRITE OFF ON UNBOXES-->
+<input
+type="text" value="false"
+name="entry.321248479"
+hidden
+>
+<input
+type="text" value="false"
+name="entry.1745221229"
+hidden
+>
+<input
+type="text" value="false"
+name="entry.189327560"
+hidden
+>
+<input
+type="text" value="false"
+name="entry.51519363"
+hidden
+>
+<input
+type="text" value="false"
+name="entry.1343844870"
+hidden
+>
+<input
+type="text" value="false"
+name="entry.332731239"
+hidden
+>
+<!--END OVERRIDES-->
+<h1>2022 Scouting: RAPID REACT℠</h1>
+<br>
+<h2>Pre-Match:</h2><h4 style="color: #a9a9a9;">&emsp;Get this done <b>before</b> the match starts!</h4>
+<fieldset>
+<label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
+<input
+placeholder="xxxxxxxxxxxx"
+type="text"
+name="entry.key"
+id="psw1"
+required>
+</fieldset>
+<fieldset>
+    <label for="Event Code">Event Code</label><br>
+<select name="entry.event" required>
+    <option value="CADA">CADA - Sacramento Regional</option>
+    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+</select>
+</fieldset>
+<fieldset>
+<label for="Your Name">Your Name<br></label>
+<input
+placeholder="Amon Gus"
+type="text"
+name="entry.398176575"
+required>
+</fieldset>
+
+<fieldset>
+<label for="Number of the Team you are Scouting">Number of the Team you are Scouting<br></label>
+<input
+    placeholder="766"
+    type="number"
+    name="entry.1638702746"
+    required>
+</fieldset>
+
+<fieldset>
+<label for="Name of the Team you are Scouting">Name of the Team you are Scouting<br></label>
+<input
+    placeholder="Bears"
+    type="text"
+    name="entry.215295328"
+    required>
+</fieldset>
+<h2>Pit Scouting</h2><h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
+<fieldset>
+    <label for="How much cargo can the robot hold at a time?">How much cargo can the robot hold at a time?<br></label>
+    <input
+        placeholder="1 or 2"
+        type="number"
+        name="entry.1565854744"
+        >
+</fieldset>
+<fieldset>
+    <label for="How much does the robot weight?">How much does the robot weigh?<br></label>
+    <input
+        placeholder="150"
+        type="number"
+        name="entry.177680938"
+        > lbs
+</fieldset>
+<fieldset>
+    <label for="Drive Type">Drive Type<br></label>
+    <textarea rows="2" cols="50" name="entry.drivetype" placeholder="Swerve/Manual, strong..."></textarea>
+</fieldset>
+<fieldset>
+    <label for="Drive Type">Shooter Accuracy (%)<br></label>
+    <input
+    placeholder="99"
+    type="text"
+    name="entry.accshoot"
+    > %
+</fieldset>
+<fieldset>
+    <label for="Drive Type">Experience<br></label>
+    <input
+    placeholder="-5"
+    type="text"
+    name="entry.accshoot"
+    > Weeks of drive team work<br>
+    <input
+    placeholder="1"
+    type="text"
+    name="entry.accshoot"
+    > Number of other attended events
+</fieldset>
+<fieldset>
+    <label>Robot Capabilities<br></label>
+    <br>
+    <input
+        placeholder="off"
+        value="true"
+        type="checkbox"
+        name="entry.321248479"
+        >&emsp;The robot can score in the Upper Hub<br>
+        <input
+        placeholder="off"
+        value="true"
+        type="checkbox"
+        name="entry.1745221229"
+        >&emsp;The robot can score in the Lower Hub<br>
+        <input
+        placeholder="off"
+        value="true"
+        type="checkbox"
+        name="entry.189327560"
+        >&emsp;The robot can climb to the low bar<br>
+        <input
+        placeholder="off"
+        value="true"
+        type="checkbox"
+        name="entry.51519363"
+        >&emsp;The robot can climb to the mid bar<br>
+        <input
+        placeholder="off"
+        value="true"
+        type="checkbox"
+        name="entry.1343844870"
+        >&emsp;The robot can climb to the high bar<br>
+        <input
+        placeholder="off"
+        value="true"
+        type="checkbox"
+        name="entry.332731239"
+        >&emsp;The robot can climb to the traversal bar<br>
+</fieldset>
+<fieldset>
+    <label for="Overall assessment? (Would we want to be in an alliance with them?)">Overall assessment? (Would we want to be in an alliance with them?)<br></label>
+    <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..."></textarea>
+</fieldset>
+<br>
+<p style="text-align:center">
+<input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
+<input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
+</p>
+<p style="font-size:x-small">This site is built for mobile devices. Version 2.0.0 - ©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
+    Recognition of Science and Technology (FIRST). ©2021 FIRST. All rights reserved. Used with non-exclusive permission.</p>
+</form>
+<br><br>
+    <script src="form.js"></script>
+    </div>
+    </body>
+</html>
