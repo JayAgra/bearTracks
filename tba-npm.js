@@ -1,6 +1,7 @@
 //port of NPM bluealliance package, see https://github.com/nitroxplunge/bluealliance
 //see ^ for docs (I added some extra api calls for ease of life)
 //used under MIT license
+//thanks ron
 
 class BlueAlliance {
     /**
