@@ -141,6 +141,10 @@ while ($roresw = $resultspit->fetchArray()) {
     echo ("<td>Predicted Shot Accuracy(%)</td><td>".$roresw[14]."</td></tr>"); 
     echo ("<td>Overall</td><td>".$roresw[15]."</td></tr>"); 
     echo ('<td colspan="2"><img src="pitimg/'.$roresw[16].'" /></td></tr>'); 
+    echo ('<td colspan="2"><img src="pitimg/'.$roresw[17].'" /></td></tr>'); 
+    echo ('<td colspan="2"><img src="pitimg/'.$roresw[18].'" /></td></tr>'); 
+    echo ('<td colspan="2"><img src="pitimg/'.$roresw[19].'" /></td></tr>'); 
+    echo ('<td colspan="2"><img src="pitimg/'.$roresw[20].'" /></td></tr>'); 
     echo ("</table>");
 }
 
