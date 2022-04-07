@@ -30,19 +30,3 @@ function incValueMadeUpper()
     value++;
     document.getElementById('madeupper').value = value;
 }
-//bars attempted
-function incValueBarsAtt()
-{
-    var value = parseInt(document.getElementById('barsatt').value, 10);
-    value = isNaN(value) ? 0 : value;
-    value++;
-    document.getElementById('barsatt').value = value;
-}
-//bars done
-function incValueBarsDone()
-{
-    var value = parseInt(document.getElementById('barsdone').value, 10);
-    value = isNaN(value) ? 0 : value;
-    value++;
-    document.getElementById('barsdone').value = value;
-}
