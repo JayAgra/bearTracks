@@ -21,6 +21,16 @@ hidden
 >
 <input
 type="text" value="false"
+name="entry.012504115"
+hidden
+>
+<input
+type="text" value="false"
+name="entry.1277030981"
+hidden
+>
+<input
+type="text" value="false"
 name="entry.1745221229"
 hidden
 >
@@ -88,7 +98,7 @@ hidden
 <h1>2022 Scouting: RAPID REACT℠</h1>
 <br>
 <h2>Pre-Match:</h2><h4 style="color: #a9a9a9;">&emsp;Get this done <b>before</b> the match starts!</h4>
-<fieldset>
+<!--<fieldset>
 <label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
 <input
 placeholder="xxxxxxxxxxxx"
@@ -96,12 +106,12 @@ type="text"
 name="entry.key"
 id="psw1"
 required>
-</fieldset>
+</fieldset>-->
 <fieldset>
     <label for="Event Code">Event Code</label><br>
 <select name="entry.event" required>
     <option value="CADA">CADA - Sacramento Regional</option>
-    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+    <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
 </select>
 </fieldset>
 <fieldset>
@@ -137,64 +147,11 @@ required>
         type="number"
         name="entry.508602665"
         >
+    <select name="entry.matchlvl">
+        <option value="qual">Qual</option>
+        <option value="playoff">Playoff</option>
+    </select>
 </fieldset><br>
-<h2>Pit Scouting</h2><h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
-<fieldset>
-    <label for="How much cargo can the robot hold at a time?">How much cargo can the robot hold at a time?<br></label>
-    <input
-        placeholder="1 or 2"
-        type="number"
-        name="entry.1565854744"
-        >
-</fieldset>
-<fieldset>
-    <label for="How much does the robot weight?">How much does the robot weigh?<br></label>
-    <input
-        placeholder="150"
-        type="number"
-        name="entry.177680938"
-        > lbs
-</fieldset>
-<fieldset>
-    <label>Robot Capabilities<br></label>
-    <br>
-    <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.321248479"
-        >&emsp;The robot can score in the Upper Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1745221229"
-        >&emsp;The robot can score in the Lower Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.189327560"
-        >&emsp;The robot can climb to the low bar<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.51519363"
-        >&emsp;The robot can climb to the mid bar<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1343844870"
-        >&emsp;The robot can climb to the high bar<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.332731239"
-        >&emsp;The robot can climb to the traversal bar<br>
-</fieldset>
 <h2>Match Scouting</h2><h4 style="color: #a9a9a9;">&emsp;Record as the game goes on</h4>
 <fieldset>
 <label>Do this section for the duration of the match, fill out the rest at the end.<br></label><br>
@@ -204,42 +161,42 @@ type="text"
 value="0"
 name="madeupper"
 ><br>
-<button onclick="incValueMadeUpper()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
+<button onclick="incValueMadeUpper()" type="button"  style="width: 9rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
 Missed Upper Hub shots:<br><input
 id="missedupper"
 type="text"
 value="0"
 name="missedupper"
 ><br>
-<button onclick="incValueMissedUpper()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
+<button onclick="incValueMissedUpper()" type="button"  style="width: 9rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
 Made Lower Hub shots:<br><input
 id="madelower"
 type="text"
 value="0"
 name="madelower"
 ><br>
-<button onclick="incValueMadeLower()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
+<button onclick="incValueMadeLower()" type="button"  style="width: 9rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
 Missed Lower Hub shots:<br><input
 id="missedlower"
 type="text"
 value="0"
 name="missedlower"
 ><br>
-<button onclick="incValueMissedLower()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
+<button onclick="incValueMissedLower()" type="button" style="width: 9rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
 Bars attempted:<br><input
 id="barsatt"
 type="text"
 value="0"
 name="barsatt"
 ><br>
-<button onclick="incValueBarsAtt()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
+<button onclick="incValueBarsAtt()" type="button"  style="width: 9rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
 Bars climbed:<br><input
 id="barsdone"
 type="text"
 value="0"
 name="barsdone"
 ><br>
-<button onclick="incValueBarsDone()" type="button" style="width: 9rem; margin-top: 0.35rem;">⟰</button><br>
+<button onclick="incValueBarsDone()" type="button"  style="width: 9rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
 </fieldset>
 <fieldset>
     <label>Auton<br></label>
@@ -249,7 +206,7 @@ name="barsdone"
         value="true"
         type="checkbox"
         name="entry.412041471"
-        >&emsp;During Auton, the robot successfully taxied from their tarmac, retrieved and scored their assigned cargo into the hub<br>
+        >&emsp;During Auton, the robot failed to score points, but made an attempt<br>
         <input
         placeholder="off"
         value="true"
@@ -266,40 +223,14 @@ name="barsdone"
         placeholder="off"
         value="true"
         type="checkbox"
+        name="entry.1277030981"
+        >&emsp;During Auton, the robot taxied<br>
+        <input
+        placeholder="off"
+        value="true"
+        type="checkbox"
         name="entry.1277000981"
         >&emsp;During Auton, the robot failed to score points<br>
-</fieldset>
-<fieldset>
-    <label>Attempted Actions<br></label>
-    <br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.1157236568"
-        >&emsp;The robot made an ATTEMPT to score in the Upper Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.794477414"
-        >&emsp;The robot made an ATTEMPT to score in the Lower Hub<br>
-        <input
-        placeholder="off"
-        value="true"
-        type="checkbox"
-        name="entry.947038770"
-        >&emsp;The robot did not attempt to score<br>
-</fieldset>
-<fieldset>
-    <label for="How many points did the team receive in End Game?">How many points did the team receive in End Game?<br></label>
-    <select name="entry.699092517">
-        <option value="0">0 - No Bars</option>
-        <option value="4">4 - Low Bar</option>
-        <option value="6">6 - Mid Bar</option>
-        <option value="10">10 - High Bar</option>
-        <option value="15">15 - Traversal Bar</option>
-    </select>
 </fieldset>
 <fieldset>
     <label for="Rule Violations?">Rule Violations?<br></label>
@@ -307,7 +238,7 @@ name="barsdone"
         placeholder="0"
         type="number"
         name="entry.1019141500"
-        required>
+        >
 </fieldset>
 <fieldset>
     <input
@@ -331,28 +262,20 @@ name="barsdone"
 </select>
 </fieldset>
 <fieldset>
-    <label for="Were there any ways not mentioned previously in which the robot received MATCH points?">Were there any ways not mentioned previously in which the robot received MATCH points?<br></label>
-    <textarea rows="2" cols="35" name="entry.309796794" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label for="Were there any ways not mentioned previously in which the robot received RANKING points?">Were there any ways not mentioned previously in which the robot received RANKING points?<br></label>
-    <textarea rows="2" cols="35" name="entry.638763658" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
     <label for="Any other thoughts about the teleop phase? Actions it took during so?">Any other thoughts about the teleop phase? Actions it took during so?<br></label>
-    <textarea rows="2" cols="35" name="entry.711121407" placeholder="No"></textarea>
+    <textarea rows="2" cols="35" name="entry.711121407" placeholder="No" style="font-size: x-large !important;"></textarea>
 </fieldset>
 <fieldset>
     <label for="If present, what types of defense was used, and was it effective?">If present, what types of defense was used, and was it effective?<br></label>
-    <textarea rows="2" cols="35" name="entry.309796794" placeholder="No"></textarea>
+    <textarea rows="2" cols="35" name="entry.309796794" placeholder="No" style="font-size: x-large !important;"></textarea>
 </fieldset>
 <fieldset>
     <label for="Any thoughts about the driving?">Any thoughts about the driving?<br></label>
-    <textarea rows="2" cols="35" name="entry.177753238" placeholder="No"></textarea>
+    <textarea rows="2" cols="35" name="entry.177753238" placeholder="No" style="font-size: x-large !important;"></textarea>
 </fieldset>
 <fieldset>
     <label for="Overall assessment? (Would we want to be in an alliance with them?)">Overall assessment? (Would we want to be in an alliance with them?)<br></label>
-    <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..."></textarea>
+    <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..." style="font-size: x-large !important;"></textarea>
 </fieldset>
 <br>
 <p style="text-align:center">

@@ -1,5 +1,5 @@
 <?php 
-        if ($_POST['entry_key'] === 'TEAMKEYHERE') {
+        //if ($_POST['entry_key'] === 'key') {
         $name = $_POST['entry_398176575'];
         $eventcode = $_POST['entry_event'];
         $teamnum = $_POST['entry_1638702746'];
@@ -12,7 +12,20 @@
         $midbar = $_POST['entry_51519363'];
         $highbar = $_POST['entry_1343844870'];
         $travbar = $_POST['entry_332731239'];
+        $drivetype = $_POST['entry_drivetype'];
+        $shotacc = $_POST['entry_accshoot'];
         $overall = $_POST['entry_1013139442'];
+        //process files
+        $namefile = $_FILES['pitimg']['name'];
+        $date = new DateTime();
+        $unixtime = $date->getTimestamp();
+        $currentDirectory = getcwd();
+        $uploadDirectory = "/pitimg/";
+        $fileName = $unixtime . $namefile;
+        $fileTmpName  = $_FILES['pitimg']['tmp_name'];
+        $uploadPath = $currentDirectory . $uploadDirectory . basename($fileName);
+        $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
+        //add to db
         class formDB extends SQLite3
         {
             function __construct()
@@ -21,7 +34,7 @@
             }
         }
         $db = new formDB();
-        $db->exec("INSERT INTO pit(name,eventcode,teamnum,teamnam,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,travbar,overall) VALUES ('$name','$eventcode','$teamnum',$teamnam','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$travbar','$overall')");
+        $db->exec("INSERT INTO pit(name,eventcode,teamnum,teamnam,cargo,weigh,upperhub,lowerhub,lowbar,midbar,highbar,travbar,drivetype,shotacc,overall,filename) VALUES ('$name','$eventcode','$teamnum','$teamnam','$cargo','$weigh','$upperhub','$lowerhub','$lowbar','$midbar','$highbar','$travbar','$drivetype','$shotacc','$overall','$fileName')");
         $db->close();
 ?>
 <!DOCTYPE html>
@@ -35,7 +48,7 @@
 <h3 style="color: lightslategray; text-align: center;">Redirecting...</h3>
 </html>
 <?php 
-} else {
- die('There was a critical error: Bad form password');   
-}
+//} else {
+// die('There was a critical error: Bad form password');   
+//}
 ?>
