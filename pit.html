@@ -7,10 +7,10 @@
 <body>
 <div class="container">
 <form 
-    action="https://jayagra.com/scout/pit.php"
+    action="pit.php"
     target="_self"
     method="POST"
-    name="mainForm"
+    enctype='multipart/form-data'
 >
 <!--onclick="window.location.href = 'done.html';"-->
 <!--FORM CHECKBOX OVERRIDES TO WRITE OFF ON UNBOXES-->
@@ -48,7 +48,7 @@ hidden
 <h1>2022 Scouting: RAPID REACT℠</h1>
 <br>
 <h2>Pre-Match:</h2><h4 style="color: #a9a9a9;">&emsp;Get this done <b>before</b> the match starts!</h4>
-<fieldset>
+<!--<fieldset>
 <label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
 <input
 placeholder="xxxxxxxxxxxx"
@@ -56,7 +56,7 @@ type="text"
 name="entry.key"
 id="psw1"
 required>
-</fieldset>
+</fieldset>-->
 <fieldset>
     <label for="Event Code">Event Code</label><br>
 <select name="entry.event" required>
@@ -174,7 +174,11 @@ required>
 </fieldset>
 <fieldset>
     <label for="Overall assessment? (Would we want to be in an alliance with them?)">Overall assessment? (Would we want to be in an alliance with them?)<br></label>
-    <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..."></textarea>
+    <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..." style="font-size: x-large !important;"></textarea>
+</fieldset>
+<fieldset>
+    <label>Upload an image</label><br>
+    <input type="file" name="pitimg"/>
 </fieldset>
 <br>
 <p style="text-align:center">
