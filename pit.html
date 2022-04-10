@@ -47,7 +47,7 @@ hidden
 <!--END OVERRIDES-->
 <h1>2022 Scouting: RAPID REACT℠</h1>
 <br>
-<h2>Pre-Match:</h2><h4 style="color: #a9a9a9;">&emsp;Get this done <b>before</b> the match starts!</h4>
+<h2>General Info:</h2>
 <!--<fieldset>
 <label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
 <input
@@ -61,7 +61,7 @@ required>
     <label for="Event Code">Event Code <span style="color:red">*</span></label><br>
 <select name="entry.event" required>
     <option value="CADA">CADA - Sacramento Regional</option>
-    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+    <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
 </select>
 </fieldset>
 <fieldset>
@@ -99,38 +99,42 @@ required>
         name="entry.1565854744"
         >
 </fieldset>
-<fieldset>
+<!--<fieldset>
     <label for="How much does the robot weight?">How much does the robot weigh?<br></label>
     <input
         placeholder="150"
         type="number"
         name="entry.177680938"
         > lbs
-</fieldset>
+</fieldset>-->
 <fieldset>
     <label for="Drive Type">Drive Type<br></label>
-    <textarea rows="2" cols="50" name="entry.drivetype" placeholder="Swerve/Manual, strong..."></textarea>
+    <select name="entry.drivetype">
+        <option value="westcoast">Westcoast (Like Ours)</option>
+        <option value="swerve">Swerve (Each wheel turns)</option>
+        <option value="other">Other (Explain in overall)</option>
+    </select>
 </fieldset>
-<fieldset>
+<!--<fieldset>
     <label for="Drive Type">Shooter Accuracy (%)<br></label>
     <input
     placeholder="99"
     type="text"
     name="entry.accshoot"
     > %
-</fieldset>
+</fieldset>-->
 <fieldset>
     <label for="Drive Type">Experience<br></label>
     <input
     placeholder="-5"
     type="text"
-    name="entry.accshoot"
+    name="dteam"
     > Weeks of drive team work<br>
     <input
     placeholder="1"
     type="text"
-    name="entry.accshoot"
-    > Number of other attended events
+    name="entry.attended"
+    > Number of attended events
 </fieldset>
 <fieldset>
     <label>Robot Capabilities<br></label>
@@ -140,6 +144,7 @@ required>
         value="true"
         type="checkbox"
         name="entry.321248479"
+        class="checkbig"
         >&emsp;The robot can score in the Upper Hub<br>
         <input
         placeholder="off"
@@ -154,45 +159,76 @@ required>
         type="checkbox"
         name="entry.189327560"
         class="checkbig"
-        >&emsp;The robot can climb to the low bar<br>
+        >&emsp;The robot can climb to the Low Rung<br>
         <input
         placeholder="off"
         value="true"
         type="checkbox"
         name="entry.51519363"
         class="checkbig"
-        >&emsp;The robot can climb to the mid bar<br>
+        >&emsp;The robot can climb to the Mid Rung<br>
         <input
         placeholder="off"
         value="true"
         type="checkbox"
         name="entry.1343844870"
         class="checkbig"
-        >&emsp;The robot can climb to the high bar<br>
+        >&emsp;The robot can climb to the High Rung<br>
         <input
         placeholder="off"
         value="true"
         type="checkbox"
         name="entry.332731239"
         class="checkbig"
-        >&emsp;The robot can climb to the traversal bar<br>
+        >&emsp;The robot can climb to the Traversal Rung<br>
+</fieldset>
+<fieldset>
+    <label><strong>Overconfidence</strong></label><br>
+    <table style="text-align:center;">
+        <tr><td rowspan="3">Humble&emsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td rowspan="3">&emsp;Cocky</td></tr>
+    <tr><td></td><td><input type="radio" name="overconf" value="1" class="checkbig"></td>
+    <td><input type="radio" name="overconf" value="2" class="checkbig"></td>
+    <td><input type="radio" name="overconf" value="3" class="checkbig"></td>
+    <td><input type="radio" name="overconf" value="4" class="checkbig" checked></td>
+    <td><input type="radio" name="overconf" value="5" class="checkbig"></td>
+    <td><input type="radio" name="overconf" value="6" class="checkbig"></td>
+    <td><input type="radio" name="overconf" value="7" class="checkbig"></td><td></td></tr>
+    <tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td></td></tr>
+    </table></fieldset><fieldset>
+    <label><strong>Build Quality</strong></label><br>
+    <table style="text-align:center;">
+        <tr><td rowspan="3">Hot Glue&emsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td rowspan="3">&emsp;Apple, Inc</td></tr>
+    <tr><td></td><td><input type="radio" name="bqual" value="1" class="checkbig"></td>
+    <td><input type="radio" name="bqual" value="2" class="checkbig"></td>
+    <td><input type="radio" name="bqual" value="3" class="checkbig"></td>
+    <td><input type="radio" name="bqual" value="4" class="checkbig" checked></td>
+    <td><input type="radio" name="bqual" value="5" class="checkbig"></td>
+    <td><input type="radio" name="bqual" value="6" class="checkbig"></td>
+    <td><input type="radio" name="bqual" value="7" class="checkbig"></td><td></td></tr>
+    <tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td></td></tr>
+    </table>
 </fieldset>
 <fieldset>
     <label for="Overall assessment? (Would we want to be in an alliance with them?)">Overall assessment? (Would we want to be in an alliance with them?)<br></label>
     <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..." style="font-size: x-large !important;"></textarea>
 </fieldset>
 <fieldset>
-    <label>Upload an image <span style="color:orange">*</span></label><br>
-    <input type="file" name="pitimg1"/>
-    <input type="file" name="pitimg2"/>
-    <input type="file" name="pitimg3"/>
-    <input type="file" name="pitimg4"/>
-    <input type="file" name="pitimg5"/>
+    <label>Upload images <span style="color:orange">*</span></label><br>
+    <table>
+    <tr><td><label style="color:white">Bot Front</label></td><td><span>&emsp; &emsp;</span></td><td><input type="file" name="pitimg1"/></td></tr>
+    <tr><td><label style="color:white">Bot Back</label></td><td><span>&emsp; &emsp;</span></td><td><input type="file" name="pitimg2"/></td></tr>
+    <tr><td><label style="color:white">Bot Side</label></td><td><span>&emsp; &emsp;</span></td><td><input type="file" name="pitimg3"/></td></tr>
+    <tr><td><label style="color:white">Bot Other Side</label></td><td>&emsp; &emsp;</td><td><input type="file" name="pitimg4"/></td></tr>
+    <tr><td><label style="color:white">Top Down</label></td><td><span>&emsp; &emsp;</span></td><td><input type="file" name="pitimg5"/></td></tr>
+    </table>
 </fieldset>
 <br>
 <p style="text-align:center">
 <input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
-<input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
+<input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">  
+<a href="index.html">
+   <input type="button" value="Back" style="color: white; background-color: #E90202; border-radius: 1rem; border-style: solid; border-color: #E90202; border-width: 1rem;" />
+</a>
 </p>
 <p style="font-size:x-small">This site is built for mobile devices. Version 2.0.0 - ©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
     Recognition of Science and Technology (FIRST). ©2021 FIRST. All rights reserved. Used with non-exclusive permission.</p>
