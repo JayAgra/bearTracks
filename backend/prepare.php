@@ -45,7 +45,7 @@ curl_setopt_array($curl, array(
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'GET',
   CURLOPT_HTTPHEADER => array(
-     "Authorization: Basic amF5YWdyYToyNDQxZTQ0Ny1kMjY0LTRhMzMtYWE0NS0wNDJiZGFiZmNhOWU=",
+     "",
   ),
 ));
 
