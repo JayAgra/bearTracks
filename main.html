@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="main.css" type="text/css">
+<title>RAPID REACT Match Scouting</title>
 </head>
 <body>
 <div class="container">
 <form 
-    action="https://jayagra.com/scout/main.php"
+    action="main.php"
     target="_self"
     method="POST"
     name="mainForm"
@@ -108,14 +109,14 @@ id="psw1"
 required>
 </fieldset>-->
 <fieldset>
-    <label for="Event Code">Event Code <span style="color:red">*</span></label><br>
-<select name="entry.event" required>
+    <label>Event Code <span style="color:red">*</span></label><br>
+<select name="entry.event">
     <option value="CADA">CADA - Sacramento Regional</option>
     <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
 </select>
 </fieldset>
 <fieldset>
-<label for="Your Name">Your Name <span style="color:red">*</span><br></label>
+<label>Your Name <span style="color:red">*</span><br></label>
 <input
 placeholder="Amon Gus"
 type="text"
@@ -124,7 +125,7 @@ required>
 </fieldset>
 
 <fieldset>
-<label for="Number of the Team you are Scouting">Number of the Team you are Scouting <span style="color:red">*</span><br></label>
+<label>Number of the Team you are Scouting <span style="color:red">*</span><br></label>
 <input
     placeholder="766"
     type="number"
@@ -133,7 +134,7 @@ required>
 </fieldset>
 
 <fieldset>
-<label for="Name of the Team you are Scouting">Name of the Team you are Scouting<br></label>
+<label>Name of the Team you are Scouting<br></label>
 <input
     placeholder="Bears"
     type="text"
@@ -141,7 +142,7 @@ required>
     >
 </fieldset>
 <fieldset>
-    <label for="Match Number">Match Number <span style="color:red">*</span><br></label>
+    <label>Match Number <span style="color:red">*</span><br></label>
     <input
         placeholder="01"
         type="number"
@@ -151,7 +152,8 @@ required>
     <select name="entry.matchlvl">
         <option value="qual">Qual</option>
         <option value="practice">Practice</option>
-        <option value="playoff">Playoff</option>
+        <option value="quarterfinal">Quarterfinal</option>
+        <option value="semifinal">Semifinal</option>
     </select>
 </fieldset><br>
 <h2>Match Scouting</h2><h4 style="color: #a9a9a9;">&emsp;Do this section for the duration of the match, fill out the rest at the end.</h4>
@@ -159,35 +161,30 @@ required>
     <label>Auton<br></label>
     <br>
     <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.1277030981"
         class="checkbig"
         >&emsp;During Auton, the robot taxied<br>
     <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.984983966"
         class="checkbig"
         >&emsp;During Auton, the robot successfully shot cargo into the hubs<br>
     <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.1220637130"
         class="checkbig"
         >&emsp;During Auton, the robot retrieved cargo from the field<br>
     <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.412041471"
         class="checkbig"
         >&emsp;During Auton, the robot failed to score points, but made an attempt<br>
         <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.1277000981"
@@ -196,34 +193,38 @@ required>
 </fieldset>
 <fieldset>
 <label style="font-size:1.5rem;">For Teleop ONLY:</label><br><br>
-Made Upper Hub shots:<br><input
+Made Upper Hub shots: <input
 id="madeupper"
 type="text"
 value="0"
 name="madeupper"
+class="incnum"
 ><br>
-<button onclick="incValueMadeUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
-Missed Upper Hub shots:<br><input
+<button onclick="incValueMadeUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
+Missed Upper Hub shots: <input
 id="missedupper"
 type="text"
 value="0"
 name="missedupper"
+class="incnum"
 ><br>
-<button onclick="incValueMissedUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
-Made Lower Hub shots:<br><input
+<button onclick="incValueMissedUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
+Made Lower Hub shots: <input
 id="madelower"
 type="text"
 value="0"
 name="madelower"
+class="incnum"
 ><br>
-<button onclick="incValueMadeLower()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
-Missed Lower Hub shots:<br><input
+<button onclick="incValueMadeLower()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
+Missed Lower Hub shots: <input
 id="missedlower"
 type="text"
 value="0"
 name="missedlower"
+class="incnum"
 ><br>
-<button onclick="incValueMissedLower()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br>
+<button onclick="incValueMissedLower()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
 Bars climbed:<br>
 <select name="barsdone"><option value="none">No Bars</option><option value="low">Low Bar</option><option value="mid">Mid Bar</option><option value="high">High Bar</option><option value="trav">Traversal Bar</option></select><br>
 Bars attempted:<br>
@@ -240,7 +241,6 @@ Bars attempted:<br>
 
 <fieldset>
     <input
-    placeholder="off"
     value="true"
     type="checkbox"
     name="entry.1080933142"
@@ -253,7 +253,7 @@ Bars attempted:<br>
     <label>Does the team seem consistent in auton?</label><br>
     <select
     name="entry.1152778382"
-    required>
+    >
     <option value="Their performance seems promising and consistent">Their performance seems promising and consistent</option>
     <option value="Their performance seems somewhat consistent">Their performance seems somewhat consistent</option>
     <option value="Their performance may change across different trials">Their performance may change across different trials</option>
@@ -261,28 +261,26 @@ Bars attempted:<br>
 </select>
 </fieldset>
 <fieldset>
-    <label for="Any other thoughts about the teleop phase? Actions it took during so?">Any other thoughts about the teleop phase? Actions it took during so?<br></label>
+    <label>Any other thoughts about the teleop phase? Actions it took during so?<br></label>
     <textarea rows="2" cols="35" name="entry.711121407" placeholder="No"></textarea>
 </fieldset>
 <fieldset>
-    <label for="If present, what types of defense was used, and was it effective?">Did the robot play defense? If so, what did they do?<br></label>
+    <label>Did the robot play defense? If so, what did they do?<br></label>
     <textarea rows="2" cols="35" name="entry.309796794" placeholder="No"></textarea>
 </fieldset>
 <fieldset>
-    <label for="Any thoughts about the driving?">Any thoughts about the driving?<br></label>
+    <label>Any thoughts about the driving?<br></label>
     <textarea rows="2" cols="35" name="entry.177753238" placeholder="No"></textarea>
 </fieldset>
 <fieldset>
-    <label for="Overall assessment? (Would we want to be in an alliance with them?)">Overall assessment? (Would we want to be in an alliance with them?)<br></label>
+    <label>Overall assessment? (Would we want to be in an alliance with them?)<br></label>
     <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..."></textarea>
 </fieldset>
 <br>
 <p style="text-align:center">
 <input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
 <input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">
-<a href="index.html">
-   <input type="button" value="Back" style="color: white; background-color: #E90202; border-radius: 1rem; border-style: solid; border-color: #E90202; border-width: 1rem;" />
-</a>
+<a href="index.html" style="color: white; background-color: #E90202; border-radius: 1rem; border-style: solid; border-color: #E90202; border-width: 1rem;">Back</a>
 </p>
 <p style="font-size:x-small">This site is built for mobile devices. Version 2.0.0 - ©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
     Recognition of Science and Technology (FIRST). ©2021 FIRST. All rights reserved. Used with non-exclusive permission.</p>
