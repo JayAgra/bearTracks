@@ -6,6 +6,10 @@ table{
     width:100%;
     table-layout: fixed;
 }
+a {
+    text-decoration: none;
+    color: white;
+}
 </style>
 </head>
 <body>
@@ -25,8 +29,6 @@ table{
 <br>
 <br><input type="submit" value="Submit"><br><br>
 </form>
-</body>
-</html>
 <?php
 if ($_POST['teamnum']) {
 $season = $_POST['season'];
@@ -55,58 +57,70 @@ curl_close($curl);
 $matches = json_decode($response, true);
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][0]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][0]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][0]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][0]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][0]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][0]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][0]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][0]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][0]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][0]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][0]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][0]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][0]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][0]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][0]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][0]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][0]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][0]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][0]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][1]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][1]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][1]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][1]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][1]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][1]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][1]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][1]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][1]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][1]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][1]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][1]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][1]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][1]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][1]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][1]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][1]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][1]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][1]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][2]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][2]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][2]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][2]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][2]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][2]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][2]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][2]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][2]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][2]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][2]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][2]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][2]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][2]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][2]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][2]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][2]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][2]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][2]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][3]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][3]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][3]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][3]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][3]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][3]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][3]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][3]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][3]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][3]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][3]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][3]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][3]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][3]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][3]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][3]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][3]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][3]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][3]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][4]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][4]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][4]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][4]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][4]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][4]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][4]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][4]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][4]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][4]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][4]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][4]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][4]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][4]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][4]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][4]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][4]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][4]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][4]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][5]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][5]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][5]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][5]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][5]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][5]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][5]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][5]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][5]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][5]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][5]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][5]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][5]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][5]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][5]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][5]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][5]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][5]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][5]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][6]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][6]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][6]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][6]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][6]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][6]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][6]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][6]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][6]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][6]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][6]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][6]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][6]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][6]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][6]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][6]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][6]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][6]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][6]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][7]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][7]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][7]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][7]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][7]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][7]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][7]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][7]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][7]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][7]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][7]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][7]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][7]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][7]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][7]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][7]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][7]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][7]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][7]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][8]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][8]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][8]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][8]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][8]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][8]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][8]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][8]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][8]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][8]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][8]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][8]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][8]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][8]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][8]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][8]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][8]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][8]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][8]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][9]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][9]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][9]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][9]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][9]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][9]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][9]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][9]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][9]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][9]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][9]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][9]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][9]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][9]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][9]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][9]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][9]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][9]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][9]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
+
 echo ('<table border="1">');
 echo ('<tr><th colspan="3">'.$matches["Schedule"][10]["description"].'</th></tr>');
-echo ('<tr style="background-color:red; color: #fff"><th>'.$matches["Schedule"][10]["teams"][0]["teamNumber"].'</th><th>'.$matches["Schedule"][10]["teams"][1]["teamNumber"].'</th><th>'.$matches["Schedule"][10]["teams"][2]["teamNumber"].'</th></tr>');
-echo ('<tr style="background-color:blue; color: #fff"><th>'.$matches["Schedule"][10]["teams"][3]["teamNumber"].'</th><th>'.$matches["Schedule"][10]["teams"][4]["teamNumber"].'</th><th>'.$matches["Schedule"][10]["teams"][5]["teamNumber"].'</th></tr>');
+echo ('<tr style="background-color:red; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][10]["teams"][0]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][10]["teams"][0]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][10]["teams"][1]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][10]["teams"][1]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][10]["teams"][2]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][10]["teams"][2]["teamNumber"].'</a></th></tr>');
+echo ('<tr style="background-color:blue; color: #fff"><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][10]["teams"][3]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][10]["teams"][3]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][10]["teams"][4]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][10]["teams"][4]["teamNumber"].'</a></th><th><a href="query.php?season='.$season.'&teamnum='.$matches["Schedule"][10]["teams"][5]["teamNumber"].'&event='.$event.'">'.$matches["Schedule"][10]["teams"][5]["teamNumber"].'</a></th></tr>');
 echo ('</table><br><hr><br>');
 }
 ?>
+</body>
+</html>
