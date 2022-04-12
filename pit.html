@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="main.css" type="text/css">
+<title>RAPID REACT Pit Scouting</title>
 </head>
 <body>
 <div class="container">
 <form 
-    action="https://jayagra.com/scout/pit.php"
+    action="pit.php"
     target="_self"
     method="POST"
     enctype='multipart/form-data'
 >
-<!--onclick="window.location.href = 'done.html';"-->
-<!--FORM CHECKBOX OVERRIDES TO WRITE OFF ON UNBOXES-->
+<!--overrides-->
 <input
 type="text" value="false"
 name="entry.321248479"
@@ -48,24 +48,15 @@ hidden
 <h1>2022 Scouting: RAPID REACT℠</h1>
 <br>
 <h2>General Info:</h2>
-<!--<fieldset>
-<label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
-<input
-placeholder="xxxxxxxxxxxx"
-type="text"
-name="entry.key"
-id="psw1"
-required>
-</fieldset>-->
 <fieldset>
-    <label for="Event Code">Event Code <span style="color:red">*</span></label><br>
-<select name="entry.event" required>
+    <label>Event Code <span style="color:red">*</span></label><br>
+<select name="entry.event">
     <option value="CADA">CADA - Sacramento Regional</option>
     <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
 </select>
 </fieldset>
 <fieldset>
-<label for="Your Name">Your Name <span style="color:red">*</span><br></label>
+<label>Your Name <span style="color:red">*</span><br></label>
 <input
 placeholder="Amon Gus"
 type="text"
@@ -74,7 +65,7 @@ required>
 </fieldset>
 
 <fieldset>
-<label for="Number of the Team you are Scouting">Number of the Team you are Scouting <span style="color:red">*</span><br></label>
+<label>Number of the Team you are Scouting <span style="color:red">*</span><br></label>
 <input
     placeholder="766"
     type="number"
@@ -83,7 +74,7 @@ required>
 </fieldset>
 
 <fieldset>
-<label for="Name of the Team you are Scouting">Name of the Team you are Scouting<br></label>
+<label>Name of the Team you are Scouting<br></label>
 <input
     placeholder="Bears"
     type="text"
@@ -92,7 +83,7 @@ required>
 </fieldset>
 <h2>Pit Scouting</h2><h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
 <fieldset>
-    <label for="How much cargo can the robot hold at a time?">How much cargo can the robot hold at a time?<br></label>
+    <label>How much cargo can the robot hold at a time?<br></label>
     <input
         placeholder="1 or 2"
         type="number"
@@ -108,23 +99,15 @@ required>
         > lbs
 </fieldset>-->
 <fieldset>
-    <label for="Drive Type">Drive Type<br></label>
+    <label>Drive Type<br></label>
     <select name="entry.drivetype">
         <option value="westcoast">Westcoast (Like Ours)</option>
         <option value="swerve">Swerve (Each wheel turns)</option>
         <option value="other">Other (Explain in overall)</option>
     </select>
 </fieldset>
-<!--<fieldset>
-    <label for="Drive Type">Shooter Accuracy (%)<br></label>
-    <input
-    placeholder="99"
-    type="text"
-    name="entry.accshoot"
-    > %
-</fieldset>-->
 <fieldset>
-    <label for="Drive Type">Experience<br></label>
+    <label>Experience<br></label>
     <input
     placeholder="-5"
     type="text"
@@ -140,42 +123,36 @@ required>
     <label>Robot Capabilities<br></label>
     <br>
     <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.321248479"
         class="checkbig"
         >&emsp;The robot can score in the Upper Hub<br>
         <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.1745221229"
         class="checkbig"
         >&emsp;The robot can score in the Lower Hub<br>
         <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.189327560"
         class="checkbig"
         >&emsp;The robot can climb to the Low Rung<br>
         <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.51519363"
         class="checkbig"
         >&emsp;The robot can climb to the Mid Rung<br>
         <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.1343844870"
         class="checkbig"
         >&emsp;The robot can climb to the High Rung<br>
         <input
-        placeholder="off"
         value="true"
         type="checkbox"
         name="entry.332731239"
@@ -209,7 +186,7 @@ required>
     </table>
 </fieldset>
 <fieldset>
-    <label for="Overall assessment? (Would we want to be in an alliance with them?)">Overall assessment? (Would we want to be in an alliance with them?)<br></label>
+    <label>Overall assessment? (Would we want to be in an alliance with them?)<br></label>
     <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..." style="font-size: x-large !important;"></textarea>
 </fieldset>
 <fieldset>
@@ -226,9 +203,7 @@ required>
 <p style="text-align:center">
 <input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">   
 <input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;">  
-<a href="index.html">
-   <input type="button" value="Back" style="color: white; background-color: #E90202; border-radius: 1rem; border-style: solid; border-color: #E90202; border-width: 1rem;" />
-</a>
+<a href="index.html" style="color: white; background-color: #E90202; border-radius: 1rem; border-style: solid; border-color: #E90202; border-width: 1rem;">Back</a>
 </p>
 <p style="font-size:x-small">This site is built for mobile devices. Version 2.0.0 - ©2022 Jayen Agrawal, available under the MIT license. RAPID REACT℠ is a trademark of For Inspiration and
     Recognition of Science and Technology (FIRST). ©2021 FIRST. All rights reserved. Used with non-exclusive permission.</p>
