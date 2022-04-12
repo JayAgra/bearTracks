@@ -20,10 +20,28 @@ table{
 </body>
 </html>
 <?php
-if ($_POST['teamnum']) {
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+$url = "https://";   
+else  
+$url = "http://";   
+$url.= $_SERVER['HTTP_HOST'];   
+$url.= $_SERVER['REQUEST_URI'];    
+
+$url_components = parse_url($url);
+parse_str($url_components['query'], $params);
+
+if ($_POST['teamnum'] || $params['teamnum']) {
+    
+if (isset($_POST['teamnum'])) {
 $season = $_POST['season'];
 $teamnum = $_POST['teamnum'];
-$event = $_POST['event'];
+$event = $_POST['event'];    
+} else if (isset($params['teamnum'])) {
+$season = $params['season'];
+$teamnum = $params['teamnum'];
+$event = $params['event'];
+}
+
 $curl = curl_init();
 $teamurl = "https://frc-api.firstinspires.org/v3.0/$season/teams?teamNumber=$teamnum";
 $avaurl = "https://frc-api.firstinspires.org/v3.0/$season/avatars?teamNumber=$teamnum&page=1";
