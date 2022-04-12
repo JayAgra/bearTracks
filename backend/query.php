@@ -140,24 +140,42 @@ while ($rowwwwwwww = $noclimbs->fetchArray()) {
  $mostclimbedbars = $rowwwwwwww[0];
 }
 
+
 if ($upperaccuracy > 90) {
     $upperacccolor = '#32cd32';
+    $upperrate = " has an accurate upper shooter (".$upperaccuracy."%), ";
 } else if ($upperaccuracy > 70) {
     $upperacccolor = 'yellow';
+    $upperrate = " has a somewhat accurate upper shooter (".$upperaccuracy."%), ";
 } else if ($upperaccuracy > 50) {
     $upperacccolor = 'red';
+    $upperrate = " has an inaccurate upper shooter (".$upperaccuracy."%), ";
+} else if ($upperaccuracy >30 ) {
+    $upperacccolor = 'red';
+    $upperrate = " has a very inaccurate upper shooter (".$upperaccuracy."%), ";
 } else if ($upperaccuracy = "NAN") {
     $upperacccolor = 'gray';
+    $upperrate = " does not shoot in the upper hub, ";
 }
 if ($loweraccuracy > 90) {
     $loweracccolor = '#32cd32';
+    $lowerrate = "and has an accurate lower shooter (".$loweraccuracy."%), ";
 } else if ($loweraccuracy > 70) {
     $loweracccolor = 'yellow';
+    $lowerrate = "and has a somewhat accurate lower shooter (".$loweraccuracy."%), ";
 } else if ($loweraccuracy > 50) {
     $loweracccolor = 'red';
+    $lowerrate = "and has an inaccurate lower shooter (".$loweraccuracy."%), ";
+} else if ($loweraccuracy >30 ) {
+    $loweracccolor = 'red';
+    $lowerrate = " has a very inaccurate lower shooter (".$loweraccuracy."%), ";
 } else if ($loweraccuracy = "NAN") {
     $loweracccolor = 'gray';
+    $lowerrate = " does not shoot in the lower hub, ";
 }
+
+echo ("Team ".$teamnum.$upperrate.$lowerrate."They shoot about ".$uppermaavg." upper and ".$lowermaavg." lower shots per game. They climb to the ".$mostclimbedbars." bar most often.");
+echo ("<br><br>");
 
 echo ('<table border="1">');
 echo ('<tr><td>Average Upper Hub Shots</td><td>'.$uppermaavg.'</td></tr>');
