@@ -1,0 +1,23 @@
+{
+    "name": "scoutingdiscord",
+    "version": "1.0.0",
+    "main": "app.js",
+    "dependencies": {
+        "@discordjs/builders": "^0.12.0",
+        "@discordjs/rest": "^0.3.0",
+        "discord-api-types": "^0.31.1",
+        "discord.js": "^13.6.0",
+        "follow-redirects": "^1.14.9"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node ."
+    },
+    "keywords": [],
+    "author": "JayAgra",
+    "license": "MIT",
+    "devDependencies": {
+        "node": "^16.13.2"
+    },
+    "description": "checker"
+}
