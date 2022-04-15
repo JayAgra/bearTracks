@@ -23,10 +23,9 @@ const empend = "<:empend:964263842899181609>"; //etwelve
 const empmid = "<:empmid:964263842869809152>"; //eeleven
 const ethirteen = "<:13:964307653121683577>";
 const efoutreen = "<:14:964322741866094602>";
-//end emotes
-//emote strings
-const stringzero = [`${etwo}${empmid}${empmid}${empmid}${empend}`,`${etwo}${empmid}${empmid}${empmid}${empend}`,`${etwo}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eten}${empmid}${empmid}${empend}`,`${etwo}${eseven}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eten}${empmid}${empend}`,`${etwo}${eseven}${eseven}${empmid}${empend}`,`${ethirteen}${esix}${esix}${enine}${empend}`,`${ethirteen}${esix}${esix}${esix}${empend}`,`${eone}${efive}${efive}${efive}${ethree}`,`${eone}${efive}${efive}${efive}${efour}`];
-//end emote strings
+
+//emote string array
+const stringzero = [`${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empend}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${eeight}${empend}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${empend}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${ethree}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efour}`];
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
@@ -151,7 +150,7 @@ client.on('interactionCreate', async interaction => {
     var options = {
       'method': 'GET',
       'hostname': 'HOSTNAME',
-      'path': `/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode}`,
+      'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode}`,
       'maxRedirects': 20
     };
     
@@ -192,19 +191,19 @@ client.on('interactionCreate', async interaction => {
       var upperavgr = Math.round(outputget.upperacc);
       var loweravgr = Math.round(outputget.loweracc);
 
-      var upperavgdt = upperavgr/10;
-      var loweravgdt = loweravgr/10;
+      var upperavgdt = upperavgr/5;
+      var loweravgdt = loweravgr/5;
 
       var upperavgrr = Math.round(upperavgdt);
       var loweravgrr = Math.round(loweravgdt); 
 
       if (!stringzero[upperavgrr]) {
-        var upperavgtof = `${efoutreen}${empmid}${empmid}${empmid}${empend}`
+        var upperavgtof = `${efoutreen}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`
       } else {
         var upperavgtof = stringzero[upperavgrr];
       }
       if (!stringzero[loweravgrr]) {
-          var loweravgtof = `${efoutreen}${empmid}${empmid}${empmid}${empend}`
+          var loweravgtof = `${efoutreen}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`
       } else {
           var loweravgtof = stringzero[loweravgrr];
       }
