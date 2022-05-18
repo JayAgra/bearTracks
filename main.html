@@ -6,7 +6,8 @@
 <title>RAPID REACT Match Scouting</title>
 </head>
 <body>
-<div class="container">
+<div class="cont-flex">
+<div class="cont-flex-item">
 <form 
     action="main.php"
     target="_self"
@@ -128,7 +129,7 @@ required>
 <label>Number of the Team you are Scouting <span style="color:red">*</span><br></label>
 <input
     placeholder="766"
-    type="number"
+    type="tel"
     name="entry.1638702746"
     required>
 </fieldset>
@@ -145,7 +146,7 @@ required>
     <label>Match Number <span style="color:red">*</span><br></label>
     <input
         placeholder="01"
-        type="number"
+        type="tel"
         name="entry.508602665"
         required
         >
@@ -200,7 +201,7 @@ value="0"
 name="madeupper"
 class="incnum"
 ><br>
-<button onclick="incValueMadeUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
+<button onclick="incValueMadeUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
 Missed Upper Hub shots: <input
 id="missedupper"
 type="number"
@@ -208,7 +209,7 @@ value="0"
 name="missedupper"
 class="incnum"
 ><br>
-<button onclick="incValueMissedUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
+<button onclick="incValueMissedUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
 Made Lower Hub shots: <input
 id="madelower"
 type="number"
@@ -216,7 +217,7 @@ value="0"
 name="madelower"
 class="incnum"
 ><br>
-<button onclick="incValueMadeLower()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
+<button onclick="incValueMadeLower()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
 Missed Lower Hub shots: <input
 id="missedlower"
 type="number"
@@ -224,7 +225,7 @@ value="0"
 name="missedlower"
 class="incnum"
 ><br>
-<button onclick="incValueMissedLower()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">⟰</button><br><br>
+<button onclick="incValueMissedLower()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
 Bars climbed:<br>
 <select name="barsdone"><option value="none">No Bars</option><option value="low">Low Bar</option><option value="mid">Mid Bar</option><option value="high">High Bar</option><option value="trav">Traversal Bar</option></select><br>
 Bars attempted:<br>
@@ -273,8 +274,8 @@ Bars attempted:<br>
     <textarea rows="2" cols="35" name="entry.177753238" placeholder="No"></textarea>
 </fieldset>
 <fieldset>
-    <label>Overall assessment? (Would we want to be in an alliance with them?)<br></label>
-    <textarea rows="4" cols="50" name="entry.1013139442" placeholder="Team is pretty mid..."></textarea>
+    <label>Overall assessment (Alliance partner?)<br></label>
+    <textarea rows="4" cols="35" name="entry.1013139442" placeholder="Team is pretty mid..."></textarea>
 </fieldset>
 <br>
 <p style="text-align:center">
@@ -286,6 +287,7 @@ Bars attempted:<br>
 </form>
 <br><br>
     <script src="form.js"></script>
+    </div>
     </div>
     </body>
 </html>
