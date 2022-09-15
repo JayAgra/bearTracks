@@ -117,7 +117,7 @@ if ($loweraccuracy > 90) {
 }
 
 $sentence =  ("Team ".$teamnum.$upperrate.$lowerrate."They shoot about ".$uppermaavg." upper and ".$lowermaavg." lower shots per game. They climb to the ".$mostclimbedbars." bar most often.");
-$querylink = "http://HOST.TLD/scout/query.php?season=".$season."&teamnum=".$teamnum."&event=".$event;
+$querylink = "http://host.com/scout/query.php?season=".$season."&teamnum=".$teamnum."&event=".$event;
 //end sentence
 echo ('
 {
@@ -129,7 +129,7 @@ echo ('
   "loweracc": "'.$loweraccuracy.'",
   "climbs": "'.$mostclimbedbars.'",
   "sentence": "'.$sentence.'",
-  "querylink": "'.$link.'"
+  "querylink": "'.$querylink.'"
 }');
 } else if ($params['event']) {
     $season = $params['season'];
