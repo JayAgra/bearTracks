@@ -288,8 +288,8 @@ client.on('interactionCreate', async interaction => {
     .setDescription(`Data collected at ${eventcode}, season ${season}`)
     .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
     .addFields(
-      { name: 'Cargo Held: \nWeight: \nUpper Hub: \n Lower Hub: \nLow Bar: \nMid Bar: \nHigh Bar: \n Traversal Bar: \nDrive Type: \nConfidence (of 7): \nBuild Qual (of 7): \nComments:', value: `-`, inline: true },
-      { name: `${outputget.cargo}\n${outputget.weigh}\n${outputget.upperhub}\n${outputget.lowerhub}\n${outputget.lowbar}\n${outputget.midbar}\n${outputget.highbar}\n${outputget.travbar}\n${outputget.drivetype}\n${outputget.confid}\n${outputget.buildqual}\n${outputget.overall}`, value: `-`, inline: true },
+      { name: 'Cargo Held: \nWeight: \nUpper Hub: \n Lower Hub: \nLow Bar: \nMid Bar: \nHigh Bar: \n Traversal Bar: \nDrive Type: \nConfidence: \nBuild Qual: \nComments:', value: `-`, inline: true },
+      { name: `|  ${outputget.cargo}\n|  ${outputget.weigh}\n|  ${outputget.upperhub}\n|  ${outputget.lowerhub}\n|  ${outputget.lowbar}\n|  ${outputget.midbar}\n|  ${outputget.highbar}\n|  ${outputget.travbar}\n|  ${outputget.drivetype}\n|  ${outputget.confid} of 7\n|  ${outputget.buildqual} of 7\n|  ${outputget.overall}`, value: `-`, inline: true },
       { name: 'Images:', value: `[Image 1](http://${mainhostname}/scout/pitimg/${outputget.file1})\n[Image 2](http://${mainhostname}/scout/pitimg/${outputget.file2})\n[Image 3](http://${mainhostname}/scout/pitimg/${outputget.file3})\n[Image 4](http://${mainhostname}/scout/pitimg/${outputget.file4})\n[Image 5](http://${mainhostname}/scout/pitimg/${outputget.file5})`, inline: false }
     )
     .setTimestamp()
