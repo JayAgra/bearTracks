@@ -1,2 +1,2 @@
 # ignore packages I installed
-scouting-app/discord/node_modules/
+/discord/node_modules/
