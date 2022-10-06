@@ -1,2 +1,3 @@
 # ignore packages I installed
-/discord/node_modules/
+
+discord/node_modules/
