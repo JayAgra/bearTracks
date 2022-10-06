@@ -22,6 +22,7 @@ if (isset($params['teamnum'])) {
 $season = $params['season'];
 $teamnum = $params['teamnum'];
 $event = $params['event'];
+$ispit = $params['pit'];
 $avgupma = $db->query('SELECT AVG(madeupper) FROM data WHERE teamnum='.$teamnum.' AND eventcode="'.$event.'"');
 while ($rowww = $avgupma->fetchArray()) {
     $uppermaavg = $rowww[0];
@@ -116,8 +117,80 @@ if ($loweraccuracy > 90) {
     $lowerrate = "and does not shoot in the lower hub. ";
 }
 
+if (isset($ispit)) {
+$pitquery = $db->query('
+SELECT 
+    filename1,
+    filename2,
+    filename3,
+    filename4,
+    filename5,
+    cargo,
+    weigh,
+    upperhub,
+    lowerhub,
+    lowbar,
+    midbar,
+    highbar,
+    travbar,
+    drivetype,
+    confid,
+    buildqual,
+    overall
+FROM 
+    pit 
+WHERE 
+    teamnum='.$teamnum.' 
+    AND eventcode="'.$event.'" 
+    AND season='.$season
+);
+
+while ($pitresults = $pitquery->fetchArray()) {
+    $pitdata['filename1'] = $pitresults['filename1'];
+    $pitdata['filename2'] = $pitresults['filename2'];
+    $pitdata['filename3'] = $pitresults['filename3'];
+    $pitdata['filename4'] = $pitresults['filename4'];
+    $pitdata['filename5'] = $pitresults['filename5'];
+    $pitdata['cargo'] = $pitresults['cargo'];
+    $pitdata['weigh'] = $pitresults['weigh'];
+    $pitdata['upperhub'] = $pitresults['upperhub'];
+    $pitdata['lowerhub'] = $pitresults['lowerhub'];
+    $pitdata['lowbar'] = $pitresults['lowbar'];
+    $pitdata['midbar'] = $pitresults['midbar'];
+    $pitdata['highbar'] = $pitresults['highbar'];
+    $pitdata['travbar'] = $pitresults['travbar'];
+    $pitdata['drivetype'] = $pitresults['drivetype'];
+    $pitdata['confid'] = $pitresults['confid'];
+    $pitdata['buildqual'] = $pitresults['buildqual'];
+    $pitdata['overall'] = $pitresults['overall'];
+}
+
+echo ('
+{
+  "teamnum": "'.$teamnum.'",
+  "event": "'.$event.'",
+  "file1": "'.$pitdata['filename1'].'",
+  "file2": "'.$pitdata['filename2'].'",
+  "file3": "'.$pitdata['filename3'].'",
+  "file4": "'.$pitdata['filename4'].'",
+  "file5": "'.$pitdata['filename5'].'",
+  "cargo": "'.$pitdata['cargo'].'",
+  "weigh": "'.$pitdata['weigh'].'",
+  "upperhub": "'.$pitdata['upperhub'].'",
+  "lowerhub": "'.$pitdata['lowerhub'].'",
+  "lowbar": "'.$pitdata['lowbar'].'",
+  "midbar": "'.$pitdata['midbar'].'",
+  "highbar": "'.$pitdata['highbar'].'",
+  "travbar": "'.$pitdata['travbar'].'",
+  "drivetype": "'.$pitdata['drivetype'].'",
+  "confid": "'.$pitdata['confid'].'",
+  "buildqual": "'.$pitdata['buildqual'].'",
+  "overall": "'.$pitdata['overall'].'"
+}');
+} else {
+
 $sentence =  ("Team ".$teamnum.$upperrate.$lowerrate."They shoot about ".$uppermaavg." upper and ".$lowermaavg." lower shots per game. They climb to the ".$mostclimbedbars." bar most often.");
-$querylink = "http://host.com/scout/query.php?season=".$season."&teamnum=".$teamnum."&event=".$event;
+$querylink = "http://HOSTNAME.com/scout/query.php?season=".$season."&teamnum=".$teamnum."&event=".$event;
 //end sentence
 echo ('
 {
@@ -131,6 +204,7 @@ echo ('
   "sentence": "'.$sentence.'",
   "querylink": "'.$querylink.'"
 }');
+}
 } else if ($params['event']) {
     $season = $params['season'];
     $event = $params['event'];
