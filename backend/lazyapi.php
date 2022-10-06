@@ -22,6 +22,7 @@ if (isset($params['teamnum'])) {
 $season = $params['season'];
 $teamnum = $params['teamnum'];
 $event = $params['event'];
+$ispit = $params['pit'];
 $avgupma = $db->query('SELECT AVG(madeupper) FROM data WHERE teamnum='.$teamnum.' AND eventcode="'.$event.'"');
 while ($rowww = $avgupma->fetchArray()) {
     $uppermaavg = $rowww[0];
@@ -116,8 +117,17 @@ if ($loweraccuracy > 90) {
     $lowerrate = "and does not shoot in the lower hub. ";
 }
 
+if (isset($ispit)) {
+echo ('
+{
+  "teamnum": "'.$teamnum.'",
+  "event": "'.$event.'",
+  "querylink": "'.$querylink.'"
+}');
+} else {
+
 $sentence =  ("Team ".$teamnum.$upperrate.$lowerrate."They shoot about ".$uppermaavg." upper and ".$lowermaavg." lower shots per game. They climb to the ".$mostclimbedbars." bar most often.");
-$querylink = "http://host.com/scout/query.php?season=".$season."&teamnum=".$teamnum."&event=".$event;
+$querylink = "http://HOST.com/scout/query.php?season=".$season."&teamnum=".$teamnum."&event=".$event;
 //end sentence
 echo ('
 {
@@ -131,6 +141,7 @@ echo ('
   "sentence": "'.$sentence.'",
   "querylink": "'.$querylink.'"
 }');
+}
 } else if ($params['event']) {
     $season = $params['season'];
     $event = $params['event'];
