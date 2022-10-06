@@ -249,6 +249,53 @@ client.on('interactionCreate', async interaction => {
       .setTimestamp()
       interaction.reply({ embeds: [teamEmbed]});
     });
+  } else if (interaction.commandName === 'pit') {
+    const season = interaction.options.getInteger('season');
+    const eventcode = interaction.options.getString('eventcode');
+    const teamnum = interaction.options.getInteger('teamnum');
+    var dbody = new EventEmitter();
+    var options = {
+      'method': 'GET',
+      'hostname': mainhostname,
+      'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode}&pit=true`,
+      'maxRedirects': 20
+    };
+    var req = https.request(options, function (res) {
+      var chunks = [];
+    
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+    
+      res.on("end", function (chunk) {
+        var body = Buffer.concat(chunks);
+        data = body;
+        dbody.emit('update');
+      });
+    
+      res.on("error", function (error) {
+        console.error(error);
+      });
+    });
+    req.end();
+    dbody.on('update', function () {
+      const outputget = JSON.parse(data);
+    });
+    const pitEmbed = new MessageEmbed()
+    .setColor('#ff00ff')
+    .setTitle(`${outputget.teamnum}`)
+    .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+    .addFields(
+      { name: 'Event Code', value: `${outputget.event}`, inline: true },
+      { name: 'Year', value: `${season}`, inline: true },
+      { name: 'Upper Average Made', value: `${upperavg}`, inline: false },
+      { name: 'Upper Accuracy', value: `${upperacc} \n${upperavgtof}`, inline: false },
+      { name: 'Lower Average Made', value: `${loweravg}`, inline: false },
+      { name: 'Lower Accuracy', value: `${loweracc}\n${loweravgtof}`, inline: false },
+      { name: 'Climbs to Most Frequently', value: `${outputget.climbs}`, inline: false }
+    )
+    .setTimestamp()
+    interaction.reply({ embeds: [pitEmbed]});
   }
 });
 
