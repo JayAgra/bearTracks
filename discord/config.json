@@ -1,4 +1,6 @@
 {
 	"clientId": "",
-	"token": ""
+	"token": "",
+	"frcapi": "",
+	"mainhostname": ""
 }
