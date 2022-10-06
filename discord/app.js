@@ -244,7 +244,9 @@ client.on('interactionCreate', async interaction => {
         { name: 'Upper Accuracy', value: `${upperacc} \n${upperavgtof}`, inline: false },
         { name: 'Lower Average Made', value: `${loweravg}`, inline: false },
         { name: 'Lower Accuracy', value: `${loweracc}\n${loweravgtof}`, inline: false },
-        { name: 'Climbs to Most Frequently', value: `${outputget.climbs}`, inline: false }
+        { name: 'Climbs to Most Frequently', value: `${outputget.climbs}`, inline: false },
+        { name: 'Summary', value: `${outputget.sentence}`, inline: false },
+        { name: 'More Data', value: `[Here](${outputget.querylink})`, inline: false }
       )
       .setTimestamp()
       interaction.reply({ embeds: [teamEmbed]});
@@ -280,22 +282,19 @@ client.on('interactionCreate', async interaction => {
     req.end();
     dbody.on('update', function () {
       const outputget = JSON.parse(data);
-    });
     const pitEmbed = new MessageEmbed()
     .setColor('#ff00ff')
-    .setTitle(`${outputget.teamnum}`)
+    .setTitle(`${teamnum}'s robot data`)
+    .setDescription(`Data collected at ${eventcode}, season ${season}`)
     .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
     .addFields(
-      { name: 'Event Code', value: `${outputget.event}`, inline: true },
-      { name: 'Year', value: `${season}`, inline: true },
-      { name: 'Upper Average Made', value: `${upperavg}`, inline: false },
-      { name: 'Upper Accuracy', value: `${upperacc} \n${upperavgtof}`, inline: false },
-      { name: 'Lower Average Made', value: `${loweravg}`, inline: false },
-      { name: 'Lower Accuracy', value: `${loweracc}\n${loweravgtof}`, inline: false },
-      { name: 'Climbs to Most Frequently', value: `${outputget.climbs}`, inline: false }
+      { name: 'Cargo Held: \nWeight: \nUpper Hub: \n Lower Hub: \nLow Bar: \nMid Bar: \nHigh Bar: \n Traversal Bar: \nDrive Type: \nConfidence (of 7): \nBuild Qual (of 7): \nComments:', value: `-`, inline: true },
+      { name: `${outputget.cargo}\n${outputget.weigh}\n${outputget.upperhub}\n${outputget.lowerhub}\n${outputget.lowbar}\n${outputget.midbar}\n${outputget.highbar}\n${outputget.travbar}\n${outputget.drivetype}\n${outputget.confid}\n${outputget.buildqual}\n${outputget.overall}`, value: `-`, inline: true },
+      { name: 'Images:', value: `[Image 1](http://${mainhostname}/scout/pitimg/${outputget.file1})\n[Image 2](http://${mainhostname}/scout/pitimg/${outputget.file2})\n[Image 3](http://${mainhostname}/scout/pitimg/${outputget.file3})\n[Image 4](http://${mainhostname}/scout/pitimg/${outputget.file4})\n[Image 5](http://${mainhostname}/scout/pitimg/${outputget.file5})`, inline: false }
     )
     .setTimestamp()
     interaction.reply({ embeds: [pitEmbed]});
+  });
   }
 });
 

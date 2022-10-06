@@ -41,6 +41,21 @@ new SlashCommandBuilder()
 				option.setName('teamnum')
 					.setDescription('Target Team Number')
 					  .setRequired(true)),
+new SlashCommandBuilder()
+			.setName('pit')
+			.setDescription('Get Team Pit Data')
+			.addIntegerOption(option =>
+				option.setName('season')
+				.setDescription('Current Year')
+				.setRequired(true))
+		  	.addStringOption(option =>
+				option.setName('eventcode')
+				.setDescription('Event Code')
+				.setRequired(true))
+			.addIntegerOption(option =>
+				option.setName('teamnum')
+				.setDescription('Target Team Number')
+				.setRequired(true)),
 ]
 .map(command => command.toJSON());
 
