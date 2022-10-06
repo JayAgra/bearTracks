@@ -1,5 +1,5 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
-const { token } = require('./config.json');
+const { token, frcapi, mainhostname } = require('./config.json');
 const fs = require('fs');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 var EventEmitter = require("events").EventEmitter;
@@ -27,6 +27,16 @@ const efoutreen = "<:14:964322741866094602>";
 //emote string array
 const stringzero = [`${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empend}`,`${etwo}${eseven}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empend}`,`${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empend}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${eeight}${empend}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${empend}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${ethree}`,`${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efour}`];
 
+//check if JSON
+function invalidJSON(str) {
+  try {
+      JSON.parse(str);
+      return false
+  } catch (error) {
+      return true
+  }
+}
+
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 	if (interaction.commandName === 'matches') {
@@ -40,7 +50,7 @@ client.on('interactionCreate', async interaction => {
       'hostname': 'frc-api.firstinspires.org',
       'path': `/v3.0/${season}/schedule/${eventcode}?teamNumber=${teamnum}&tournamentLevel=${tlevel}`,
       'headers': {
-        'Authorization': 'Basic <credentials>'
+        'Authorization': 'Basic ' + frcapi
       },
       'maxRedirects': 20
     };
@@ -64,6 +74,11 @@ client.on('interactionCreate', async interaction => {
     });
     req.end();
     dbody.on('update', function () {
+      if (invalidJSON(data)) {
+        console.log(data);
+        interaction.reply({ content: 'invalid input, or i messed it up', ephemeral: true });
+        console.log('potential error ' + season + eventcode + teamnum + tlevel)
+      } else {
       const outputget = JSON.parse(data);
       const matchEmbed = new MessageEmbed()
       .setColor('#ff00ff')
@@ -94,45 +109,54 @@ client.on('interactionCreate', async interaction => {
           .setLabel('Next')
       )
       //end btns start btn processing
-      var origprob = 0;
+      var matchno = 0;
       const filter = i => i.customId === 'next' || 'prev' && i.user.id === interaction.user.id;
       const collector = interaction.channel.createMessageComponentCollector({ filter: filter, time: 60000 });
       collector.on('collect', async i => {
         if (i.customId === 'next') {
-          var addone = origprob + 1;
-          origprob = addone;
+          var testvar = matchno + 1
+          if (typeof outputget.Schedule[testvar] !== 'undefined') {
+            var updatedp = matchno + 1;
+          } else {
+            var updatedp = matchno;
+          }
+          matchno = updatedp;
           const matchEmbedu = new MessageEmbed()
             .setColor('#ff00ff')
-            .setTitle(`${outputget.Schedule[addone].description}`)
+            .setTitle(`${outputget.Schedule[matchno].description}`)
             .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
             .addFields(
-              { name: 'Red 1', value: `${outputget.Schedule[addone].teams[0].teamNumber}`, inline: true },
-              { name: 'Red 2', value: `${outputget.Schedule[addone].teams[1].teamNumber}`, inline: true },
-              { name: 'Red 3', value: `${outputget.Schedule[addone].teams[2].teamNumber}`, inline: true },
+              { name: 'Red 1', value: `${outputget.Schedule[matchno].teams[0].teamNumber}`, inline: true },
+              { name: 'Red 2', value: `${outputget.Schedule[matchno].teams[1].teamNumber}`, inline: true },
+              { name: 'Red 3', value: `${outputget.Schedule[matchno].teams[2].teamNumber}`, inline: true },
               { name: '\u200B', value: '\u200B', inline: false },
-              { name: 'Blue 1', value: `${outputget.Schedule[addone].teams[3].teamNumber}`, inline: true },
-              { name: 'Blue 2', value: `${outputget.Schedule[addone].teams[4].teamNumber}`, inline: true },
-              { name: 'Blue 3', value: `${outputget.Schedule[addone].teams[5].teamNumber}`, inline: true },
+              { name: 'Blue 1', value: `${outputget.Schedule[matchno].teams[3].teamNumber}`, inline: true },
+              { name: 'Blue 2', value: `${outputget.Schedule[matchno].teams[4].teamNumber}`, inline: true },
+              { name: 'Blue 3', value: `${outputget.Schedule[matchno].teams[5].teamNumber}`, inline: true },
             )
             .setTimestamp()
           await i.deferUpdate()
           await i.editReply({embeds: [matchEmbedu], components: [actrow]});
         }
         if (i.customId === 'prev') {
-          var subone = origprob - 1;
-          origprob = addone;
+          if (matchno > 0) {
+            var updated = matchno - 1;
+          } else {
+            var updated = matchno;
+          }
+          matchno = updated;
           const matchEmbedu = new MessageEmbed()
             .setColor('#ff00ff')
-            .setTitle(`${outputget.Schedule[subone].description}`)
+            .setTitle(`${outputget.Schedule[matchno].description}`)
             .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
             .addFields(
-              { name: 'Red 1', value: `${outputget.Schedule[subone].teams[0].teamNumber}`, inline: true },
-              { name: 'Red 2', value: `${outputget.Schedule[subone].teams[1].teamNumber}`, inline: true },
-              { name: 'Red 3', value: `${outputget.Schedule[subone].teams[2].teamNumber}`, inline: true },
+              { name: 'Red 1', value: `${outputget.Schedule[matchno].teams[0].teamNumber}`, inline: true },
+              { name: 'Red 2', value: `${outputget.Schedule[matchno].teams[1].teamNumber}`, inline: true },
+              { name: 'Red 3', value: `${outputget.Schedule[matchno].teams[2].teamNumber}`, inline: true },
               { name: '\u200B', value: '\u200B', inline: false },
-              { name: 'Blue 1', value: `${outputget.Schedule[subone].teams[3].teamNumber}`, inline: true },
-              { name: 'Blue 2', value: `${outputget.Schedule[subone].teams[4].teamNumber}`, inline: true },
-              { name: 'Blue 3', value: `${outputget.Schedule[subone].teams[5].teamNumber}`, inline: true },
+              { name: 'Blue 1', value: `${outputget.Schedule[matchno].teams[3].teamNumber}`, inline: true },
+              { name: 'Blue 2', value: `${outputget.Schedule[matchno].teams[4].teamNumber}`, inline: true },
+              { name: 'Blue 3', value: `${outputget.Schedule[matchno].teams[5].teamNumber}`, inline: true },
             )
             .setTimestamp()
           await i.deferUpdate()
@@ -141,6 +165,7 @@ client.on('interactionCreate', async interaction => {
       });
       //end btn processing
       interaction.reply({ embeds: [matchEmbed], components: [actrow]});
+    }
     });
 	} else if (interaction.commandName === 'data') {
     const season = interaction.options.getInteger('season');
@@ -149,7 +174,7 @@ client.on('interactionCreate', async interaction => {
     var dbody = new EventEmitter();
     var options = {
       'method': 'GET',
-      'hostname': 'HOSTNAME',
+      'hostname': mainhostname,
       'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode}`,
       'maxRedirects': 20
     };
