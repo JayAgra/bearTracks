@@ -56,6 +56,22 @@ new SlashCommandBuilder()
 				option.setName('teamnum')
 				.setDescription('Target Team Number')
 				.setRequired(true)),
+new SlashCommandBuilder()
+			.setName('addscout')
+			.setDescription('[LEAD SCOUT] Add user to scout team')
+			.addUserOption(option =>
+				option.setName('user')
+				.setDescription('Target user')
+				.setRequired(true))
+			.addStringOption (option =>
+			   option.setName('group')
+			   .setDescription('Group to add scout to')
+			   .setRequired(true)
+				.addChoice('TeamA', 'Scout A')
+				.addChoice('TeamB', 'Scout B')),
+new SlashCommandBuilder()
+			.setName('scoutteams')
+			.setDescription('lists scout teams')
 ]
 .map(command => command.toJSON());
 
