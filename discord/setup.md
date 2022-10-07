@@ -1,6 +1,6 @@
-#Discord Bot Component
+# Discord Bot Component
 
-##config.json
+## config.json
 ```
 {
 	"clientId": "",
