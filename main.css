@@ -12,7 +12,13 @@
 }
 html,body{
     font-family: 'Open Sans';
-    font-size: xx-large !important;
+    font-size: 3vh;
+}
+h2 {
+    font-size: 4vh;
+}
+h4 {
+    font-size: 2vh;
 }
 body {
     background-color: #121212;
@@ -29,35 +35,85 @@ fieldset {
 }
 h1 {
     text-align: center;
+    font-size: 7vh;
 }
 .container {
     justify-content: center;
     display: flex;
 }
 select {
-    font-size: xx-large !important;
+    font-size: 3vh;
+    background-color: #515151;
+    border: none;
+    color: #fff;
+    border-bottom: 2px solid #fff;
 }
 input {
-    font-size: xx-large !important;
+    font-size: 3vh;
 }
 button:active {
-    background-color: #ff69b4;
-    color: green;
+    background-color: #32cd32;
+    color: #cd32cd;
 }
 input.checkbig {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 3vh;
+  height: 3vh;
 }
 textarea {
-    font-size: xx-large !important;
+    font-size: 2vh;
 }
 input[class='incnum'] {
     font-family: Seven Segment;
     border: none;
     border-style: hidden;
     background-color: #515151;
-    color: #32cd32;
-    font-size: 1.5rem !important;
+    color: #32cd32 !important;
+    font-size: 3.5vh !important;
     vertical-align: -0.25rem;
     text-shadow: 0.0825rem 0.0825rem 0.1850rem green; 
+}
+input[class='coord'] {
+    font-family: Seven Segment;
+    border: none;
+    border-style: hidden;
+    background-color: #515151;
+    color: #32cd32;
+    font-size: 0.5rem !important;
+    text-shadow: 0.0825rem 0.0825rem 0.1850rem green;
+    width: 2.5rem;
+}
+input[type='text'] {
+    border: none;
+    background-color: #515151;
+    color: #fff;
+	border-bottom: 1px solid #fff;
+}
+input[type='number'] {
+    border: none;
+    background-color: #515151;
+    color: #fff;
+	border-bottom: 1px solid #fff;
+}
+input[type='tel'] {
+    border: none;
+    background-color: #515151;
+    color: #fff;
+	border-bottom: 1px solid #fff;
+}
+input[type='number']:focus {outline: none; border-bottom: 2px solid #ffb600;}
+input[type='tel']:focus {outline: none; border-bottom: 2px solid #ffb600;}
+input[type='text']:focus {outline: none; border-bottom: 2px solid #ffb600;}
+select:focus {outline: none; border-bottom: 2px solid #ffb600;}
+.cont-flex {
+    align-content: flex-start;
+    align-items: stretch;
+    align-self: stretch;
+    flex-direction: row;
+    justify-content: center;
+}
+.cont-flex-item {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
+    order: 0;
 }
