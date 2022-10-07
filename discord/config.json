@@ -2,5 +2,8 @@
 	"clientId": "",
 	"token": "",
 	"frcapi": "",
-	"mainhostname": ""
+	"mainhostname": "",
+	"scoutteama": "",
+	"scoutteamb": "",
+	"leadscout": ""
 }
