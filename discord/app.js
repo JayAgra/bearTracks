@@ -1,6 +1,8 @@
-const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
-const { token, frcapi, mainhostname } = require('./config.json');
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
+const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout } = require('./config.json');
+//Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password), mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall - "example.com")
 const fs = require('fs');
+const { group } = require('console');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 var EventEmitter = require("events").EventEmitter;
 var https = require('follow-redirects').https;
@@ -48,7 +50,7 @@ client.on('interactionCreate', async interaction => {
     var options = {
       'method': 'GET',
       'hostname': 'frc-api.firstinspires.org',
-      'path': `/v3.0/${season}/schedule/${eventcode}?teamNumber=${teamnum}&tournamentLevel=${tlevel}`,
+      'path': `/v3.0/${season}/schedule/${eventcode.toUpperCase()}?teamNumber=${teamnum}&tournamentLevel=${tlevel}`,
       'headers': {
         'Authorization': 'Basic ' + frcapi
       },
@@ -175,7 +177,7 @@ client.on('interactionCreate', async interaction => {
     var options = {
       'method': 'GET',
       'hostname': mainhostname,
-      'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode}`,
+      'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode.toUpperCase()}`,
       'maxRedirects': 20
     };
     
@@ -259,7 +261,7 @@ client.on('interactionCreate', async interaction => {
     var options = {
       'method': 'GET',
       'hostname': mainhostname,
-      'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode}&pit=true`,
+      'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode.toUpperCase()}&pit=true`,
       'maxRedirects': 20
     };
     var req = https.request(options, function (res) {
@@ -285,16 +287,40 @@ client.on('interactionCreate', async interaction => {
     const pitEmbed = new MessageEmbed()
     .setColor('#ff00ff')
     .setTitle(`${teamnum}'s robot data`)
-    .setDescription(`Data collected at ${eventcode}, season ${season}`)
+    .setDescription(`Data collected at ${eventcode.toUpperCase()}, season ${season}`)
     .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
     .addFields(
-      { name: 'Cargo Held: \nWeight: \nUpper Hub: \n Lower Hub: \nLow Bar: \nMid Bar: \nHigh Bar: \n Traversal Bar: \nDrive Type: \nConfidence: \nBuild Qual: \nComments:', value: `-`, inline: true },
-      { name: `|  ${outputget.cargo}\n|  ${outputget.weigh}\n|  ${outputget.upperhub}\n|  ${outputget.lowerhub}\n|  ${outputget.lowbar}\n|  ${outputget.midbar}\n|  ${outputget.highbar}\n|  ${outputget.travbar}\n|  ${outputget.drivetype}\n|  ${outputget.confid} of 7\n|  ${outputget.buildqual} of 7\n|  ${outputget.overall}`, value: `-`, inline: true },
+      { name: 'Cargo Held:', value: `${outputget.cargo}\u200b`, inline: false},
+      { name: 'Weight:', value: `${outputget.weigh}\u200b`, inline: false},
+      { name: 'Upper Hub:', value: `${outputget.upperhub}\u200b`, inline: false},
+      { name: 'Lower Hub:', value: `${outputget.lowerhub}\u200b`, inline: false},
+      { name: 'Low Bar:', value: `${outputget.lowbar}\u200b`, inline: false},
+      { name: 'Mid Bar:', value: `${outputget.midbar}\u200b`, inline: false},
+      { name: 'High Bar:', value: `${outputget.highbar}\u200b`, inline: false},
+      { name: 'Traversal Bar:', value: `${outputget.travbar}\u200b`, inline: false},
+      { name: 'Drive Type:', value: `${outputget.drivetype}\u200b`, inline: false},
+      { name: 'Confidence:', value: `${outputget.confid} of 7`, inline: false},
+      { name: 'Build Quality:', value: `${outputget.buildqual} of 7`, inline: false},
+      { name: 'Overall:', value: `${outputget.overall}\u200b`, inline: false},
       { name: 'Images:', value: `[Image 1](http://${mainhostname}/scout/pitimg/${outputget.file1})\n[Image 2](http://${mainhostname}/scout/pitimg/${outputget.file2})\n[Image 3](http://${mainhostname}/scout/pitimg/${outputget.file3})\n[Image 4](http://${mainhostname}/scout/pitimg/${outputget.file4})\n[Image 5](http://${mainhostname}/scout/pitimg/${outputget.file5})`, inline: false }
     )
     .setTimestamp()
     interaction.reply({ embeds: [pitEmbed]});
   });
+  } else if (interaction.commandName === 'addscout') {
+    if (interaction.member.roles.cache.some(r => r.id == `${leadscout}`)) {
+      //even if user is server owner, they MUST have the lead scout role!
+      const user = interaction.guild.members.cache.get(interaction.options.getUser('user').id)
+      const targetedgroup = interaction.options.getString('group');
+      if (targetedgroup === "Scout A") {
+        user.roles.add(`${scoutteama}`);
+      } else {
+        user.roles.add(`${scoutteamb}`);
+      }
+      interaction.reply({ content: `Added ${interaction.options.getUser('user')} to ${targetedgroup}`, ephemeral: true });
+    } else {
+      interaction.reply({ content: 'nO pErMs???', ephemeral: true });
+    }
   }
 });
 
