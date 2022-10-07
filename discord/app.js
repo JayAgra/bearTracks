@@ -321,6 +321,8 @@ client.on('interactionCreate', async interaction => {
     } else {
       interaction.reply({ content: 'nO pErMs???', ephemeral: true });
     }
+  } else {
+    interaction.reply({ content: 'you have been lied to\nthis feature is not yet supported because the devs are on strike\nthey want a faster *macbook* to code on', ephemeral: true });
   }
 });
 
