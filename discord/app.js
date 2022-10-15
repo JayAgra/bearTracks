@@ -1,11 +1,12 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
-const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout } = require('./config.json');
+const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit } = require('./config.json');
 //Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password), mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall - "example.com")
 const fs = require('fs');
 const { group } = require('console');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 var EventEmitter = require("events").EventEmitter;
 var https = require('follow-redirects').https;
+var CronJob = require('cron').CronJob;
 client.once('ready', () => {
 	console.log('Ready!');
 });
@@ -238,7 +239,6 @@ client.on('interactionCreate', async interaction => {
       const teamEmbed = new MessageEmbed()
       .setColor('#ff00ff')
       .setTitle(`${outputget.teamnum}`)
-      .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
       .addFields(
         { name: 'Event Code', value: `${outputget.event}`, inline: true },
         { name: 'Year', value: `${season}`, inline: true },
@@ -288,7 +288,6 @@ client.on('interactionCreate', async interaction => {
     .setColor('#ff00ff')
     .setTitle(`${teamnum}'s robot data`)
     .setDescription(`Data collected at ${eventcode.toUpperCase()}, season ${season}`)
-    .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
     .addFields(
       { name: 'Cargo Held:', value: `${outputget.cargo}\u200b`, inline: false},
       { name: 'Weight:', value: `${outputget.weigh}\u200b`, inline: false},
@@ -308,21 +307,54 @@ client.on('interactionCreate', async interaction => {
     interaction.reply({ embeds: [pitEmbed]});
   });
   } else if (interaction.commandName === 'addscout') {
+    if (interaction.member.id != interaction.options.getUser('user').id) {
     if (interaction.member.roles.cache.some(r => r.id == `${leadscout}`)) {
       //even if user is server owner, they MUST have the lead scout role!
       const user = interaction.guild.members.cache.get(interaction.options.getUser('user').id)
       const targetedgroup = interaction.options.getString('group');
       if (targetedgroup === "Scout A") {
         user.roles.add(`${scoutteama}`);
-      } else {
+      } else  if (targetedgroup === "Scout B") {
         user.roles.add(`${scoutteamb}`);
+      } else if (targetedgroup === "Drive") {
+        user.roles.add(`${drive}`);
+      } else if (targetedgroup === "Pit") {
+        user.roles.add(`${pit}`);
+      } else {
+        interaction.reply({ content: 'An error occurred! The bot got an invalid input, or another unexpected error occurred.', ephemeral: true });
       }
       interaction.reply({ content: `Added ${interaction.options.getUser('user')} to ${targetedgroup}`, ephemeral: true });
     } else {
-      interaction.reply({ content: 'nO pErMs???', ephemeral: true });
+      var adjective = ["are less intelligent", "have less brainpower", "are more terrifying", "have less honor"];
+      var thing = ["member of team 254", "porcupine", "discord moderator", "farm animal"];
+
+      var a, ad;
+      var a = adjective[Math.floor(Math.random() * 4)];
+      var ad = thing[Math.floor(Math.random() * 4)];
+      var insult = "You " +  a  + " than a " + ad + ".";
+
+      interaction.reply({ content: `nO pErMs???\nTo use this command, you must have the Lead Scout role, even if you are an admin or a server owner!\nAlso, the very kind devs have a message for you: ${insult}`, ephemeral: true });
     }
   } else {
-    interaction.reply({ content: 'you have been lied to\nthis feature is not yet supported because the devs are on strike\nthey want a faster *macbook* to code on', ephemeral: true });
+    //allow users to add roles to themselves, but not to others
+    const user = interaction.guild.members.cache.get(interaction.options.getUser('user').id)
+    const targetedgroup = interaction.options.getString('group');
+    if (targetedgroup === "Scout A") {
+      user.roles.add(`${scoutteama}`);
+    } else  if (targetedgroup === "Scout B") {
+      user.roles.add(`${scoutteamb}`);
+    } else if (targetedgroup === "Drive") {
+      user.roles.add(`${drive}`);
+    } else if (targetedgroup === "Pit") {
+      user.roles.add(`${pit}`);
+    } else {
+      interaction.reply({ content: 'An error occurred! The bot got an invalid input, or another unexpected error occurred.', ephemeral: true });
+    }
+    interaction.reply({ content: `Added ${interaction.options.getUser('user')} to ${targetedgroup}`, ephemeral: true });
+  }
+  } else {
+    interaction.reply({ content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows/Linux user you know.', ephemeral: true });
+
   }
 });
 

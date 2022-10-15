@@ -58,7 +58,7 @@ new SlashCommandBuilder()
 				.setRequired(true)),
 new SlashCommandBuilder()
 			.setName('addscout')
-			.setDescription('[LEAD SCOUT] Add user to scout team')
+			.setDescription('Add user to scout team')
 			.addUserOption(option =>
 				option.setName('user')
 				.setDescription('Target user')
@@ -67,8 +67,10 @@ new SlashCommandBuilder()
 			   option.setName('group')
 			   .setDescription('Group to add scout to')
 			   .setRequired(true)
-				.addChoice('TeamA', 'Scout A')
-				.addChoice('TeamB', 'Scout B')),
+				.addChoice('Scout Team A', 'Scout A')
+				.addChoice('Scout Team B', 'Scout B')
+				.addChoice('Drive Team', 'Drive')
+				.addChoice('Pit', 'Pit')),
 new SlashCommandBuilder()
 			.setName('scoutteams')
 			.setDescription('lists scout teams')
