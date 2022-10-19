@@ -11,11 +11,11 @@ new SlashCommandBuilder()
 		option.setName('season')
 			.setDescription('Current Year')
 			.setRequired(true))
-  .addStringOption(option =>
+    .addStringOption(option =>
       option.setName('eventcode')
   		.setDescription('Event Code')
 			.setRequired(true))
-  .addIntegerOption(option =>
+    .addIntegerOption(option =>
       option.setName('teamnum')
   		.setDescription('Your Team Number')
 			.setRequired(true))
@@ -27,44 +27,44 @@ new SlashCommandBuilder()
 			.addChoice('practice', 'practice')
 			.addChoice('playoff', 'playoff')),
 new SlashCommandBuilder()
-			.setName('data')
-			.setDescription('Get Team Data')
-			  .addIntegerOption(option =>
-				  option.setName('season')
-					  .setDescription('Current Year')
-					  .setRequired(true))
-			.addStringOption(option =>
-				option.setName('eventcode')
-					.setDescription('Event Code')
-					  .setRequired(true))
-			.addIntegerOption(option =>
-				option.setName('teamnum')
-					.setDescription('Target Team Number')
-					  .setRequired(true)),
+	.setName('data')
+	.setDescription('Get Team Data')
+		.addIntegerOption(option =>
+			option.setName('season')
+			  .setDescription('Current Year')
+			  .setRequired(true))
+	.addStringOption(option =>
+		option.setName('eventcode')
+			  .setDescription('Event Code')
+			  .setRequired(true))
+	.addIntegerOption(option =>
+		option.setName('teamnum')
+			  .setDescription('Target Team Number')
+			  .setRequired(true)),
 new SlashCommandBuilder()
-			.setName('pit')
-			.setDescription('Get Team Pit Data')
-			.addIntegerOption(option =>
-				option.setName('season')
+	.setName('pit')
+	.setDescription('Get Team Pit Data')
+		.addIntegerOption(option =>
+			option.setName('season')
 				.setDescription('Current Year')
 				.setRequired(true))
-		  	.addStringOption(option =>
-				option.setName('eventcode')
+		.addStringOption(option =>
+			option.setName('eventcode')
 				.setDescription('Event Code')
 				.setRequired(true))
-			.addIntegerOption(option =>
-				option.setName('teamnum')
+		.addIntegerOption(option =>
+			option.setName('teamnum')
 				.setDescription('Target Team Number')
 				.setRequired(true)),
 new SlashCommandBuilder()
-			.setName('addscout')
-			.setDescription('Add user to scout team')
-			.addUserOption(option =>
-				option.setName('user')
+	.setName('addscout')
+	.setDescription('Add user to scout team')
+		.addUserOption(option =>
+			option.setName('user')
 				.setDescription('Target user')
 				.setRequired(true))
-			.addStringOption (option =>
-			   option.setName('group')
+		.addStringOption (option =>
+			option.setName('group')
 			   .setDescription('Group to add scout to')
 			   .setRequired(true)
 				.addChoice('Scout Team A', 'Scout A')
@@ -72,8 +72,16 @@ new SlashCommandBuilder()
 				.addChoice('Drive Team', 'Drive')
 				.addChoice('Pit', 'Pit')),
 new SlashCommandBuilder()
-			.setName('scoutteams')
-			.setDescription('lists scout teams')
+	.setName('rankings')
+	.setDescription('event rankings')
+  		.addIntegerOption(option =>
+	  		option.setName('season')
+		  		.setDescription('Current Year')
+		  		.setRequired(true))
+		.addStringOption(option =>
+			option.setName('eventcode')
+			.setDescription('Event Code')
+		  	.setRequired(true)),
 ]
 .map(command => command.toJSON());
 

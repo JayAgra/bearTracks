@@ -1,14 +1,18 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
-const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit } = require('./config.json');
+const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit, myteam } = require('./config.json');
 //Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password), mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall - "example.com")
 const fs = require('fs');
+var datetime = new Date();
 const { group } = require('console');
+const { match } = require('assert');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 var EventEmitter = require("events").EventEmitter;
 var https = require('follow-redirects').https;
 var CronJob = require('cron').CronJob;
+var lodash = require('lodash');
 client.once('ready', () => {
 	console.log('Ready!');
+  console.log(datetime);
 });
 
 //emotes
@@ -352,9 +356,224 @@ client.on('interactionCreate', async interaction => {
     }
     interaction.reply({ content: `Added ${interaction.options.getUser('user')} to ${targetedgroup}`, ephemeral: true });
   }
+  } else if (interaction.commandName === 'rankings') {
+    const season = interaction.options.getInteger('season');
+    const eventcode = interaction.options.getString('eventcode');
+    var dbody = new EventEmitter();
+    var options = {
+      'method': 'GET',
+      'hostname': 'frc-api.firstinspires.org',
+      'path': `/v3.0/${season}/rankings/${eventcode}`,
+      'headers': {
+        'Authorization': 'Basic ' + frcapi
+      },
+      'maxRedirects': 20
+    };
+    
+    var req = https.request(options, function (res) {
+      var chunks = [];
+    
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+    
+      res.on("end", function (chunk) {
+        var body = Buffer.concat(chunks);
+        data = body;
+        dbody.emit('update');
+      });
+    
+      res.on("error", function (error) {
+        console.error(error);
+      });
+    });
+    req.end();
+    dbody.on('update', function () {
+      if (invalidJSON(data)) {
+        console.log(data);
+        interaction.reply({ content: 'invalid input, or i messed it up', ephemeral: true });
+        console.log('potential error ' + season + eventcode + teamnum + tlevel)
+      } else {
+      const outputget = JSON.parse(data);
+      const rankEmbed = new MessageEmbed()
+      .setColor('#ff00ff')
+      .setTitle(`${eventcode} team rankings`)
+      .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+      .setDescription(`Rank ${outputget.Rankings[0].rank}: ${outputget.Rankings[0].teamNumber}`)
+      .addFields(
+        { name: 'Wins: ', value: `${outputget.Rankings[0].wins}`, inline: true },
+        { name: 'Losses: ', value: `${outputget.Rankings[0].losses}`, inline: true },
+        { name: 'Ties: ', value: `${outputget.Rankings[0].ties}`, inline: true },
+        { name: '\u200B', value: '\u200B' },
+        { name: 'Average Qualification Score: ', value: `${outputget.Rankings[0].qualAverage}`, inline: true },
+        { name: 'Matches Played: ', value: `${outputget.Rankings[0].matchesPlayed}`, inline: true }
+      )
+      .setTimestamp()
+      .setFooter({ text: 'Data from FRC API' });
+
+    //button defs
+    const actrow = new MessageActionRow()
+      .addComponents(
+        new MessageButton()
+        .setCustomId('prev2')
+        .setStyle('PRIMARY')
+        .setLabel('<<')
+      )
+      .addComponents(
+          new MessageButton()
+          .setCustomId('prev')
+          .setStyle('SUCCESS')
+          .setLabel('<')
+      )
+      .addComponents(
+        new MessageButton()
+        .setCustomId(`${myteam}`)
+        .setStyle('DANGER')
+        .setLabel(`${myteam}`)
+    )
+      .addComponents(
+          new MessageButton()
+          .setCustomId('next')
+          .setStyle('SUCCESS')
+          .setLabel('>')
+      )
+     .addComponents(
+        new MessageButton()
+        .setCustomId('next2')
+        .setStyle('PRIMARY')
+        .setLabel('>>')
+      )
+      //end btns start btn processing
+      var rankno = 0;
+      const filter = i => i.customId === 'next' || 'prev' || 'next2' || 'prev2' || `${myteam}` && i.user.id === interaction.user.id;
+      const collector = interaction.channel.createMessageComponentCollector({ filter: filter, time: 60000 });
+      collector.on('collect', async i => {
+        if (i.customId === 'next' || i.customId === 'next2') {
+          var testvar;
+          if (i.customId === 'next') {
+            testvar = rankno + 1
+          } else {
+            testvar = rankno + 5
+          }
+          if (typeof outputget.Rankings[testvar] !== 'undefined') {
+            var updatedp = testvar;
+          } else {
+            var updatedp = rankno;
+          }
+          rankno = updatedp;
+          const rankEmbedu = new MessageEmbed()
+          .setColor('#ff00ff')
+          .setTitle(`${eventcode} team rankings`)
+          .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+          .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
+          .addFields(
+            { name: 'Wins: ', value: `${outputget.Rankings[rankno].wins}`, inline: true },
+            { name: 'Losses: ', value: `${outputget.Rankings[rankno].losses}`, inline: true },
+            { name: 'Ties: ', value: `${outputget.Rankings[rankno].ties}`, inline: true },
+            { name: '\u200B', value: '\u200B' },
+            { name: 'Average Qualification Score: ', value: `${outputget.Rankings[rankno].qualAverage}`, inline: true },
+            { name: 'Matches Played: ', value: `${outputget.Rankings[rankno].matchesPlayed}`, inline: true }
+          )
+          .setTimestamp()
+          .setFooter({ text: 'Data from FRC API' });
+          await i.deferUpdate()
+          await i.editReply({embeds: [rankEmbedu], components: [actrow]});
+        }
+        if (i.customId === 'prev' || i.customId === 'prev2') {
+          var testvar;
+          if (i.customId === 'prev') {
+            testvar = rankno - 1
+          } else {
+            testvar = rankno - 5
+          }
+          if (typeof outputget.Rankings[testvar] !== 'undefined') {
+            var updatedp = testvar;
+          } else {
+            var updatedp = rankno;
+          }
+          rankno = updatedp;
+          const rankEmbedu = new MessageEmbed()
+          .setColor('#ff00ff')
+          .setTitle(`${eventcode} team rankings`)
+          .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+          .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
+          .addFields(
+            { name: 'Wins: ', value: `${outputget.Rankings[rankno].wins}`, inline: true },
+            { name: 'Losses: ', value: `${outputget.Rankings[rankno].losses}`, inline: true },
+            { name: 'Ties: ', value: `${outputget.Rankings[rankno].ties}`, inline: true },
+            { name: '\u200B', value: '\u200B' },
+            { name: 'Average Qualification Score: ', value: `${outputget.Rankings[rankno].qualAverage}`, inline: true },
+            { name: 'Matches Played: ', value: `${outputget.Rankings[rankno].matchesPlayed}`, inline: true }
+          )
+          .setTimestamp()
+          .setFooter({ text: 'Data from FRC API' });
+          await i.deferUpdate()
+          await i.editReply({embeds: [rankEmbedu], components: [actrow]});
+        }
+        if (i.customId === `${myteam}`) {
+          var dbodyteam = new EventEmitter();
+          var options = {
+            'method': 'GET',
+            'hostname': 'frc-api.firstinspires.org',
+            'path': `/v3.0/${season}/rankings/${eventcode}?teamNumber=${myteam}`,
+            'headers': {
+              'Authorization': 'Basic ' + frcapi
+            },
+            'maxRedirects': 20
+          };
+          var req = https.request(options, function (res) {
+            var teamchunks = [];
+          
+            res.on("data", function (chunk) {
+              teamchunks.push(chunk);
+            });
+          
+            res.on("end", function (chunk) {
+              var teambody = Buffer.concat(teamchunks);
+              teamdata = teambody;
+              dbodyteam.emit('update');
+            });
+          
+            res.on("error", function (error) {
+              console.error(error);
+            });
+          });
+          req.end();
+          dbodyteam.on('update', function () {
+            if (invalidJSON(teamdata)) {
+              console.log(teamdata);
+              interaction.reply({ content: 'invalid input, or i messed it up', ephemeral: true });
+            } else {
+              const outputgetteam = JSON.parse(teamdata);
+              rankno = outputgetteam.Rankings[0].rank - 1;
+            }
+          });
+          console.log(rankno);
+          const rankEmbedu = new MessageEmbed()
+            .setColor('#ff00ff')
+            .setTitle(`${eventcode} team rankings`)
+            .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+            .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
+            .addFields(
+              { name: 'Wins: ', value: `${outputget.Rankings[rankno].wins}`, inline: true },
+              { name: 'Losses: ', value: `${outputget.Rankings[rankno].losses}`, inline: true },
+              { name: 'Ties: ', value: `${outputget.Rankings[rankno].ties}`, inline: true },
+              { name: '\u200B', value: '\u200B' },
+              { name: 'Average Qualification Score: ', value: `${outputget.Rankings[rankno].qualAverage}`, inline: true },
+              { name: 'Matches Played: ', value: `${outputget.Rankings[rankno].matchesPlayed}`, inline: true }
+            )
+            .setTimestamp()
+            .setFooter({ text: 'Data from FRC API' });
+          await i.deferUpdate();
+          await i.editReply({embeds: [rankEmbedu], components: [actrow]});
+        }
+      });
+      //end btn processing
+      interaction.reply({ embeds: [rankEmbed], components: [actrow]});
+    }
+    });
   } else {
     interaction.reply({ content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows/Linux user you know.', ephemeral: true });
-
   }
 });
 
