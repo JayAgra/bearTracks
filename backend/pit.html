@@ -8,12 +8,18 @@
 <body>
 <div class="container">
 <form 
-    action="pit.php"
+    action="http://localhost:766"
     target="_self"
     method="POST"
+    name="pitForm"
     enctype='multipart/form-data'
 >
 <!--overrides-->
+<input
+type="text" value="pit"
+name="formType"
+hidden
+>
 <input
 type="text" value="false"
 name="entry.321248479"
