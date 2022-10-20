@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@supercharge/request-ip": "^1.2.0",
     "concat-stream": "^2.0.0",
     "formidable": "^2.0.1",
     "http": "^0.0.1-security",
