@@ -1,7 +1,16 @@
 var http = require('http');
 var querystring = require('querystring');
-var sqlite = require('sqlite3')
+var sqlite3 = require('sqlite3')
 var RequestIp = require('@supercharge/request-ip')
+
+//conenct to form database
+let db = new sqlite3.Database('./data.db', (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+  console.log('Connected to database');
+});
+
 
 function processPost(request, response, callback) {
     var queryData = "";
@@ -24,6 +33,7 @@ function processPost(request, response, callback) {
 
     } else {
         response.writeHead(405, {'Content-Type': 'text/plain'});
+        response.write('405 - METHOD NOT ALLOWED')
         response.end();
     }
 }
