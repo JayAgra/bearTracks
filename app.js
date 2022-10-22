@@ -2,6 +2,7 @@ var http = require('http');
 var querystring = require('querystring');
 var sqlite3 = require('sqlite3')
 var RequestIp = require('@supercharge/request-ip');
+const fs = require('fs');
 const { mainhostname, myteam } = require('./config.json');
 const process = require('process');
 var time = new Date();
@@ -15,6 +16,12 @@ let db = new sqlite3.Database('./data.db', sqlite3.OPEN_READWRITE, (err) => {
   console.log('Connected to database.');
 });
 
+function fileString() {
+  const characters ="abcdefghijklmnopqrstuvwxyz766";
+  const randomArray = Array.from({ length: 20 },(v, k) => characters[Math.floor(Math.random() * characters.length)]);
+  const randomString = randomArray.join("");
+  return randomString;
+};
 
 function processPost(request, response, callback) {
     var queryData = "";
@@ -69,6 +76,7 @@ http.createServer(function(request, response) {
                 }
               });
             } else if (request.post.formType === 'pit') {
+              console.log(request.post);
               const ip = RequestIp.getClientIp(request)
               console.log('[','\x1b[32m','SUBMISSION','\x1b[0m','] on ','\x1b[35m','pit','\x1b[0m',' form - sender IP "' + ip + '"');
               //insert data into table
@@ -79,6 +87,13 @@ http.createServer(function(request, response) {
               //game-question5 is mid rung climbing
               //game-question6 is high rung climbing
               //game-question7 is traversal rung climbing
+              //write files
+              const filenamebase = fileString();
+              const filename1 = "1_" + filenamebase
+              const filename2 = "2_" + filenamebase
+              const filename3 = "3_" + filenamebase
+              const filename4 = "4_" + filenamebase
+              const filename5 = "5_" + filenamebase
               db.run(`INSERT INTO pit(name,eventcode,teamnum,teamnam,game-question1,game-question2,game-question3,game-question4,game-question5,game-question6,game-question7,drivetype,dteam,confid,buildqual,overall,filename1,filename2,filename3,filename4,filename5,season)
                VALUES ("${request.post.name}","${request.post.event}","${request.post.teamnum}","${request.post.teamnam}","${request.post.game-question1}","${request.post.game-question2}","${request.post.game-question3}","${request.post.game-question4}","${request.post.game-question5}","${request.post.game-question6}","${request.post.game-question7}","${request.post.drivetype}","${request.post.dteam}","${request.post.confid}","${request.post.buildqual}","${request.post.overall}","${request.post.filename1}","${request.post.filename2}","${request.post.filename3}","${request.post.filename4}","${request.post.filename5}")`, function(err) {
                 if (err) {

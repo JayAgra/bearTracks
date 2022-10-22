@@ -3,6 +3,7 @@
     "@supercharge/request-ip": "^1.2.0",
     "concat-stream": "^2.0.0",
     "formidable": "^2.0.1",
+    "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
     "querystring": "^0.2.1",
     "sqlite3": "^5.1.2",
