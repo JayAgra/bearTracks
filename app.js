@@ -58,20 +58,27 @@ http.createServer(function(request, response) {
                   response.write('<!DOCTYPE html><body><h2>FATAL ERROR!</h2><h5>500 Internal Server Error</h5><h4>Try re-sending POST (reload)</h4><p>SENDER IP: "' + ip + '"</p><p>Submission ID: "main.' + err.message + '"</p></body>')
                   response.end();
                   //log error message, notify user of failure
-                  console.log(err.message);
+                  console.log('\x1b[35m', err.message);
                 } else {
                 // get the last insert id
-                console.log('At ' + time + ', scout with IP "' + ip + '" submitted to main form. Submission ID: "main.' + this.lastID + '".')
+                console.log('[','\x1b[32m','SUBMISSION','\x1b[0m','] on ','\x1b[36m','main','\x1b[0m',' form, at ' + time + ', scout with IP "' + ip + '". Submission ID: "main.' + this.lastID + '".')
                 //send success message
                 response.writeHead(200, "OK", {'Content-Type': 'text/html'});
                 response.write(`<!DOCTYPE html><head><meta http-equiv="refresh" content="3;url=http://${mainhostname}/scout/"><style>body {background-color: #121212;color: #fff;}</style></head><body><h1 style="color: green; text-align: center">Submitted!</h1><h3 style="text-align: center; color: lightgray;">Redirecting...</h3><p style="text-align: center">SENDER IP: "${ip}"</p><p style="text-align: center">Submission ID: "main.${this.lastID}"</p><p style="color: purple; text-align: center;">Submission Time: ${time}</p></body>`)
                 response.end();
                 }
               });
-            } else {
+            } else if (request.post.formType === 'pit') {
               const ip = RequestIp.getClientIp(request)
-              console.log('Submission on pit form - sender IP "' + ip + '"');
+              console.log('[','\x1b[32m','SUBMISSION','\x1b[0m','] on ','\x1b[35m','pit','\x1b[0m',' form - sender IP "' + ip + '"');
               //insert data into table
+              //game-question-1 is held cargo
+              //game-question-2 is 
+              //game-question-3 is
+              //game-question-4 is
+              //game-question-5 is
+              //game-question-6 is
+              //game-question-7 is
               //send success message
               response.writeHead(200, "OK", {'Content-Type': 'text/html'});
               response.write(`<!DOCTYPE html><head><meta http-equiv="refresh" content="3;url=http://${mainhostname}/scout/"><style>body {background-color: #121212;color: #fff;}</style></head><body><h2>Done!</h2><p>SENDER IP: "${ip}"</p><p>Submission ID: "main.${this.lastID}"</p></body>`)
