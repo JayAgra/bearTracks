@@ -572,8 +572,50 @@ client.on('interactionCreate', async interaction => {
       interaction.reply({ embeds: [rankEmbed], components: [actrow]});
     }
     });
+  } else if (interaction.commandName === 'pitscout') {
+    const season = interaction.options.getInteger('season');
+    const eventcode = interaction.options.getString('eventcode');
+  } else if (interaction.commandName === 'frcapi') {
+    const requesturl = interaction.options.getString('path');
+    var dbody = new EventEmitter();
+    var options = {
+      'method': 'GET',
+      'hostname': 'frc-api.firstinspires.org',
+      'path': `${requesturl}`,
+      'headers': {
+        'Authorization': 'Basic ' + frcapi
+      },
+      'maxRedirects': 20
+    };
+    
+    var req = https.request(options, function (res) {
+      var chunks = [];
+    
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+    
+      res.on("end", function (chunk) {
+        var body = Buffer.concat(chunks);
+        data = body;
+        dbody.emit('update');
+      });
+    
+      res.on("error", function (error) {
+        console.error(error);
+      });
+    });
+    req.end();
+    dbody.on('update', function () {
+      if (invalidJSON(data)) {
+        console.log(data);
+        interaction.reply({ content: 'the FRC API returned invalid data', ephemeral: true });
+      } else {
+        interaction.reply({ content: `${data.slice(0,1750)}\n\nand ${data.length - 1750} more characters`, ephemeral: true});
+      }
+    });
   } else {
-    interaction.reply({ content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows/Linux user you know.', ephemeral: true });
+    interaction.reply({ content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows user you know.', ephemeral: true });
   }
 });
 
