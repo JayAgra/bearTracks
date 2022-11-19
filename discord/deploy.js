@@ -82,6 +82,24 @@ new SlashCommandBuilder()
 			option.setName('eventcode')
 			.setDescription('Event Code')
 		  	.setRequired(true)),
+new SlashCommandBuilder()
+	.setName('pitscout')
+	.setDescription('event rankings')
+		.addIntegerOption(option =>
+			option.setName('season')
+				.setDescription('Current Year')
+				.setRequired(true))
+		.addStringOption(option =>
+			option.setName('eventcode')
+				.setDescription('Event Code')
+				.setRequired(true)),
+new SlashCommandBuilder()
+	.setName('frcapi')
+	.setDescription('send a request to the FRC API')
+		.addStringOption(option =>
+			option.setName('path')
+				.setDescription('request path: please see frc-api-docs.firstinspires.org')
+				.setRequired(true)),
 ]
 .map(command => command.toJSON());
 

@@ -20,7 +20,7 @@ function fileString() {
   const characters ="abcdefghijklmnopqrstuvwxyz766";
   const randomArray = Array.from({ length: 20 },(v, k) => characters[Math.floor(Math.random() * characters.length)]);
   const randomString = randomArray.join("");
-  return randomString;
+  return randomString + myteam;
 };
 
 function processPost(request, response, callback) {
@@ -58,6 +58,7 @@ http.createServer(function(request, response) {
               const ip = RequestIp.getClientIp(request)
               console.log('Submission on main form - sender IP "' + ip + '"');
               //insert data into table
+              //TO-DO: Change game-specific values (madeupper, missedupper, etc.) to general terms (game-element1-complete, game-element1-failure)
               db.run(`INSERT INTO data(eventcode, name, teamnum, teamnam, match, madeupper, missedupper, madelower, missedlower, barsatt, barsdone, autoattempt, shootauto, getauto, taxiauto, failauto, human, performance, defend, teleop, driving, overall, matchlvl, scoutip, season) 
                       VALUES ("${request.post.event}","${request.post.name}","${request.post.teamnum}","${request.post.teamnam}","${request.post.matchno}","${request.post.madeupper}","${request.post.missedupper}","${request.post.madelower}","${request.post.missedlower}","${request.post.barsatt}","${request.post.barsdone}","${request.post.autonATTSCOREFAIL}","${request.post.autonSHOOT}","${request.post.autonINTAKE}","${request.post.autonTAXI}","${request.post.autonNOSCORE}","${request.post.humanplayer}","${request.post.consistent}","${request.post.defenseThought}","${request.post.teleopThought}","${request.post.drivingThought}","${request.post.overallThought}","${request.post.matchlvl}", "${ip}", "2022")`, function(err) {
                 if (err) {
@@ -75,7 +76,7 @@ http.createServer(function(request, response) {
                 response.end();
                 }
               });
-            } else if (request.post.formType === 'pit') {
+            } else if (request.post.formType === 'pitform') {
               console.log(request.post);
               const ip = RequestIp.getClientIp(request)
               console.log('[','\x1b[32m','SUBMISSION','\x1b[0m','] on ','\x1b[35m','pit','\x1b[0m',' form - sender IP "' + ip + '"');
