@@ -618,14 +618,14 @@ client.on('interactionCreate', async interaction => {
     });
   } else if (interaction.commandName === 'update') {
     if (interaction.user.id == botOwnerUserID) {
-    exec(`git pull ${repoUrl}`, (error, stdout, stderr) => {
+    exec(`git pull ${repoUrl} nodejs-backend-attempt`, (error, stdout, stderr) => {
       if(error) {
         interaction.reply({ content: 'could not pull data. error: ' + error, ephemeral: false });
         return;
       }
       
       //discord directory only
-      exec("git checkout -- '*' !discord/", (error, stdout, stderr) => {
+      exec("git checkout -- discord/", (error, stdout, stderr) => {
         if(error) {
           interaction.reply({ content: 'could not keep changes only from the discord directory ' + error, ephemeral: false });
           return;
