@@ -9,5 +9,6 @@
 	"drive": "",
 	"pit": "",
 	"myteam": "",
-	"repoUrl": "https://github.com/Team766/scouting-app.git"
+	"repoUrl": "https://github.com/Team766/scouting-app.git",
+	"botOwnerUserID": ""
 }
