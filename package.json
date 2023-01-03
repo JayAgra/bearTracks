@@ -4,6 +4,7 @@
     "concat-stream": "^2.0.0",
     "formidable": "^2.0.1",
     "fs": "^0.0.1-security",
+    "gm": "^1.25.0",
     "http": "^0.0.1-security",
     "querystring": "^0.2.1",
     "sqlite3": "^5.1.2",
