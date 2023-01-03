@@ -8,5 +8,6 @@
 	"leadscout": "",
 	"drive": "",
 	"pit": "",
-	"myteam": "766"
+	"myteam": "",
+	"repoUrl": "https://github.com/Team766/scouting-app.git"
 }

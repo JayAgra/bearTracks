@@ -1,5 +1,5 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
-const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit, myteam } = require('./config.json');
+const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl } = require('./config.json');
 //Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password), mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall - "example.com")
 const fs = require('fs');
 var datetime = new Date();
@@ -575,6 +575,7 @@ client.on('interactionCreate', async interaction => {
   } else if (interaction.commandName === 'pitscout') {
     const season = interaction.options.getInteger('season');
     const eventcode = interaction.options.getString('eventcode');
+    //do this!!
   } else if (interaction.commandName === 'frcapi') {
     const requesturl = interaction.options.getString('path');
     var dbody = new EventEmitter();
@@ -613,6 +614,35 @@ client.on('interactionCreate', async interaction => {
       } else {
         interaction.reply({ content: `${data.slice(0,1750)}\n\nand ${data.length - 1750} more characters`, ephemeral: true});
       }
+    });
+  } else if (interaction.commandName === 'update') {
+    exec(`git pull ${repoUrl}`, (error, stdout, stderr) => {
+      if(error) {
+        interaction.reply({ content: 'could not pull data. error: ' + error, ephemeral: false });
+        return;
+      }
+  
+      // copy config file to temp location
+      exec("cp config.json config.temp", (error, stdout, stderr) => {
+        if(error) {
+          interaction.reply({ content: 'could not save config file, aborted to save it. error: ' + error, ephemeral: false });
+          return;
+        }
+  
+        // restart bot
+      exec("node bot.js", (error, stdout, stderr) => {
+          if(error) {
+            interaction.reply({ content: 'could not restart bot, but files may have been updated. error: ' + error, ephemeral: false });
+            return;
+      }
+      const updateEmbed = new MessageEmbed()
+      .setColor('#ff00ff')
+      .setTitle(`Bot Updated!`)
+      .setDescription(`Bot services should resume`)
+      .setTimestamp()
+      interaction.reply({ embeds: [updateEmbed]});
+    });
+    });
     });
   } else {
     interaction.reply({ content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows user you know.', ephemeral: true });
