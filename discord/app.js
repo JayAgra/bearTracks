@@ -5,6 +5,7 @@ const fs = require('fs');
 var datetime = new Date();
 const { group } = require('console');
 const { match } = require('assert');
+const { exec } = require('child_process');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 var EventEmitter = require("events").EventEmitter;
 var https = require('follow-redirects').https;
