@@ -6,7 +6,7 @@ const fs = require('fs');
 const { mainhostname, myteam } = require('./config.json');
 const process = require('process');
 var time = new Date();
-//test
+//test2
 //conenct to form database
 let db = new sqlite3.Database('./data.db', sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
