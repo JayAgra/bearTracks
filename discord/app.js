@@ -1,6 +1,7 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
 const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID } = require('./config.json');
 //Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password), mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall - "example.com")
+//test
 const fs = require('fs');
 var datetime = new Date();
 const { group } = require('console');
