@@ -3,7 +3,7 @@ const gm = require('gm');
 const sqlite3 = require('sqlite3').verbose();
 const formidable = require('formidable');
 const http = require('http');
-
+//none of this works yet, sqlite error because i need to add all at same time
 http.createServer(function(req, res) {
   if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
     var form = new formidable.IncomingForm();
