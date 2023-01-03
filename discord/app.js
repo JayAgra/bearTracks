@@ -622,15 +622,22 @@ client.on('interactionCreate', async interaction => {
         interaction.reply({ content: 'could not pull data. error: ' + error, ephemeral: false });
         return;
       }
-  
-      // copy config file to temp location
+      
+      //discord directory only
+      exec("git checkout -- '*' !discord/", (error, stdout, stderr) => {
+        if(error) {
+          interaction.reply({ content: 'could not keep changes only from the discord directory ' + error, ephemeral: false });
+          return;
+      }
+
+      //move cfg to tmp so it does not get nuked
       exec("cp config.json config.temp", (error, stdout, stderr) => {
         if(error) {
           interaction.reply({ content: 'could not save config file, aborted to save it. error: ' + error, ephemeral: false });
           return;
         }
   
-        // restart bot
+      //reboot
       exec("node bot.js", (error, stdout, stderr) => {
           if(error) {
             interaction.reply({ content: 'could not restart bot, but files may have been updated. error: ' + error, ephemeral: false });
@@ -642,6 +649,7 @@ client.on('interactionCreate', async interaction => {
       .setDescription(`Bot services should resume`)
       .setTimestamp()
       interaction.reply({ embeds: [updateEmbed]});
+    });
     });
     });
     });
