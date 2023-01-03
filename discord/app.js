@@ -16,7 +16,7 @@ client.once('ready', () => {
 	console.log('Ready!');
   console.log(datetime);
 });
-//test3
+
 //emotes
 const eone = "<:01:964216829969068053>";
 const etwo = "<:02:964216829683847179>";
