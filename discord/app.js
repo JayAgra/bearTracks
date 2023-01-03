@@ -1,5 +1,5 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
-const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl } = require('./config.json');
+const { token, frcapi, mainhostname, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID } = require('./config.json');
 //Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password), mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall - "example.com")
 const fs = require('fs');
 var datetime = new Date();
@@ -616,6 +616,7 @@ client.on('interactionCreate', async interaction => {
       }
     });
   } else if (interaction.commandName === 'update') {
+    if (interaction.user.id == botOwnerUserID) {
     exec(`git pull ${repoUrl}`, (error, stdout, stderr) => {
       if(error) {
         interaction.reply({ content: 'could not pull data. error: ' + error, ephemeral: false });
@@ -644,6 +645,9 @@ client.on('interactionCreate', async interaction => {
     });
     });
     });
+  } else {
+    interaction.reply({ content: 'no are not the bot owner/hoster!', ephemeral: true });
+  }
   } else {
     interaction.reply({ content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows user you know.', ephemeral: true });
   }
