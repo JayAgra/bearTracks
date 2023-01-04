@@ -3,7 +3,7 @@ const gm = require('gm');
 const sqlite3 = require('sqlite3').verbose();
 const formidable = require('formidable');
 const http = require('http');
-//none of this works yet, sqlite error because i need to add all at same time
+
 http.createServer(function(req, res) {
   if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
     var form = new formidable.IncomingForm();
@@ -46,6 +46,7 @@ http.createServer(function(req, res) {
 
       // process the uploaded images
       let numImagesProcessed = 0;
+      var randomFileNameString = Math.random().toString(36).substring(2)+Date.now().toString(36);
       for (let file in files) {
         // convert the image
         gm(files[file].path).setFormat('png').stream((err, stdout, stderr) => {
@@ -53,7 +54,7 @@ http.createServer(function(req, res) {
             console.error(err);
           }
 
-          let writeStream = fs.createWriteStream(file + '.png');
+          let writeStream = fs.createWriteStream('pitimg/' + randomFileNameString + file + '.png');
           stdout.pipe(writeStream);
           stderr.pipe(process.stderr);
 
@@ -65,7 +66,7 @@ http.createServer(function(req, res) {
             // check processed #
             if (numImagesProcessed == Object.keys(files).length) {
                 //file name making
-                let fileName = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+                let fileName = randomFileNameString + file + ".png"
   
                 let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
                   if (err) {
