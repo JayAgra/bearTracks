@@ -22,19 +22,6 @@ http.createServer(function(req, res) {
         }
         console.log('Connected to the data.db database.');
       });
-      db.serialize(() => {
-        let stmt = db.prepare('INSERT INTO pit VALUES (?, ?)');
-        for (let field in fields) {
-          stmt.run(field, fields[field]);
-        }
-        stmt.finalize();
-      });
-      db.close((err) => {
-        if (err) {
-          console.error(err.message);
-        }
-        console.log('Closed the database connection.');
-      });
 
       // send upload progress bar
       res.writeHead(200, {'Content-Type': 'text/html'});
@@ -43,6 +30,16 @@ http.createServer(function(req, res) {
       res.write('<progress id="progress" value="0" max="100"></progress>');
       res.write('<p id="progress-text"></p><br/><br/>');
       res.write('</body></html>');
+
+      var lastRowID;
+      db.serialize(() => {
+        let stmt = db.prepare('INSERT INTO pit VALUES (?, ?)');
+        for (let field in fields) {
+          stmt.run(field, fields[field]);
+        }
+        stmt.finalize();
+        lastRowID = this.lastID;
+      });
 
       // process the uploaded images
       let numImagesProcessed = 0;
@@ -62,29 +59,25 @@ http.createServer(function(req, res) {
             // update progress bar
             res.write('<script>document.getElementById("progress").value = ' + (++numImagesProcessed / Object.keys(files).length * 100) + ';</script>');
             res.write('<script>document.getElementById("progress-text").innerHTML = "' + numImagesProcessed + ' of ' + Object.keys(files).length + ' images processed.";</script>');
-
+            let fileName = randomFileNameString + file + ".png"
+            var imageNo = numImagesProcessed++;
+              db.serialize((err) => {
+                let stmt = db.prepare("UPDATE mytable SET column1 = ? WHERE id = ?', [?] ");
+                stmt.run('filename' + imageNo, lastRowID, fileName);
+                stmt.finalize();
+                if (err) {
+                  console.error(err.message);
+                }
+              });
+              db.close((err) => {
+                if (err) {
+                  console.error(err.message);
+                }
+                console.log('Closed the database connection.');
+              });
             // check processed #
             if (numImagesProcessed == Object.keys(files).length) {
                 //file name making
-                let fileName = randomFileNameString + file + ".png"
-  
-                let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
-                  if (err) {
-                    console.error(err.message);
-                  }
-                  console.log('Connected to the data.db database.');
-                });
-                db.serialize(() => {
-                  let stmt = db.prepare('INSERT INTO pit VALUES (?, ?)');
-                  stmt.run('img1', fileName);
-                  stmt.finalize();
-                });
-                db.close((err) => {
-                  if (err) {
-                    console.error(err.message);
-                  }
-                  console.log('Closed the database connection.');
-                });
   
                 res.end('<html><head><title>Submitted</title></head><body><p>Submitted</p></body></html>');
               }
