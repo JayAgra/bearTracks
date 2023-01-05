@@ -12,13 +12,12 @@
 }
 html,body{
     font-family: 'Open Sans';
-    font-size: 6vw;
 }
 h2 {
-    font-size: 6vw;
+
 }
 h4 {
-    font-size: 3vw;
+    
 }
 body {
     background-color: #121212;
@@ -35,21 +34,19 @@ fieldset {
 }
 h1 {
     text-align: center;
-    font-size: 10vw;
 }
 .container {
     justify-content: center;
     display: flex;
 }
 select {
-    font-size: 5vw;
     background-color: #515151;
     border: none;
     color: #fff;
     border-bottom: 4px solid #fff;
 }
 input {
-    font-size: 5vw;
+
 }
 button:active {
     background-color: #32cd32;
@@ -60,7 +57,7 @@ input.checkbig {
   height: 5vw;
 }
 textarea {
-    font-size: 3vw;
+
 }
 input[class='incnum'] {
     font-family: Seven Segment;
@@ -105,15 +102,11 @@ input[type='tel']:focus {outline: none; border-bottom: 2px solid #ffb600;}
 input[type='text']:focus {outline: none; border-bottom: 2px solid #ffb600;}
 select:focus {outline: none; border-bottom: 2px solid #ffb600;}
 .cont-flex {
-    align-content: flex-start;
-    align-items: stretch;
-    align-self: stretch;
+    display: flex;
     flex-direction: row;
     justify-content: center;
 }
 .cont-flex-item {
-    flex-grow: 1;
-    flex-shrink: 1;
     flex-wrap: nowrap;
-    order: 0;
+    display: flex;
 }
