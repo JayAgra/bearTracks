@@ -35,7 +35,7 @@ const server = http.createServer((req, res) => {
                   res.end('pit form error! ' + err.message);
                 }
                 console.log(`row ${this.lastID} inserted`);
-                res.write("insterted data with row ID " + this.lastID);
+                res.write("insterted data with row ID " + this.lastID + "\n");
             });
             db.close((err) => {
                 if (err) {
@@ -43,7 +43,7 @@ const server = http.createServer((req, res) => {
                   res.end('pit form error! ' + err.message);
                 }
                 console.log('db closed');
-                res.write("finished writing to DB");
+                res.write("finished writing to DB" + "\n");
             });
             res.end('pit form submitted');
         } else if (formData.formType === 'main') {
