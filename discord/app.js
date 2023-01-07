@@ -626,7 +626,7 @@ client.on('interactionCreate', async interaction => {
       }
       
       //discord directory only
-      exec("git checkout discord/", (error, stdout, stderr) => {
+      exec("git checkout /discord", (error, stdout, stderr) => {
         if(error) {
           interaction.reply({ content: 'could not keep changes only from the discord directory ' + error, ephemeral: false });
           return;
