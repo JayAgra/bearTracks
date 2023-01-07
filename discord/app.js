@@ -59,6 +59,7 @@ const empend = "<:empend:964263842899181609>"; //etwelve
 const empmid = "<:empmid:964263842869809152>"; //eeleven
 const ethirteen = "<:13:964307653121683577>";
 const efoutreen = "<:14:964322741866094602>";
+const trollface = "<:tf:1061411458027618375>"; //trollface
 
 //emote string array
 const stringzero = [`${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eseven}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empend}`, `${etwo}${eseven}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empend}`, `${ethirteen}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empmid}${empend}`, `${ethirteen}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empmid}${empend}`, `${ethirteen}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empend}`, `${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empend}`, `${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empend}`, `${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empend}`, `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${eeight}${empend}`, `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${empend}`, `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${ethree}`, `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efour}`];
@@ -955,7 +956,7 @@ client.on('interactionCreate', async interaction => {
           });
       } else {
           interaction.reply({
-              content: 'no are not the bot owner/hoster!',
+              content: 'no ' + trollface + '. you are not the bot owner/hoster!',
               ephemeral: true
           });
       }
@@ -990,7 +991,6 @@ client.login(token);
 ⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⢧⣤⣀⣀⣀⣀⣀⣤⣤⣬⣧⠀⠀⠉⠉⠉⠉⠉⠉⢉⣡⣤⡴⠶⠛⠋⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠀⠀⠀⠀⠸⣷⣶⡶⠶⠶⠶⠖⠛⠛⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 */
-
 
 
 
