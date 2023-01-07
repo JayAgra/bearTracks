@@ -1,13 +1,26 @@
 {
-  "dependencies": {
-    "@supercharge/request-ip": "^1.2.0",
-    "concat-stream": "^2.0.0",
-    "formidable": "^2.0.1",
-    "fs": "^0.0.1-security",
-    "gm": "^1.25.0",
-    "http": "^0.0.1-security",
-    "querystring": "^0.2.1",
-    "sqlite3": "^5.1.2",
-    "util": "^0.12.5"
-  }
+    "name": "scoutingdiscord",
+    "version": "1.0.0",
+    "main": "app.js",
+    "dependencies": {
+        "@discordjs/builders": "^0.12.0",
+        "@discordjs/rest": "^0.3.0",
+        "cron": "^2.1.0",
+        "discord-api-types": "^0.31.1",
+        "discord.js": "^13.6.0",
+        "follow-redirects": "^1.14.9",
+        "lodash": "^4.17.21",
+        "sqlite3": "^5.1.4"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node ."
+    },
+    "keywords": [],
+    "author": "JayAgra",
+    "license": "MIT",
+    "devDependencies": {
+        "node": "^16.13.2"
+    },
+    "description": "checker"
 }
