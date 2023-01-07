@@ -35,8 +35,8 @@ var https = require('follow-redirects').https;
 var CronJob = require('cron').CronJob;
 var lodash = require('lodash');
 client.once('ready', () => {
-  console.log('Ready!');
-  console.log(datetime);
+  console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Ready!');
+  console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + datetime);
 });
 
 //emotes
@@ -126,12 +126,12 @@ client.on('interactionCreate', async interaction => {
       req.end();
       dbody.on('update', function() {
           if (invalidJSON(data)) {
-              console.log(data);
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
               interaction.reply({
                   content: 'invalid input, or i messed it up',
                   ephemeral: true
               });
-              console.log('potential error ' + season + eventcode + teamnum + tlevel)
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + season + eventcode + teamnum + tlevel)
           } else {
               const outputget = JSON.parse(data);
               const matchEmbed = new MessageEmbed()
@@ -592,12 +592,12 @@ client.on('interactionCreate', async interaction => {
       req.end();
       dbody.on('update', function() {
           if (invalidJSON(data)) {
-              console.log(data);
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
               interaction.reply({
                   content: 'invalid input, or i messed it up',
                   ephemeral: true
               });
-              console.log('potential error ' + season + eventcode + teamnum + tlevel)
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + season + eventcode + teamnum + tlevel)
           } else {
               const outputget = JSON.parse(data);
               const rankEmbed = new MessageEmbed()
@@ -809,7 +809,7 @@ client.on('interactionCreate', async interaction => {
                       req.end();
                       dbodyteam.on('update', function() {
                           if (invalidJSON(teamdata)) {
-                              console.log(teamdata);
+                              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + teamdata);
                               interaction.reply({
                                   content: 'invalid input, or i messed it up',
                                   ephemeral: true
@@ -819,7 +819,7 @@ client.on('interactionCreate', async interaction => {
                               rankno = outputgetteam.Rankings[0].rank - 1;
                           }
                       });
-                      console.log(rankno);
+                      console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + rankno);
                       const rankEmbedu = new MessageEmbed()
                           .setColor('#ff00ff')
                           .setTitle(`${eventcode} team rankings`)
@@ -904,7 +904,7 @@ client.on('interactionCreate', async interaction => {
       req.end();
       dbody.on('update', function() {
           if (invalidJSON(data)) {
-              console.log(data);
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
               interaction.reply({
                   content: 'the FRC API returned invalid data',
                   ephemeral: true
