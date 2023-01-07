@@ -25,12 +25,6 @@ const {
 const fs = require('fs');
 var datetime = new Date();
 const {
-  group
-} = require('console');
-const {
-  match
-} = require('assert');
-const {
   exec
 } = require('child_process');
 const client = new Client({
@@ -933,15 +927,6 @@ client.on('interactionCreate', async interaction => {
                   return;
               }
 
-              //discord directory only
-              exec("git checkout /discord", (error, stdout, stderr) => {
-                  if (error) {
-                      interaction.reply({
-                          content: 'could not keep changes only from the discord directory ' + error,
-                          ephemeral: false
-                      });
-                      return;
-                  }
 
                   //move cfg to tmp so it does not get nuked
                   exec("cp config.json config.temp", (error, stdout, stderr) => {
@@ -971,7 +956,6 @@ client.on('interactionCreate', async interaction => {
                               embeds: [updateEmbed]
                           });
                       });
-                  });
               });
           });
       } else {
