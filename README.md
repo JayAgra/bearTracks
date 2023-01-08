@@ -4,4 +4,4 @@ A webapp for FRC scouting...
 
 ## Documentation
 
-**Discord** See `setup.md` in `discord`
+**Discord** See `setup.md`
