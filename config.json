@@ -8,5 +8,7 @@
 	"leadscout": "",
 	"drive": "",
 	"pit": "",
-	"myteam": "766"
+	"myteam": "766",
+	"repoUrl": "https://github.com/Team766/scouting-app.git",
+	"botOwnerUserID": ""
 }

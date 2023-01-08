@@ -9,11 +9,12 @@
         "discord-api-types": "^0.31.1",
         "discord.js": "^13.6.0",
         "follow-redirects": "^1.14.9",
-        "lodash": "^4.17.21"
+        "lodash": "^4.17.21",
+        "sqlite3": "^5.1.4"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node ."
+        "start": "node discord.js & node submit.js"
     },
     "keywords": [],
     "author": "JayAgra",
