@@ -10,7 +10,7 @@ new SlashCommandBuilder()
 	.addIntegerOption(option =>
 		option.setName('season')
 			.setDescription('Current Year')
-			.setRequired(true))
+			.setRequired(false))
     .addStringOption(option =>
       option.setName('eventcode')
   		.setDescription('Event Code')
@@ -32,7 +32,7 @@ new SlashCommandBuilder()
 		.addIntegerOption(option =>
 			option.setName('season')
 			  .setDescription('Current Year')
-			  .setRequired(true))
+			  .setRequired(false))
 	.addStringOption(option =>
 		option.setName('eventcode')
 			  .setDescription('Event Code')
@@ -47,7 +47,7 @@ new SlashCommandBuilder()
 		.addIntegerOption(option =>
 			option.setName('season')
 				.setDescription('Current Year')
-				.setRequired(true))
+				.setRequired(false))
 		.addStringOption(option =>
 			option.setName('eventcode')
 				.setDescription('Event Code')
@@ -77,7 +77,7 @@ new SlashCommandBuilder()
   		.addIntegerOption(option =>
 	  		option.setName('season')
 		  		.setDescription('Current Year')
-		  		.setRequired(true))
+		  		.setRequired(false))
 		.addStringOption(option =>
 			option.setName('eventcode')
 			.setDescription('Event Code')
@@ -88,7 +88,7 @@ new SlashCommandBuilder()
 		.addIntegerOption(option =>
 			option.setName('season')
 				.setDescription('Current Year')
-				.setRequired(true))
+				.setRequired(false))
 		.addStringOption(option =>
 			option.setName('eventcode')
 				.setDescription('Event Code')

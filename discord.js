@@ -17,7 +17,8 @@ const {
   pit,
   myteam,
   repoUrl,
-  botOwnerUserID
+  botOwnerUserID,
+  season
 } = require('./config.json');
 //Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password)
 //mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall (HTTP(S) ASSUMED) - "example.com")
