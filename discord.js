@@ -9,7 +9,6 @@ const {
 const {
   token,
   frcapi,
-  mainhostname,
   scoutteama,
   scoutteamb,
   leadscout,
@@ -105,7 +104,12 @@ function invalidJSON(str) {
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
   if (interaction.commandName === 'matches') {
-      const season = interaction.options.getInteger('season');
+    var opseason;
+    if (typeof(interaction.options.getInteger('season')) == undefined) {
+        opseason = season;
+    } else {
+        opseason = interaction.options.getInteger('season');
+    }
       const eventcode = interaction.options.getString('eventcode');
       const teamnum = interaction.options.getInteger('teamnum');
       const tlevel = interaction.options.getString('tlevel');
@@ -113,7 +117,7 @@ client.on('interactionCreate', async interaction => {
       var options = {
           'method': 'GET',
           'hostname': 'frc-api.firstinspires.org',
-          'path': `/v3.0/${season}/schedule/${eventcode.toUpperCase()}?teamNumber=${teamnum}&tournamentLevel=${tlevel}`,
+          'path': `/v3.0/${opseason}/schedule/${eventcode.toUpperCase()}?teamNumber=${teamnum}&tournamentLevel=${tlevel}`,
           'headers': {
               'Authorization': 'Basic ' + frcapi
           },
@@ -145,7 +149,7 @@ client.on('interactionCreate', async interaction => {
                   content: 'invalid input, or i messed it up',
                   ephemeral: true
               });
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + season + eventcode + teamnum + tlevel)
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + opseason + eventcode + teamnum + tlevel)
           } else {
               const outputget = JSON.parse(data);
               const matchEmbed = new MessageEmbed()
@@ -308,209 +312,39 @@ client.on('interactionCreate', async interaction => {
           }
       });
   } else if (interaction.commandName === 'data') {
-      const season = interaction.options.getInteger('season');
-      const eventcode = interaction.options.getString('eventcode');
-      const teamnum = interaction.options.getInteger('teamnum');
-      var dbody = new EventEmitter();
-      var options = {
-          'method': 'GET',
-          'hostname': mainhostname,
-          'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode.toUpperCase()}`,
-          'maxRedirects': 20
-      };
-
-      var req = https.request(options, function(res) {
-          var chunks = [];
-
-          res.on("data", function(chunk) {
-              chunks.push(chunk);
-          });
-
-          res.on("end", function(chunk) {
-              var body = Buffer.concat(chunks);
-              data = body;
-              dbody.emit('update');
-          });
-
-          res.on("error", function(error) {
-              console.error(error);
-          });
-      });
-      req.end();
-      dbody.on('update', function() {
-          const outputget = JSON.parse(data);
-          if (outputget.upperavg == 0) {
-              var upperavg = `Team ${teamnum} does not shoot in the upper hub`;
-              var upperacc = `Team ${teamnum} does not shoot in the upper hub`;
-          } else {
-              var upperavg = `Team ${teamnum} shoots about ${outputget.upperavg} upper hub shots per game`;
-              var upperacc = `Team ${teamnum} shoots in the upper hub with an accuracy of ${outputget.upperacc}%`;
-          }
-          if (outputget.loweravg == 0) {
-              var loweravg = `Team ${teamnum} does not shoot in the lower hub`;
-              var loweracc = `Team ${teamnum} does not shoot in the lower hub`;
-          } else {
-              var loweravg = `Team ${teamnum} shoots about ${outputget.loweravg} lower hub shots per game`;
-              var loweracc = `Team ${teamnum} shoots in the lower hub with an accuracy of ${outputget.loweracc}%`;
-          }
-          var upperavgr = Math.round(outputget.upperacc);
-          var loweravgr = Math.round(outputget.loweracc);
-
-          var upperavgdt = upperavgr / 5;
-          var loweravgdt = loweravgr / 5;
-
-          var upperavgrr = Math.round(upperavgdt);
-          var loweravgrr = Math.round(loweravgdt);
-
-          if (!stringzero[upperavgrr]) {
-              var upperavgtof = `${efoutreen}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`
-          } else {
-              var upperavgtof = stringzero[upperavgrr];
-          }
-          if (!stringzero[loweravgrr]) {
-              var loweravgtof = `${efoutreen}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`
-          } else {
-              var loweravgtof = stringzero[loweravgrr];
-          }
-
-          const teamEmbed = new MessageEmbed()
-              .setColor('#ff00ff')
-              .setTitle(`${outputget.teamnum}`)
-              .addFields({
-                  name: 'Event Code',
-                  value: `${outputget.event}`,
-                  inline: true
-              }, {
-                  name: 'Year',
-                  value: `${season}`,
-                  inline: true
-              }, {
-                  name: 'Upper Average Made',
-                  value: `${upperavg}`,
-                  inline: false
-              }, {
-                  name: 'Upper Accuracy',
-                  value: `${upperacc} \n${upperavgtof}`,
-                  inline: false
-              }, {
-                  name: 'Lower Average Made',
-                  value: `${loweravg}`,
-                  inline: false
-              }, {
-                  name: 'Lower Accuracy',
-                  value: `${loweracc}\n${loweravgtof}`,
-                  inline: false
-              }, {
-                  name: 'Climbs to Most Frequently',
-                  value: `${outputget.climbs}`,
-                  inline: false
-              }, {
-                  name: 'Summary',
-                  value: `${outputget.sentence}`,
-                  inline: false
-              }, {
-                  name: 'More Data',
-                  value: `[Here](${outputget.querylink})`,
-                  inline: false
-              })
-              .setTimestamp()
-          interaction.reply({
-              embeds: [teamEmbed]
-          });
-      });
+    var opseason;
+    if (typeof(interaction.options.getInteger('season')) == undefined) {
+        opseason = season;
+    } else {
+        opseason = interaction.options.getInteger('season');
+    }
+    const eventcode = interaction.options.getString('eventcode');
+    const teamnum = interaction.options.getInteger('teamnum');
+    //fetch data from the database
+    //see what season
+    //decide how to make embed based off season
+    //create embed
+    //send embed
+    interaction.reply({
+        embeds: []
+    });
   } else if (interaction.commandName === 'pit') {
-      const season = interaction.options.getInteger('season');
-      const eventcode = interaction.options.getString('eventcode');
-      const teamnum = interaction.options.getInteger('teamnum');
-      var dbody = new EventEmitter();
-      var options = {
-          'method': 'GET',
-          'hostname': mainhostname,
-          'path': `/scout/lazyapi.php?season=${season}&teamnum=${teamnum}&event=${eventcode.toUpperCase()}&pit=true`,
-          'maxRedirects': 20
-      };
-      var req = https.request(options, function(res) {
-          var chunks = [];
-
-          res.on("data", function(chunk) {
-              chunks.push(chunk);
-          });
-
-          res.on("end", function(chunk) {
-              var body = Buffer.concat(chunks);
-              data = body;
-              dbody.emit('update');
-          });
-
-          res.on("error", function(error) {
-              console.error(error);
-          });
-      });
-      req.end();
-      dbody.on('update', function() {
-          const outputget = JSON.parse(data);
-          const pitEmbed = new MessageEmbed()
-              .setColor('#ff00ff')
-              .setTitle(`${teamnum}'s robot data`)
-              .setDescription(`Data collected at ${eventcode.toUpperCase()}, season ${season}`)
-              .addFields({
-                  name: 'Cargo Held:',
-                  value: `${outputget.cargo}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Weight:',
-                  value: `${outputget.weigh}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Upper Hub:',
-                  value: `${outputget.upperhub}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Lower Hub:',
-                  value: `${outputget.lowerhub}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Low Bar:',
-                  value: `${outputget.lowbar}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Mid Bar:',
-                  value: `${outputget.midbar}\u200b`,
-                  inline: false
-              }, {
-                  name: 'High Bar:',
-                  value: `${outputget.highbar}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Traversal Bar:',
-                  value: `${outputget.travbar}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Drive Type:',
-                  value: `${outputget.drivetype}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Confidence:',
-                  value: `${outputget.confid} of 7`,
-                  inline: false
-              }, {
-                  name: 'Build Quality:',
-                  value: `${outputget.buildqual} of 7`,
-                  inline: false
-              }, {
-                  name: 'Overall:',
-                  value: `${outputget.overall}\u200b`,
-                  inline: false
-              }, {
-                  name: 'Images:',
-                  value: `[Image 1](http://${mainhostname}/scout/pitimg/${outputget.file1})\n[Image 2](http://${mainhostname}/scout/pitimg/${outputget.file2})\n[Image 3](http://${mainhostname}/scout/pitimg/${outputget.file3})\n[Image 4](http://${mainhostname}/scout/pitimg/${outputget.file4})\n[Image 5](http://${mainhostname}/scout/pitimg/${outputget.file5})`,
-                  inline: false
-              })
-              .setTimestamp()
-          interaction.reply({
-              embeds: [pitEmbed]
-          });
-      });
+    var opseason;
+    if (typeof(interaction.options.getInteger('season')) == undefined) {
+        opseason = season;
+    } else {
+        opseason = interaction.options.getInteger('season');
+    }
+    const eventcode = interaction.options.getString('eventcode');
+    const teamnum = interaction.options.getInteger('teamnum');
+    //fetch data from the database
+    //see what season
+    //decide how to make embed based off season
+    //create embed
+    //send embed
+    interaction.reply({
+        embeds: [pitEmbed]
+    });
   } else if (interaction.commandName === 'addscout') {
       if (interaction.member.id != interaction.options.getUser('user').id) {
           if (interaction.member.roles.cache.some(r => r.id == `${leadscout}`)) {
@@ -545,7 +379,7 @@ client.on('interactionCreate', async interaction => {
               var insult = "You " + a + " than a " + ad + ".";
 
               interaction.reply({
-                  content: `nO pErMs???\nTo use this command, you must have the Lead Scout role, even if you are an admin or a server owner!\nAlso, the very kind devs have a message for you: ${insult}`,
+                  content: `You do not have permission to use this command.\nTo use this command, you must have the Lead Scout role (${leadscout}), even if you are an admin or a server owner!\n${insult}`,
                   ephemeral: true
               });
           }
@@ -573,13 +407,18 @@ client.on('interactionCreate', async interaction => {
           });
       }
   } else if (interaction.commandName === 'rankings') {
-      const season = interaction.options.getInteger('season');
+    var opseason;
+    if (typeof(interaction.options.getInteger('season')) == undefined) {
+        opseason = season;
+    } else {
+        opseason = interaction.options.getInteger('season');
+    }
       const eventcode = interaction.options.getString('eventcode');
       var dbody = new EventEmitter();
       var options = {
           'method': 'GET',
           'hostname': 'frc-api.firstinspires.org',
-          'path': `/v3.0/${season}/rankings/${eventcode}`,
+          'path': `/v3.0/${opseason}/rankings/${eventcode}`,
           'headers': {
               'Authorization': 'Basic ' + frcapi
           },
@@ -611,7 +450,7 @@ client.on('interactionCreate', async interaction => {
                   content: 'invalid input, or i messed it up',
                   ephemeral: true
               });
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + season + eventcode + teamnum + tlevel)
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + opseason + eventcode + teamnum + tlevel)
           } else {
               const outputget = JSON.parse(data);
               const rankEmbed = new MessageEmbed()
@@ -882,7 +721,12 @@ client.on('interactionCreate', async interaction => {
           }
       });
   } else if (interaction.commandName === 'pitscout') {
-      const season = interaction.options.getInteger('season');
+    var opseason;
+    if (typeof(interaction.options.getInteger('season')) == undefined) {
+        opseason = season;
+    } else {
+        opseason = interaction.options.getInteger('season');
+    }
       const eventcode = interaction.options.getString('eventcode');
       //do this!!
   } else if (interaction.commandName === 'frcapi') {
