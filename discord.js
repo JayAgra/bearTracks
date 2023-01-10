@@ -1,33 +1,10 @@
-const {
-  Client,
-  Intents,
-  MessageEmbed,
-  MessageActionRow,
-  MessageButton,
-  CommandInteractionOptionResolver
-} = require('discord.js');
-const {
-  token,
-  frcapi,
-  scoutteama,
-  scoutteamb,
-  leadscout,
-  drive,
-  pit,
-  myteam,
-  repoUrl,
-  botOwnerUserID,
-  season,
-  currentComp
-} = require('./config.json');
-//Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password)
-//mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall (HTTP(S) ASSUMED) - "example.com")
-
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
 const fs = require('fs');
 var datetime = new Date();
+const sqlite3 = require('sqlite3');
+
 const {
-  exec
-} = require('child_process');
+  exec } = require('child_process');
 
 if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not finf config.json! Fill out config.example.json and rename it to config.json');
@@ -40,6 +17,9 @@ if (fs.statSync("config.json").size < 300) {
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
     process.exit();
 } else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
+
+//safe to require config.json
+const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID, season, currentComp } = require('./config.json');
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS]
@@ -92,7 +72,7 @@ const stringzero = [`${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmi
   `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${ethree}`, 
   `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efour}`];
 
-//check if JSON
+//function to check if JSON is valid
 function invalidJSON(str) {
   try {
       JSON.parse(str);
@@ -894,4 +874,5 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
+//login to discord
 client.login(token);

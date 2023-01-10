@@ -1,22 +1,27 @@
 const http = require('http');
 const qs = require('querystring');
-const { EventEmitter } = require('events');
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3');
 const fs = require('fs');
 
+//check that the config.json file exists
 if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
   console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not finf config.json! Fill out config.example.json and rename it to config.json');
   console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
   process.exit();
 } else {console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[32m', ' [INFO] ' ,'\x1b[0m' + 'Found config.json file!');}
 
+//see if the config.json file is less than 300 bytes, assume not filled out
 if (fs.statSync("config.json").size < 300) {
   console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'The file config.json seems to be empty! Please fill it out.');
   console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
   process.exit();
 } else {console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
 
-console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!")
+//safe to require the config.json file
+const season = require('./config.json');
+
+//before server creation
+console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
 
 const server = http.createServer((req, res) => {
   if (req.method === 'POST' && req.url === '/submit') {
@@ -29,9 +34,6 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       let formData = qs.parse(body);
       //console.log(formData);
-
-      const formEmitter = new EventEmitter();
-      formEmitter.on('formType', () => {
         if (formData.formType == 'pit') {
             console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + "pit recd from " +  req.socket.remoteAddress)
             let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -95,12 +97,11 @@ const server = http.createServer((req, res) => {
           console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + "form type not known, got '" + formData.formType + "'")
         }
       });
-
-      formEmitter.emit('formType');
-    });
   } else {
     res.end('POST requests only on the /submit URL!');
   }
 });
 
 server.listen(766);
+//server created and ready for a request
+console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!")
