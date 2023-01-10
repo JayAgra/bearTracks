@@ -7,10 +7,6 @@ const commands = [
 new SlashCommandBuilder()
   .setName('matches')
   .setDescription('Get upcoming matches')
-	.addIntegerOption(option =>
-		option.setName('season')
-			.setDescription('Current Year')
-			.setRequired(false))
     .addStringOption(option =>
       option.setName('eventcode')
   		.setDescription('Event Code')
@@ -25,14 +21,14 @@ new SlashCommandBuilder()
 			.setRequired(true)
 			.addChoice('qualification', 'qualification')
 			.addChoice('practice', 'practice')
-			.addChoice('playoff', 'playoff')),
+			.addChoice('playoff', 'playoff'))
+	.addIntegerOption(option =>
+		option.setName('season')
+			.setDescription('Current Year')
+			.setRequired(false)),
 new SlashCommandBuilder()
 	.setName('data')
 	.setDescription('Get Team Data')
-		.addIntegerOption(option =>
-			option.setName('season')
-			  .setDescription('Current Year')
-			  .setRequired(false))
 	.addStringOption(option =>
 		option.setName('eventcode')
 			  .setDescription('Event Code')
@@ -40,14 +36,14 @@ new SlashCommandBuilder()
 	.addIntegerOption(option =>
 		option.setName('teamnum')
 			  .setDescription('Target Team Number')
-			  .setRequired(true)),
+			  .setRequired(true))
+	.addIntegerOption(option =>
+		option.setName('season')
+			.setDescription('Current Year')
+			.setRequired(false)),
 new SlashCommandBuilder()
 	.setName('pit')
 	.setDescription('Get Team Pit Data')
-		.addIntegerOption(option =>
-			option.setName('season')
-				.setDescription('Current Year')
-				.setRequired(false))
 		.addStringOption(option =>
 			option.setName('eventcode')
 				.setDescription('Event Code')
@@ -55,7 +51,11 @@ new SlashCommandBuilder()
 		.addIntegerOption(option =>
 			option.setName('teamnum')
 				.setDescription('Target Team Number')
-				.setRequired(true)),
+				.setRequired(true))
+		.addIntegerOption(option =>
+			option.setName('season')
+				.setDescription('Current Year')
+				.setRequired(false)),
 new SlashCommandBuilder()
 	.setName('addscout')
 	.setDescription('Add user to scout team')
@@ -74,35 +74,27 @@ new SlashCommandBuilder()
 new SlashCommandBuilder()
 	.setName('rankings')
 	.setDescription('event rankings')
-  		.addIntegerOption(option =>
-	  		option.setName('season')
-		  		.setDescription('Current Year')
-		  		.setRequired(false))
-		.addStringOption(option =>
-			option.setName('eventcode')
-			.setDescription('Event Code')
-		  	.setRequired(true)),
+	.addStringOption(option =>
+		option.setName('eventcode')
+		.setDescription('Event Code')
+		.setRequired(true))
+	.addIntegerOption(option =>
+		option.setName('season')
+		.setDescription('Current Year')
+		.setRequired(false)),
 new SlashCommandBuilder()
 	.setName('pitscout')
-	.setDescription('event rankings')
-		.addIntegerOption(option =>
-			option.setName('season')
-				.setDescription('Current Year')
-				.setRequired(false))
-		.addStringOption(option =>
-			option.setName('eventcode')
-				.setDescription('Event Code')
-				.setRequired(true)),
+	.setDescription('event rankings'),
 new SlashCommandBuilder()
 	.setName('frcapi')
 	.setDescription('send a request to the FRC API')
-		.addStringOption(option =>
-			option.setName('path')
-				.setDescription('request path: please see frc-api-docs.firstinspires.org')
-				.setRequired(true)),
+	.addStringOption(option =>
+		option.setName('path')
+			.setDescription('request path: please see frc-api-docs.firstinspires.org')
+			.setRequired(true)),
 new SlashCommandBuilder()
 	.setName('update')
-	.setDescription('pulls from specified repo, bot owner only')
+	.setDescription('pulls from specified repo, bot owner only'),
 ]
 .map(command => command.toJSON());
 

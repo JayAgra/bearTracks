@@ -17,7 +17,8 @@ const {
   myteam,
   repoUrl,
   botOwnerUserID,
-  season
+  season,
+  currentComp
 } = require('./config.json');
 //Token is bot token from Discord, frcapi is base64 encoded auth header without the "Basic " (username:password)
 //mainhostname is the web address that the scout app is hosted on (add TLD, omit the protocall (HTTP(S) ASSUMED) - "example.com")
@@ -721,14 +722,77 @@ client.on('interactionCreate', async interaction => {
           }
       });
   } else if (interaction.commandName === 'pitscout') {
-    var opseason;
-    if (typeof(interaction.options.getInteger('season')) == undefined) {
-        opseason = season;
+    if (currentComp == "NONE") {
+        interaction.reply({
+            content: 'we are not in a comp!',
+            ephemeral: true
+        });
     } else {
-        opseason = interaction.options.getInteger('season');
-    }
-      const eventcode = interaction.options.getString('eventcode');
-      //do this!!
+      var dbody = new EventEmitter();
+      var options = {
+          'method': 'GET',
+          'hostname': 'frc-api.firstinspires.org',
+          'path': `/v3.0/${season}/teams?eventCode=${currentComp}`,
+          'headers': {
+              'Authorization': 'Basic ' + frcapi
+          },
+          'maxRedirects': 20
+      };
+
+      var req = https.request(options, function(res) {
+          var chunks = [];
+
+          res.on("data", function(chunk) {
+              chunks.push(chunk);
+          });
+
+          res.on("end", function(chunk) {
+              var body = Buffer.concat(chunks);
+              data = body;
+              dbody.emit('update');
+          });
+
+          res.on("error", function(error) {
+              console.error(error);
+          });
+      });
+      req.end();
+      dbody.on('update', function() {
+          if (invalidJSON(data)) {
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
+              interaction.reply({
+                  content: 'invalid input, or i messed it up',
+                  ephemeral: true
+              });
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + season + eventcode)
+          } else {
+            const outputget = JSON.parse(data);
+            var listOfTeams;
+            for (let i = 1; i < outputget.teamCountTotal; i++){
+                listOfTeams += `${outputget.i.teamNumber}\n`
+            }
+            const teamList = new MessageEmbed()
+            .setColor('#ff00ff')
+            .setTitle(`Teams to scout`)
+            .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+            .setDescription(`List of teams in the current comp (${season}:${currentComp})`)
+            .addFields({
+                name: 'To Scout:',
+                value: `${listOfTeams}`,
+                inline: false
+            }, {
+                name: 'Scouted: ',
+                value: `${listOfTeams}`,
+                //todo
+                inline: false
+            })
+            .setTimestamp()
+            .setFooter({
+                text: 'Data from FRC API'
+            });
+          }
+        });
+  }
   } else if (interaction.commandName === 'frcapi') {
       const requesturl = interaction.options.getString('path');
       var dbody = new EventEmitter();
@@ -831,15 +895,3 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.login(token);
-
-
-
-
-
-
-
-
-
-
-
-//1000 lines//\\ 1000 lines\\

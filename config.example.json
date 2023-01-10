@@ -10,5 +10,6 @@
 	"myteam": "766",
 	"repoUrl": "https://github.com/Team766/scouting-app.git",
 	"botOwnerUserID": "",
-	"season": 2023
+	"season": 2023,
+	"currentComp": "NONE"
 }
