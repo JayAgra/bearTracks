@@ -27,6 +27,19 @@ var datetime = new Date();
 const {
   exec
 } = require('child_process');
+
+if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not finf config.json! Fill out config.example.json and rename it to config.json');
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
+    process.exit();
+} else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Found config.json file!');}
+
+if (fs.statSync("config.json").size < 300) {
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'The file config.json seems to be empty! Please fill it out.');
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
+    process.exit();
+} else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
+
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS]
 });
@@ -974,24 +987,14 @@ client.on('interactionCreate', async interaction => {
 
 client.login(token);
 
-/* 
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⣤⣤⣄⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⠟⠋⠉⠉⠉⠉⠉⠙⠻⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⣼⡟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⣸⡟⠀⠀⠀⢀⣴⣶⠿⠿⠿⠟⠛⠛⠛⠻⢿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⢀⣿⠁⠀⠀⠀⣼⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⣠⣤⣶⡾⣾⡏⠀⠀⠀⠀⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⢸⡿⠋⠀⠀⣾⡇⠀⠀⠀⠀⢿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣾⠇⡀⠀⠀⣿⠁⠀⠀⠀⠀⠘⢿⣦⣤⣤⣤⣤⣤⣤⣤⣤⣶⢿⣟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  //1000 lines//\\ 1000 lines\\
-⣿⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠉⠉⠀⠀⠀⢸⡟⠀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣤⣤⣤⣤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣿⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⣠⡾⠋⠉⠀⠀⠀⠀⠀⠀⠈⠉⠙⠳⣦⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣿⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⠀⣿⠀⠀⣀⣀⣤⣤⣄⣀⣀⠀⠀⠀⠀⠈⣻⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⢿⡇⠀⠀⠀⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⠀⠀⢀⣿⠾⢟⣉⣁⣤⣤⣄⣉⡉⠛⢶⣴⡶⠟⠛⠛⠶⣤⡀⠀⠀⠀⠀⠀
-⠸⣷⡄⠀⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⠀⣴⠟⣧⡾⠛⠉⢉⣀⡀⠉⠉⠙⠳⣦⣌⠻⣦⡀⠀⠀⠈⠿⠞⠛⠻⣦⠀
-⠀⠙⠿⠿⠶⣿⡇⠀⠀⠀⠀⠀⠀⣤⣤⣄⣀⣀⣠⣤⠆⠀⢸⡿⠀⠀⠀⣼⡿⠿⠿⣶⠶⠛⠋⠉⣿⡄⠀⠀⠀⠀⠙⣧⠈⢷⡄⠀⠀⠀⠀⠀⠀⢹⡆
-⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⣿⡅⠉⢹⣿⠁⠀⠀⠀⢸⡇⠀⠀⠀⣿⠀⠀⣴⠗⠀⠐⠶⣴⠟⠁⠀⠀⠀⠀⠀⣼⠃⢸⡇⠀⢀⡤⠀⢀⣠⡿⠀
-⠀⠀⠀⠀⠀⢸⣧⠀⠀⠀⠀⠀⠀⣿⠇⠀⠸⣿⡀⠀⠀⠀⣼⠁⠀⣀⣤⣽⡷⢶⣯⠀⠀⠀⠀⣹⠀⠀⠀⢀⣠⣴⠞⠋⢀⣾⢃⣴⠿⣷⠛⠋⠉⠀⠀
-⠀⠀⠀⠀⠀⠈⢿⣦⣤⣀⣀⣤⣾⠟⠀⠀⠀⠙⠛⠿⠿⠟⣫⡶⠟⠉⠁⠀⠀⠀⠙⠷⠦⢤⣶⣟⣛⡛⠛⠋⣉⣀⣤⣴⡿⠟⠋⣡⣼⠋⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⢧⣤⣀⣀⣀⣀⣀⣤⣤⣬⣧⠀⠀⠉⠉⠉⠉⠉⠉⢉⣡⣤⡴⠶⠛⠋⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠀⠀⠀⠀⠸⣷⣶⡶⠶⠶⠶⠖⠛⠛⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-*/
+
+
+
+
+
+
+
+
+
+
+//1000 lines//\\ 1000 lines\\
