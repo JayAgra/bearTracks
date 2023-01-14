@@ -4,24 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="main.css" type="text/css">
+    <link rel="stylesheet" href="src/2023.css" type="text/css">
     <title>Match Scouting</title>
 </head>
 
 <body>
-    <form action="" target="_self" method="POST" name="mainForm">
+    <form action="/submit" target="_self" method="POST" name="mainForm">
         <input type="text" value="main" name="formType" hidden>
-        <input type="text" value="false" name="game1" hidden>
-        <input type="text" value="false" name="game2" hidden>
-        <input type="text" value="false" name="game3" hidden>
-        <input type="text" value="false" name="game4" hidden>
-        <input type="text" value="false" name="game5" hidden>
-        <input type="text" value="false" name="game12" hidden>
-        <h1>2023 Scouting: Charged Up</h1><br>
-        <h2>Pre-Match:</h2>
-        <h4 style="color: #a9a9a9;">Get this done <b>before</b> the match starts!</h4>
+        <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">Charged Up</span></h1><br>
+        <h2 class="gameflair1">Pre-Match</h2>
         <fieldset>
-            <label>Event Code <span style="color:red">*</span></label><br>
+            <label>Event Code</label><br>
             <select name="event">
                 <option value="CADA">CADA - Sacramento Regional</option>
                 <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
@@ -29,18 +22,18 @@
         </fieldset>
 
         <fieldset>
-            <label>Your Name <span style="color:red">*</span><br></label>
-            <input placeholder="Amon Gus" type="text" name="name" required>
+            <label>Your Name<br></label>
+            <input type="text" name="name" required>
         </fieldset>
 
         <fieldset>
-            <label>Number of the Team you are Scouting <span style="color:red">*</span><br></label>
-            <input placeholder="766" type="tel" name="team" required>
+            <label>Number of the Team you are Scouting<br></label>
+            <input type="tel" name="team" required>
         </fieldset>
 
         <fieldset>
-            <label>Match Number <span style="color:red">*</span><br></label>
-            <input placeholder="01" type="tel" name="match" required>
+            <label>Match Number<br></label>
+            <input type="tel" name="match" required>
             <select name="level">
                 <option value="practice">Practice</option>
                 <option value="qualification" selected>Qual</option>
@@ -48,33 +41,34 @@
                 <option value="semifinal">Semifinal</option>
             </select>
         </fieldset><br>
-        <h2>Match Scouting</h2>
-        <h4 style="color: #a9a9a9;">Do this section for the duration of the match, fill out the rest at the end.</h4>
+        <h2 class="gameflair1">Match Scouting</h2>
         <fieldset>
-            <label>Auton<br></label>
+            <label>During AUTO, the robot...<br></label>
             <br>
-            <input value="true" type="checkbox" name="game1" class="checkbig"><span>&emsp;During Auton, the robot taxied<br></span><br>
-            <input value="true" type="checkbox" name="game2" class="checkbig"><span>&emsp;During Auton, the robot successfully shot cargo into the hubs<br></span><br>
-            <input value="true" type="checkbox" name="game3" class="checkbig"><span>&emsp;During Auton, the robot retrieved cargo from the field<br></span><br>
-            <input value="true" type="checkbox" name="game4" class="checkbig"><span>&emsp;During Auton, the robot failed to score points, but made an attempt<br></span><br>
-            <input value="true" type="checkbox" name="game5" class="checkbig"><span>&emsp;During Auton, the robot failed to score points</span><br>
+            <input value="true" type="checkbox" name="game1" class="checkbig"><span>&emsp;Completely left COMMUNITY (taxied)<br></span><br>
+            <input value="true" type="checkbox" name="game2" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br>
+            <input value="true" type="checkbox" name="game3" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br>
+            <input value="true" type="checkbox" name="game4" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br>
+            <input value="0" type="radio" name="game5" class="checkbig" checked="checked"><span>&emsp;Was not DOCKED or ENGAGED<br></span><br>
+            <input value="8" type="radio" name="game5" class="checkbig"><span>&emsp;Was DOCKED, not ENGAGED<br></span><br>
+            <input value="12" type="radio" name="game5" class="checkbig"><span>&emsp;Was DOCKED and ENGAGED<br></span><br>
         </fieldset>
         <fieldset>
-            <label>For Teleop ONLY:</label>
-            <br><br> Made Upper Hub shots: <input id="game6" type="number" value="0" name="madeupper" class="incnum"><br><button onclick="incValueMadeUpper()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem;">+</button>
-            <br><br> Missed Upper Hub shots: <input id="game7" type="number" value="0" name="missedupper" class="incnum"><br><button onclick="incValueMissedUpper()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem;">+</button>
-            <br><br> Made Lower Hub shots: <input id="game8" type="number" value="0" name="madelower" class="incnum"><br><button onclick="incValueMadeLower()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem;">+</button>
-            <br><br> Missed Lower Hub shots: <input id="game9" type="number" value="0" name="missedlower" class="incnum"><br><button onclick="incValueMissedLower()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem;">+</button>
-            <br><br> Bars climbed:<br><select name="game10"><option value="none">No Bars</option><option value="low">Low Bar</option><option value="mid">Mid Bar</option><option value="high">High Bar</option><option value="trav">Traversal Bar</option></select>
-            <br> Bars attempted:<br><select name="game11"><option value="none">No Bars</option><option value="low">Low Bar</option><option value="mid">Mid Bar</option><option value="high">High Bar</option><option value="trav">Traversal Bar</option></select>
+            <label>During TELEOP, the robot...<br></label>
             <br>
-        </fieldset>
-
-        <fieldset>
-            <input value="true" type="checkbox" name="game12" class="checkbig"><span>&emsp;The Human Player interacts with the robot</span><br>
+            <input value="true" type="checkbox" name="game6" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br>
+            <input value="true" type="checkbox" name="game7" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br>
+            <input value="true" type="checkbox" name="game8" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br>
+            <input value="true" type="checkbox" name="game9" class="checkbig"><span>&emsp;Alliance - COOPERTITION BONUS<br></span><br>
+            <input value="0" type="radio" name="game10" class="checkbig" checked="checked"><span>&emsp;Was not DOCKED or ENGAGED<br></span><br>
+            <input value="2" type="radio" name="game10" class="checkbig"><span>&emsp;Was PARKED (in COMMUNITY)<br></span><br>
+            <input value="6" type="radio" name="game10" class="checkbig"><span>&emsp;Was DOCKED and not ENGAGED<br></span><br>
+            <input value="10" type="radio" name="game10" class="checkbig"><span>&emsp;Was DOCKED and ENGAGED<br></span><br>
         </fieldset>
         
         <!--extra fields to use-->
+        <input value="0" type="number" name="game11" hidden>
+        <input value="0" type="number" name="game12" hidden>
         <input value="0" type="number" name="game13" hidden>
         <input value="0" type="number" name="game14" hidden>
         <input value="0" type="number" name="game15" hidden>
@@ -90,41 +84,28 @@
         <input value="0" type="number" name="game25" hidden>
         
         <br>
-        <h2>Post Game</h2>
-        <h4 style="color: gray;">Fill this out after the game. Watch the game closely, and take note of important events.</h4>
+        <h2 class="gameflair1">Post Game</h2>
         <fieldset>
-            <label>Does the team seem consistent in auton?</label><br>
-            <select name="entry.1152778382">
-    <option value="Their performance seems promising and consistent">Consistent</option>
-    <option value="Their performance seems somewhat consistent">Somewhat consistent</option>
-    <option value="Their performance may change across different trials">Somewhat inconsistent</option>
-    <option value="Their performance will probably be different next time">Inconsistent</option>
-</select>
+            <label>Thoughts about the teleop phase:<br><br></label>
+            <textarea rows="2" cols="35" name="teleop"></textarea>
         </fieldset>
         <fieldset>
-            <label>Any other thoughts about the teleop phase? Actions it took during so?<br><br></label>
-            <textarea rows="2" cols="35" name="teleop" placeholder="No"></textarea>
-        </fieldset>
-        <fieldset>
-            <label>Did the robot play defense? If so, what did they do?<br><br></label>
-            <textarea rows="2" cols="35" name="defend" placeholder="No"></textarea>
+            <label>Did the robot play defense? If so, what did they do, and did they get fouls?<br><br></label>
+            <textarea rows="2" cols="35" name="defend"></textarea>
         </fieldset>
         <fieldset>
             <label>Any thoughts about the driving?<br><br></label>
-            <textarea rows="2" cols="35" name="driving" placeholder="No"></textarea>
+            <textarea rows="2" cols="35" name="driving"></textarea>
         </fieldset>
         <fieldset>
-            <label>Overall assessment? Alliance partner?)<br><br></label>
-            <textarea rows="4" cols="35" name="overall" placeholder="Team is pretty mid..."></textarea>
+            <label>Overall assessment?<br><br></label>
+            <textarea rows="4" cols="35" name="overall"></textarea>
         </fieldset>
         <br>
         <p style="text-align:center">
             <input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem; margin-top: 1rem;">
-            <input type="reset" value="Reset Form" style="color: white; background-color: #E90202; border-radius: 1rem; border-style: solid; border-color: #E90202; border-width: 1rem; margin-top: 1rem;"><br><br>
-            <a href="index.html" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem; text-decoration: none; margin-top: 1rem;">Back</a>
         </p>
     </form>
     <br><br>
-    <script src="form.js"></script>
 </body>
 </html>

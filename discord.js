@@ -28,6 +28,7 @@ var EventEmitter = require("events").EventEmitter;
 var https = require('follow-redirects').https;
 var CronJob = require('cron').CronJob;
 var lodash = require('lodash');
+const { error } = require('console');
 client.once('ready', () => {
   console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Ready!');
   console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + datetime);
@@ -286,10 +287,14 @@ client.on('interactionCreate', async interaction => {
                   }
               });
               //end btn processing
+            try {
               interaction.reply({
                   embeds: [matchEmbed],
                   components: [actrow]
               });
+            } catch (error) {
+                console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+            }
           }
       });
   } else if (interaction.commandName === 'data') {
@@ -306,9 +311,13 @@ client.on('interactionCreate', async interaction => {
     //decide how to make embed based off season
     //create embed
     //send embed
+    try {
     interaction.reply({
         embeds: []
     });
+    } catch (error) {
+        console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+    }
   } else if (interaction.commandName === 'pit') {
     var opseason;
     if (typeof(interaction.options.getInteger('season')) == undefined) {
@@ -820,7 +829,7 @@ client.on('interactionCreate', async interaction => {
       });
   } else if (interaction.commandName === 'update') {
       if (interaction.user.id == botOwnerUserID) {
-          exec(`git pull ${repoUrl} nodejs-backend-attempt`, (error, stdout, stderr) => {
+          exec(`git pull ${repoUrl}`, (error, stdout, stderr) => {
               if (error) {
                   interaction.reply({
                       content: 'could not pull data. error: ' + error,
@@ -841,7 +850,7 @@ client.on('interactionCreate', async interaction => {
                       }
 
                       //reboot
-                      exec("node discord/app.js", (error, stdout, stderr) => {
+                      exec("npm start", (error, stdout, stderr) => {
                           if (error) {
                               interaction.reply({
                                   content: 'could not restart bot, but files may have been updated. error: ' + error,
