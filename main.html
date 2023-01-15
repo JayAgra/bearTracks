@@ -67,7 +67,6 @@
         </fieldset>
         
         <!--extra fields to use-->
-        <input value="0" type="number" name="game11" hidden>
         <input value="0" type="number" name="game12" hidden>
         <input value="0" type="number" name="game13" hidden>
         <input value="0" type="number" name="game14" hidden>
@@ -86,7 +85,11 @@
         <br>
         <h2 class="gameflair1">Post Game</h2>
         <fieldset>
-            <label>Thoughts about the teleop phase:<br><br></label>
+            <label>Estimate the cycle time of the robot</label><br>
+            <input type="tel" name="game11" required> seconds
+        </fieldset>
+        <fieldset>
+            <label>Thoughts about the teleop phase<br><br></label>
             <textarea rows="2" cols="35" name="teleop"></textarea>
         </fieldset>
         <fieldset>
@@ -94,11 +97,11 @@
             <textarea rows="2" cols="35" name="defend"></textarea>
         </fieldset>
         <fieldset>
-            <label>Any thoughts about the driving?<br><br></label>
+            <label>Thoughts about driving<br><br></label>
             <textarea rows="2" cols="35" name="driving"></textarea>
         </fieldset>
         <fieldset>
-            <label>Overall assessment?<br><br></label>
+            <label>Overall assessment<br><br></label>
             <textarea rows="4" cols="35" name="overall"></textarea>
         </fieldset>
         <br>
