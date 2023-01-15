@@ -17,13 +17,13 @@ body {
 }
 
 fieldset {
-	border: #515151;
+	border: rgba(35,35,35,0.2);
 	border-width: 0.15rem;
 	border-style: solid;
-	border-radius: 1rem;
+	border-radius: 0.5rem;
 	margin-top: 0.25rem;
 	margin-bottom: 0.25rem;
-	background-color: #515151;
+	background-color: rgba(35,35,35,0.2);
 }
 
 h1 {
@@ -37,7 +37,7 @@ h1 {
 }
 
 select {
-	background-color: #515151;
+	background-color: rgba(18,18,18,0); /*  make this transparent  */
 	border: none;
 	color: #fff;
 	border-bottom: 2px solid #fff;
@@ -45,21 +45,21 @@ select {
 
 input[type='text'] {
 	border: none;
-	background-color: #515151;
+	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
 }
 
 input[type='number'] {
 	border: none;
-	background-color: #515151;
+	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
 }
 
 input[type='tel'] {
 	border: none;
-	background-color: #515151;
+	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
 }
