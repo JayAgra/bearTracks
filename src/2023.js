@@ -1,3 +1,5 @@
+const sqlite3 = require('sqlite3');
+
 function teamData(team, event) {
     //data:
     
