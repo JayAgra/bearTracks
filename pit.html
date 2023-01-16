@@ -4,74 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="src/2023.css" type="text/css">
+    <link rel="stylesheet" href="src/2023_float.css" type="text/css">
     <title>Pit Scouting</title>
 </head>
 
 <body>
-    <div class="cont-flex">
-        <div class="cont-flex-item">
+    <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
             <form action="/submit" target="_self" method="POST">
                 <input type="text" value="pit" name="formType" hidden>
-                <!--overrides-->
-                <input type="text" value="false" name="game2" hidden>
-                <input type="text" value="false" name="game3" hidden>
-                <input type="text" value="false" name="game4" hidden>
-                <input type="text" value="false" name="game5" hidden>
-                <input type="text" value="false" name="game6" hidden>
-                <input type="text" value="false" name="game7" hidden>
-                <!--END OVERRIDES-->
-                <h1>2023 Scouting: Charged Up</h1>
                 <br>
-                <h2>General Info:</h2>
+                <h2 class="gameflair1">General Info</h2>
                 <fieldset>
-                    <label>Event Code <span style="color:red">*</span></label><br>
+                    <label>Event Code</label><br>
                     <select name="event">
                         <option value="CADA">CADA - Sacramento Regional</option>
                         <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
                     </select>
                 </fieldset>
                 <fieldset>
-                    <label>Your Name <span style="color:red">*</span><br></label>
+                    <label>Your Name<br></label>
                     <input placeholder="Amon Gus" type="text" name="name" required>
                 </fieldset>
 
                 <fieldset>
-                    <label>Number of the Team you are Scouting <span style="color:red">*</span><br></label>
+                    <label>Number of the Team you are Scouting<br></label>
                     <input placeholder="766" type="tel" name="team" required>
                 </fieldset>
 
-                <h2>Pit Scouting</h2>
+                <h2 class="gameflair1">Pit Scouting</h2>
                 <h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
-                <fieldset>
-                    <label>How much cargo can the robot hold at a time?<br></label>
-                    <input placeholder="1 or 2" type="tel" name="game1">
-                </fieldset>
 
                 <fieldset>
                     <label>Drive Type<br></label>
                     <select name="drivetype">
-                        <option value="westcoast">Westcoast (Like Ours)</option>
+                        <option value="westcoast">Westcoast</option>
                         <option value="swerve">Swerve (Like Ours)</option>
                         <option value="other">Other (Explain in overall)</option>
                     </select>
                 </fieldset>
                 <fieldset>
                     <label>Experience<br></label>
-                    <input placeholder="-5" type="text" name="driveTeam"> Weeks of drive team work<br>
-                    <input placeholder="1" type="text" name="attended"> Number of attended events
-                </fieldset>
-                <fieldset>
-                    <label>Robot Capabilities<br></label>
-                    <br>
-                    <input value="true" type="checkbox" name="game2" class="checkbig">&emsp;The robot can score in the Upper Hub<br><br>
-                    <input value="true" type="checkbox" name="game3" class="checkbig">&emsp;The robot can score in the Lower Hub<br><br>
-                    <input value="true" type="checkbox" name="game4" class="checkbig">&emsp;The robot can climb to the Low Rung<br><br>
-                    <input value="true" type="checkbox" name="game5" class="checkbig">&emsp;The robot can climb to the Mid Rung<br><br>
-                    <input value="true" type="checkbox" name="game6" class="checkbig">&emsp;The robot can climb to the High Rung<br><br>
-                    <input value="true" type="checkbox" name="game7" class="checkbig">&emsp;The robot can climb to the Traversal Rung<br><br>
+                    <input type="text" name="driveTeam"> Days of drive team work<br>
+                    <input placeholder="1 or 2" type="text" name="attended"> Attended events
                 </fieldset>
 
+                <input value="0" type="number" name="game1" hidden>
+                <input value="0" type="number" name="game2" hidden>
+                <input value="0" type="number" name="game3" hidden>
+                <input value="0" type="number" name="game4" hidden>
+                <input value="0" type="number" name="game5" hidden>
+                <input value="0" type="number" name="game6" hidden>
+                <input value="0" type="number" name="game7" hidden>
                 <input value="0" type="number" name="game8" hidden>
                 <input value="0" type="number" name="game9" hidden>
                 <input value="0" type="number" name="game10" hidden>
@@ -85,90 +68,10 @@
                 <input value="0" type="number" name="game18" hidden>
                 <input value="0" type="number" name="game19" hidden>
                 <input value="0" type="number" name="game20" hidden>
-                
-                <fieldset>
-                    <label><strong>Confidence</strong></label><br>
-                    <table style="text-align:center;">
-                        <tr>
-                            <td rowspan="3"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td rowspan="3"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><input type="radio" name="confidence" value="1" class="checkbig"></td>
-                            <td><input type="radio" name="confidence" value="2" class="checkbig"></td>
-                            <td><input type="radio" name="confidence" value="3" class="checkbig"></td>
-                            <td><input type="radio" name="confidence" value="4" class="checkbig" checked></td>
-                            <td><input type="radio" name="confidence" value="5" class="checkbig"></td>
-                            <td><input type="radio" name="confidence" value="6" class="checkbig"></td>
-                            <td><input type="radio" name="confidence" value="7" class="checkbig"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </fieldset>
-                <fieldset>
-                    <label><strong>Build Quality</strong></label><br>
-                    <table style="text-align:center;">
-                        <tr>
-                            <td rowspan="3"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td rowspan="3"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><input type="radio" name="bqual" value="1" class="checkbig"></td>
-                            <td><input type="radio" name="bqual" value="2" class="checkbig"></td>
-                            <td><input type="radio" name="bqual" value="3" class="checkbig"></td>
-                            <td><input type="radio" name="bqual" value="4" class="checkbig" checked></td>
-                            <td><input type="radio" name="bqual" value="5" class="checkbig"></td>
-                            <td><input type="radio" name="bqual" value="6" class="checkbig"></td>
-                            <td><input type="radio" name="bqual" value="7" class="checkbig"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </fieldset>
+
                 <fieldset>
                     <label>Overall assessment<br></label>
-                    <textarea rows="4" cols="38" name="overall" placeholder="Team is pretty mid..."></textarea>
+                    <textarea rows="4" cols="38" name="overall"></textarea>
                 </fieldset>
                 <br>
 
@@ -178,8 +81,6 @@
                 </p>
             </form>
             <br><br>
-        </div>
-    </div>
 </body>
 
 </html>
