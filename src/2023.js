@@ -35,6 +35,14 @@ function teamData(team, event) {
     //UNUSED VALUES
     //game12 - game25 is INT (0)
     //formType is STRING the form that was submitted and is not entered into db
+
+    db.get('SELECT * FROM data WHERE team=${team} AND event="${event} ORDER BY id ASC LIMIT 1', (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(result);
+        }
+    })
 }
   
 function pitData(team, event) {

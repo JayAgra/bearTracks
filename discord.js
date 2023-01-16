@@ -2,7 +2,7 @@ const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandI
 const fs = require('fs');
 var datetime = new Date();
 const sqlite3 = require('sqlite3');
-const season = require("./2023.js")  
+const season = require("./src/2023.js")  
 
 const {
   exec } = require('child_process');
