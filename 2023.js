@@ -15,24 +15,43 @@ function teamData(team, event) {
     //game4 is BOOL top row score (6pts)
     //game5 is INT 0/8/12 no dock or engage/dock no engage/dock and engage
 
+
+    //TELEOP
     //game 6 is BOOL bottom row score
     //game 7 is BOOL middle row score
     //game 8 is BOOL top row score
     //game 9 is BOOL coop bonus (alliance)
     //game 10 is INT 0/2/6/10
 
+    //AFTER MATCH
     //game11 is INT est cycle time
     //teleop is STRING thoughts about teleop phase
     //defend is STRING about robot defence
     //driving is STRING about the robot's driver
     //overall is STRING as overall thoughts about the team
     
+    //UNUSED VALUES
     //game12 - game25 is INT (0)
     //formType is STRING the form that was submitted and is not entered into db
 }
   
 function pitData(team, event) {
+    //data:
+
+    //BASIC DATA
+    //event is event code
+    //name is scout name
+    //team is scouted team
     
+    //PIT SCOUTING DATA
+    //drivetype is STRING what drive type
+    //driveTeam is INT how many **days** of drive team work on this robot
+    //attended is INT how many other events has team attended
+    //overall is STRING overall thoughts
+
+    //UNUSED VALUES
+    //game1 - game20 is INT (0)
+    //formType is STRING the form that was submitted and is not entered into db
 }
   
 module.exports = { teamData, pitData };
