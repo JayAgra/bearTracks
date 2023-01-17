@@ -2,7 +2,7 @@ const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandI
 const fs = require('fs');
 var datetime = new Date();
 const sqlite3 = require('sqlite3');
-const season = require("./src/2023.js")  
+const seasonData = require("./src/2023.js")  
 
 const {
   exec } = require('child_process');
@@ -313,9 +313,7 @@ client.on('interactionCreate', async interaction => {
     //create embed
     //send embed
     try {
-    interaction.reply({
-        embeds: []
-    });
+        seasonData.teamData(teamnum, eventcode, interaction);
     } catch (error) {
         console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
     }
@@ -333,9 +331,11 @@ client.on('interactionCreate', async interaction => {
     //decide how to make embed based off season
     //create embed
     //send embed
-    interaction.reply({
-        embeds: [pitEmbed]
-    });
+    try {
+        seasonData.pitData(teamnum, eventcode, interaction);
+    } catch (error) {
+        console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+    }
   } else if (interaction.commandName === 'addscout') {
       if (interaction.member.id != interaction.options.getUser('user').id) {
           if (interaction.member.roles.cache.some(r => r.id == `${leadscout}`)) {
