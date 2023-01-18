@@ -145,7 +145,7 @@ function pitData(team, event) {
         })
       }
     });
-    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id ASC LIMIT 1`, (err, result) => {
+    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
           interaction.reply({
             content: "Error getting data!",

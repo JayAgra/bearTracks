@@ -36,43 +36,7 @@ client.once('ready', () => {
 });
 
 //emotes
-const eone = "<:01:964216829969068053>";
-const etwo = "<:02:964216829683847179>";
-const ethree = "<:03:964216830048759818>";
-const efour = "<:04:964216829637701694>";
-const efive = "<:05:964216830120067182>";
-const esix = "<:06:964216830061334618>";
-const eseven = "<:07:964216830040371290>";
-const eeight = "<:08:964216830392696852>";
-const enine = "<:09:964216829767712810>";
-const eten = "<:10:964216830174572614>";
-const empend = "<:empend:964263842899181609>"; //etwelve
-const empmid = "<:empmid:964263842869809152>"; //eeleven
-const ethirteen = "<:13:964307653121683577>";
-const efoutreen = "<:14:964322741866094602>";
 const trollface = "<:tf:1061411458027618375>"; //trollface
-
-//emote string array
-const stringzero = [`${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eseven}${eseven}${eseven}${eten}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${etwo}${eseven}${eseven}${eseven}${eseven}${empmid}${empmid}${empmid}${empmid}${empend}`, 
-  `${ethirteen}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empmid}${empend}`, 
-  `${ethirteen}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empmid}${empend}`, 
-  `${ethirteen}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empmid}${empend}`, 
-  `${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empmid}${empend}`, 
-  `${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${enine}${empmid}${empend}`, 
-  `${ethirteen}${esix}${esix}${esix}${esix}${esix}${esix}${esix}${empmid}${empend}`,
-  `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${eeight}${empend}`, 
-  `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${empend}`, 
-  `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${ethree}`, 
-  `${eone}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efive}${efour}`];
 
 //function to check if JSON is valid
 function invalidJSON(str) {
