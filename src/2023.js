@@ -148,7 +148,7 @@ function pitData(team, event, interaction) {
     db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
           interaction.reply({
-            content: "Error getting data!",
+            content: `Error getting data! 2 ${err}`,
             ephemeral: true
           })
           console.log(err);
@@ -181,7 +181,7 @@ function pitData(team, event, interaction) {
           return interaction.reply({embeds: [teamEmbed]});
           } else {
             interaction.reply({
-              content: "Error getting data!",
+              content: `Error getting data! 3 ${err}`,
               ephemeral: true
             })
           }
