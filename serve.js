@@ -59,7 +59,7 @@ const server = http.createServer((req, res) => {
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  'db closed');
             });
-            fs.readFile("submitted.html", (err, data) => {
+            fs.readFile("src/submitted.html", (err, data) => {
               if (err) {
                   res.writeHead(404);
                   res.end("404 Not Found");
@@ -92,7 +92,7 @@ const server = http.createServer((req, res) => {
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  'db closed');
             });
-            fs.readFile("submitted.html", (err, data) => {
+            fs.readFile("src/submitted.html", (err, data) => {
               if (err) {
                   res.writeHead(404);
                   res.end("404 Not Found");
@@ -106,7 +106,7 @@ const server = http.createServer((req, res) => {
         }
       });
   } else if (req.url === '/') {
-    fs.readFile("index.html", (err, data) => {
+    fs.readFile("src/index.html", (err, data) => {
       if (err) {
           res.writeHead(404);
           res.end("404 Not Found");
@@ -116,7 +116,7 @@ const server = http.createServer((req, res) => {
       res.end(data);
     });
   } else if (req.url === '/main') {
-    fs.readFile("main.html", (err, data) => {
+    fs.readFile("src/main.html", (err, data) => {
       if (err) {
           res.writeHead(404);
           res.end("404 Not Found");
@@ -126,7 +126,7 @@ const server = http.createServer((req, res) => {
       res.end(data);
     });
   } else if (req.url === '/pit') {
-    fs.readFile("pit.html", (err, data) => {
+    fs.readFile("src/pit.html", (err, data) => {
       if (err) {
           res.writeHead(404);
           res.end("404 Not Found");
