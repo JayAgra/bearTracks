@@ -148,7 +148,7 @@ function pitData(team, event, interaction) {
     db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
           interaction.reply({
-            content: `Error getting data! 2 ${err}`,
+            content: `Error getting data! ${err}`,
             ephemeral: true
           })
           console.log(err);
@@ -180,8 +180,9 @@ function pitData(team, event, interaction) {
           .setFooter({ text: `Scout IP/ID: ${result.scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
           return interaction.reply({embeds: [teamEmbed]});
           } else {
+            console.log(err, result);
             interaction.reply({
-              content: `Error getting data! 3 ${err}`,
+              content: `Error getting data! ${err} and ${result}`,
               ephemeral: true
             })
           }
