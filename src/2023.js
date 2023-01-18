@@ -119,7 +119,7 @@ function teamData(team, event, interaction) {
   });
 }
   
-function pitData(team, event) {
+function pitData(team, event, interaction) {
     //data:
 
     //BASIC DATA
