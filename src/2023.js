@@ -156,7 +156,7 @@ function pitData(team, event, interaction) {
           if (pitresult) {
           const pitEmbed = new MessageEmbed()
           .setColor('#ff00ff')
-          .setTitle(`Pit for team ${team}:`)
+          .setTitle(`Pit data for team ${team}:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`${event}, 2023`)
           .addFields({
