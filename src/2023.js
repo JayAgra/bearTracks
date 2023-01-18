@@ -145,7 +145,7 @@ function pitData(team, event, interaction) {
         })
       }
     });
-    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
+    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
         if (err) {
           interaction.reply({
             content: `Error getting data! ${err}`,
@@ -153,36 +153,36 @@ function pitData(team, event, interaction) {
           })
           console.log(err);
         } else {
-          if (result) {
-          const teamEmbed = new MessageEmbed()
+          if (pitresult) {
+          const pitEmbed = new MessageEmbed()
           .setColor('#ff00ff')
           .setTitle(`Pit for team ${team}:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`${event}, 2023`)
           .addFields({
             name: 'Drive Type',
-            value: `${result.drivetype}`,
+            value: `${pitresult.drivetype}`,
             inline: true
           },{
             name: 'Drive team work',
-            value: `${result.driveTeam} days`,
+            value: `${pitresult.driveTeam} days`,
             inline: true
           },{
             name: 'Other events attended',
-            value: `${result.attended} events`,
+            value: `${pitresult.attended} events`,
             inline: true
           },{
             name: 'Overall',
-            value: `Response: ${result.overall}`,
+            value: `Response: ${pitresult.overall}`,
             inline: true
           })
           .setTimestamp()
-          .setFooter({ text: `Scout IP/ID: ${result.scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
-          return interaction.reply({embeds: [teamEmbed]});
+          .setFooter({ text: `Scout IP/ID: ${pitresult.scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
+          return interaction.reply({embeds: [pitEmbed]});
           } else {
             console.log(err, result);
             interaction.reply({
-              content: `Error getting data! ${err} and ${result}`,
+              content: `Error getting data! ${err} ${pitresult}`,
               ephemeral: true
             })
           }
