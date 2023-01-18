@@ -12,5 +12,6 @@
 	"botOwnerUserID": "",
 	"season": 2023,
 	"currentComp": "NONE",
-	"clientSec": ""
+	"clientSec": "",
+	"redirectURI": "http://scout.example.com"
 }
