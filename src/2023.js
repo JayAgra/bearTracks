@@ -140,7 +140,7 @@ function pitData(team, event, interaction) {
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         interaction.reply({
-          content: "Error getting data!",
+          content: `Error getting data! ${err}`,
           ephemeral: true
         })
       }
