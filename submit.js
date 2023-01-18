@@ -99,6 +99,8 @@ const server = http.createServer((req, res) => {
       });
   } else  if (req.url === '/submit') {
     res.end('POST requests only on the /submit URL!');
+  } else {
+    res.end();
   }
 });
 
