@@ -1,280 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<title>RAPID REACT Scouting</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="main.css" type="text/css">
-<title>RAPID REACT Match Scouting</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="src/2023_float.css" type="text/css">
+<style>
+a {
+    border: #515151;
+    border-width: 1%;
+    border-style: solid;
+    border-radius: 5rem;
+    padding-right: 10%;
+    padding-left: 10%;
+    background-color: #515151;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 6vh;
+}
+body {
+    text-align: center;
+}
+</style>
 </head>
 <body>
-<div class="cont-flex">
-<div class="cont-flex-item">
+<div class="container">
 <form 
-    action="http://localhost:766"
-    target="_self"
-    method="POST"
-    name="mainForm"
 >
-<!--onclick="window.location.href = 'done.html';"-->
-<!--FORM CHECKBOX OVERRIDES TO WRITE OFF ON UNBOXES-->
-<input
-type="text" value="false"
-name="autonTAXI"
-hidden
->
-<input
-type="text" value="false"
-name="autonSHOOT"
-hidden
->
-<input
-type="text" value="false"
-name="autonINTAKE"
-hidden
->
-<input
-type="text" value="false"
-name="autonATTSCOREFAIL"
-hidden
->
-<input
-type="text" value="false"
-name="autonNOSCORE"
-hidden
->
-<input
-type="text" value="false"
-name="humanplayer"
-hidden
->
-<input
-type="text" value="main"
-name="formType"
-hidden
->
-<!--END OVERRIDES-->
-<h1>2022 Scouting: RAPID REACT℠</h1>
+<h1 style="font-size: 6.5vh;">2023 Scouting: CHARGED UP℠</h1><br>
+<a href="pit">
+    Pit Form<br>
+</a><br>
+<a href="main">
+    Main Form<br>
+</a><br>
 <br>
-<h2>Pre-Match:</h2><h4 style="color: #a9a9a9;">Get this done <b>before</b> the match starts!</h4>
-<!--<fieldset>
-<label for="Form Key">Form Key&emsp;<span style="color:gray;">If this is not entered correctly, the server will reject your entire response</span><br></label>
-<input
-placeholder="xxxxxxxxxxxx"
-type="text"
-name="entry.key"
-id="psw1"
-required>
-</fieldset>-->
-<fieldset>
-    <label>Event Code <span style="color:red">*</span></label><br>
-<select name="event">
-    <option value="CADA">CADA - Sacramento Regional</option>
-    <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
-</select>
-</fieldset>
-<fieldset>
-<label>Your Name <span style="color:red">*</span><br></label>
-<input
-placeholder="Amon Gus"
-type="text"
-name="name"
-required>
-</fieldset>
-
-<fieldset>
-<label>Number of the Team you are Scouting <span style="color:red">*</span><br></label>
-<input
-    placeholder="766"
-    type="tel"
-    name="teamnum"
-    required>
-</fieldset>
-
-<fieldset>
-<label>Name of the Team you are Scouting<br></label>
-<input
-    placeholder="Bears"
-    type="text"
-    name="teamnam"
-    >
-</fieldset>
-<fieldset>
-    <label>Match Number <span style="color:red">*</span><br></label>
-    <input
-        placeholder="01"
-        type="tel"
-        name="matchno"
-        required
-        >
-    <select name="matchlvl">
-        <option value="qual">Qual</option>
-        <option value="practice">Practice</option>
-        <option value="quarterfinal">Quarterfinal</option>
-        <option value="semifinal">Semifinal</option>
-    </select>
-</fieldset><br>
-<h2>Match Scouting</h2><h4 style="color: #a9a9a9;">Do this section for the duration of the match, fill out the rest at the end.</h4>
-<fieldset>
-    <label style="font-size: 8vw">Auton<br></label>
-    <br>
-    <input
-        value="true"
-        type="checkbox"
-        name="autonTAXI"
-        class="checkbig"
-        ><span style="font-size: 5vw">&emsp;During Auton, the robot taxied<br></span><br>
-    <input
-        value="true"
-        type="checkbox"
-        name="autonSHOOT"
-        class="checkbig"
-        ><span style="font-size: 5vw">&emsp;During Auton, the robot successfully shot cargo into the hubs<br></span><br>
-    <input
-        value="true"
-        type="checkbox"
-        name="autonINTAKE"
-        class="checkbig"
-        ><span style="font-size: 5vw">&emsp;During Auton, the robot retrieved cargo from the field<br></span><br>
-    <input
-        value="true"
-        type="checkbox"
-        name="autonATTSCOREFAIL"
-        class="checkbig"
-        ><span style="font-size: 5vw">&emsp;During Auton, the robot failed to score points, but made an attempt<br></span><br>
-        <input
-        value="true"
-        type="checkbox"
-        name="autonNOSCORE"
-        class="checkbig"
-        ><span style="font-size: 5vw">&emsp;During Auton, the robot did not score points</span><br>
-</fieldset>
-<fieldset>
-<label style="font-size: 8vw;">For Teleop ONLY:</label><br><br>
-Made Upper Hub shots: <input
-id="madeupper"
-type="number"
-value="0"
-name="madeupper"
-class="incnum"
-><br>
-<button onclick="incValueMadeUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
-Missed Upper Hub shots: <input
-id="missedupper"
-type="number"
-value="0"
-name="missedupper"
-class="incnum"
-><br>
-<button onclick="incValueMissedUpper()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
-Made Lower Hub shots: <input
-id="madelower"
-type="number"
-value="0"
-name="madelower"
-class="incnum"
-><br>
-<button onclick="incValueMadeLower()" type="button"  style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
-Missed Lower Hub shots: <input
-id="missedlower"
-type="number"
-value="0"
-name="missedlower"
-class="incnum"
-><br>
-<button onclick="incValueMissedLower()" type="button" style="width: 100%; height: 5rem; margin-top: 0.35rem; font-size: xx-large;">+</button><br><br>
-Bars climbed:<br>
-<select name="barsdone"><option value="none">No Bars</option><option value="low">Low Bar</option><option value="mid">Mid Bar</option><option value="high">High Bar</option><option value="trav">Traversal Bar</option></select><br>
-Bars attempted:<br>
-<select name="barsatt"><option value="none">No Bars</option><option value="low">Low Bar</option><option value="mid">Mid Bar</option><option value="high">High Bar</option><option value="trav">Traversal Bar</option></select>
-<br>
-</fieldset>
-
-    <!--<input
-        placeholder="0"
-        type="number"
-        name="entry.1019141500"
-        hidden
-        >-->
-
-<fieldset>
-    <input
-    value="true"
-    type="checkbox"
-    name="humanplayer"
-    class="checkbig"
-    ><span style="font-size: 5vw">&emsp;The Human Player interacts with the robot</span><br>
-</fieldset>
-<br>
-<h2>Post Game</h2><h4 style="color: gray;">Fill this out after the game. Watch the game closely, and take note of important events.</h4>
-<fieldset>
-    <label>Does the team seem consistent?</label><br>
-    <select
-    name="consistent"
-    >
-    <option value="Their performance seems promising and consistent">Consistent</option>
-    <option value="Their performance seems somewhat consistent">Somewhat consistent</option>
-    <option value="Their performance may change across different trials">Somewhat inconsistent</option>
-    <option value="Their performance will probably be different next time">Inconsistent</option>
-</select>
-</fieldset>
-<fieldset>
-    <label>Any other thoughts about the teleop phase? Actions it took during so?<br><br></label>
-    <textarea rows="2" cols="35" name="teleopThought" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label>Did the robot play defense? If so, what did they do?<br><br></label>
-    <textarea rows="2" cols="35" name="defenseThought" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label>Any thoughts about the driving?<br><br></label>
-    <textarea rows="2" cols="35" name="drivingThought" placeholder="No"></textarea>
-</fieldset>
-<fieldset>
-    <label>Overall assessment? Alliance partner?)<br><br></label>
-    <textarea rows="4" cols="35" name="overallThought" placeholder="Team is pretty mid..."></textarea>
-</fieldset>
-<br>
-<p style="text-align:center">
-<input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;"><br><br>
-<input type="reset" value="Reset Form" style="color: white; background-color: #515151; border-radius: 1rem; border-style: solid; border-color: #515151; border-width: 1rem;"><br><br><br>
-<a href="index.html" style="color: white; background-color: #E90202; border-radius: 1rem; border-style: solid; border-color: #E90202; border-width: 1rem;">Back</a>
+<p style="text-align:center; display:none;">
 </p>
 </form>
 <br><br>
-    <script>
-        //missed lower
-        function incValueMissedLower()
-        {
-            var value = parseInt(document.getElementById('missedlower').value, 10);
-            value = isNaN(value) ? 0 : value;
-            value++;
-            document.getElementById('missedlower').value = value;
-        }
-        //made lower
-        function incValueMadeLower()
-        {
-            var value = parseInt(document.getElementById('madelower').value, 10);
-            value = isNaN(value) ? 0 : value;
-            value++;
-            document.getElementById('madelower').value = value;
-        }
-        //missed upper
-        function incValueMissedUpper()
-        {
-            var value = parseInt(document.getElementById('missedupper').value, 10);
-            value = isNaN(value) ? 0 : value;
-            value++;
-            document.getElementById('missedupper').value = value;
-        }
-        //made upper
-        function incValueMadeUpper()
-        {
-            var value = parseInt(document.getElementById('madeupper').value, 10);
-            value = isNaN(value) ? 0 : value;
-            value++;
-            document.getElementById('madeupper').value = value;
-        }</script>
-    </div>
     </div>
     </body>
 </html>

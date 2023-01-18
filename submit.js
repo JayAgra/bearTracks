@@ -99,8 +99,64 @@ const server = http.createServer((req, res) => {
       });
   } else  if (req.url === '/submit') {
     res.end('POST requests only on the /submit URL!');
+  } else if (req.url === '/') {
+    fs.readFile("index.html", (err, data) => {
+      if (err) {
+          res.writeHead(404);
+          res.end("404 Not Found");
+          return;
+      }
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(data);
+    });
+  } else if (req.url === '/main') {
+    fs.readFile("main.html", (err, data) => {
+      if (err) {
+          res.writeHead(404);
+          res.end("404 Not Found");
+          return;
+      }
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(data);
+    });
+  } else if (req.url === '/pit') {
+    fs.readFile("pit.html", (err, data) => {
+      if (err) {
+          res.writeHead(404);
+          res.end("404 Not Found");
+          return;
+      }
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(data);});
+  } else if (req.url === '/src/2023_float.css') {
+    fs.readFile("src/2023_float.css", (err, data) => {
+      if (err) {
+          res.writeHead(404);
+          res.end("404 Not Found");
+          return;
+      }
+      res.writeHead(200, { "Content-Type": "text/css" });
+      res.end(data);});
+  } else if (req.url === '/src/fonts/Raleway-300.ttf') {
+    fs.readFile("src/fonts/Raleway-300.ttf", (err, data) => {
+      if (err) {
+          res.writeHead(404);
+          res.end("404 Not Found");
+          return;
+      }
+      res.writeHead(200, { "Content-Type": "font/ttf" });
+      res.end(data);});
+  } else if (req.url === '/src/fonts/Raleway-500.ttf') {
+    fs.readFile("src/fonts/Raleway-500.ttf", (err, data) => {
+      if (err) {
+          res.writeHead(404);
+          res.end("404 Not Found");
+          return;
+      }
+      res.writeHead(200, { "Content-Type": "font/ttf" });
+      res.end(data);});
   } else {
-    res.end();
+      res.end();
   }
 });
 
