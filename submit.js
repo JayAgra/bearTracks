@@ -60,9 +60,15 @@ const server = http.createServer((req, res) => {
                   res.end('pit form error! ' + err.message);
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  'db closed');
-                res.write("finished writing to DB" + "\n");
             });
-            res.end('pit form submitted');
+            fs.readFile("/submitted.html", (err, data) => {
+              if (err) {
+                  res.writeHead(404);
+                  res.end("404 Not Found");
+                  return;
+              }
+              res.writeHead(200, { "Content-Type": "text/html" });
+              res.end(data);});
         } else if (formData.formType === 'main') {
             console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  "main recd from " +  req.socket.remoteAddress)
             let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -89,9 +95,15 @@ const server = http.createServer((req, res) => {
                   res.end('pit form error! ' + err.message);
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  'db closed');
-                res.write("finished writing to DB" + "\n");
             });
-            res.end('main form submitted');
+            fs.readFile("/submitted.html", (err, data) => {
+              if (err) {
+                  res.writeHead(404);
+                  res.end("404 Not Found");
+                  return;
+              }
+              res.writeHead(200, { "Content-Type": "text/html" });
+              res.end(data);});
         } else {
           res.end('unknown form type');
           console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + "form type not known, got '" + formData.formType + "'")
