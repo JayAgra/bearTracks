@@ -97,7 +97,7 @@ const server = http.createServer((req, res) => {
           console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + "form type not known, got '" + formData.formType + "'")
         }
       });
-  } else {
+  } else  if (req.url === '/submit') {
     res.end('POST requests only on the /submit URL!');
   }
 });
