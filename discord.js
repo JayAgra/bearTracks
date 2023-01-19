@@ -855,9 +855,10 @@ function newSubmission(formType, Id, scoutIP) {
     .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
     .setTimestamp()
     .setFooter({ text: `Scout IP/ID: ${scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
-    client.channels.get(scoutChannel).send({
+    client.channels.cache.get(scoutChannel).send({
         embeds: newSubmission
     });
+    return;
 }
 
 //login to discord
