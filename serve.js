@@ -116,6 +116,7 @@ const server = http.createServer((req, res) => {
       res.end(data);
     });
   } else if (req.url === '/main') {
+    //require discord oauth2
     fs.readFile("src/main.html", (err, data) => {
       if (err) {
           res.writeHead(404);
@@ -126,6 +127,7 @@ const server = http.createServer((req, res) => {
       res.end(data);
     });
   } else if (req.url === '/pit') {
+    //require discord oauth2
     fs.readFile("src/pit.html", (err, data) => {
       if (err) {
           res.writeHead(404);
@@ -134,7 +136,7 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { "Content-Type": "text/html" });
       res.end(data);});
-  } else if (req.url === '/src/2023_float.css') {
+  } else if (req.url === '2023_float.css') {
     fs.readFile("src/2023_float.css", (err, data) => {
       if (err) {
           res.writeHead(404);
@@ -143,7 +145,7 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { "Content-Type": "text/css" });
       res.end(data);});
-  } else if (req.url === '/src/fonts/Raleway-300.ttf') {
+  } else if (req.url === 'fonts/Raleway-300.ttf') {
     fs.readFile("src/fonts/Raleway-300.ttf", (err, data) => {
       if (err) {
           res.writeHead(404);
@@ -152,7 +154,7 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { "Content-Type": "font/ttf" });
       res.end(data);});
-  } else if (req.url === '/src/fonts/Raleway-500.ttf') {
+  } else if (req.url === 'fonts/Raleway-500.ttf') {
     fs.readFile("src/fonts/Raleway-500.ttf", (err, data) => {
       if (err) {
           res.writeHead(404);
