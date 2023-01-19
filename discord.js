@@ -48,6 +48,18 @@ function invalidJSON(str) {
   }
 }
 
+function newSubmission(formType, Id, scoutIP) {
+    const newSubmission = new MessageEmbed()
+    .setColor('#06061f')
+    .setTitle(`New submission on ${formType} form, ID: ${Id}.`)
+    .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+    .setTimestamp()
+    .setFooter({ text: `Scout IP/ID: ${scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
+    const channel = client.channels.cache.get(scoutChannel);
+    channel.send("new submission");
+    return;
+}
+
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
   if (interaction.commandName === 'matches') {
@@ -848,17 +860,6 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-function newSubmission(formType, Id, scoutIP) {
-    const newSubmission = new MessageEmbed()
-    .setColor('#06061f')
-    .setTitle(`New submission on ${formType} form, ID: ${Id}.`)
-    .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
-    .setTimestamp()
-    .setFooter({ text: `Scout IP/ID: ${scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
-    const channel = client.channels.cache.get(scoutChannel);
-    channel.send("new submission");
-    return;
-}
 
 //login to discord
 client.login(token);
