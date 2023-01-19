@@ -3,7 +3,7 @@ const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 
-const sendSubmission = require("discord.js")  
+const sendSubmission = require("./discord.js")  
 
 //check that the config.json file exists
 if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
