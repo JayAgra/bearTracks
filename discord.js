@@ -49,7 +49,7 @@ function invalidJSON(str) {
 }
 
 function newSubmission(formType, Id, scoutIP) {
-    /*const newSubmission = new MessageEmbed()
+    const newSubmission = new MessageEmbed()
     .setColor('#06061f')
     .setTitle(`New submission on ${formType} form, ID: ${Id}.`)
     .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
@@ -58,9 +58,6 @@ function newSubmission(formType, Id, scoutIP) {
     const channel = client.channels.cache.get(scoutChannel);
     channel.send("new submission");
     return;
-    */
-    client.channels.fetch(scoutChannel)
-    .then(channel=>channel.send('aaaa'))
 }
 
 client.on('interactionCreate', async interaction => {
