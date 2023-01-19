@@ -56,9 +56,7 @@ function newSubmission(formType, Id, scoutIP) {
     .setFooter({ text: `Scout IP/ID: ${scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
     //you need to set channel yourslef!
     const channel = client.channels.cache.get('400355158502014977');
-    channel.send({
-        embeds: newSubmission
-    });
+    channel.send(newSubmission);
     return;
 }
 
