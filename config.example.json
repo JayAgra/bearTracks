@@ -14,5 +14,5 @@
 	"currentComp": "NONE",
 	"clientSec": "",
 	"redirectURI": "http://scout.example.com",
-	"scoutChannel": ""
+	"scoutChannel": 0
 }
