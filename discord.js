@@ -1,7 +1,6 @@
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
 const fs = require('fs');
 var datetime = new Date();
-const sqlite3 = require('sqlite3');
 const seasonData = require("./src/2023.js")  
 
 const {
@@ -55,7 +54,7 @@ function newSubmission(formType, Id, scoutIP) {
     .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
     .setTimestamp()
     .setFooter({ text: `Scout IP/ID: ${scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
-    const channel = client.channels.cache.get(scoutChannel);
+    const channel = client.channels.cache.get('400355158502014977');
     channel.send("new submission");
     return;
 }
