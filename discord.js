@@ -20,7 +20,7 @@ if (fs.statSync("config.json").size < 300) {
 } else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
 
 //safe to require config.json
-const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID, season, currentComp } = require('./config.json');
+const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID, season, currentComp, scoutChannel } = require('./config.json');
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS]
@@ -848,5 +848,19 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
+function newSubmission(formType, Id, scoutIP) {
+    const newSubmission = new MessageEmbed()
+    .setColor('#06061f')
+    .setTitle(`New submission on ${formType} form, ID: ${Id}.`)
+    .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+    .setTimestamp()
+    .setFooter({ text: `Scout IP/ID: ${scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
+    client.channels.get(scoutChannel).send({
+        embeds: newSubmission
+    });
+}
+
 //login to discord
 client.login(token);
+
+module.exports = { newSubmission };

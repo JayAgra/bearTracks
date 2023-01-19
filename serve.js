@@ -3,6 +3,8 @@ const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 
+const sendSubmission = require("discord.js")  
+
 //check that the config.json file exists
 if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
   console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not finf config.json! Fill out config.example.json and rename it to config.json');
@@ -51,6 +53,7 @@ const server = http.createServer((req, res) => {
                   res.end('pit form error! ' + err.message);
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  `row ${this.lastID} inserted`);
+                sendSubmission.newSubmission("main", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''));
             });
             db.close((err) => {
                 if (err) {
@@ -84,6 +87,7 @@ const server = http.createServer((req, res) => {
                   res.end('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + 'pit form error! ' + err.message);
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  `row ${this.lastID} inserted`);
+                sendSubmission.newSubmission("pit", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''));
             });
             db.close((err) => {
                 if (err) {
