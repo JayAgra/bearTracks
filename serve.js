@@ -53,7 +53,7 @@ const server = http.createServer((req, res) => {
                   res.end('pit form error! ' + err.message);
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  `row ${this.lastID} inserted`);
-                sendSubmission.newSubmission("main", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''));
+                sendSubmission.newSubmission("Main", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''));
             });
             db.close((err) => {
                 if (err) {
@@ -87,7 +87,7 @@ const server = http.createServer((req, res) => {
                   res.end('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + 'pit form error! ' + err.message);
                 }
                 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' +  `row ${this.lastID} inserted`);
-                sendSubmission.newSubmission("pit", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''));
+                sendSubmission.newSubmission("Pit", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''));
             });
             db.close((err) => {
                 if (err) {
