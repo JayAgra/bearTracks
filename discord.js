@@ -48,6 +48,8 @@ function invalidJSON(str) {
 }
 
 function newSubmission(formType, Id, scoutIP) {
+    //you need to set channel yourslef!
+    const channel = client.channels.cache.get('400355158502014977');
     channel.send(`New form submission!\n${formType} submission with the ID ${Id}.\n${scoutIP}`);
     return;
 }
