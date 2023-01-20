@@ -19,7 +19,7 @@ if (fs.statSync("config.json").size < 300) {
 } else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
 
 //safe to require config.json
-const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID, season, currentComp, scoutChannel } = require('./config.json');
+const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID, season, currentComp } = require('./config.json');
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS]
@@ -57,13 +57,28 @@ function newSubmission(formType, Id, scoutIP, scoutName) {
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
   if (interaction.commandName === 'matches') {
+
     var opseason;
     if (typeof(interaction.options.getInteger('season')) == undefined) {
         opseason = season;
     } else {
         opseason = interaction.options.getInteger('season');
     }
-      const eventcode = interaction.options.getString('eventcode');
+
+    var eventcode;
+    if (typeof(interaction.options.getString('eventcode')) == undefined) {
+        if (currentComp == "NONE") {
+            interaction.reply({
+                content: "We are not competing, you must specify an event code.",
+                ephemeral: true
+            })
+            return;
+        }
+        eventcode = currentComp;
+    } else {
+        eventcode = interaction.options.getString('eventcode');
+    }
+
       const teamnum = interaction.options.getInteger('teamnum');
       const tlevel = interaction.options.getString('tlevel');
       var dbody = new EventEmitter();
@@ -275,7 +290,21 @@ client.on('interactionCreate', async interaction => {
     } else {
         opseason = interaction.options.getInteger('season');
     }
-    const eventcode = interaction.options.getString('eventcode');
+    
+    var eventcode;
+    if (typeof(interaction.options.getString('eventcode')) == undefined) {
+        if (currentComp == "NONE") {
+            interaction.reply({
+                content: "We are not competing, you must specify an event code.",
+                ephemeral: true
+            })
+            return;
+        }
+        eventcode = currentComp;
+    } else {
+        eventcode = interaction.options.getString('eventcode');
+    }
+
     const teamnum = interaction.options.getInteger('teamnum');
     //fetch data from the database
     //see what season
@@ -374,7 +403,19 @@ client.on('interactionCreate', async interaction => {
     } else {
         opseason = interaction.options.getInteger('season');
     }
-      const eventcode = interaction.options.getString('eventcode');
+    var eventcode;
+    if (typeof(interaction.options.getString('eventcode')) == undefined) {
+        if (currentComp == "NONE") {
+            interaction.reply({
+                content: "We are not competing, you must specify an event code.",
+                ephemeral: true
+            })
+            return;
+        }
+        eventcode = currentComp;
+    } else {
+        eventcode = interaction.options.getString('eventcode');
+    }
       var dbody = new EventEmitter();
       var options = {
           'method': 'GET',

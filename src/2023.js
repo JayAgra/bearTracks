@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3');
 const { MessageEmbed } = require('discord.js');
 
-function teamData(team, event, interaction) {
+function teamData(team, event, interaction, id) {
     //data:
     
     //BASIC DATA
@@ -51,6 +51,7 @@ function teamData(team, event, interaction) {
         })
       }
     });
+    if (id == 0 && team !== 0 && event !==0) {
     db.get(`SELECT * FROM main WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
           interaction.reply({
@@ -117,6 +118,79 @@ function teamData(team, event, interaction) {
       if (err) {
       }
   });
+} else  if (id !== 0) {
+  db.get(`SELECT * FROM main WHERE id="${event}" LIMIT 1`, (err, result) => {
+    if (err) {
+      interaction.reply({
+        content: "Error getting data!",
+        ephemeral: true
+      })
+      console.log(err);
+    } else {
+      if (result) {
+      const teamEmbed = new MessageEmbed()
+      .setColor('#181f2f')
+      .setTitle(`Data from main form submission, ID:${result.id}`)
+      .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
+      .setDescription(`Team: **${result.team}** Match ${result.match} (${result.level}) ${event}, 2023`)
+      .addFields({
+        name: 'AUTO',
+        value: `Taxi: ${valueToEmote(result.game1)} \nScore B/M/T: ${valueToEmote(result.game2)}${valueToEmote(result.game3)}${valueToEmote(result.game4)}`,
+        inline: true
+      },{
+        name: 'AUTO Charging Points',
+        value: `${result.game5} points`,
+        inline: true
+      },{
+        name: 'TELEOP Score',
+        value: `B/M/T ${valueToEmote(result.game6)}${valueToEmote(result.game7)}${valueToEmote(result.game8)}`,
+        inline: true
+      },{
+        name: 'Alliance COOPERTITION',
+        value: `${valueToEmote(result.game9)}`,
+        inline: true
+      },{
+        name: 'TELEOP Charging Points',
+        value: `${result.game10} points`,
+        inline: true
+      },{
+        name: 'Cycle Time',
+        value: `${result.game11} seconds`,
+        inline: true
+      },{
+        name: 'Defense',
+        value: `Response: ${result.defend}`,
+        inline: true
+      },{
+        name: 'Driving',
+        value: `Response: ${result.driving}`,
+        inline: true
+      },{
+        name: 'Overall',
+        value: `Response: ${result.overall}`,
+        inline: true
+      })
+      .setTimestamp()
+      .setFooter({ text: `Scout IP/ID: ${result.scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
+      return interaction.reply({embeds: [teamEmbed]});
+      } else {
+        interaction.reply({
+          content: "Error getting data!",
+          ephemeral: true
+        })
+      }
+    }
+})
+db.close((err) => {
+  if (err) {
+  }
+});
+} else {
+  interaction.reply({
+    content: "Not enough parameters!",
+    ephemeral: true
+  })
+}
 }
   
 function pitData(team, event, interaction) {

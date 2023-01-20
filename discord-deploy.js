@@ -29,14 +29,18 @@ new SlashCommandBuilder()
 new SlashCommandBuilder()
 	.setName('data')
 	.setDescription('Get Team Data')
-	.addStringOption(option =>
-		option.setName('eventcode')
-			  .setDescription('Event Code')
-			  .setRequired(true))
 	.addIntegerOption(option =>
 		option.setName('teamnum')
 			  .setDescription('Target Team Number')
-			  .setRequired(true))
+			  .setRequired(false))
+	.addIntegerOption(option =>
+		option.setName('id')
+			.setDescription('submission ID, provide only this if looking for specific submission')
+			.setRequired(false))
+	.addStringOption(option =>
+		option.setName('eventcode')
+			  .setDescription('Event Code')
+			  .setRequired(false))
 	.addIntegerOption(option =>
 		option.setName('season')
 			.setDescription('Current Year')
@@ -44,14 +48,14 @@ new SlashCommandBuilder()
 new SlashCommandBuilder()
 	.setName('pit')
 	.setDescription('Get Team Pit Data')
-		.addStringOption(option =>
-			option.setName('eventcode')
-				.setDescription('Event Code')
-				.setRequired(true))
 		.addIntegerOption(option =>
 			option.setName('teamnum')
 				.setDescription('Target Team Number')
 				.setRequired(true))
+		.addStringOption(option =>
+			option.setName('eventcode')
+				.setDescription('Event Code')
+				.setRequired(false))
 		.addIntegerOption(option =>
 			option.setName('season')
 				.setDescription('Current Year')
@@ -77,7 +81,7 @@ new SlashCommandBuilder()
 	.addStringOption(option =>
 		option.setName('eventcode')
 		.setDescription('Event Code')
-		.setRequired(true))
+		.setRequired(false))
 	.addIntegerOption(option =>
 		option.setName('season')
 		.setDescription('Current Year')

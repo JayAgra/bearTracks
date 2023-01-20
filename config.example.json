@@ -13,6 +13,5 @@
 	"season": 2023,
 	"currentComp": "NONE",
 	"clientSec": "",
-	"redirectURI": "http://scout.example.com",
-	"scoutChannel": 0
+	"redirectURI": "http://scout.example.com"
 }
