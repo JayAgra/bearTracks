@@ -32,11 +32,7 @@ new SlashCommandBuilder()
 	.addIntegerOption(option =>
 		option.setName('teamnum')
 			  .setDescription('Target Team Number')
-			  .setRequired(false))
-	.addIntegerOption(option =>
-		option.setName('id')
-			.setDescription('submission ID, provide only this if looking for specific submission')
-			.setRequired(false))
+			  .setRequired(true))
 	.addStringOption(option =>
 		option.setName('eventcode')
 			  .setDescription('Event Code')
