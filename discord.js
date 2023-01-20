@@ -682,6 +682,7 @@ client.on('interactionCreate', async interaction => {
           }
       });
   } else if (interaction.commandName === 'pitscout') {
+    //CONSIDER PIT SCOUTING VIA DISCORD
     if (currentComp == "NONE") {
         interaction.reply({
             content: 'we are not in a comp!',
