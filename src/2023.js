@@ -2,6 +2,12 @@ const sqlite3 = require('sqlite3');
 const { MessageEmbed } = require('discord.js');
 
 function teamData(team, event, interaction) {
+  if (event == "NONE") {
+    return interaction.reply({
+      content: "We are not competing, so you must specify the event code!",
+      ephemeral: true
+    })
+  }
     //data:
     
     //BASIC DATA
@@ -45,7 +51,7 @@ function teamData(team, event, interaction) {
     }
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
-        interaction.reply({
+        return interaction.reply({
           content: "Error getting data!",
           ephemeral: true
         })
@@ -53,7 +59,7 @@ function teamData(team, event, interaction) {
     });    
     db.get(`SELECT * FROM main WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
-          interaction.reply({
+          return interaction.reply({
             content: "Error getting data!",
             ephemeral: true
           })
@@ -106,7 +112,7 @@ function teamData(team, event, interaction) {
           .setFooter({ text: `Scout IP/ID: ${result.scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
           return interaction.reply({embeds: [teamEmbed]});
           } else {
-            interaction.reply({
+            return interaction.reply({
               content: "Error getting data!",
               ephemeral: true
             })
@@ -120,6 +126,12 @@ function teamData(team, event, interaction) {
 }
   
 function pitData(team, event, interaction) {
+  if (event == "NONE") {
+    return interaction.reply({
+      content: "We are not competing, so you must specify the event code!",
+      ephemeral: true
+    })
+  }
     //data:
 
     //BASIC DATA
@@ -139,7 +151,7 @@ function pitData(team, event, interaction) {
     
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
-        interaction.reply({
+        return interaction.reply({
           content: `Error getting data! ${err}`,
           ephemeral: true
         })

@@ -293,28 +293,21 @@ client.on('interactionCreate', async interaction => {
     
     var eventcode;
     if (typeof(interaction.options.getString('eventcode')) == undefined) {
-        if (currentComp == "NONE") {
-            interaction.reply({
-                content: "We are not competing, you must specify an event code.",
-                ephemeral: true
-            })
-            return;
-        }
-        eventcode = currentComp;
+        eventcode = season;
     } else {
         eventcode = interaction.options.getString('eventcode');
     }
 
     const teamnum = interaction.options.getInteger('teamnum');
-    //fetch data from the database
-    //see what season
-    //decide how to make embed based off season
-    //create embed
-    //send embed
+
     try {
         seasonData.teamData(teamnum, eventcode, interaction);
     } catch (error) {
         console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+        interaction.reply({
+            content: `There was an unexpected error! ${error}`,
+            ephemeral: true
+        })
     }
   } else if (interaction.commandName === 'pit') {
     var opseason;
@@ -323,17 +316,24 @@ client.on('interactionCreate', async interaction => {
     } else {
         opseason = interaction.options.getInteger('season');
     }
-    const eventcode = interaction.options.getString('eventcode');
+
+    var eventcode;
+    if (typeof(interaction.options.getString('eventcode')) == undefined) {
+        eventcode = season;
+    } else {
+        eventcode = interaction.options.getString('eventcode');
+    }
+
     const teamnum = interaction.options.getInteger('teamnum');
-    //fetch data from the database
-    //see what season
-    //decide how to make embed based off season
-    //create embed
-    //send embed
+
     try {
         seasonData.pitData(teamnum, eventcode, interaction);
     } catch (error) {
         console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+        interaction.reply({
+            content: `There was an unexpected error! ${error}`,
+            ephemeral: true
+        })
     }
   } else if (interaction.commandName === 'addscout') {
       if (interaction.member.id != interaction.options.getUser('user').id) {
