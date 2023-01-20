@@ -106,7 +106,7 @@ client.on('interactionCreate', async interaction => {
           } else {
               const outputget = JSON.parse(data);
               const matchEmbed = new MessageEmbed()
-                  .setColor('#ff00ff')
+                  .setColor('#740000')
                   .setTitle(`${outputget.Schedule[0].description}`)
                   .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                   .addFields({
@@ -170,7 +170,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       matchno = updatedp;
                       const matchEmbedu = new MessageEmbed()
-                          .setColor('#ff00ff')
+                          .setColor('#740000')
                           .setTitle(`${outputget.Schedule[matchno].description}`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .addFields({
@@ -217,7 +217,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       matchno = updated;
                       const matchEmbedu = new MessageEmbed()
-                          .setColor('#ff00ff')
+                          .setColor('#740000')
                           .setTitle(`${outputget.Schedule[matchno].description}`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .addFields({
@@ -415,7 +415,7 @@ client.on('interactionCreate', async interaction => {
           } else {
               const outputget = JSON.parse(data);
               const rankEmbed = new MessageEmbed()
-                  .setColor('#ff00ff')
+                  .setColor('#740000')
                   .setTitle(`${eventcode} team rankings`)
                   .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                   .setDescription(`Rank ${outputget.Rankings[0].rank}: ${outputget.Rankings[0].teamNumber}`)
@@ -502,7 +502,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       rankno = updatedp;
                       const rankEmbedu = new MessageEmbed()
-                          .setColor('#ff00ff')
+                          .setColor('#740000')
                           .setTitle(`${eventcode} team rankings`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
@@ -554,7 +554,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       rankno = updatedp;
                       const rankEmbedu = new MessageEmbed()
-                          .setColor('#ff00ff')
+                          .setColor('#740000')
                           .setTitle(`${eventcode} team rankings`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
@@ -635,7 +635,7 @@ client.on('interactionCreate', async interaction => {
                       });
                       console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + rankno);
                       const rankEmbedu = new MessageEmbed()
-                          .setColor('#ff00ff')
+                          .setColor('#740000')
                           .setTitle(`${eventcode} team rankings`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
@@ -733,7 +733,7 @@ client.on('interactionCreate', async interaction => {
                 listOfTeams += `${outputget.i.teamNumber}\n`
             }
             const teamList = new MessageEmbed()
-            .setColor('#ff00ff')
+            .setColor('#740000')
             .setTitle(`Teams to scout`)
             .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
             .setDescription(`List of teams in the current comp (${season}:${currentComp})`)
@@ -831,7 +831,7 @@ client.on('interactionCreate', async interaction => {
                               return;
                           }
                           const updateEmbed = new MessageEmbed()
-                              .setColor('#ff00ff')
+                              .setColor('#740000')
                               .setTitle(`Bot Updated!`)
                               .setDescription(`Bot services should resume`)
                               .setTimestamp()

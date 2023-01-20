@@ -61,7 +61,7 @@ function teamData(team, event, interaction) {
         } else {
           if (result) {
           const teamEmbed = new MessageEmbed()
-          .setColor('#ff00ff')
+          .setColor('#181f2f')
           .setTitle(`Data from team ${team}'s last match:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023`)
@@ -155,7 +155,7 @@ function pitData(team, event, interaction) {
         } else {
           if (pitresult) {
           const pitEmbed = new MessageEmbed()
-          .setColor('#ff00ff')
+          .setColor('#181f2f')
           .setTitle(`Pit data for team ${team}:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`${event}, 2023`)
