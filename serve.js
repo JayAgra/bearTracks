@@ -3,14 +3,14 @@ const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 
-/*
+
 var options = {
   key: fs.readFileSync('src/key.pem'),
   cert: fs.readFileSync('src/cert.pem')
 };
 
 var https = require('https');
-*/
+
 
 const sendSubmission = require("./discord.js")  
 
@@ -36,7 +36,7 @@ console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' 
 
 //https.createServer(options, function (req, res)
 
-const server = http.createServer((req, res) => {
+const server = https.createServer((req, res) => {
   if (req.method === 'POST' && req.url === '/submit') {
     let body = '';
 
@@ -178,6 +178,7 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { "Content-Type": "font/ttf" });
       res.end(data);});
+  //remains from Let's Encrypt verification
   } else if (req.url === '/.well-known/acme-challenge/2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c') {
       res.write("2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c.I6WhuLPGWoMMXxliTwBTYNmTJzvEP-yCBAfTSHB_0s0");
       res.end();
