@@ -167,10 +167,6 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { "Content-Type": "font/ttf" });
       res.end(data);});
-  //remains from Let's Encrypt verification
-  } else if (req.url === '/.well-known/acme-challenge/2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c') {
-      res.write("2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c.I6WhuLPGWoMMXxliTwBTYNmTJzvEP-yCBAfTSHB_0s0");
-      res.end();
   } else {
       res.end();
   }
