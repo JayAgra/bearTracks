@@ -48,7 +48,7 @@ input[type='text'] {
 	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
-	width: 100%;
+	width: 95%;
 }
 
 input[type='number'] {
@@ -56,7 +56,7 @@ input[type='number'] {
 	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
-	width: 100%;
+	width: 95%;
 }
 
 input[type='tel'] {
@@ -64,7 +64,7 @@ input[type='tel'] {
 	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
-	width: 100%;
+	width: 95%;
 }
 
 input[type='number']:focus {
