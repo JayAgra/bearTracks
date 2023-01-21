@@ -180,7 +180,7 @@ const server = http.createServer((req, res) => {
       res.end(data);});
   } else if (req.url === '/.well-known/acme-challenge/2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c') {
       res.write("2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c.I6WhuLPGWoMMXxliTwBTYNmTJzvEP-yCBAfTSHB_0s0");
-      res.end(data);
+      res.end();
   } else {
       res.end();
   }
