@@ -1,8 +1,7 @@
-const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, CommandInteractionOptionResolver } = require('discord.js');
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const fs = require('fs');
 var datetime = new Date();
-const seasonData = require("./src/2023.js")  
-
+const seasonData = require("./src/2023.js");
 const { exec } = require('child_process');
 
 if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
@@ -25,12 +24,11 @@ const client = new Client({
 });
 var EventEmitter = require("events").EventEmitter;
 var https = require('follow-redirects').https;
-var CronJob = require('cron').CronJob;
-var lodash = require('lodash');
-const { error } = require('console');
+
 client.once('ready', () => {
-  console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Ready!');
-  console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + datetime);
+    client.user.setActivity("the 766 Ws", { type: "WATCHING" });
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Ready!');
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + datetime);
 });
 
 //emotes
