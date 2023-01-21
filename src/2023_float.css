@@ -68,16 +68,19 @@ input[type='tel'] {
 }
 
 input[type='number']:focus {
+	background-color: rgba(18,18,18,0); /*  make this transparent  */
 	outline: none;
 	border-bottom: 2px solid #FFB600;
 }
 
 input[type='tel']:focus {
+	background-color: rgba(18,18,18,0); /*  make this transparent  */
 	outline: none;
 	border-bottom: 2px solid #FFB600;
 }
 
 input[type='text']:focus {
+	background-color: rgba(18,18,18,0); /*  make this transparent  */
 	outline: none;
 	border-bottom: 2px solid #FFB600;
 }
@@ -108,4 +111,9 @@ label {
 .smallerInput {
 	min-width: 45% !important;
 	max-width: 65% !important;
+}
+input, textarea, select {
+	/*-webkit-appearance: none;*/
+	-webkit-border-radius:0; 
+    border-radius:0;
 }
