@@ -3,15 +3,6 @@ const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 
-
-var options = {
-  key: fs.readFileSync('src/key.key'),
-  cert: fs.readFileSync('src/cert.pem')
-};
-
-var https = require('https');
-
-
 const sendSubmission = require("./discord.js")  
 
 //check that the config.json file exists
@@ -34,9 +25,7 @@ const season = require('./config.json');
 //before server creation
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
 
-//https.createServer(options, function (req, res)
-
-const server = https.createServer(options, function (req, res) {
+const server = http.createServer((req, res) => {
   if (req.method === 'POST' && req.url === '/submit') {
     let body = '';
 
