@@ -40,7 +40,7 @@ select {
 	background-color: rgba(18,18,18,0); /*  make this transparent  */
 	border: none;
 	color: #fff;
-	border-bottom: 2px solid #fff;
+	border-bottom: 2px solid #fff;		
 }
 
 input[type='text'] {
@@ -48,6 +48,7 @@ input[type='text'] {
 	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
+	width: 100%;
 }
 
 input[type='number'] {
@@ -55,6 +56,7 @@ input[type='number'] {
 	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
+	width: 100%;
 }
 
 input[type='tel'] {
@@ -62,6 +64,7 @@ input[type='tel'] {
 	background-color: rgba(35,35,35,0); /*  make this transparent  */
 	color: #fff;
 	border-bottom: 1px solid #fff;
+	width: 100%;
 }
 
 input[type='number']:focus {
@@ -101,4 +104,8 @@ label {
 	-moz-transform: scale(2);
 	-ms-transform: scale(2);
 	transform: scale(2);
+}
+.smallerInput {
+	min-width: 45% !important;
+	max-width: 65% !important;
 }
