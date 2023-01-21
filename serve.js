@@ -36,7 +36,7 @@ console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' 
 
 //https.createServer(options, function (req, res)
 
-const server = https.createServer((req, res) => {
+const server = https.createServer(options, function (req, res) {
   if (req.method === 'POST' && req.url === '/submit') {
     let body = '';
 
