@@ -3,6 +3,15 @@ const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 
+/*
+var options = {
+  key: fs.readFileSync('src/key.pem'),
+  cert: fs.readFileSync('src/cert.pem')
+};
+
+var https = require('https');
+*/
+
 const sendSubmission = require("./discord.js")  
 
 //check that the config.json file exists
@@ -12,8 +21,8 @@ if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
   process.exit();
 } else {console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[32m', ' [INFO] ' ,'\x1b[0m' + 'Found config.json file!');}
 
-//see if the config.json file is less than 300 bytes, assume not filled out
-if (fs.statSync("config.json").size < 300) {
+//see if the config.json file is less than 334 bytes, assume not filled out
+if (fs.statSync("config.json").size < 334) {
   console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'The file config.json seems to be empty! Please fill it out.');
   console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
   process.exit();
@@ -24,6 +33,8 @@ const season = require('./config.json');
 
 //before server creation
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
+
+//https.createServer(options, function (req, res)
 
 const server = http.createServer((req, res) => {
   if (req.method === 'POST' && req.url === '/submit') {
@@ -167,6 +178,9 @@ const server = http.createServer((req, res) => {
       }
       res.writeHead(200, { "Content-Type": "font/ttf" });
       res.end(data);});
+  } else if (req.url === '/.well_known/acme-challenge/2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c') {
+      res.write("2ZCrlv8mGkqOuIdvmSeRmRXAxsHVZnPZPnGMppCz36c.I6WhuLPGWoMMXxliTwBTYNmTJzvEP-yCBAfTSHB_0s0");
+      res.end(data);
   } else {
       res.end();
   }
