@@ -203,7 +203,7 @@ app.get('/callback', passport.authenticate('discord', {
 
 function checkAuth(req, res, next) {
   if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return next();
-  if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return req.redirect('/denied')
+  if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return res.redirect('/denied')
   res.redirect('/login');
 }
 
