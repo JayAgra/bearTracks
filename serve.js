@@ -175,7 +175,7 @@ app.get('/fonts/Raleway-500.ttf', checkAuth, function(req, res) {
 
 app.get('/denied', function(req, res) {
   try {
-  res.render('../src/submitted.ejs', { 
+  res.render('../src/denied.ejs', { 
     root: __dirname,
     SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
   })
