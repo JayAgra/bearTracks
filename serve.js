@@ -3,7 +3,9 @@ const sqlite3 = require('sqlite3');
 const express = require('express')
 const session  = require('express-session')
 const app = express();
-const ejs = require('ejs');
+const ejs = require('ejs')
+app.set('view engine', 'html');
+app.engine('html', ejs.renderFile);
 
 const passport = require('passport')
 const Strategy = require('passport-discord').Strategy;
@@ -88,7 +90,7 @@ app.post('/submit', function(req, res) {
             console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
             res.end('pit form error! ' + err.message);
           }
-          sendSubmission.newSubmission("pit", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''), formData.name);
+          sendSubmission.newSubmission("pit", this.lastID, req.user.username, formData.name);
       });
       db.close((err) => {
           if (err) {
@@ -96,7 +98,10 @@ app.post('/submit', function(req, res) {
             res.end('pit form error! ' + err.message);
           }
       });
-      res.sendFile('./src/submitted.min.html', { root: __dirname })
+        res.render('../src/submitted.ejs', { 
+          root: __dirname,
+          SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
+        })
       } else if (formData.formType == 'main') {
         let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
             if (err) {
@@ -111,7 +116,7 @@ app.post('/submit', function(req, res) {
               console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
               res.end('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + 'pit form error! ' + err.message);
             }
-            sendSubmission.newSubmission("main", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''), formData.name);
+            sendSubmission.newSubmission("main", this.lastID, req.user.username, formData.name);
         });
         db.close((err) => {
             if (err) {
@@ -119,7 +124,10 @@ app.post('/submit', function(req, res) {
               res.end('pit form error! ' + err.message);
             }
         });
-        res.sendFile('./src/submitted.min.html', { root: __dirname })
+        res.render('../src/submitted.ejs', { 
+          root: __dirname,
+          SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
+        })
       } else {
         console.log(formData);
         return res.status(500).send(
@@ -134,11 +142,23 @@ app.get('/', checkAuth, function(req, res) {
 });
 
 app.get('/main', checkAuth, function(req, res) {
-  res.sendFile('./src/main.min.html', { root: __dirname })
+  res.render('../src/main.ejs', { 
+    root: __dirname,
+    discordID: req.user.id,
+    discordName: req.user.username,
+    discordTag: req.user.discriminator,
+    discordAvatarId: req.user.avatar
+  })
 });
 
 app.get('/pit', checkAuth, function(req, res) {
-  res.sendFile('./src/pit.min.html', { root: __dirname })
+  res.render('../src/pit.ejs', { 
+    root: __dirname,
+    discordID: req.user.id,
+    discordName: req.user.username,
+    discordTag: req.user.discriminator,
+    discordAvatarId: req.user.avatar
+  })
 });
 
 app.get('/2023_float.css', checkAuth, function(req, res) {
@@ -154,7 +174,14 @@ app.get('/fonts/Raleway-500.ttf', checkAuth, function(req, res) {
 });
 
 app.get('/denied', function(req, res) {
-  res.sendFile('./src/denied.min.html', { root: __dirname })
+  try {
+  res.render('../src/submitted.ejs', { 
+    root: __dirname,
+    SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
+  })
+  } catch (error) {
+    res.write("Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error)
+  } 
 });
 
 app.get('/info', checkAuth, function(req, res) {
