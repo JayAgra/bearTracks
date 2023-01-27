@@ -1,34 +1,71 @@
 const qs = require('querystring');
 const sqlite3 = require('sqlite3');
-const fs = require('fs');
-
 const express = require('express')
+const session  = require('express-session')
 const app = express();
+const ejs = require('ejs');
+
+const passport = require('passport')
+const Strategy = require('passport-discord').Strategy;
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
+const { clientId, clientSec, redirectURI, teamServerID } = require('./config.json');
+
+function inTeamServer(json) {
+  var hasMatch =false;
+  for (var index = 0; index < json.length; ++index) {
+   var server = json[index];
+   if(server.id == teamServerID){
+     hasMatch = true;
+     break;
+   }
+  }
+  return hasMatch;
+}
 
 const sendSubmission = require("./discord.js")  
 
-//check that the config.json file exists
-if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
-  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not finf config.json! Fill out config.example.json and rename it to config.json');
-  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
-  process.exit();
-} else {console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[32m', ' [INFO] ' ,'\x1b[0m' + 'Found config.json file!');}
-
-//see if the config.json file is less than 334 bytes, assume not filled out
-if (fs.statSync("config.json").size < 334) {
-  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'The file config.json seems to be empty! Please fill it out.');
-  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
-  process.exit();
-} else {console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
-
-//safe to require the config.json file
-const season = require('./config.json');
+passport.use(new Strategy({
+  clientID: clientId,
+  clientSecret: clientSec,
+  callbackURL: redirectURI,
+  scope: scopes
+}, function(accessToken, refreshToken, profile, done) {
+  process.nextTick(function() {
+    return done(null, profile);
+  });
+}));
 
 //before server creation
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
 
+app.use(session({
+  secret: 'what_is_this',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/login', passport.authenticate('discord', { scope: scopes }), function(req, res) {});
+
+app.get('/callback',
+  passport.authenticate('discord', { failureRedirect: '/login' }), function(req, res) { res.redirect('/') } // auth success
+);
+
+app.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+});
+
 app.post('/submit', function(req, res) {
-  if (req.method == "POST") {
     let body = '';
 
     req.on('data', chunk => {
@@ -90,31 +127,58 @@ app.post('/submit', function(req, res) {
         );
       }
     });
-  } else {
-    return res.status(418).send(
-      "418 I'm a teapot\n  \nPOST requests only"
-    );
-  }
 });
 
-app.get('/', function(req, res) {
+app.get('/', checkAuth, function(req, res) {
   res.sendFile('./src/index.min.html', { root: __dirname })
 });
-app.get('/main', function(req, res) {
+
+app.get('/main', checkAuth, function(req, res) {
   res.sendFile('./src/main.min.html', { root: __dirname })
 });
-app.get('/pit', function(req, res) {
+
+app.get('/pit', checkAuth, function(req, res) {
   res.sendFile('./src/pit.min.html', { root: __dirname })
 });
-app.get('/2023_float.css', function(req, res) {
+
+app.get('/2023_float.css', checkAuth, function(req, res) {
   res.sendFile('./src/2023_float.min.css', { root: __dirname })
 });
-app.get('/fonts/Raleway-300.ttf', function(req, res) {
+
+app.get('/fonts/Raleway-300.ttf', checkAuth, function(req, res) {
   res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname })
 });
-app.get('/fonts/Raleway-500.ttf', function(req, res) {
+
+app.get('/fonts/Raleway-500.ttf', checkAuth, function(req, res) {
   res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname })
 });
+
+app.get('/denied', function(req, res) {
+  res.sendFile('./src/denied.min.html', { root: __dirname })
+});
+
+app.get('/info', checkAuth, function(req, res) {
+  console.log(req.user.id)
+  console.log(req.user.username)
+  console.log(req.user.avatar)
+  console.log(req.user.discriminator)
+  console.log(inTeamServer(req.user.guilds))
+  res.json(req.user);
+  //res.redirect('/')
+});
+
+app.get('/', passport.authenticate('discord'));
+app.get('/callback', passport.authenticate('discord', {
+    failureRedirect: '/'
+}), function(req, res) {
+    res.redirect('/')
+});
+
+function checkAuth(req, res, next) {
+  if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return next();
+  if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return req.redirect('/denied')
+  res.redirect('/login');
+}
 
 app.listen(80);
 //server created and ready for a request
