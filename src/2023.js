@@ -70,6 +70,7 @@ function teamData(team, event, interaction) {
           const teamEmbed = new MessageEmbed()
           .setColor('#181f2f')
           .setTitle(`Data from team ${team}'s last match:`)
+          .setAuthor({name: `<@${result.discordID}>`})
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023`)
           .addFields({
@@ -110,7 +111,7 @@ function teamData(team, event, interaction) {
             inline: true
           })
           .setTimestamp()
-          .setFooter({ text: `Scout's Discord: ${result.discordName}#${result.discordTag}`, iconURL: `https://cdn.discordapp.com/avatars/${result.discordID}/${result.discordAvatarId}.png?size=1024` });
+          .setFooter({ text: `Scout: ${result.discordName}#${result.discordTag}`, iconURL: `https://cdn.discordapp.com/avatars/${result.discordID}/${result.discordAvatarId}.png?size=1024` });
           return interaction.reply({embeds: [teamEmbed]});
           } else {
             return interaction.reply({
@@ -170,6 +171,7 @@ function pitData(team, event, interaction) {
           const pitEmbed = new MessageEmbed()
           .setColor('#181f2f')
           .setTitle(`Pit data for team ${team}:`)
+          .setAuthor({name: `<@${pitresult.discordID}>`})
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`${event}, 2023`)
           .addFields({
@@ -186,7 +188,7 @@ function pitData(team, event, interaction) {
             inline: true
           })
           .setTimestamp()
-          .setFooter({ text: `Scout's Discord: ${result.discordName}#${result.discordTag}`, iconURL: `https://cdn.discordapp.com/avatars/${result.discordID}/${result.discordAvatarId}.png?size=1024` });
+          .setFooter({ text: `Scout: ${pitresult.discordName}#${pitresult.discordTag}`, iconURL: `https://cdn.discordapp.com/avatars/${pitresult.discordID}/${pitresult.discordAvatarId}.png?size=1024` });
           return interaction.reply({embeds: [pitEmbed]});
           } else {
             console.log(err, pitresult);
