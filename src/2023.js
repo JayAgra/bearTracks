@@ -42,6 +42,7 @@ function teamData(team, event, interaction) {
     //UNUSED VALUES
     //game12 - game25 is INT (0)
     //formType is STRING the form that was submitted and is not entered into db
+
     function valueToEmote(value) {
       if (value == null || value == "false") {
         return "❌";
@@ -109,7 +110,7 @@ function teamData(team, event, interaction) {
             inline: true
           })
           .setTimestamp()
-          .setFooter({ text: `Scout IP/ID: ${result.scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
+          .setFooter({ text: `Scout's Discord: ${result.discordName}#${result.discordTag}`, iconURL: `https://cdn.discordapp.com/avatars/${result.discordID}/${result.discordAvatarId}.png?size=1024` });
           return interaction.reply({embeds: [teamEmbed]});
           } else {
             return interaction.reply({
@@ -185,7 +186,7 @@ function pitData(team, event, interaction) {
             inline: true
           })
           .setTimestamp()
-          .setFooter({ text: `Scout IP/ID: ${pitresult.scoutIP}`, iconURL: 'https://cdn.discordapp.com/avatars/963588564166258719/bc096216d144f112594845fbe8a35e1c.png?size=1024' });
+          .setFooter({ text: `Scout's Discord: ${result.discordName}#${result.discordTag}`, iconURL: `https://cdn.discordapp.com/avatars/${result.discordID}/${result.discordAvatarId}.png?size=1024` });
           return interaction.reply({embeds: [pitEmbed]});
           } else {
             console.log(err, pitresult);
