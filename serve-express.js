@@ -1,0 +1,121 @@
+const qs = require('querystring');
+const sqlite3 = require('sqlite3');
+const fs = require('fs');
+
+const express = require('express')
+const app = express();
+
+const sendSubmission = require("./discord.js")  
+
+//check that the config.json file exists
+if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
+  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not finf config.json! Fill out config.example.json and rename it to config.json');
+  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
+  process.exit();
+} else {console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[32m', ' [INFO] ' ,'\x1b[0m' + 'Found config.json file!');}
+
+//see if the config.json file is less than 334 bytes, assume not filled out
+if (fs.statSync("config.json").size < 334) {
+  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'The file config.json seems to be empty! Please fill it out.');
+  console.log('\x1b[35m', '[FORM PROCESSING]' ,'\x1b[0m' + '\x1b[31m', ' [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
+  process.exit();
+} else {console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
+
+//safe to require the config.json file
+const season = require('./config.json');
+
+//before server creation
+console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
+
+app.post('/submit', function(req, res) {
+  if (req.method == "POST") {
+    let body = '';
+
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      let formData = qs.parse(body);
+      if (formData.formType == 'pit') {
+        let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
+          if (err) {
+            console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
+            res.end('pit form error! ' + err.message);
+          }
+      });
+      let stmt = `INSERT INTO pit (event, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, scoutIP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      let values = [formData.event, formData.name, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.socket.remoteAddress.replace(/^.*:/, '')];
+      db.run(stmt, values, function(err) {
+          if (err) {
+            console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
+            res.end('pit form error! ' + err.message);
+          }
+          sendSubmission.newSubmission("pit", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''), formData.name);
+      });
+      db.close((err) => {
+          if (err) {
+            console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + err.message);
+            res.end('pit form error! ' + err.message);
+          }
+      });
+      res.sendFile('./src/submitted.min.html', { root: __dirname })
+      } else if (formData.formType == 'main') {
+        let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
+            if (err) {
+              console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+              res.end('pit form error! ' + err.message);
+            }
+        });
+        let stmt = `INSERT INTO main (event, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, scoutIP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        let values = [formData.event, formData.name, formData.team, formData.match, formData.level, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.game21, formData.game22, formData.game23, formData.game24, formData.game25, formData.teleop, formData.defend, formData.driving, formData.overall, req.socket.remoteAddress.replace(/^.*:/, '')];
+        db.run(stmt, values, function(err) {
+            if (err) {
+              console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+              res.end('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + 'pit form error! ' + err.message);
+            }
+            sendSubmission.newSubmission("main", this.lastID, req.socket.remoteAddress.replace(/^.*:/, ''), formData.name);
+        });
+        db.close((err) => {
+            if (err) {
+              console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+              res.end('pit form error! ' + err.message);
+            }
+        });
+        res.sendFile('./src/submitted.min.html', { root: __dirname })
+      } else {
+        console.log(formData);
+        return res.status(500).send(
+          "unknown form type"
+        );
+      }
+    });
+  } else {
+    return res.status(418).send(
+      "418 I'm a teapot\n  \nPOST requests only"
+    );
+  }
+});
+
+app.get('/', function(req, res) {
+  res.sendFile('./src/index.min.html', { root: __dirname })
+});
+app.get('/main', function(req, res) {
+  res.sendFile('./src/main.min.html', { root: __dirname })
+});
+app.get('/pit', function(req, res) {
+  res.sendFile('./src/pit.min.html', { root: __dirname })
+});
+app.get('/2023_float.css', function(req, res) {
+  res.sendFile('./src/2023_float.min.css', { root: __dirname })
+});
+app.get('/fonts/Raleway-300.ttf', function(req, res) {
+  res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname })
+});
+app.get('/fonts/Raleway-500.ttf', function(req, res) {
+  res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname })
+});
+
+app.listen(80);
+//server created and ready for a request
+console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
