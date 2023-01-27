@@ -60,17 +60,16 @@ function teamData(team, event, interaction) {
     });    
     db.get(`SELECT * FROM main WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
+          console.log(err);
           return interaction.reply({
             content: "Error getting data!",
             ephemeral: true
           })
-          console.log(err);
         } else {
           if (result) {
           const teamEmbed = new MessageEmbed()
           .setColor('#181f2f')
           .setTitle(`Data from team ${team}'s last match:`)
-          .setAuthor({name: `<@${result.discordID}>`})
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023`)
           .addFields({
@@ -161,17 +160,16 @@ function pitData(team, event, interaction) {
     });
     db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
         if (err) {
+          console.log(err);
           return interaction.reply({
             content: `Error getting data! ${err}`,
             ephemeral: true
           })
-          console.log(err);
         } else {
           if (pitresult) {
           const pitEmbed = new MessageEmbed()
           .setColor('#181f2f')
           .setTitle(`Pit data for team ${team}:`)
-          .setAuthor({name: `<@${pitresult.discordID}>`})
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
           .setDescription(`${event}, 2023`)
           .addFields({
