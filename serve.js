@@ -32,6 +32,10 @@ function inTeamServer(json) {
   return hasMatch;
 }
 
+function onWhiteList(id) {
+
+}
+
 const sendSubmission = require("./discord.js")  
 
 passport.use(new Strategy({
@@ -161,15 +165,15 @@ app.get('/pit', checkAuth, function(req, res) {
   })
 });
 
-app.get('/2023_float.css', checkAuth, function(req, res) {
+app.get('/2023_float.css', function(req, res) {
   res.sendFile('./src/2023_float.min.css', { root: __dirname })
 });
 
-app.get('/fonts/Raleway-300.ttf', checkAuth, function(req, res) {
+app.get('/fonts/Raleway-300.ttf', function(req, res) {
   res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname })
 });
 
-app.get('/fonts/Raleway-500.ttf', checkAuth, function(req, res) {
+app.get('/fonts/Raleway-500.ttf', function(req, res) {
   res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname })
 });
 
@@ -192,6 +196,10 @@ app.get('/info', checkAuth, function(req, res) {
   console.log(inTeamServer(req.user.guilds))
   res.json(req.user);
   //res.redirect('/')
+});
+
+app.get('/browse', checkAuth, function(req, res) {
+  res.sendFile('./src/browse.ejs', { root: __dirname })
 });
 
 app.get('/', passport.authenticate('discord'));
