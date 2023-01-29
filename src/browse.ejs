@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>CHARGED UP Scouting</title>
+    <title>CHARGED UP Scouting Data</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="2023_float.css" type="text/css">
@@ -27,12 +27,31 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="search">
         <form>
-            <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
-            <a href="main" class="gameflair1">Main Form<br></a><br>
-            <a href="browse" class="gameflair1">Browse Data<br></a>
+            <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
+            <fieldset>
+                <label>Target Team Number: <br></label>
+                <input type="tel" name="team" required><br>
+            <br><fieldset>
+                <label>Event Code: </label><br>
+                <select name="event">
+                    <option value="CADA" selected>CADA - Sacramento Regional</option>
+                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                </select>
+            </fieldset>
+            <input type="submit" value="Search" style="color: white; background-color: #515151; border-radius: 0.5rem;; border-style: solid; border-color: #515151; border-width: 0.875rem;; margin-top: 1rem;"><br><br>
+            </fieldset>
         </form>
+        <br><br>
+    </div>
+    <div class="container" id="results">
+    <div class="container" id="search">
+            <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
+            <fieldset>
+                <label>Target Team Number: <br></label>
+                <input type="tel" name="team" required><br>
+            <fieldset>
         <br><br>
     </div>
 </body>
