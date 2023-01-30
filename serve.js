@@ -12,7 +12,7 @@ var app;
 if (fs.statSync("ssl/certificate.crt").size <= 1 || fs.statSync("ssl/privatekey.pem").size <= 1) {
   var app = express();
 } else {
-  var app = express.createServer(credentials);
+  var app = express(credentials);
 }
 
 const ejs = require('ejs')
