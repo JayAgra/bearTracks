@@ -2,6 +2,7 @@ const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 const express = require('express')
 const session  = require('express-session')
+const fs = require('fs');
 
 var privateKey = fs.readFileSync('ssl/privatekey.pem');
 var certificate = fs.readFileSync('ssl/certificate.crt');
