@@ -13,9 +13,7 @@ var options = {
 
 var app = express();
 
-var server = https.createServer(options, app).listen(80, function(){
-  console.log("Express server listening on port 80");
-});
+var server = https.createServer(options, app);
 
 const ejs = require('ejs')
 app.set('view engine', 'html');
