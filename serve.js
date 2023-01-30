@@ -4,14 +4,13 @@ const express = require('express')
 const session  = require('express-session')
 const fs = require('fs');
 const https = require('https');
-const http = require('http')
 
-var options = {
+var app = express();
+
+const options = {
   key: fs.readFileSync(__dirname + '/ssl/privatekey.pem', 'utf8'),
   cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
 };
-
-var app = express();
 
 var server = https.createServer(options, app);
 
