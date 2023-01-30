@@ -2,7 +2,15 @@ const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 const express = require('express')
 const session  = require('express-session')
+
+var privateKey = fs.readFileSync('ssl/privatekey.pem');
+var certificate = fs.readFileSync('ssl/certificate.crt');
+var credentials = {key: privateKey, cert: certificate};
+
+//const app = express.createServer(credentials);
+
 const app = express();
+
 const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
@@ -284,3 +292,7 @@ function checkAuth(req, res, next) {
 app.listen(80);
 //server created and ready for a request
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
+
+//TODO: add a stats page that has info about each scout
+//# of submitted forms, # of expected forms
+//schedule of matches to scout based on scout team role
