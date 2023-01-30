@@ -4,16 +4,17 @@ const express = require('express')
 const session  = require('express-session')
 const fs = require('fs');
 const https = require('https');
+const http = require('http')
 
 var options = {
-  key: fs.readFileSync('./ssl/privatekey.pem'),
-  cert: fs.readFileSync('./ssl/certificate.crt'),
+  key: fs.readFileSync(__dirname + '/privatekey.pem', 'utf8'),
+  cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8')
 };
 
 var app = express();
 
 var server = https.createServer(options, app).listen(80, function(){
-  console.log("Express server listening on port " + 80);
+  console.log("Express server listening on port 80");
 });
 
 const ejs = require('ejs')
