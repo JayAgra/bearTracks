@@ -8,9 +8,11 @@ var privateKey = fs.readFileSync('ssl/privatekey.pem');
 var certificate = fs.readFileSync('ssl/certificate.crt');
 var credentials = {key: privateKey, cert: certificate};
 
-//const app = express.createServer(credentials);
-
-const app = express();
+if (fs.statSync("ssl/certificate.crt").size <= 1 || fs.statSync("ssl/privatekey.pem").size <= 1) {
+  const app = express();
+} else {
+  const app = express.createServer(credentials);
+}
 
 const ejs = require('ejs')
 app.set('view engine', 'html');
