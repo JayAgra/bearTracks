@@ -244,7 +244,7 @@ app.get('/browse', checkAuth, function(req, res) {
         resultsTeamNumber: `${dbQueryResult.team}`,
         resultsMatchNumber: `${dbQueryResult.match}`,
         resultsEventCode: `${dbQueryResult.event}`,
-        resultsBody: 0
+        resultsBody: `AUTO: \nTaxi: ${valueToEmote(dbQueryResult.game1)}\nScore B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}\nAUTO Charging: ${dbQueryResult.game5} pts\n\nTELEOP: \nScore B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}`
       })
       return;
     }
