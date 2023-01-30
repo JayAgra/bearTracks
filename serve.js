@@ -296,7 +296,7 @@ function checkAuth(req, res, next) {
   res.redirect('/login');
 }
 
-app.listen(443);
+app.listen(80);
 //server created and ready for a request
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
 
