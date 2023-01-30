@@ -68,7 +68,7 @@ passport.use(new Strategy({
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
 
 app.use(session({
-  secret: 'what_is_this',
+  secret: require('crypto').randomBytes(48).toString('hex'),
   resave: false,
   saveUninitialized: false
 }));
