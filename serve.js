@@ -7,8 +7,8 @@ const https = require('https');
 const http = require('http')
 
 var options = {
-  key: fs.readFileSync(__dirname + '/privatekey.pem', 'utf8'),
-  cert: fs.readFileSync(__dirname + '/certificate.crt', 'utf8')
+  key: fs.readFileSync(__dirname + '/ssl/privatekey.pem', 'utf8'),
+  cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
 };
 
 var app = express();
