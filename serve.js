@@ -12,7 +12,7 @@ const options = {
   cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
 };
 
-https.createServer(options, app).listen(80)
+https.createServer(options, app).listen(443)
 
 const ejs = require('ejs')
 app.set('view engine', 'html');
