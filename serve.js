@@ -4,16 +4,16 @@ const express = require('express')
 const session  = require('express-session')
 const fs = require('fs');
 
-var privateKey = fs.readFileSync('ssl/privatekey.pem');
-var certificate = fs.readFileSync('ssl/certificate.crt');
-var credentials = {key: privateKey, cert: certificate};
+var options = {
+  key: fs.readFileSync('./ssl/privatekey.pem'),
+  cert: fs.readFileSync('./ssl/certificate.crt'),
+};
 
-var app;
-if (fs.statSync("ssl/certificate.crt").size <= 1 || fs.statSync("ssl/privatekey.pem").size <= 1) {
-  var app = express();
-} else {
-  var app = express(credentials);
-}
+var app = express();
+
+var server = https.createServer(options, app).listen(port, function(){
+  console.log("Express server listening on port " + port);
+});
 
 const ejs = require('ejs')
 app.set('view engine', 'html');
