@@ -82,8 +82,7 @@ app.get('/callback',
 );
 
 app.get('/logout', function(req, res) {
-  req.logout();
-  res.redirect('/');
+  if (req.session) {req.session.destroy(); res.redirect('/');} else {res.send("error!")}
 });
 
 app.get('/.well-known/acme-challenge/jpB-Iq2304JeNMrdnLI_VZ1TwWoV-BpV_4cJVXOVYvQ', function(req, res) {
