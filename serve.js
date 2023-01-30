@@ -12,8 +12,8 @@ var options = {
 
 var app = express();
 
-var server = https.createServer(options, app).listen(port, function(){
-  console.log("Express server listening on port " + port);
+var server = https.createServer(options, app).listen(80, function(){
+  console.log("Express server listening on port " + 80);
 });
 
 const ejs = require('ejs')
@@ -298,7 +298,7 @@ function checkAuth(req, res, next) {
   res.redirect('/login');
 }
 
-app.listen(80);
+//app.listen(80);
 //server created and ready for a request
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
 
