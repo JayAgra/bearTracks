@@ -7,6 +7,14 @@ const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
 
+function valueToEmote(value) {
+  if (value == null || value == "false") {
+    return "❌";
+  } else {
+    return "✅";
+  }
+}
+
 const passport = require('passport')
 const Strategy = require('passport-discord').Strategy;
 
@@ -32,7 +40,7 @@ function inTeamServer(json) {
   return hasMatch;
 }
 
-const sendSubmission = require("./discord.js")  
+const sendSubmission = require("./discord.js");
 
 passport.use(new Strategy({
   clientID: clientId,
@@ -199,13 +207,38 @@ app.get('/browse', checkAuth, function(req, res) {
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
     db.get(`SELECT * FROM main WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id DESC LIMIT 1`, (err, dbQueryResult) => {
     if (err) {
+      res.render('../src/browse.ejs', { 
+        root: __dirname,
+        errorDisplay: "block",
+        errorMessage: 'Error: No results!',
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsMatchNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0
+      })
       return;
     } else {
     if (typeof dbQueryResult == "undefined") {
+      res.render('../src/browse.ejs', { 
+        root: __dirname,
+        errorDisplay: "block",
+        errorMessage: 'Error: No results!',
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsMatchNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0
+      })
       return;
     } else {
       res.render('../src/browse.ejs', { 
         root: __dirname,
+        errorDisplay: "none",
+        errorMessage: 'no errors :)',
+        errorMessage: null,
         displaySearch: "none",
         displayResults: "flex",
         resultsTeamNumber: `${dbQueryResult.team}`,
@@ -221,6 +254,9 @@ app.get('/browse', checkAuth, function(req, res) {
   } else {
   res.render('../src/browse.ejs', { 
     root: __dirname,
+    errorDisplay: "none",
+    errorMessage: 'no errors :)',
+    errorMessage: null,
     displaySearch: "flex",
     displayResults: "none",
     resultsTeamNumber: 0,
