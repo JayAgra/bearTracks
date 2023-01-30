@@ -12,7 +12,7 @@ const options = {
   cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
 };
 
-https.createServer(options, app).listen(443)
+if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer(options, app).listen(443)}
 
 const ejs = require('ejs')
 app.set('view engine', 'html');
@@ -296,7 +296,8 @@ function checkAuth(req, res, next) {
   res.redirect('/login');
 }
 
-//app.listen(8443);
+if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {}
+
 //server created and ready for a request
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
 
