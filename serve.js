@@ -84,7 +84,7 @@ app.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
-app.get('/logout', function(req, res) {
+app.get('/.well-known/acme-challenge/jpB-Iq2304JeNMrdnLI_VZ1TwWoV-BpV_4cJVXOVYvQ', function(req, res) {
   res.send("jpB-Iq2304JeNMrdnLI_VZ1TwWoV-BpV_4cJVXOVYvQ.4tu7T9hHt8LiTUJIZbBCUVGUFwahEjJOfmjbijpDl98");
 });
 
