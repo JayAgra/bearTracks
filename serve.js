@@ -32,10 +32,6 @@ function inTeamServer(json) {
   return hasMatch;
 }
 
-function onWhiteList(id) {
-
-}
-
 const sendSubmission = require("./discord.js")  
 
 passport.use(new Strategy({
@@ -142,7 +138,7 @@ app.post('/submit', function(req, res) {
 });
 
 app.get('/', checkAuth, function(req, res) {
-  res.sendFile('./src/index.min.html', { root: __dirname })
+  res.sendFile('./src/index.html', { root: __dirname })
 });
 
 app.get('/main', checkAuth, function(req, res) {
@@ -199,7 +195,41 @@ app.get('/info', checkAuth, function(req, res) {
 });
 
 app.get('/browse', checkAuth, function(req, res) {
-  res.sendFile('./src/browse.ejs', { root: __dirname })
+  if (req.query.team && req.query.event && req.query.page) {
+    let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+    db.get(`SELECT * FROM main WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id DESC LIMIT 1`, (err, dbQueryResult) => {
+    if (err) {
+      return;
+    } else {
+    if (typeof dbQueryResult == "undefined") {
+      return;
+    } else {
+      res.render('../src/browse.ejs', { 
+        root: __dirname,
+        displaySearch: "none",
+        displayResults: "flex",
+        resultsTeamNumber: `${dbQueryResult.team}`,
+        resultsMatchNumber: `${dbQueryResult.match}`,
+        resultsEventCode: `${dbQueryResult.event}`,
+        resultsBody: 0
+      })
+      return;
+    }
+    }
+    });
+    db.close((err) => {return;});
+  } else {
+  res.render('../src/browse.ejs', { 
+    root: __dirname,
+    displaySearch: "flex",
+    displayResults: "none",
+    resultsTeamNumber: 0,
+    resultsMatchNumber: 0,
+    resultsEventCode: 0,
+    resultsBody: 0
+  })
+  return;
+  }
 });
 
 app.get('/', passport.authenticate('discord'));

@@ -33,6 +33,7 @@
             <fieldset>
                 <label>Target Team Number: <br></label>
                 <input type="tel" name="team" required><br>
+                <input type="hidden" name="page" value="0">
             <br><fieldset>
                 <label>Event Code: </label><br>
                 <select name="event">
@@ -55,9 +56,19 @@
             </fieldset>
             <!--buttons-->
             <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Next</button>&emsp;<button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Previous</button><br><br>
+            <button style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>
             </fieldset>
         <br><br>
     </div>
-    </div>
+</div>
+<script>
+    function removeURLParams() {
+        let url = new URL(location.href);
+        url.searchParams.delete('team');
+        url.searchParams.delete('page');
+        url.searchParams.delete('event');
+        window.location.href = url;
+    }
+</script>
 </body>
 </html>

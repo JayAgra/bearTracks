@@ -27,12 +27,13 @@
     </style>
 </head>
 <body>
-    <div class="container" id="search">
+    <div class="container" id="search" style="display: <%= displaySearch %>;"> <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
             <fieldset>
                 <label>Target Team Number: <br></label>
                 <input type="tel" name="team" required><br>
+                <input type="hidden" name="page" value="0">
             <br><fieldset>
                 <label>Event Code: </label><br>
                 <select name="event">
@@ -40,19 +41,35 @@
                     <option value="CASJ">CASJ - Silicon Valley Regional</option>
                 </select>
             </fieldset>
-            <input type="submit" value="Search" style="color: white; background-color: #515151; border-radius: 0.5rem;; border-style: solid; border-color: #515151; border-width: 0.875rem;; margin-top: 1rem;"><br><br>
+            <input type="submit" value="Search" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;"><br><br>
             </fieldset>
         </form>
         <br><br>
     </div>
-    <div class="container" id="results">
-    <div class="container" id="search">
+    <div class="container" id="results" style="display: <%= displayResults %>;"> <!--flex is shown-->
+        <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
             <fieldset>
-                <label>Target Team Number: <br></label>
-                <input type="tel" name="team" required><br>
             <fieldset>
+                <h3>Team Number: <%= resultsTeamNumber %></h3>
+                <h5>Match Number:  <%= resultsMatchNumber %> |  Event: <%= resultsEventCode %></h5>
+                <h5><%= resultsBody %></h5>
+            </fieldset>
+            <!--buttons-->
+            <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Next</button>&emsp;<button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Previous</button><br><br>
+            <button style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>
+            </fieldset>
         <br><br>
     </div>
+    </div>
+    <script>
+        function removeURLParams() {
+            let url = new URL(location.href);
+            url.searchParams.delete('team');
+            url.searchParams.delete('page');
+            url.searchParams.delete('event');
+            window.location.href = url;
+        }
+    </script>
 </body>
 </html>
