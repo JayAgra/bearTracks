@@ -85,8 +85,9 @@ app.get('/logout', function(req, res) {
   if (req.session) {req.session.destroy(); res.redirect('/');} else {res.send("error!")}
 });
 
-app.get('/.well-known/acme-challenge/jpB-Iq2304JeNMrdnLI_VZ1TwWoV-BpV_4cJVXOVYvQ', function(req, res) {
-  res.send("jpB-Iq2304JeNMrdnLI_VZ1TwWoV-BpV_4cJVXOVYvQ.4tu7T9hHt8LiTUJIZbBCUVGUFwahEjJOfmjbijpDl98");
+//used for lets encrypt verification
+app.get('/.well-known/acme-challenge/', function(req, res) {
+  res.send("");
 });
 
 app.post('/submit', function(req, res) {
