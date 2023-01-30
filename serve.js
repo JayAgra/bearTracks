@@ -3,6 +3,7 @@ const sqlite3 = require('sqlite3');
 const express = require('express')
 const session  = require('express-session')
 const fs = require('fs');
+const https = require('https');
 
 var options = {
   key: fs.readFileSync('./ssl/privatekey.pem'),
