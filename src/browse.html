@@ -27,9 +27,10 @@
     </style>
 </head>
 <body>
-    <div class="container" id="search">
+    <div class="container" id="search" style="display: flex;"> <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
+            <h4 style="color: red; display: none"></h4>
             <fieldset>
                 <label>Target Team Number: <br></label>
                 <input type="tel" name="team" required><br>
@@ -46,29 +47,52 @@
         </form>
         <br><br>
     </div>
-    <div class="container" id="results">
+    <div class="container" id="results" style="display: flex"> <!--flex is shown-->
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
             <fieldset>
             <fieldset>
                 <h3>Team Number: </h3>
                 <h5>Match Number:   |  Event: </h5>
+                <h5 style="text-align: left"></h5>
             </fieldset>
             <!--buttons-->
-            <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Next</button>&emsp;<button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Previous</button><br><br>
+            <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='pageControl("bck")'>Previous</button>&emsp;<button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='pageControl("fwd")'>Next</button><br><br>
             <button style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>
             </fieldset>
         <br><br>
     </div>
-</div>
-<script>
-    function removeURLParams() {
-        let url = new URL(location.href);
-        url.searchParams.delete('team');
-        url.searchParams.delete('page');
-        url.searchParams.delete('event');
-        window.location.href = url;
-    }
-</script>
+    </div>
+    <script>
+        function removeURLParams() {
+            let url = new URL(location.href);
+            url.searchParams.delete('team');
+            url.searchParams.delete('page');
+            url.searchParams.delete('event');
+            window.location.href = url;
+        }
+        function pageControl(dir) {
+            if (dir == "fwd") {
+                let params = new URLSearchParams(document.location.search);
+                let url = new URL(location.href);
+                const targetPage = Number(params.get('page')) +1
+                url.searchParams.delete('page');
+                url.searchParams.append('page', targetPage);
+                window.location.href = url;
+            } else if (dir == "bck") {
+            let params = new URLSearchParams(document.location.search);
+            if (params.get('page') >= 1) {
+                let url = new URL(location.href);
+                var targetPage = Number(params.get('page')) - 1
+                url.searchParams.delete('page');
+                url.searchParams.append('page', targetPage);
+                window.location.href = url;
+            } else {
+                let url = new URL(location.href);
+                window.location.href = url;
+            }
+            }
+        }
+    </script>
 </body>
 </html>

@@ -205,7 +205,7 @@ app.get('/info', checkAuth, function(req, res) {
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
-    db.get(`SELECT * FROM main WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id DESC LIMIT 1`, (err, dbQueryResult) => {
+    db.get(`SELECT * FROM main WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id ASC LIMIT 1 OFFSET ${req.query.page}`, (err, dbQueryResult) => {
     if (err) {
       res.render('../src/browse.ejs', { 
         root: __dirname,
@@ -244,7 +244,7 @@ app.get('/browse', checkAuth, function(req, res) {
         resultsTeamNumber: `${dbQueryResult.team}`,
         resultsMatchNumber: `${dbQueryResult.match}`,
         resultsEventCode: `${dbQueryResult.event}`,
-        resultsBody: `AUTO: \nTaxi: ${valueToEmote(dbQueryResult.game1)}\nScore B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}\nAUTO Charging: ${dbQueryResult.game5} pts\n\nTELEOP: \nScore B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}`
+        resultsBody: `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${valueToEmote(dbQueryResult.game10)} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}`
       })
       return;
     }

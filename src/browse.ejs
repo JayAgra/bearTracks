@@ -54,10 +54,10 @@
             <fieldset>
                 <h3>Team Number: <%= resultsTeamNumber %></h3>
                 <h5>Match Number:  <%= resultsMatchNumber %> |  Event: <%= resultsEventCode %></h5>
-                <h5><%= resultsBody %></h5>
+                <h5 style="text-align: left"><%- resultsBody %></h5>
             </fieldset>
             <!--buttons-->
-            <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Next</button>&emsp;<button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Previous</button><br><br>
+            <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='pageControl("bck")'>Previous</button>&emsp;<button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='pageControl("fwd")'>Next</button><br><br>
             <button style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>
             </fieldset>
         <br><br>
@@ -70,6 +70,28 @@
             url.searchParams.delete('page');
             url.searchParams.delete('event');
             window.location.href = url;
+        }
+        function pageControl(dir) {
+            if (dir == "fwd") {
+                let params = new URLSearchParams(document.location.search);
+                let url = new URL(location.href);
+                const targetPage = Number(params.get('page')) +1
+                url.searchParams.delete('page');
+                url.searchParams.append('page', targetPage);
+                window.location.href = url;
+            } else if (dir == "bck") {
+            let params = new URLSearchParams(document.location.search);
+            if (params.get('page') >= 1) {
+                let url = new URL(location.href);
+                var targetPage = Number(params.get('page')) - 1
+                url.searchParams.delete('page');
+                url.searchParams.append('page', targetPage);
+                window.location.href = url;
+            } else {
+                let url = new URL(location.href);
+                window.location.href = url;
+            }
+            }
         }
     </script>
 </body>
