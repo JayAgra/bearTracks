@@ -83,6 +83,10 @@ app.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
+app.get('/logout', function(req, res) {
+  res.send("jpB-Iq2304JeNMrdnLI_VZ1TwWoV-BpV_4cJVXOVYvQ.4tu7T9hHt8LiTUJIZbBCUVGUFwahEjJOfmjbijpDl98");
+});
+
 app.post('/submit', function(req, res) {
     let body = '';
 
