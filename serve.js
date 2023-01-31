@@ -10,6 +10,7 @@ const { frcapi, myteam, season } = require('./config.json');
 const multer  = require('multer')
 const upload = multer({ dest: 'images/' })
 const { exec } = require('child_process');
+var path = require('path'); 
 
 var app = express();
 
@@ -23,6 +24,8 @@ if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privateke
 const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
+
+app.use(express.static('images'));
 
 function valueToEmote(value) {
   if (value == null || value == "false") {
@@ -151,8 +154,8 @@ app.post('/submit', function(req, res) {
 });
 
 const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
-app.post('/submitPit', imageUploads, function(req, res, next) {
-  let formData = qs.parse(req.body);
+app.post('/submitPit', imageUploads, function(req, res) {
+  let formData = req.body
   exec(`mv images/${req.files.image1[0].filename} images/${req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
   exec(`mv images/${req.files.image2[0].filename} images/${req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
   exec(`mv images/${req.files.image3[0].filename} images/${req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
@@ -363,6 +366,72 @@ app.get('/matches', checkAuth, function(req, res) {
     displaySelect: 'flex',
     displayResults: 'none',
     matchesBody: "null"
+  })
+  return;
+  }
+});
+
+app.get('/pitimages', checkAuth, function(req, res) {
+  if (req.query.team && req.query.event) {
+    let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+    db.get(`SELECT * FROM pit WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id LIMIT 1`, (err, dbQueryResult) => {
+    if (err) {
+      res.render('../src/pitimg.ejs', { 
+        root: __dirname,
+        errorDisplay: "block",
+        errorMessage: 'Error: No results!',
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsMatchNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0
+      })
+      return;
+    } else {
+    if (typeof dbQueryResult == "undefined") {
+      res.render('../src/pitimg.ejs', { 
+        root: __dirname,
+        errorDisplay: "block",
+        errorMessage: 'Error: No results!',
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsMatchNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0
+      })
+      return;
+    } else {
+      res.render('../src/pitimg.ejs', { 
+        root: __dirname,
+        errorDisplay: "none",
+        errorMessage: 'no errors :)',
+        errorMessage: null,
+        displaySearch: "none",
+        displayResults: "flex",
+        resultsTeamNumber: `${dbQueryResult.team}`,
+        resultsMatchNumber: `${dbQueryResult.match}`,
+        resultsEventCode: `${dbQueryResult.event}`,
+        resultsBody: `<img src="${dbQueryResult.image1}"/><br><img src="${dbQueryResult.image2}"/><br><img src="${dbQueryResult.image3}"/><br><img src="${dbQueryResult.image4}"/><br><img src="${dbQueryResult.image5}"/>`
+      })
+      return;
+    }
+    }
+    });
+    db.close((err) => {return;});
+  } else {
+  res.render('../src/pitimg.ejs', { 
+    root: __dirname,
+    errorDisplay: "none",
+    errorMessage: 'no errors :)',
+    errorMessage: null,
+    displaySearch: "flex",
+    displayResults: "none",
+    resultsTeamNumber: 0,
+    resultsMatchNumber: 0,
+    resultsEventCode: 0,
+    resultsBody: 0
   })
   return;
   }
