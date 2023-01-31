@@ -10,7 +10,6 @@ const { frcapi, myteam, season } = require('./config.json');
 const multer  = require('multer')
 const upload = multer({ dest: 'images/' })
 const { exec } = require('child_process');
-var path = require('path'); 
 
 var app = express();
 
@@ -25,7 +24,7 @@ const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
 
-app.use(express.static('images'));
+app.use('/images', express.static('images'))
 
 function valueToEmote(value) {
   if (value == null || value == "false") {

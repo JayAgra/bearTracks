@@ -184,6 +184,10 @@ function pitData(team, event, interaction) {
             name: 'Overall',
             value: `Response: ${pitresult.overall}`,
             inline: true
+          },{
+            name: 'Images',
+            value: `[Image 1](https://scout.team766.com/images/${pitresult.image1}\n[Image 2](https://scout.team766.com/images/${pitresult.image2})\n[Image 3](https://scout.team766.com/images/${pitresult.image3}\n[Image 4](https://scout.team766.com/images/${pitresult.image4}\n[Image 5](https://scout.team766.com/images/${pitresult.image5}`,
+            inline: true
           })
           .setTimestamp()
           .setFooter({ text: `Scout: ${pitresult.discordName}#${pitresult.discordTag}`, iconURL: `https://cdn.discordapp.com/avatars/${pitresult.discordID}/${pitresult.discordAvatarId}.png?size=1024` });
