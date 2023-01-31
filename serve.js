@@ -436,7 +436,20 @@ app.get('/', passport.authenticate('discord'));
 app.get('/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function(req, res) {
-    res.redirect('/')
+    let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+    db.run(`IF EXISTS (SELECT * FROM scouts WHERE discordID = ${req.user.id})
+    END
+    ELSE
+    BEGIN
+    INSERT INTO scouts (discordID, email, discordProfile, username, discriminator, addedAt) VALUES (${req.user.id}, ${req.user.email}, ${req.user.avatar}, ${req.user.username}, ${req.user.discriminator}, ${req.user.fetchedAt})
+    END`);
+    db.close((err) => {
+      if (err) {
+        console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+        res.end('pit form error! ' + err.message);
+      }
+    });
+    res.redirect('/');
 });
 
 function checkAuth(req, res, next) {
