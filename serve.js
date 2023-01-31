@@ -107,6 +107,10 @@ app.get('/.well-known/acme-challenge/', function(req, res) {
   res.send("");
 });
 
+app.get('/dataProcessing', function(req, res) {
+  res.send("Recorded Data: Username, user ID, avatar ID, user discriminator (tag), email with discord account, and time of first login. Also collected is submitted scouting data, all of which are associated with discord account. Data that is sent by discord but not saved on disk include list of member servers, used only to confirm membership with team server.");
+});
+
 app.post('/submit', function(req, res) {
     let body = '';
 
