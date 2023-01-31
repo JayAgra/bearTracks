@@ -297,7 +297,7 @@ function checkAuth(req, res, next) {
   res.redirect('/login');
 }
 
-if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(443, 'https://localhost')); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => console.log(`HTTP server listening: http://localhost`));}
+if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(300, `https://${req.hostname}/${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => console.log(`HTTP server listening: http://localhost`));}
 
 //server created and ready for a request
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
