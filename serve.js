@@ -5,6 +5,8 @@ const session  = require('express-session')
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
+var EventEmitter = require("events").EventEmitter;
+const { frcapi, myteam, season } = require('./config.json');
 
 var app = express();
 
@@ -24,6 +26,15 @@ function valueToEmote(value) {
     return "❌";
   } else {
     return "✅";
+  }
+}
+
+function invalidJSON(str) {
+  try {
+      JSON.parse(str);
+      return false
+  } catch (error) {
+      return true
   }
 }
 
@@ -279,6 +290,67 @@ app.get('/browse', checkAuth, function(req, res) {
     resultsMatchNumber: 0,
     resultsEventCode: 0,
     resultsBody: 0
+  })
+  return;
+  }
+});
+
+app.get('/matches', checkAuth, function(req, res) {
+  if (req.query.event) {
+    const eventCode = req.query.event
+    var dbody = new EventEmitter();
+    var options = {
+        'method': 'GET',
+        'hostname': 'frc-api.firstinspires.org',
+        'path': `/v3.0/${season}/schedule/${req.query.event}?tournamentLevel=qualification&teamNumber=${myteam}`,
+        'headers': {
+            'Authorization': 'Basic ' + frcapi
+        },
+        'maxRedirects': 20
+    };
+
+    var req = https.request(options, function(res) {
+        var chunks = [];
+
+        res.on("data", function(chunk) {
+            chunks.push(chunk);
+        });
+
+        res.on("end", function(chunk) {
+            var body = Buffer.concat(chunks);
+            data = body;
+            dbody.emit('update');
+        });
+
+        res.on("error", function(error) {
+            console.error(error);
+        });
+    });
+    req.end();
+    dbody.on('update', function() {
+        if (invalidJSON(data)) {
+            return;
+        } else {
+          const parsedData = JSON.parse(data);
+          var matchesContent = "";
+          for (let i = 0; i < parsedData.Schedule.length; i++) {
+            matchesContent = matchesContent + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #ff0000;"><a href="browse?team=${parsedData.Schedule[i].teams[0].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[1].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[2].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #0000ff;"><a href="browse?team=${parsedData.Schedule[i].teams[3].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[4].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[5].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
+          }
+          res.render('../src/matches.ejs', { 
+            root: __dirname,
+            displaySelect: 'none',
+            displayResults: 'flex',
+            matchesBody: matchesContent
+          })
+          return;
+        }
+    });
+  } else {
+  res.render('../src/matches.ejs', { 
+    root: __dirname,
+    displaySelect: 'flex',
+    displayResults: 'none',
+    matchesBody: "null"
   })
   return;
   }
