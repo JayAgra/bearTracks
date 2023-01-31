@@ -447,7 +447,7 @@ function checkAuth(req, res, next) {
 
 function addToDataBase(req, next) {
   let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
-  db.run(`INSERT OR IGNORE INTO scouts(discordID, email, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, ${req.user.email}, ${req.user.avatar}, ${req.user.username}, ${req.user.discriminator}, ${req.user.fetchedAt})`);
+  db.run(`INSERT OR IGNORE INTO scouts(discordID, email, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, "${req.user.email}", ${req.user.avatar}, ${req.user.username}, ${req.user.discriminator}, ${req.user.fetchedAt})`);
   db.close((err) => {
     if (err) {
       console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
