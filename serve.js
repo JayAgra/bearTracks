@@ -436,21 +436,25 @@ app.get('/', passport.authenticate('discord'));
 app.get('/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function(req, res) {
-    let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
-    db.run(`INSERT OR IGNORE INTO scouts(discordID, email, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, ${req.user.email}, ${req.user.avatar}, ${req.user.username}, ${req.user.discriminator}, ${req.user.fetchedAt})`);
-    db.close((err) => {
-      if (err) {
-        console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
-        res.end('error! ' + err.message);
-      }
-    });
     res.redirect('/');
 });
 
 function checkAuth(req, res, next) {
-  if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return next();
+  if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return addToDataBase(req, next);
   if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return res.redirect('/denied')
   res.redirect('/login');
+}
+
+function addToDataBase(req, next) {
+  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+  db.run(`INSERT OR IGNORE INTO scouts(discordID, email, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, ${req.user.email}, ${req.user.avatar}, ${req.user.username}, ${req.user.discriminator}, ${req.user.fetchedAt})`);
+  db.close((err) => {
+    if (err) {
+      console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+      res.end('error! ' + err.message);
+    }
+  });
+  return next();
 }
 
 if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => console.log(`HTTP server listening: http://localhost`));}
