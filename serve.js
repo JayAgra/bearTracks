@@ -383,7 +383,6 @@ app.get('/pitimages', checkAuth, function(req, res) {
         displaySearch: "flex",
         displayResults: "none",
         resultsTeamNumber: 0,
-        resultsMatchNumber: 0,
         resultsEventCode: 0,
         resultsBody: 0
       })
@@ -397,7 +396,6 @@ app.get('/pitimages', checkAuth, function(req, res) {
         displaySearch: "flex",
         displayResults: "none",
         resultsTeamNumber: 0,
-        resultsMatchNumber: 0,
         resultsEventCode: 0,
         resultsBody: 0
       })
@@ -411,7 +409,6 @@ app.get('/pitimages', checkAuth, function(req, res) {
         displaySearch: "none",
         displayResults: "flex",
         resultsTeamNumber: `${dbQueryResult.team}`,
-        resultsMatchNumber: `${dbQueryResult.match}`,
         resultsEventCode: `${dbQueryResult.event}`,
         resultsBody: `<img src="${dbQueryResult.image1}"/><br><img src="${dbQueryResult.image2}"/><br><img src="${dbQueryResult.image3}"/><br><img src="${dbQueryResult.image4}"/><br><img src="${dbQueryResult.image5}"/>`
       })
@@ -429,7 +426,6 @@ app.get('/pitimages', checkAuth, function(req, res) {
     displaySearch: "flex",
     displayResults: "none",
     resultsTeamNumber: 0,
-    resultsMatchNumber: 0,
     resultsEventCode: 0,
     resultsBody: 0
   })
