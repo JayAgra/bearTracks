@@ -156,11 +156,11 @@ app.post('/submit', function(req, res) {
 const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
 app.post('/submitPit', imageUploads, function(req, res) {
   let formData = req.body
-  exec(`mv images/${req.files.image1[0].filename} images/${req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
-  exec(`mv images/${req.files.image2[0].filename} images/${req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
-  exec(`mv images/${req.files.image3[0].filename} images/${req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
-  exec(`mv images/${req.files.image4[0].filename} images/${req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
-  exec(`mv images/${req.files.image5[0].filename} images/${req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
+  exec(`mv images/${req.files.image1[0].filename} images/${req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+  exec(`mv images/${req.files.image2[0].filename} images/${req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+  exec(`mv images/${req.files.image3[0].filename} images/${req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+  exec(`mv images/${req.files.image4[0].filename} images/${req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+  exec(`mv images/${req.files.image5[0].filename} images/${req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
   let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
