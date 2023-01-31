@@ -10,7 +10,7 @@
 
 <body>
     <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
-            <form action="/submit" target="_self" method="POST">
+            <form action="/submitPit" target="_self" method="POST" enctype="multipart/form-data">
                 <input type="text" value="pit" name="formType" hidden>
                 <br>
                 <h2 class="gameflair1">General Info</h2>
@@ -79,6 +79,21 @@
                     <label>Overall assessment<br></label>
                     <textarea rows="4" cols="38" name="overall"></textarea>
                 </fieldset>
+
+                <fieldset>
+                    <label>Images</label>
+                    <label>Image 1</label>
+                    <input type="file" name="image1" accept="image/png, image/jpeg" required>
+                    <label>Image 2</label>
+                    <input type="file" name="image2" accept="image/png, image/jpeg" required>
+                    <label>Image 3</label>
+                    <input type="file" name="image3" accept="image/png, image/jpeg" required>
+                    <label>Image 4</label>
+                    <input type="file" name="image4" accept="image/png, image/jpeg" required>
+                    <label>Image 5</label>
+                    <input type="file" name="image5" accept="image/png, image/jpeg" required>
+                </fieldset>
+
                 <br>
 
                 <p style="text-align:center">
