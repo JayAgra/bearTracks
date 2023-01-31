@@ -83,9 +83,6 @@ new SlashCommandBuilder()
 		.setDescription('Current Year')
 		.setRequired(false)),
 new SlashCommandBuilder()
-	.setName('pitscout')
-	.setDescription('event rankings'),
-new SlashCommandBuilder()
 	.setName('frcapi')
 	.setDescription('send a request to the FRC API')
 	.addStringOption(option =>
