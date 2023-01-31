@@ -9,6 +9,7 @@ var EventEmitter = require("events").EventEmitter;
 const { frcapi, myteam, season } = require('./config.json');
 const multer  = require('multer')
 const upload = multer({ dest: 'images/' })
+const { exec } = require('child_process');
 
 var app = express();
 
@@ -152,7 +153,11 @@ app.post('/submit', function(req, res) {
 const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
 app.post('/submitPit', imageUploads, function(req, res, next) {
   let formData = qs.parse(req.body);
-  console.log(req.files);
+  exec(`mv images/${req.files.image1[0].filename} images/${req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
+  exec(`mv images/${req.files.image2[0].filename} images/${req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
+  exec(`mv images/${req.files.image3[0].filename} images/${req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
+  exec(`mv images/${req.files.image4[0].filename} images/${req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
+  exec(`mv images/${req.files.image5[0].filename} images/${req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)}`, (err, stdout, stderr) => {console.log(err)});
   let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
@@ -160,7 +165,7 @@ app.post('/submitPit', imageUploads, function(req, res, next) {
     }
   });
   let stmt = `INSERT INTO pit (event, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  let values = [formData.event, formData.name, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, req.files.image1[0].filename, req.files.image2[0].filename, req.files.image3[0].filename, req.files.image4[0].filename, req.files.image5[0].filename];
+  let values = [formData.event, formData.name, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6), req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6), req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6), req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6), req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)];
   db.run(stmt, values, function(err) {
     if (err) {
       console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
