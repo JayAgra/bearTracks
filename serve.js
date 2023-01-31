@@ -87,7 +87,8 @@ console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' 
 app.use(session({
   secret: require('crypto').randomBytes(48).toString('hex'),
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  maxAge: 24 * 60 * 60 * 1000 * 183 // 183 days
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -465,11 +466,3 @@ if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privateke
 
 //server created and ready for a request
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
-
-//TODO: add a stats page that has info about each scout
-//on scout team or drive team or none
-//matches to scout if on scout team, next matches if on drive team, current index.html if on none
-//# of submitted forms, # of expected forms
-//schedule of matches to scout based on scout team role
-
-//TODO: Write docs
