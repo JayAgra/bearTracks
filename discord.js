@@ -51,6 +51,10 @@ function newSubmission(formType, Id, scoutIP, scoutName) {
     return;
 }
 
+function sendPasswordToUser(userID, password, email) {
+    client.users.cache.get(userID).send(`A password has been set for your account to use with email login if you would like.\nThe password is for team ${myteam}'s scouting app.\n\nEmail: ` + "`" + email + "`" + `\nPassword: ` + "`" + password + "`");
+}
+
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
   if (interaction.commandName === 'matches') {
@@ -824,4 +828,4 @@ client.on('interactionCreate', async interaction => {
 //login to discord
 client.login(token);
 
-module.exports = { newSubmission };
+module.exports = { newSubmission, sendPasswordToUser };
