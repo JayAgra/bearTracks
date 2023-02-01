@@ -545,7 +545,7 @@ function addToDataBase(req, next) {
   db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
     if (err) {
       return;
-    } else {
+    } else { 
       if (accountQueryResults) {
         return;
       } else {
