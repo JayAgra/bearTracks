@@ -52,14 +52,7 @@ function newSubmission(formType, Id, scoutIP, scoutName) {
 }
 
 async function sendPasswordToUser(userID, password, email) {
-    console.log("now trying to send");
-    const user = await client.users.fetch(`"${userID}"`).catch(() => null);
-
-    if (!user) return console.log("User not found:(");
-
-    await user.send(`A password has been set for your account to use with email login if you would like.\nThe password is for team ${myteam}'s scouting app.\n\nEmail: ` + "`" + email + "`" + `\nPassword: ` + "`" + password + "`").catch(() => {
-    console.log("not sent");
-    });
+    client.users.send(userID, `A password has been set for your account to use with email login if you would like.\nThe password is for team ${myteam}'s scouting app.\n\nEmail: ` + "`" + email + "`" + `\nPassword: ` + "`" + password + "`")
 }
 
 client.on('interactionCreate', async interaction => {
