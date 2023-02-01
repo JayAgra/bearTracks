@@ -549,7 +549,7 @@ function addToDataBase(req, next) {
       if (accountQueryResults) {
         return;
       } else {
-        discordSendData.sendPasswordToUser(req.user.id, password, req.user.email)
+        discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
       }
     }
   });

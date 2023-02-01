@@ -52,6 +52,7 @@ function newSubmission(formType, Id, scoutIP, scoutName) {
 }
 
 async function sendPasswordToUser(userID, password, email) {
+    console.log("now trying to send");
     const user = await client.users.fetch(`"${userID}"`).catch(() => null);
 
     if (!user) return console.log("User not found:(");
