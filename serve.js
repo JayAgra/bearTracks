@@ -540,6 +540,7 @@ function checkAuth(req, res, next) {
 }
 
 function addToDataBase(req, next) {
+  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
   const password = require('crypto').randomBytes(12).toString('hex')
   db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
     if (err) {
@@ -552,7 +553,6 @@ function addToDataBase(req, next) {
       }
     }
   });
-  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
   db.run(`INSERT OR IGNORE INTO scouts(discordID, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
   db.close((err) => {
     if (err) {
