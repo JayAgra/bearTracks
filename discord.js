@@ -54,9 +54,10 @@ function newSubmission(formType, Id, scoutIP, scoutName) {
 async function sendPasswordToUser(userID, password, email) {
     const user = await client.users.fetch(`"${userID}"`).catch(() => null);
 
-    if (!user) return message.channel.send("User not found:(");
+    if (!user) return console.log("User not found:(");
 
     await user.send(`A password has been set for your account to use with email login if you would like.\nThe password is for team ${myteam}'s scouting app.\n\nEmail: ` + "`" + email + "`" + `\nPassword: ` + "`" + password + "`").catch(() => {
+    console.log("not sent");
     });
 }
 
