@@ -506,17 +506,20 @@ app.post('/api/auth', function(req, res) {
   db.get(`SELECT * FROM scouts WHERE email="${authParams.email}" AND password="${authParams.password}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
   if (err) {
     //res.header("Content-Type",'application/json');
-    //res.send(`{"error": "badCredentials"}`);
-    res.status(400).end();
+    res.status(401)
+    res.send(`{"error": "badCredentials"}`);
+    res.end();
     return;
   } else if (accountQueryResults) {
     res.header("Content-Type",'application/json');
     res.send(`{"userID": "${accountQueryResults.discordID}", "discordAvatar": "${accountQueryResults.discordProfile}", "discordUsername": "${accountQueryResults.username}", "discriminator": "${accountQueryResults.discriminator}" }`);
+    res.end();
     return;
   } else {
     //res.header("Content-Type",'application/json');
-    //res.send(`{"error": "badCredentials"}`);
-    res.status(400).end();
+    res.status(401)
+    res.send(`{"error": "badCredentials"}`);
+    res.end();
     return;
   }
   });
