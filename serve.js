@@ -510,7 +510,7 @@ app.post('/api/auth', function(req, res) {
     return;
   } else if (accountQueryResults) {
     res.header("Content-Type",'application/json');
-    res.send(`{"userID": ${accountQueryResults.discordID}, "discordAvatar": "${accountQueryResults.discordProfile}", "discordUsername": "${accountQueryResults.username}", "discriminator": ${accountQueryResults.discriminator} }`);
+    res.send(`{"userID": "${accountQueryResults.discordID}", "discordAvatar": "${accountQueryResults.discordProfile}", "discordUsername": "${accountQueryResults.username}", "discriminator": "${accountQueryResults.discriminator}" }`);
     return;
   } else {
     res.header("Content-Type",'application/json');
