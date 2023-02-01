@@ -505,8 +505,8 @@ app.post('/api/auth', function(req, res) {
   let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
   db.get(`SELECT * FROM scouts WHERE email="${authParams.email}" AND password="${authParams.password}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
   if (err) {
-    res.header("Content-Type",'application/json');
-    res.send(`{"error": "badCredentials"}`);
+    //res.header("Content-Type",'application/json');
+    //res.send(`{"error": "badCredentials"}`);
     res.status(400).end();
     return;
   } else if (accountQueryResults) {
@@ -514,8 +514,8 @@ app.post('/api/auth', function(req, res) {
     res.send(`{"userID": "${accountQueryResults.discordID}", "discordAvatar": "${accountQueryResults.discordProfile}", "discordUsername": "${accountQueryResults.username}", "discriminator": "${accountQueryResults.discriminator}" }`);
     return;
   } else {
-    res.header("Content-Type",'application/json');
-    res.send(`{"error": "badCredentials"}`);
+    //res.header("Content-Type",'application/json');
+    //res.send(`{"error": "badCredentials"}`);
     res.status(400).end();
     return;
   }
