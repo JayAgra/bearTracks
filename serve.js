@@ -10,6 +10,7 @@ const { frcapi, myteam, season } = require('./config.json');
 const multer  = require('multer')
 const upload = multer({ dest: 'images/' })
 const { exec } = require('child_process');
+const rateLimit = require('express-rate-limit')
 
 var app = express();
 
@@ -52,6 +53,15 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
+
+const apiLimiter = rateLimit({
+	windowMs: 10 * 60 * 1000, // 10 minutes
+	max: 200, // Limit each IP to 200 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, 
+	legacyHeaders: false
+})
+
+app.use('/api', apiLimiter)
 
 const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
 const { clientId, clientSec, redirectURI, teamServerID } = require('./config.json');
@@ -435,6 +445,61 @@ app.get('/pitimages', checkAuth, function(req, res) {
   })
   return;
   }
+});
+
+app.get('/api/matches/:event', function(req, res) {
+  if (req.params.event) {
+    var dbody = new EventEmitter();
+    var options = {
+        'method': 'GET',
+        'hostname': 'frc-api.firstinspires.org',
+        'path': `/v3.0/${season}/schedule/${req.params.event}?tournamentLevel=qualification&teamNumber=${myteam}`,
+        'headers': {
+            'Authorization': 'Basic ' + frcapi
+        },
+        'maxRedirects': 20
+    };
+
+    var req = https.request(options, function(res) {
+        var chunks = [];
+
+        res.on("data", function(chunk) {
+            chunks.push(chunk);
+        });
+
+        res.on("end", function(chunk) {
+            var body = Buffer.concat(chunks);
+            data = body;
+            dbody.emit('update');
+        });
+
+        res.on("error", function(error) {
+            console.error(error);
+        });
+    });
+    req.end();
+    dbody.on('update', function() {
+        if (invalidJSON(data)) {
+          res.header("Content-Type",'application/json');
+          res.send(`{"error": "got invalid response from FRC API"}`);  
+          return;
+        } else {
+          res.json(JSON.parse(data));
+          return;
+        }
+      });
+  } else {
+    res.header("Content-Type",'application/json');
+    res.send(`{"error": "no specified event code"}`);
+  }
+});
+
+app.post('/api/auth', function(req, res) {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
 });
 
 app.get('/', passport.authenticate('discord'));
