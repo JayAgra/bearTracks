@@ -500,6 +500,25 @@ app.post('/api/auth', function(req, res) {
   req.on('data', chunk => {
     body += chunk.toString();
   });
+  req.on('end', () => {
+  let authParams = qs.parse(body);
+  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+  db.get(`SELECT * FROM scouts WHERE email="${authParams.email}" AND password="${authParams.password}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
+  if (err) {
+    res.header("Content-Type",'application/json');
+    res.send(`{"error": "badCredentials"}`);
+    return;
+  } else if (accountQueryResults) {
+    res.header("Content-Type",'application/json');
+    res.send(`{"userID": ${accountQueryResults.discordID}, "discordAvatar": "${accountQueryResults.discordProfile}", "discordUsername": "${accountQueryResults.username}", "discriminator": ${accountQueryResults.discriminator} }`);
+    return;
+  } else {
+    res.header("Content-Type",'application/json');
+    res.send(`{"error": "badCredentials"}`);
+    return;
+  }
+  });
+});
 });
 
 app.get('/', passport.authenticate('discord'));
