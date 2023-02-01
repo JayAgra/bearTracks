@@ -507,6 +507,7 @@ app.post('/api/auth', function(req, res) {
   if (err) {
     res.header("Content-Type",'application/json');
     res.send(`{"error": "badCredentials"}`);
+    res.status(400).end();
     return;
   } else if (accountQueryResults) {
     res.header("Content-Type",'application/json');
@@ -515,6 +516,7 @@ app.post('/api/auth', function(req, res) {
   } else {
     res.header("Content-Type",'application/json');
     res.send(`{"error": "badCredentials"}`);
+    res.status(400).end();
     return;
   }
   });
