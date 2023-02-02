@@ -55,7 +55,7 @@
                 caches.keys().then((keyList) => {
                     return Promise.all(
                         keyList.map((key) => {
-                            if (key === cacheName) {
+                            if (key === scouting-app-v1) {
                                 return;
                             }
                             return caches.delete(key);
