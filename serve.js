@@ -26,6 +26,7 @@ app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
 
 app.use('/images', express.static('images'))
+app.use('/public', express.static('src/public'))
 
 function valueToEmote(value) {
   if (value == null || value == "false") {
