@@ -117,10 +117,15 @@
         </fieldset>
         <br>
         <p style="text-align:center">
-            <input type="submit" value="Submit Form" style="color: white; background-color: #515151; border-radius: 0.5rem;; border-style: solid; border-color: #515151; border-width: 0.875rem;; margin-top: 1rem;"><br><br>
-            <a href="/" style="color: white; background-color: #E90202; border-radius: 0.5rem;; border-style: solid; border-color: #E90202; border-width: 0.875rem; text-decoration: none;">back</a><br><br>
+            <button  type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Submit</button><br>
+            <button style="color: #fff; background-color: #E90202; border-radius: 0.5rem;; border-style: solid; border-color: #E90202; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
         </p>
     </form>
     <br><br>
+    <script>
+        function goToHome() {
+            window.location.href = "/";
+        }
+    </script>
 </body>
 </html>
