@@ -216,6 +216,10 @@ app.get('/main', checkAuth, function(req, res) {
   })
 });
 
+app.get('/app.webmanifest', function(req, res) {
+  res.sendFile('./src/app.webmanifest', { root: __dirname })
+});
+
 app.get('/pit', checkAuth, function(req, res) {
   res.render('../src/pit.ejs', { 
     root: __dirname,
