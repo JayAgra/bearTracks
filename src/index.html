@@ -41,7 +41,27 @@
             <a href="matches" class="gameflair1">Match List<br></a><br>
             <a href="pit" class="gameflair1">Pit Scouting<br></a>
         </form>
-        <br><br>
+        <br><br><br>
+        <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.25rem;; border-style: solid; border-color: #E90202; border-width: 0.4375rem;; margin-top: 0.5rem;" onclick="updatePWACache()">Back</button>
     </div>
+    <script>
+        if ("serviceWorker" in navigator) {
+             navigator.serviceWorker.register("/sw.js");
+        }
+        function updatePWACache() {
+            e.waitUntil(
+                caches.keys().then((keyList) => {
+                    return Promise.all(
+                        keyList.map((key) => {
+                            if (key === cacheName) {
+                                return;
+                            }
+                            return caches.delete(key);
+                        })
+                    );
+                })
+            );
+        }
+    </script>
 </body>
 </html>

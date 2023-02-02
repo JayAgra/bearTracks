@@ -202,8 +202,13 @@ app.post('/submitPit', imageUploads, function(req, res) {
     SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
   })
 });
+
 app.get('/', checkAuth, function(req, res) {
   res.sendFile('./src/index.html', { root: __dirname })
+});
+
+app.get('/sw.js', checkAuth, function(req, res) {
+  res.sendFile('./src/sw.js', { root: __dirname })
 });
 
 app.get('/main', checkAuth, function(req, res) {
