@@ -1,0 +1,7 @@
+{
+    "name": "Scouting App",
+    "short_name": "Scout",
+    "theme_color": "#121212",
+    "background_color": "#121212",
+    "display": "standalone"
+}
