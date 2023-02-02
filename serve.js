@@ -447,7 +447,7 @@ app.get('/pitimages', checkAuth, function(req, res) {
   }
 });
 
-app.get('/api/matches/:event', function(req, res) {
+/*app.get('/api/matches/:event', function(req, res) {
   if (req.params.event) {
     var dbody = new EventEmitter();
     var options = {
@@ -524,7 +524,7 @@ app.post('/api/auth', function(req, res) {
   }
   });
 });
-});
+});*/
 
 app.get('/', passport.authenticate('discord'));
 app.get('/callback', passport.authenticate('discord', {
@@ -549,7 +549,7 @@ function addToDataBase(req, next) {
       if (accountQueryResults) {
         return;
       } else {
-        discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
+        //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
       }
     }
   });
