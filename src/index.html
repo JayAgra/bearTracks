@@ -31,6 +31,12 @@
             background-color: #121212;
         }
     </style>
+    <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js");
+        console.log("registered sw");
+    }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -45,9 +51,6 @@
         </form>
     </div>
     <script>
-        if ("serviceWorker" in navigator) {
-             navigator.serviceWorker.register("/sw.js");
-        }
         function updatePWACache() {
             e.waitUntil(
                 caches.keys().then((keyList) => {
