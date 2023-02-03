@@ -3,7 +3,8 @@
 ### Discord App
 1. **Create app** Visit http://discord.com/developers/applications to create an app. Name it whatever you would like, and keep the token, client secret, and app ID for use in the config file.<br>
 2. **Add Oauth2 redirect URI** Add the redirect URI you would like to use to Discord, if this step is skipped oauth will NOT work!<br>
-3. **Add Discord bot to server** Use the URL `https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=526469360720&scope=bot%20applications.commands`, and replace `CLIENT_ID` with your application ID
+3. **Add Discord bot to server** Use the URL `https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=526469360720&scope=bot%20applications.commands`, and replace `CLIENT_ID` with your application ID<br>
+4. AFTER CONFIG - Deploy commands by running the `discord-deployCmds.js`
 ### config.json
 ```
 {
