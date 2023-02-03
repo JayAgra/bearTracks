@@ -21,19 +21,18 @@
 	"teamServerID": ""
 }
 ```
-**clientId** is your Discord bot's application ID<br>
-**token** is your Discord bot's token<br>
-**frcapi** is your FRC API credentials, in base64. Encode like username:token, and do not include anything before the base64 or after the equal sign. To obtain a key: https://frc-events.firstinspires.org/services/API<br>
-**mainhostname** is the web address of the server where the scout app files are. ALL of the code assumes that it is in a folder `scout` in the root (would look like `example.com/scout`). The value here should NOT have a protocall or any filepath (proper form: `example.com` or `subdomain.example.com`).<br>
-**scoutteama** is the role ID from Discord of a role named "Scout A" that has no permissions. It is a role for the bot to assign to scouts.<br>
-**scoutteamb** is the second role for scouts. Use role name "Scout B".<br>
-**leadscout** is a role for ONLY the lead scout(s) to have. Nobody else will be able to use lead scout commands, even with admin access.<br>
-**drive** is the role id for the drive team<br>
-**pit** is the role id for the pit crew<br>
-**myteam** is team number.<br>
-**repoUrl** is the URL for the git repo containing these files. keep `https://github.com/Team766/scouting-app.git` in most cases, unless you are modifying the code<br>
-**botOwnerUserID** is the user ID of the bot owner or hoster who can use the /update command<br>
-**season** is the current season<br>
+**clientId** Discord application ID<br>
+**token** Discord bot token<br>
+**frcapi** FRC API credentials, in base64. Encode like username:token, and do not include anything before the base64 string. Obtain a key: https://frc-events.firstinspires.org/services/API<br>
+**scoutteama** Role ID from Discord of a role named "Scout A" that has no permissions.<br>
+**scoutteamb** ID of second role for scouts. Use role name "Scout B".<br>
+**leadscout** Role ID for lead scouts.<br>
+**drive** Role ID for drive team<br>
+**pit** Role ID of pit<br>
+**myteam** Team number<br>
+**repoUrl** is the URL for the git repo to update from. Keep `https://github.com/JayAgra/scouting-app.git` in most cases, unless you are modifying the code, as it will make updates for future seasons easier<br>
+**botOwnerUserID** User ID of the bot owner or hoster who can use the /update command<br>
+**season** Current season<br>
 **currentComp** 4-letter code for the team's current competition. Use "NONE" if no competition.<br>
 **clientSec** Discord oauth secret<br>
 **redirectURI** Where to redirect user after oauth. Must be added to discord, or the oauth will *not* work<br>
