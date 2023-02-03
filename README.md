@@ -1,5 +1,9 @@
 # Scouting App
 ## Setup
+### Discord App
+**Create app** Visit http://discord.com/developers/applications to create an app. Name it whatever you would like, and keep the token, client secret, and app ID for use in the config file.
+**Add Oauth2 redirect URI**
+**Add Discord bot to server** Use the URL https://discord.com/api/oauth2/authorize?client_id=<mark>CLIENT_ID</mark>&permissions=526469360720&scope=bot%20applications.commands
 ### config.json
 ```
 {
