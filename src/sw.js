@@ -8,11 +8,7 @@ self.addEventListener("install", (e) => {
         '/2023_float.min.css',
         '/fonts/Raleway-500.ttf',
         '/fonts/Raleway-300.ttf',
-        '/public/icon-192x192.png',
-        '/public/icon-256x256.png',
-        '/public/icon-384x384.png',
-        '/public/icon-512x512.png',
-        '/public/launch.png'
+        '/public/ipad_splash.png',
     ];
     e.waitUntil(
         (async () => {
