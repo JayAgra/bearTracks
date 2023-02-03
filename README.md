@@ -2,7 +2,7 @@
 ## Setup
 ### Discord App
 **Create app** Visit http://discord.com/developers/applications to create an app. Name it whatever you would like, and keep the token, client secret, and app ID for use in the config file.<br>
-**Add Oauth2 redirect URI**<br>
+**Add Oauth2 redirect URI** Add the redirect URI you would like to use to Discord, if this step is skipped oauth will NOT work!<br>
 **Add Discord bot to server** Use the URL `https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=526469360720&scope=bot%20applications.commands`, and replace `CLIENT_ID` with your application ID
 ### config.json
 ```
