@@ -6,10 +6,19 @@
 	"clientId": "",
 	"token": "",
 	"frcapi": "",
-	"mainhostname": "",
 	"scoutteama": "",
 	"scoutteamb": "",
-	"leadscout": ""
+	"leadscout": "",
+	"drive": "",
+	"pit": "",
+	"myteam": "766",
+	"repoUrl": "https://github.com/JayAgra/scouting-app.git",
+	"botOwnerUserID": "",
+	"season": 2023,
+	"currentComp": "NONE",
+	"clientSec": "",
+	"redirectURI": "http://scout.example.com",
+	"teamServerID": ""
 }
 ```
 **clientId** is your Discord bot's application ID<br><br>
@@ -23,4 +32,9 @@
 **pit** is the role id for the pit crew<br><br>
 **myteam** is team number.<br><br>
 **repoUrl** is the URL for the git repo containing these files. keep `https://github.com/Team766/scouting-app.git` in most cases, unless you are modifying the code<br><br>
-**botOwnerUserID** is the user ID of the bot owner or hoster who can use the /update command
+**botOwnerUserID** is the user ID of the bot owner or hoster who can use the /update command<br><br>
+**season** is the current season<br><br>
+**currentComp** 4-letter code for the team's current competition. Use "NONE" if no competition.<br><br>
+**clientSec** Discord oauth secret<br><br>
+**redirectURI** Where to redirect user after oauth. Must be added to discord, or the oauth will *not* work<br><br>
+**teamServerID** Server ID of team discord. Used to check user's permissions.
