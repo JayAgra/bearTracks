@@ -19,6 +19,7 @@ const options = {
   cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
 };
 
+//checks file size of ssl, if it exists (is filled), use HTTPS on port 443
 if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer(options, app).listen(443)}
 
 const ejs = require('ejs')
@@ -55,30 +56,35 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
+//add ratelimit for the /api path
 const apiLimiter = rateLimit({
 	windowMs: 10 * 60 * 1000, // 10 minutes
-	max: 200, // Limit each IP to 200 requests per `window` (here, per 15 minutes)
+	max: 150, // Limit each IP to 150 requests per 10 minutes
 	standardHeaders: true, 
 	legacyHeaders: false
 })
 
+//use the ratelimiter
 app.use('/api', apiLimiter)
 
 const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
+//honestly not sure why I need guilds.join
 const { clientId, clientSec, redirectURI, teamServerID } = require('./config.json');
 
+//check the JSON file to see if the user is in the team discord server
 function inTeamServer(json) {
-  var hasMatch =false;
+  var isInTheServer = false;
   for (var index = 0; index < json.length; ++index) {
    var server = json[index];
    if(server.id == teamServerID){
-     hasMatch = true;
+     isInTheServer = true;
      break;
    }
   }
-  return hasMatch;
+  return isInTheServer;
 }
 
+//THIS IS NOT THE DISCORD.JS MODULE, THIS IS THE FILE NAMED DISCORD.JS
 const discordSendData = require("./discord.js");
 
 passport.use(new Strategy({
@@ -96,6 +102,7 @@ passport.use(new Strategy({
 console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
 
 app.use(session({
+  //i have no clue what this secret is but stackoverflow said to make it a random string
   secret: require('crypto').randomBytes(48).toString('hex'),
   resave: false,
   saveUninitialized: false,
@@ -104,12 +111,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+//send users to discord to login when the /login url is visited
 app.get('/login', passport.authenticate('discord', { scope: scopes }), function(req, res) {});
 
+//get the auth code from discord (the code parameter) and use it to get a token
 app.get('/callback',
   passport.authenticate('discord', { failureRedirect: '/login' }), function(req, res) { res.redirect('/') } // auth success
 );
 
+//destroy session
 app.get('/logout', function(req, res) {
   if (req.session) {req.session.destroy(); res.redirect('/');} else {res.send("error!")}
 });
@@ -119,10 +129,12 @@ app.get('/.well-known/acme-challenge/', function(req, res) {
   res.send("");
 });
 
+//i have no idea why i wrote this
 app.get('/dataProcessing', function(req, res) {
   res.send("Recorded Data: Username, user ID, avatar ID, user discriminator (tag), email with discord account, and time of first login. Also collected is submitted scouting data, all of which is associated with discord account. Data that is sent by discord but not saved on disk include list of member servers, used only to confirm membership with team server. This data is not shared and kept within the scouting app's database. If you would like to see all of this data, send a GET request to the /info URL while logged in with discord.");
 });
 
+//get the main form submissions
 app.post('/submit', function(req, res) {
     let body = '';
 
@@ -133,6 +145,7 @@ app.post('/submit', function(req, res) {
     req.on('end', () => {
       let formData = qs.parse(body);
       if (formData.formType == 'pit') {
+        res.end("WRONG FORM IDIOT            ADFHOISDHAFBYDIUHO:FJUOIFBUHOIJKNJSJD:NFBHODS:KNJFB")
       } else if (formData.formType == 'main') {
         let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
             if (err) {
@@ -168,6 +181,7 @@ app.post('/submit', function(req, res) {
     });
 });
 
+//use this thing to do the pit form image thing
 const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
 app.post('/submitPit', imageUploads, function(req, res) {
   let formData = req.body
@@ -203,14 +217,17 @@ app.post('/submitPit', imageUploads, function(req, res) {
   })
 });
 
+//index.html, read the code
 app.get('/', checkAuth, function(req, res) {
   res.sendFile('./src/index.html', { root: __dirname })
 });
 
+//service worker for PWA installs
 app.get('/sw.js', checkAuth, function(req, res) {
   res.sendFile('./src/sw.js', { root: __dirname })
 });
 
+//main scouting form
 app.get('/main', checkAuth, function(req, res) {
   res.render('../src/main.ejs', { 
     root: __dirname,
@@ -221,10 +238,12 @@ app.get('/main', checkAuth, function(req, res) {
   })
 });
 
+//webmanifest for PWAs
 app.get('/app.webmanifest', function(req, res) {
   res.sendFile('./src/app.webmanifest', { root: __dirname })
 });
 
+//pit form
 app.get('/pit', checkAuth, function(req, res) {
   res.render('../src/pit.ejs', { 
     root: __dirname,
@@ -235,18 +254,22 @@ app.get('/pit', checkAuth, function(req, res) {
   })
 });
 
+//serve resources
 app.get('/2023_float.css', function(req, res) {
   res.sendFile('./src/2023_float.min.css', { root: __dirname })
 });
 
+//serve resources
 app.get('/fonts/Raleway-300.ttf', function(req, res) {
   res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname })
 });
 
+//serve resources
 app.get('/fonts/Raleway-500.ttf', function(req, res) {
   res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname })
 });
 
+//allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
   res.render('../src/denied.ejs', { 
@@ -258,6 +281,7 @@ app.get('/denied', function(req, res) {
   } 
 });
 
+//print out all info discord gives
 app.get('/info', checkAuth, function(req, res) {
   console.log(req.user.id)
   console.log(req.user.username)
@@ -268,6 +292,7 @@ app.get('/info', checkAuth, function(req, res) {
   //res.redirect('/')
 });
 
+//tool to browse match scouting data
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
@@ -334,6 +359,7 @@ app.get('/browse', checkAuth, function(req, res) {
   }
 });
 
+//get list of matches
 app.get('/matches', checkAuth, function(req, res) {
   if (req.query.event) {
     const eventCode = req.query.event
@@ -395,6 +421,7 @@ app.get('/matches', checkAuth, function(req, res) {
   }
 });
 
+//serve the uploaded images
 app.get('/pitimages', checkAuth, function(req, res) {
   if (req.query.team && req.query.event) {
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
@@ -457,6 +484,7 @@ app.get('/pitimages', checkAuth, function(req, res) {
   }
 });
 
+//api, has been removed for now
 /*app.get('/api/matches/:event', function(req, res) {
   if (req.params.event) {
     var dbody = new EventEmitter();
@@ -536,6 +564,7 @@ app.post('/api/auth', function(req, res) {
 });
 });*/
 
+//auth functions
 app.get('/', passport.authenticate('discord'));
 app.get('/callback', passport.authenticate('discord', {
     failureRedirect: '/'
@@ -543,12 +572,14 @@ app.get('/callback', passport.authenticate('discord', {
     res.redirect('/');
 });
 
+//check the authentication and server membership
 function checkAuth(req, res, next) {
   if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return addToDataBase(req, next);
   if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return res.redirect('/denied')
   res.redirect('/login');
 }
 
+//add scouts to database
 function addToDataBase(req, next) {
   let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
   const password = require('crypto').randomBytes(12).toString('hex')

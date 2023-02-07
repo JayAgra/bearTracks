@@ -14,4 +14,4 @@ rest.get(Routes.applicationCommands(clientId))
             console.log('deleted')
         }
         return Promise.all(promises);
-    });
+});
