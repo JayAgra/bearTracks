@@ -461,7 +461,7 @@ app.get('/pitimages', checkAuth, function(req, res) {
         displayResults: "flex",
         resultsTeamNumber: `${dbQueryResult.team}`,
         resultsEventCode: `${dbQueryResult.event}`,
-        resultsBody: `<img src="${dbQueryResult.image1}"/><br><img src="${dbQueryResult.image2}"/><br><img src="${dbQueryResult.image3}"/><br><img src="${dbQueryResult.image4}"/><br><img src="${dbQueryResult.image5}"/>`
+        resultsBody: `<img src="images/${dbQueryResult.image1}"/><br><img src="images/${dbQueryResult.image2}"/><br><img src="images/${dbQueryResult.image3}"/><br><img src="images/${dbQueryResult.image4}"/><br><img src="images/${dbQueryResult.image5}"/>`
       })
       return;
     }
