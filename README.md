@@ -1,4 +1,7 @@
 # Scouting App
+## Preview
+### <a href="https://scoutingapp.jayagra.com">scoutingapp.jayagra.com</a><br>
+Log in with Discord, only allows joining if part of the testing server (https://discord.gg/nmQQKZGnVH)<br>
 ## Setup
 ### Discord App
 1. **Create app** Visit http://discord.com/developers/applications to create an app. Name it whatever you would like, and keep the token, client secret, and app ID for use in the config file.<br>
