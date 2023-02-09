@@ -4,8 +4,8 @@ var datetime = new Date();
 const seasonData = require("./src/2023.js");
 const { exec } = require('child_process');
 
-if (!fs.existsSync('config.example.json') && fs.existsSync('config.json')) {
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not finf config.json! Fill out config.example.json and rename it to config.json');
+if (!fs.existsSync('config.example.json') && !fs.existsSync('config.json')) {
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not find config.json! Fill out config.example.json and rename it to config.json');
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
     process.exit();
 } else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Found config.json file!');}

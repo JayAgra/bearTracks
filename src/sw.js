@@ -3,12 +3,11 @@
 self.addEventListener("install", (e) => {
     console.log("SW - Installed");
     const cacheName = "scouting-app-v1";
-    const appShellFiles = [
+    const contentToCache = [
         '/2023_float.css',
         '/2023_float.min.css',
         '/fonts/Raleway-500.ttf',
-        '/fonts/Raleway-300.ttf',
-        '/public/ipad_splash.png',
+        '/fonts/Raleway-300.ttf'
     ];
     e.waitUntil(
         (async () => {
