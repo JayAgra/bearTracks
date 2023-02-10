@@ -1,6 +1,5 @@
 # Scouting App
 ![GitHub](https://img.shields.io/github/license/JayAgra/scouting-app) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/scouting-app) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/scouting-app)<br>
-[![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/JayAgra/scouting-app/tree/main)
 ## Preview
 See this demo site: <br>
 <a href="https://scoutingapp.jayagra.com">scoutingapp.jayagra.com</a><br>
