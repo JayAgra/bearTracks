@@ -1,8 +1,0 @@
-name: scouting-app
-services:
-- environment_slug: node-js
-  github:
-    branch: main
-    deploy_on_push: false
-    repo: JayAgra/scouting-app
-  name: scouting-app
