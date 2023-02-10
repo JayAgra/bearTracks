@@ -88,10 +88,7 @@ new SlashCommandBuilder()
 	.addStringOption(option =>
 		option.setName('path')
 			.setDescription('request path: please see frc-api-docs.firstinspires.org')
-			.setRequired(true)),
-new SlashCommandBuilder()
-	.setName('update')
-	.setDescription('pulls from specified repo, bot owner only'),
+			.setRequired(true))
 ]
 .map(command => command.toJSON());
 

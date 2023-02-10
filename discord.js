@@ -768,54 +768,6 @@ client.on('interactionCreate', async interaction => {
               });
           }
       });
-  } else if (interaction.commandName === 'update') {
-      if (interaction.user.id == botOwnerUserID) {
-          exec(`git pull ${repoUrl}`, (error, stdout, stderr) => {
-              if (error) {
-                  interaction.reply({
-                      content: 'could not pull data. error: ' + error,
-                      ephemeral: false
-                  });
-                  return;
-              }
-
-
-                  //move cfg to tmp so it does not get nuked
-                  exec("cp config.json config.temp", (error, stdout, stderr) => {
-                      if (error) {
-                          interaction.reply({
-                              content: 'could not save config file, aborted to save it. error: ' + error,
-                              ephemeral: false
-                          });
-                          return;
-                      }
-
-                      //reboot
-                      exec("npm start", (error, stdout, stderr) => {
-                          if (error) {
-                              interaction.reply({
-                                  content: 'could not restart bot, but files may have been updated. error: ' + error,
-                                  ephemeral: false
-                              });
-                              return;
-                          }
-                          const updateEmbed = new MessageEmbed()
-                              .setColor('#740000')
-                              .setTitle(`Bot Updated!`)
-                              .setDescription(`Bot services should resume`)
-                              .setTimestamp()
-                          interaction.reply({
-                              embeds: [updateEmbed]
-                          });
-                      });
-              });
-          });
-      } else {
-          interaction.reply({
-              content: 'no ' + trollface + '. you are not the bot owner/hoster!',
-              ephemeral: true
-          });
-      }
   } else {
       interaction.reply({
           content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows user you know.',
