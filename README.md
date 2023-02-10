@@ -1,4 +1,5 @@
 # Scouting App
+![GitHub](https://img.shields.io/github/license/JayAgra/scouting-app) ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/jayagra/scouting-app) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/scouting-app) [![Maintainability](https://api.codeclimate.com/v1/badges/4acfda318fd3f3eb7fc9/maintainability)](https://codeclimate.com/github/JayAgra/scouting-app/maintainability)
 ## Preview
 See this demo site: <br>
 <a href="https://scoutingapp.jayagra.com">scoutingapp.jayagra.com</a><br>
