@@ -31,19 +31,19 @@ It will record data, and you will be able to query it. Do NOT rely on this for c
 	"teamServerID": ""
 }
 ```
-**clientId** Discord application ID<br>
-**token** Discord bot token<br>
-**frcapi** FRC API credentials, in base64. Encode like username:token, and do not include anything before the base64 string. Obtain a key: https://frc-events.firstinspires.org/services/API<br>
-**scoutteama** Role ID from Discord of a role named "Scout A" that has no permissions.<br>
-**scoutteamb** ID of second role for scouts. Use role name "Scout B".<br>
-**leadscout** Role ID for lead scouts.<br>
-**drive** Role ID for drive team<br>
-**pit** Role ID of pit<br>
-**myteam** Team number<br>
-**repoUrl** is the URL for the git repo to update from. Keep `https://github.com/JayAgra/scouting-app.git` in most cases, unless you are modifying the code, as it will make updates for future seasons easier<br>
-**botOwnerUserID** User ID of the bot owner or hoster who can use the /update command<br>
-**season** Current season<br>
-**currentComp** 4-letter code for the team's current competition. Use "NONE" if no competition.<br>
-**clientSec** Discord oauth secret<br>
-**redirectURI** Where to redirect user after oauth. Must be added to discord, or the oauth will *not* work<br>
-**teamServerID** Server ID of team discord. Used to check user's permissions.
++ **clientId** Discord application ID<br>
++ **token** Discord bot token<br>
++ **frcapi** FRC API credentials, in base64. Encode like username:token, and do not include anything before the base64 string. Obtain a key: https://frc-events.firstinspires.org/services/API<br>
++ **scoutteama** Role ID from Discord of a role named "Scout A" that has no permissions.<br>
++ **scoutteamb** ID of second role for scouts. Use role name "Scout B".<br>
++ **leadscout** Role ID for lead scouts.<br>
++ **drive** Role ID for drive team<br>
++ **pit** Role ID of pit<br>
++ **myteam** Team number<br>
++ **repoUrl** is the URL for the git repo to update from. Keep `https://github.com/JayAgra/scouting-app.git` in most cases, unless you are modifying the code, as it will make updates for future seasons easier<br>
++ **botOwnerUserID** User ID of the bot owner or hoster who can use the /update command<br>
++ **season** Current season<br>
++ **currentComp** 4-letter code for the team's current competition. Use "NONE" if no competition.<br>
++ **clientSec** Discord oauth secret<br>
++ **redirectURI** Where to redirect user after oauth. Must be added to discord, or the oauth will *not* work<br>
++ **teamServerID** Server ID of team discord. Used to check user's permissions.
