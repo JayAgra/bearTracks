@@ -2,7 +2,6 @@ const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = requi
 const fs = require('fs');
 var datetime = new Date();
 const seasonData = require("./src/2023.js");
-const { exec } = require('child_process');
 
 if (!fs.existsSync('config.example.json') && !fs.existsSync('config.json')) {
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not find config.json! Fill out config.example.json and rename it to config.json');

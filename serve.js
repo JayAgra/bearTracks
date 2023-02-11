@@ -46,6 +46,14 @@ function invalidJSON(str) {
   }
 }
 
+function logInfo(info) {
+  console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + info)
+}
+
+function logErrors(errortodisplay) {
+  console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  errortodisplay);
+}
+
 const passport = require('passport')
 const Strategy = require('passport-discord').Strategy;
 
@@ -99,7 +107,7 @@ passport.use(new Strategy({
 }));
 
 //before server creation
-console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Preparing...")
+logInfo("Preparing...");
 
 app.use(session({
   //i have no clue what this secret is but stackoverflow said to make it a random string
@@ -129,11 +137,6 @@ app.get('/.well-known/acme-challenge/', function(req, res) {
   res.send("");
 });
 
-//i have no idea why i wrote this
-app.get('/dataProcessing', function(req, res) {
-  res.send("Recorded Data: Username, user ID, avatar ID, user discriminator (tag), email with discord account, and time of first login. Also collected is submitted scouting data, all of which is associated with discord account. Data that is sent by discord but not saved on disk include list of member servers, used only to confirm membership with team server. This data is not shared and kept within the scouting app's database. If you would like to see all of this data, send a GET request to the /info URL while logged in with discord.");
-});
-
 //get the main form submissions
 app.post('/submit', function(req, res) {
     let body = '';
@@ -145,11 +148,11 @@ app.post('/submit', function(req, res) {
     req.on('end', () => {
       let formData = qs.parse(body);
       if (formData.formType == 'pit') {
-        res.end("WRONG FORM IDIOT            ADFHOISDHAFBYDIUHO:FJUOIFBUHOIJKNJSJD:NFBHODS:KNJFB")
+        res.end("WRONG FORM")
       } else if (formData.formType == 'main') {
         let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
             if (err) {
-              console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+              logErrors(err.message);
               res.end('pit form error! ' + err.message);
             }
         });
@@ -157,14 +160,14 @@ app.post('/submit', function(req, res) {
         let values = [formData.event, formData.name, formData.team, formData.match, formData.level, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.game21, formData.game22, formData.game23, formData.game24, formData.game25, formData.teleop, formData.defend, formData.driving, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar];
         db.run(stmt, values, function(err) {
             if (err) {
-              console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
-              res.end('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + 'pit form error! ' + err.message);
+              logErrors(err.message);
+              res.end(err.message);
             }
             discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
         });
         db.close((err) => {
             if (err) {
-              console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+              logErrors(err.message);
               res.end('pit form error! ' + err.message);
             }
         });
@@ -185,14 +188,19 @@ app.post('/submit', function(req, res) {
 const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
 app.post('/submitPit', imageUploads, function(req, res) {
   let formData = req.body
-  exec(`mv images/${req.files.image1[0].filename} images/${req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-  exec(`mv images/${req.files.image2[0].filename} images/${req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-  exec(`mv images/${req.files.image3[0].filename} images/${req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-  exec(`mv images/${req.files.image4[0].filename} images/${req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-  exec(`mv images/${req.files.image5[0].filename} images/${req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+
+  Object.values(req.files).forEach((image) => {
+    console.log(req.files)
+    exec(`mv images/${image[0].filename} images/${image[0].filename+"."+(image[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+  });
+    //exec(`mv images/${req.files.image1[0].filename} images/${req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+    //exec(`mv images/${req.files.image2[0].filename} images/${req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+    //exec(`mv images/${req.files.image3[0].filename} images/${req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+    //exec(`mv images/${req.files.image4[0].filename} images/${req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+    //exec(`mv images/${req.files.image5[0].filename} images/${req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
   let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
-      console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
+      logErrors(err.message);
       res.end('pit form error! ' + err.message);
     }
   });
@@ -200,14 +208,14 @@ app.post('/submitPit', imageUploads, function(req, res) {
   let values = [formData.event, formData.name, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6), req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6), req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6), req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6), req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)];
   db.run(stmt, values, function(err) {
     if (err) {
-      console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + err.message);
+      logErrors(err.message);
       res.end('pit form error! ' + err.message);
     }
     discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
   });
   db.close((err) => {
     if (err) {
-      console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + err.message);
+      logErrors(err.message);
       res.end('pit form error! ' + err.message);
     }
   });
@@ -597,14 +605,14 @@ function addToDataBase(req, next) {
   db.run(`INSERT OR IGNORE INTO scouts(discordID, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
   db.close((err) => {
     if (err) {
-      console.error('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  err.message);
+      logErrors(err.message);
       res.end('error! ' + err.message);
     }
   });
   return next();
 }
 
-if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => console.log(`HTTP server listening: http://localhost`));}
+if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
 
 //server created and ready for a request
-console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + "Ready!");
+logInfo("Ready!");
