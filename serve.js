@@ -193,11 +193,7 @@ app.post('/submitPit', imageUploads, function(req, res) {
     console.log(req.files)
     exec(`mv images/${image[0].filename} images/${image[0].filename+"."+(image[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
   });
-    //exec(`mv images/${req.files.image1[0].filename} images/${req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-    //exec(`mv images/${req.files.image2[0].filename} images/${req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-    //exec(`mv images/${req.files.image3[0].filename} images/${req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-    //exec(`mv images/${req.files.image4[0].filename} images/${req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
-    //exec(`mv images/${req.files.image5[0].filename} images/${req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+
   let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
       logErrors(err.message);
