@@ -1,6 +1,6 @@
 # Scouting App
 ![GitHub](https://img.shields.io/github/license/JayAgra/scouting-app) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/scouting-app) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/scouting-app)<br>
-![g]()
+
 ## Preview
 See this demo site: <br>
 <a href="https://scoutingapp.jayagra.com">scoutingapp.jayagra.com</a><br>
