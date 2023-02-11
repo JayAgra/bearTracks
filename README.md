@@ -1,11 +1,16 @@
 # Scouting App
 ![GitHub](https://img.shields.io/github/license/JayAgra/scouting-app) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/scouting-app) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/scouting-app)<br>
+
 ## Preview
 See this demo site: <br>
 <a href="https://scoutingapp.jayagra.com">scoutingapp.jayagra.com</a><br>
 Log in with Discord, only allows joining if part of the testing server (https://discord.gg/nmQQKZGnVH)<br>
 It will record data, and you will be able to query it. Do NOT rely on this for comp, data may be purged and is public.
 ## Setup
+### Hosting
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue-ghost.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/JayAgra/scouting-app/tree/main&refcode=547c9991719e)<br>
+You will need to use any hosting provider, the deploy button above is untested.<br>
+
 ### Discord App
 1. **Create app** Visit http://discord.com/developers/applications to create an app. Name it whatever you would like, and keep the token, client secret, and app ID for use in the config file.<br>
 2. **Add Oauth2 redirect URI** Add the redirect URI you would like to use to Discord, if this step is skipped oauth will NOT work!<br>
