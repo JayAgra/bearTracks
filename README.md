@@ -10,9 +10,9 @@
 - Database can be re-used for all seasons
 - User ID linked to every submission
 - PWA support on iOS
+- Layout of homepage different based on user's roles
 ### To Add:
 - Discord pings before matches
-- Layout of homepage different based on user's roles
 - Easy submission removal
 - Ability to download JSON of form data to upload later
 ## Preview

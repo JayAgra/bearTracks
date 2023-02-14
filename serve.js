@@ -275,11 +275,37 @@ app.get('/', checkAuth, async function(req, res) {
     rolesHTMLfromCookie += `<span style="color: ${oauthData[i][1]}; background-color: ${oauthData[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[i][0]}</span><br class="roleThing">`
     }
   }
-  res.render('../src/index.ejs', { 
-    root: __dirname,
-    userName: req.user.username,
-    rolesBody: rolesHTMLfromCookie
-  })
+  if (oauthData[0][1] == "Drive Team") {
+    res.render('../src/index.ejs', { 
+      root: __dirname,
+      userName: req.user.username,
+      rolesBody: rolesHTMLfromCookie,
+      order1: 2,
+      order2: 0,
+      order3: 1,
+      order4: 3
+    })
+  } else if (oauthData[0][1] == "Pit Team") {
+    res.render('../src/index.ejs', { 
+      root: __dirname,
+      userName: req.user.username,
+      rolesBody: rolesHTMLfromCookie,
+      order1: 2,
+      order2: 0,
+      order3: 1,
+      order4: 3
+    })
+  } else {
+    res.render('../src/index.ejs', { 
+      root: __dirname,
+      userName: req.user.username,
+      rolesBody: rolesHTMLfromCookie,
+      order1: 0,
+      order2: 3,
+      order3: 2,
+      order4: 1
+    })
+  }
   }
 });
 
