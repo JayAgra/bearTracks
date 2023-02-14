@@ -153,8 +153,8 @@ client.on('interactionCreate', async interaction => {
                       name: 'Blue 3',
                       value: `${outputget.Schedule[0].teams[5].teamNumber}`,
                       inline: true
-                  }, )
-                  .setTimestamp()
+                  })
+                  .setTimestamp();
               //button defs
               const actrow = new ActionRowBuilder()
                   .addComponents(
@@ -217,8 +217,8 @@ client.on('interactionCreate', async interaction => {
                               name: 'Blue 3',
                               value: `${outputget.Schedule[matchno].teams[5].teamNumber}`,
                               inline: true
-                          }, )
-                          .setTimestamp()
+                          })
+                          .setTimestamp();
                       await i.deferUpdate()
                       await i.editReply({
                           embeds: [matchEmbedu],
@@ -264,8 +264,8 @@ client.on('interactionCreate', async interaction => {
                               name: 'Blue 3',
                               value: `${outputget.Schedule[matchno].teams[5].teamNumber}`,
                               inline: true
-                          }, )
-                          .setTimestamp()
+                          })
+                          .setTimestamp();
                       await i.deferUpdate()
                       await i.editReply({
                           embeds: [matchEmbedu],
