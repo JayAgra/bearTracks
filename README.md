@@ -3,7 +3,7 @@
 
 ## Preview
 See this demo site: <br>
-<a href="https://scoutingapp.jayagra.com">scoutingapp.jayagra.com</a><br>
+<a href="">demo site not currently live</a><br>
 Log in with Discord, only allows joining if part of the testing server (https://discord.gg/nmQQKZGnVH)<br>
 It will record data, and you will be able to query it. Do NOT rely on this for comp, data may be purged and is public.
 ## Setup
