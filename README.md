@@ -1,6 +1,20 @@
 # Scouting App
 ![GitHub](https://img.shields.io/github/license/JayAgra/scouting-app) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/scouting-app) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/scouting-app)<br>
 
+## Features<br>
+- Easy updating for new seasons
+- Easy install and setup
+- Discord Oauth2
+- Discord data retrieval for all data and upcoming matches
+- Robot image upload and retrieval
+- Database can be re-used for all seasons
+- User ID linked to every submission
+- PWA support on iOS
+### To Add:
+- Discord pings before matches
+- Layout of homepage different based on user's roles
+- Easy submission removal
+- Ability to download JSON of form data to upload later
 ## Preview
 See the demo site: <br>
 <a href="">demo site not currently live. install this locally to see pages</a><br>
