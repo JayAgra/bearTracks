@@ -458,12 +458,12 @@ app.get('/browse', checkAuth, function(req, res) {
 
 //tool to manage match scouting data
 //yes, this is almost the exact same as the browse tool
-app.get('/manage', checkAuth, function(req, res) {
+app.get('/delete', checkAuth, function(req, res) {
 if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
   if (req.query.submissionID) {
     db.get(`SELECT * FROM main WHERE id=${req.query.submissionID} ORDER BY id ASC LIMIT 1`, (err, dbQueryResult) => {
     if (err) {
-      res.render('../src/manage.ejs', { 
+      res.render('../src/delete.ejs', { 
         root: __dirname,
         displaySearch: "flex",
         displayResults: "none",
@@ -474,7 +474,7 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
       })
     } else {
     if (typeof dbQueryResult == "undefined") {
-      res.render('../src/manage.ejs', { 
+      res.render('../src/delete.ejs', { 
         root: __dirname,
         displaySearch: "flex",
         displayResults: "none",
@@ -484,7 +484,7 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
         resultsBody: 0
       })
     } else {
-      res.render('../src/manage.ejs', { 
+      res.render('../src/delete.ejs', { 
         root: __dirname,
         displaySearch: "none",
         displayResults: "flex",
@@ -497,7 +497,7 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
     }
     });
   } else {
-  res.render('../src/manage.ejs', { 
+  res.render('../src/delete.ejs', { 
     root: __dirname,
     displaySearch: "flex",
     displayResults: "none",
