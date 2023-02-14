@@ -1,4 +1,4 @@
-const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
 var datetime = new Date();
 const seasonData = require("./src/2023.js");
@@ -160,13 +160,13 @@ client.on('interactionCreate', async interaction => {
                   .addComponents(
                       new ButtonBuilder()
                       .setCustomId('prev')
-                      .setStyle('PRIMARY')
+                      .setStyle(ButtonStyle.Primary)
                       .setLabel('Previous')
                   )
                   .addComponents(
                       new ButtonBuilder()
                       .setCustomId('next')
-                      .setStyle('PRIMARY')
+                      .setStyle(ButtonStyle.Primary)
                       .setLabel('Next')
                   )
               //end btns start btn processing
@@ -495,31 +495,31 @@ client.on('interactionCreate', async interaction => {
                   .addComponents(
                       new ButtonBuilder()
                       .setCustomId('prev2')
-                      .setStyle('PRIMARY')
+                      .setStyle(ButtonStyle.Primary)
                       .setLabel('<<')
                   )
                   .addComponents(
                       new ButtonBuilder()
                       .setCustomId('prev')
-                      .setStyle('SUCCESS')
+                      .setStyle(ButtonStyle.Success)
                       .setLabel('<')
                   )
                   .addComponents(
                       new ButtonBuilder()
                       .setCustomId(`${myteam}`)
-                      .setStyle('DANGER')
+                      .setStyle(ButtonStyle.Danger)
                       .setLabel(`${myteam}`)
                   )
                   .addComponents(
                       new ButtonBuilder()
                       .setCustomId('next')
-                      .setStyle('SUCCESS')
+                      .setStyle(ButtonStyle.Success)
                       .setLabel('>')
                   )
                   .addComponents(
                       new ButtonBuilder()
                       .setCustomId('next2')
-                      .setStyle('PRIMARY')
+                      .setStyle(ButtonStyle.Primary)
                       .setLabel('>>')
                   )
               //end btns start btn processing
