@@ -457,7 +457,7 @@ client.on('interactionCreate', async interaction => {
           } else {
               const outputget = JSON.parse(data);
               const rankEmbed = new EmbedBuilder()
-                  .setColor('#740000')
+                  .setColor(0x740000)
                   .setTitle(`${eventcode} team rankings`)
                   .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                   .setDescription(`Rank ${outputget.Rankings[0].rank}: ${outputget.Rankings[0].teamNumber}`)
