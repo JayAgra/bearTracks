@@ -157,6 +157,16 @@ app.get('/callback',
   passport.authenticate('discord', { failureRedirect: '/login' }), function(req, res) { res.redirect('/') } // auth success
 );
 
+app.get('/clearCookies', function(req, res) {
+  res.clearCookie('role');
+  res.clearCookie('connect.sid');
+  res.redirect('/');
+});
+
+app.get('/settings', checkAuth, async function(req, res) {
+  res.sendFile('src/settings.html', {root: __dirname})
+});
+
 //destroy session
 app.get('/logout', function(req, res) {
   if (req.session) {req.session.destroy(); res.redirect('/');} else {res.send("error!")}
