@@ -16,7 +16,7 @@ if (fs.statSync("config.json").size < 300) {
 } else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
 
 //safe to require config.json
-const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, repoUrl, botOwnerUserID, season, currentComp } = require('./config.json');
+const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, season, currentComp } = require('./config.json');
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS]

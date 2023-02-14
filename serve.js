@@ -6,13 +6,18 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 var EventEmitter = require("events").EventEmitter;
-const { frcapi, myteam, season } = require('./config.json');
+const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit } = require('./config.json');
 const multer  = require('multer')
 const upload = multer({ dest: 'images/' })
 const { exec } = require('child_process');
-const rateLimit = require('express-rate-limit')
+const rateLimit = require('express-rate-limit');
+const DiscordOauth2 = require("discord-oauth2");
+const cookieParser = require("cookie-parser");
+
+const getOauthData = new DiscordOauth2;
 
 var app = express();
+app.use(cookieParser());
 
 const options = {
   key: fs.readFileSync(__dirname + '/ssl/privatekey.pem', 'utf8'),
@@ -75,8 +80,8 @@ const apiLimiter = rateLimit({
 //use the ratelimiter
 app.use('/api', apiLimiter)
 
-const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
-//honestly not sure why I need guilds.join
+const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
+
 const { clientId, clientSec, redirectURI, teamServerID } = require('./config.json');
 
 //check the JSON file to see if the user is in the team discord server
@@ -106,6 +111,27 @@ passport.use(new Strategy({
   });
 }));
 
+function findTopRole(roles) {
+  var rolesOut = [];
+  if (roles.indexOf(leadscout) >= 0) {
+    rolesOut.push(["Lead Scout", "rgb(233, 30, 99)", "rgba(233, 30, 99, 0.1)"]);
+  }
+  if (roles.indexOf(drive) >= 0) {
+    rolesOut.push(["Drive Team", "rgb(241, 196, 15)", "rgba(241, 196, 15, 0.1)"]);
+  } 
+  if (roles.indexOf(pit) >= 0) {
+    rolesOut.push(["Pit Team", "rgb(230, 126, 34)", "rgba(230, 126, 34, 0.1)"]);
+  } 
+  if (roles.indexOf(scoutteama) >= 0) {
+    rolesOut.push(["Scout Team A", "rgb(26, 188, 156)", "rgba(26, 188, 156, 0.1)"]);
+  } 
+  if (roles.indexOf(scoutteamb) >= 0) {
+    rolesOut.push(["Scout Team B", "rgb(52, 152, 219)", "rgba(52, 152, 219, 0.1)"]);
+  }
+  console.log(rolesOut);
+  return rolesOut;
+}
+
 //before server creation
 logInfo("Preparing...");
 
@@ -119,8 +145,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//send users to discord to login when the /login url is visited
-app.get('/login', passport.authenticate('discord', { scope: scopes }), function(req, res) {});
+app.get('/login', function(req, res) {
+  res.sendFile('src/login.html', {root: __dirname})
+});
+
+//send users to discord to login when the /loginDiscord url is visited
+app.get('/loginDiscord', passport.authenticate('discord', { scope: scopes }), function(req, res) {});
 
 //get the auth code from discord (the code parameter) and use it to get a token
 app.get('/callback',
@@ -222,8 +252,37 @@ app.post('/submitPit', imageUploads, function(req, res) {
 });
 
 //index.html, read the code
-app.get('/', checkAuth, function(req, res) {
-  res.sendFile('./src/index.html', { root: __dirname })
+app.get('/', checkAuth, async function(req, res) {
+  if (!req.cookies.role) {
+    //set cookie if not exists
+    //I am setting a cookie because it takes a while to wait for role data from API
+    var oauthDataCookieSet =  await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}));
+    res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now()}); 
+    var rolesHTML = "";
+    for (let i = 0; i < oauthDataCookieSet.length; i++) {
+      if (i===0) {rolesHTML += `<span style="color: ${oauthDataCookieSet[i][1]}; background-color: ${oauthDataCookieSet[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[i][0]}</span><br class="roleThing"><br class="roleThing">`} else {
+      rolesHTML += `<span style="color: ${oauthDataCookieSet[i][1]}; background-color: ${oauthDataCookieSet[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[i][0]}</span><br class="roleThing">`
+      }
+    }
+    res.render('../src/index.ejs', { 
+      root: __dirname,
+      userName: req.user.username,
+      rolesBody: rolesHTML
+    })
+  } else {
+  var oauthData =  JSON.parse(req.cookies.role);
+  var rolesHTMLfromCookie = "";
+  for (let i = 0; i < oauthData.length; i++) {
+    if (i===0) {rolesHTMLfromCookie += `<span style="color: ${oauthData[i][1]}; background-color: ${oauthData[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[i][0]}</span><br class="roleThing"><br class="roleThing">`} else {
+    rolesHTMLfromCookie += `<span style="color: ${oauthData[i][1]}; background-color: ${oauthData[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[i][0]}</span><br class="roleThing">`
+    }
+  }
+  res.render('../src/index.ejs', { 
+    root: __dirname,
+    userName: req.user.username,
+    rolesBody: rolesHTMLfromCookie
+  })
+  }
 });
 
 //service worker for PWA installs
@@ -294,6 +353,12 @@ app.get('/info', checkAuth, function(req, res) {
   console.log(inTeamServer(req.user.guilds))
   res.json(req.user);
   //res.redirect('/')
+});
+
+app.get('/teamRoleInfo', checkAuth, function(req, res) {  
+  getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {
+    res.send(data.roles);
+  });
 });
 
 //tool to browse match scouting data
@@ -488,88 +553,9 @@ app.get('/pitimages', checkAuth, function(req, res) {
   }
 });
 
-//api, has been removed for now
-/*app.get('/api/matches/:event', function(req, res) {
-  if (req.params.event) {
-    var dbody = new EventEmitter();
-    var options = {
-        'method': 'GET',
-        'hostname': 'frc-api.firstinspires.org',
-        'path': `/v3.0/${season}/schedule/${req.params.event}?tournamentLevel=qualification&teamNumber=${myteam}`,
-        'headers': {
-            'Authorization': 'Basic ' + frcapi
-        },
-        'maxRedirects': 20
-    };
-
-    var req = https.request(options, function(res) {
-        var chunks = [];
-
-        res.on("data", function(chunk) {
-            chunks.push(chunk);
-        });
-
-        res.on("end", function(chunk) {
-            var body = Buffer.concat(chunks);
-            data = body;
-            dbody.emit('update');
-        });
-
-        res.on("error", function(error) {
-            console.error(error);
-        });
-    });
-    req.end();
-    dbody.on('update', function() {
-        if (invalidJSON(data)) {
-          res.header("Content-Type",'application/json');
-          res.send(`{"error": "got invalid response from FRC API"}`);  
-          return;
-        } else {
-          res.json(JSON.parse(data));
-          return;
-        }
-      });
-  } else {
-    res.header("Content-Type",'application/json');
-    res.send(`{"error": "no specified event code"}`);
-  }
-});
-
-app.post('/api/auth', function(req, res) {
-  let body = '';
-
-  req.on('data', chunk => {
-    body += chunk.toString();
-  });
-  req.on('end', () => {
-  let authParams = qs.parse(body);
-  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
-  db.get(`SELECT * FROM scouts WHERE email="${authParams.email}" AND password="${authParams.password}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
-  if (err) {
-    res.header("Content-Type",'application/json');
-    res.status(401)
-    res.send(`{"error": "badCredentials"}`);
-    res.end();
-    return;
-  } else if (accountQueryResults) {
-    res.header("Content-Type",'application/json');
-    res.send(`{"userID": "${accountQueryResults.discordID}", "discordAvatar": "${accountQueryResults.discordProfile}", "discordUsername": "${accountQueryResults.username}", "discriminator": "${accountQueryResults.discriminator}" }`);
-    res.end();
-    return;
-  } else {
-    res.header("Content-Type",'application/json');
-    res.status(401)
-    res.send(`{"error": "badCredentials"}`);
-    res.end();
-    return;
-  }
-  });
-});
-});*/
-
 //auth functions
 app.get('/', passport.authenticate('discord'));
+
 app.get('/callback', passport.authenticate('discord', {
     failureRedirect: '/'
 }), function(req, res) {
@@ -612,3 +598,5 @@ if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privateke
 
 //server created and ready for a request
 logInfo("Ready!");
+
+//https://discord.com/oauth2/authorize?client_id=CLIENT_ID&redirect_uri=REDIRECT&response_type=code&scope=identify%20guilds%20guilds.members.read%20email%20role_connections.write

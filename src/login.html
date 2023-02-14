@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login - CHARGED UP Scouting</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Scouting">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="stylesheet" href="2023_float.css" type="text/css">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/icon.png">
+    <style>
+        body {
+            text-align: center;
+            background-color: #121212;
+        }
+    </style>
+    <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js");
+        console.log("registered sw");
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="dummy">
+            <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
+            <h2>Log In</h2><br>
+        <button style="background-color: #5865F2; border: 2px solid #5865F2; color: #000; border-radius: 10px; padding: 10px; font-weight: 900; width: 75%;" onclick="window.location.href='loginDiscord'">
+            <div style="display: flex; flex-direction: row; align-items: center; text-align: center; flex-shrink: 1;">
+                <p>&emsp;</p>
+                <img src="data:image/png;base64,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" width="10%" height="10%">
+                <p style="width: 75%">&emsp;Log In With Discord</p>
+            </div>
+        </button>
+    </div>
+    </div>
+    <script>
+    </script>
+</body>
+</html>

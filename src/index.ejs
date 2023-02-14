@@ -50,12 +50,6 @@
             text-align: center;
             text-decoration: none;
             font-size: 6vh;
-            border-top: rgba(35,35,35,0);
-            border-left: rgba(35,35,35,0);
-            border-right: rgba(35,35,35,0);
-            border-bottom: #fff;
-            border-style: dotted;
-            border-width: 0.25vh;
         }
         a:hover,a:active {
             color: #fff;
@@ -63,6 +57,15 @@
         body {
             text-align: center;
             background-color: #121212;
+        }
+        #rolesDisplay span{
+            display:none;
+        }
+        #rolesDisplay br{
+            display:none;
+        }
+        #rolesDisplay span:first-child{
+            display:inline;
         }
     </style>
     <script>
@@ -75,11 +78,14 @@
 <body>
     <div class="container">
         <form>
-            <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
-            <a href="main" class="gameflair1">Match Scouting<br></a><br>
-            <a href="browse" class="gameflair1">Browse Data<br></a><br>
-            <a href="matches" class="gameflair1">Match List<br></a><br>
-            <a href="pit" class="gameflair1">Pit Scouting<br></a>
+            <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
+            <h3><span style="color: rgb(88, 101, 242); background-color: rgba(88, 101, 242, 0.1); border-radius: 4px; padding: 5px;" id="profileName"><%= userName %></span><span>&emsp;</span><span id="rolesDisplay"><%- rolesBody %></span></h3><br>
+            <div style="display: flex; flex-direction: column;">
+            <a href="main" class="gameflair1" style="order: 0; margin-bottom: 5%;">Match Scouting<br></a>
+            <a href="browse" class="gameflair1" style="order: 1; margin-bottom: 5%;">Browse Data<br></a>
+            <a href="matches" class="gameflair1" style="order: 3; margin-bottom: 5%;">Match List<br></a>
+            <a href="pit" class="gameflair1" style="order: 2; margin-bottom: 5%;">Pit Scouting<br></a>
+            </div>
             <br><br><br>
         </form>
     </div>
@@ -97,6 +103,19 @@
                     );
                 })
                 console.log("done, I think")
+        }
+        document.getElementById("profileName").addEventListener("click", showHideAllChildren);
+        function showHideAllChildren() {
+            var parentID = document.getElementById('rolesDisplay');
+            var innerDiv = parentID.getElementsByClassName('roleThing');
+            for(var i = 1; i < innerDiv.length; i++){
+            var a = innerDiv[i];
+                if (a.style.display === "none") {
+                    a.style.display = 'block';
+                } else {
+                    a.style.display = 'none';
+                }
+            }
         }
     </script>
 </body>
