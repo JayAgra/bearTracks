@@ -10,7 +10,6 @@ const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit } 
 const multer  = require('multer')
 const upload = multer({ dest: 'images/' })
 const { exec } = require('child_process');
-const rateLimit = require('express-rate-limit');
 const DiscordOauth2 = require("discord-oauth2");
 const cookieParser = require("cookie-parser");
 
@@ -68,17 +67,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
-
-//add ratelimit for the /api path
-const apiLimiter = rateLimit({
-	windowMs: 10 * 60 * 1000, // 10 minutes
-	max: 150, // Limit each IP to 150 requests per 10 minutes
-	standardHeaders: true, 
-	legacyHeaders: false
-})
-
-//use the ratelimiter
-app.use('/api', apiLimiter)
 
 const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
 
