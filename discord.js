@@ -1,4 +1,4 @@
-const { Client, Intents, EmbedBuilder, GatewayIntentBits, Partials, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const fs = require('fs');
 var datetime = new Date();
 const seasonData = require("./src/2023.js");
@@ -19,13 +19,13 @@ if (fs.statSync("config.json").size < 300) {
 const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, season, currentComp } = require('./config.json');
 
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS],
+  intents: [GatewayIntentBits.Guilds],
   partials: []
 });
 var EventEmitter = require("events").EventEmitter;
 var https = require('follow-redirects').https;
 
-client.once('ready', () => {
+client.once(Events.ClientReady, () => {
     client.user.setActivity("the 766 Ws", { type: "WATCHING" });
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Ready!');
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + datetime);
