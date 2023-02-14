@@ -1,5 +1,7 @@
 const qs = require('querystring');
 const sqlite3 = require('sqlite3');
+let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+//db.run( 'PRAGMA journal_mode = WAL;' );
 const express = require('express')
 const session  = require('express-session')
 const fs = require('fs');
@@ -12,6 +14,7 @@ const upload = multer({ dest: 'images/' })
 const { exec } = require('child_process');
 const DiscordOauth2 = require("discord-oauth2");
 const cookieParser = require("cookie-parser");
+const crypto = require('crypto');
 
 const getOauthData = new DiscordOauth2;
 
@@ -116,7 +119,6 @@ function findTopRole(roles) {
   if (roles.indexOf(scoutteamb) >= 0) {
     rolesOut.push(["Scout Team B", "rgb(52, 152, 219)", "rgba(52, 152, 219, 0.1)"]);
   }
-  console.log(rolesOut);
   return rolesOut;
 }
 
@@ -125,7 +127,7 @@ logInfo("Preparing...");
 
 app.use(session({
   //i have no clue what this secret is but stackoverflow said to make it a random string
-  secret: require('crypto').randomBytes(48).toString('hex'),
+  secret: crypto.randomBytes(48).toString('hex'),
   resave: false,
   saveUninitialized: false,
   maxAge: 24 * 60 * 60 * 1000 * 183 // 183 days
@@ -178,12 +180,6 @@ app.post('/submit', function(req, res) {
       if (formData.formType == 'pit') {
         res.end("WRONG FORM")
       } else if (formData.formType == 'main') {
-        let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
-            if (err) {
-              logErrors(err.message);
-              res.end('pit form error! ' + err.message);
-            }
-        });
         let stmt = `INSERT INTO main (event, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         let values = [formData.event, formData.name, formData.team, formData.match, formData.level, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.game21, formData.game22, formData.game23, formData.game24, formData.game25, formData.teleop, formData.defend, formData.driving, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar];
         db.run(stmt, values, function(err) {
@@ -192,12 +188,6 @@ app.post('/submit', function(req, res) {
               res.end(err.message);
             }
             discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
-        });
-        db.close((err) => {
-            if (err) {
-              logErrors(err.message);
-              res.end('pit form error! ' + err.message);
-            }
         });
         res.render('../src/submitted.ejs', { 
           root: __dirname,
@@ -222,12 +212,6 @@ app.post('/submitPit', imageUploads, function(req, res) {
     exec(`mv images/${image[0].filename} images/${image[0].filename+"."+(image[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
   });
 
-  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      logErrors(err.message);
-      res.end('pit form error! ' + err.message);
-    }
-  });
   let stmt = `INSERT INTO pit (event, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   let values = [formData.event, formData.name, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, req.files.image1[0].filename+"."+(req.files.image1[0].mimetype).substr(6), req.files.image2[0].filename+"."+(req.files.image2[0].mimetype).substr(6), req.files.image3[0].filename+"."+(req.files.image3[0].mimetype).substr(6), req.files.image4[0].filename+"."+(req.files.image4[0].mimetype).substr(6), req.files.image5[0].filename+"."+(req.files.image5[0].mimetype).substr(6)];
   db.run(stmt, values, function(err) {
@@ -236,12 +220,6 @@ app.post('/submitPit', imageUploads, function(req, res) {
       res.end('pit form error! ' + err.message);
     }
     discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
-  });
-  db.close((err) => {
-    if (err) {
-      logErrors(err.message);
-      res.end('pit form error! ' + err.message);
-    }
   });
   res.render('../src/submitted.ejs', { 
     root: __dirname,
@@ -255,6 +233,8 @@ app.get('/', checkAuth, async function(req, res) {
     //set cookie if not exists
     //I am setting a cookie because it takes a while to wait for role data from API
     var oauthDataCookieSet =  await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}));
+    //btoa and atob bad idea
+    //Buffer.from(str, 'base64') and buf.toString('base64') instead
     res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now()}); 
     var rolesHTML = "";
     for (let i = 0; i < oauthDataCookieSet.length; i++) {
@@ -414,7 +394,6 @@ app.get('/teamRoleInfo', checkAuth, function(req, res) {
 //tool to browse match scouting data
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
-    let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
     db.get(`SELECT * FROM main WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id ASC LIMIT 1 OFFSET ${req.query.page}`, (err, dbQueryResult) => {
     if (err) {
       res.render('../src/browse.ejs', { 
@@ -454,13 +433,12 @@ app.get('/browse', checkAuth, function(req, res) {
         resultsTeamNumber: `${dbQueryResult.team}`,
         resultsMatchNumber: `${dbQueryResult.match}`,
         resultsEventCode: `${dbQueryResult.event}`,
-        resultsBody: `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}`
+        resultsBody: `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Submission Info:<br>ID: ${dbQueryResult.id} | Discord Username ${dbQueryResult.discordName}`
       })
       return;
     }
     }
     });
-    db.close((err) => {return;});
   } else {
   res.render('../src/browse.ejs', { 
     root: __dirname,
@@ -475,6 +453,84 @@ app.get('/browse', checkAuth, function(req, res) {
     resultsBody: 0
   })
   return;
+  }
+});
+
+//tool to manage match scouting data
+//yes, this is almost the exact same as the browse tool
+app.get('/manage', checkAuth, function(req, res) {
+if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
+  if (req.query.submissionID) {
+    db.get(`SELECT * FROM main WHERE id=${req.query.submissionID} ORDER BY id ASC LIMIT 1`, (err, dbQueryResult) => {
+    if (err) {
+      res.render('../src/manage.ejs', { 
+        root: __dirname,
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsMatchNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0
+      })
+    } else {
+    if (typeof dbQueryResult == "undefined") {
+      res.render('../src/manage.ejs', { 
+        root: __dirname,
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsMatchNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0
+      })
+    } else {
+      res.render('../src/manage.ejs', { 
+        root: __dirname,
+        displaySearch: "none",
+        displayResults: "flex",
+        resultsTeamNumber: `${dbQueryResult.team}`,
+        resultsMatchNumber: `${dbQueryResult.match}`,
+        resultsEventCode: `${dbQueryResult.event}`,
+        resultsBody: `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}`
+      })
+    }
+    }
+    });
+  } else {
+  res.render('../src/manage.ejs', { 
+    root: __dirname,
+    displaySearch: "flex",
+    displayResults: "none",
+    resultsTeamNumber: 0,
+    resultsMatchNumber: 0,
+    resultsEventCode: 0,
+    resultsBody: 0
+  })
+  }
+} else {
+  res.render('../src/denied.ejs', { 
+    root: __dirname,
+    SubmissionDetails: "You cannot modify submissions!"
+  })
+}
+});
+
+app.get('/deleteSubmission', checkAuth, function(req, res) {
+  if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
+    if (req.query.submissionID) {
+      db.run(`DELETE FROM main WHERE id=${req.query.submissionID}`, () => {});
+      res.redirect('/manage');
+    } else {
+      res.render('../src/denied.ejs', { 
+        root: __dirname,
+        SubmissionDetails: "You provided invalid parameters!"
+      })
+    }
+  } else {
+    res.render('../src/denied.ejs', { 
+      root: __dirname,
+      SubmissionDetails: "You cannot modify submissions!"
+    })
   }
 });
 
@@ -543,7 +599,6 @@ app.get('/matches', checkAuth, function(req, res) {
 //serve the uploaded images
 app.get('/pitimages', checkAuth, function(req, res) {
   if (req.query.team && req.query.event) {
-    let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
     db.get(`SELECT * FROM pit WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id LIMIT 1`, (err, dbQueryResult) => {
     if (err) {
       res.render('../src/pitimg.ejs', { 
@@ -586,7 +641,6 @@ app.get('/pitimages', checkAuth, function(req, res) {
     }
     }
     });
-    db.close((err) => {return;});
   } else {
   res.render('../src/pitimg.ejs', { 
     root: __dirname,
@@ -621,8 +675,7 @@ function checkAuth(req, res, next) {
 
 //add scouts to database
 function addToDataBase(req, next) {
-  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
-  const password = require('crypto').randomBytes(12).toString('hex')
+  const password = crypto.randomBytes(12).toString('hex')
   db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
     if (err) {
       return;
@@ -635,12 +688,6 @@ function addToDataBase(req, next) {
     }
   });
   db.run(`INSERT OR IGNORE INTO scouts(discordID, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
-  db.close((err) => {
-    if (err) {
-      logErrors(err.message);
-      res.end('error! ' + err.message);
-    }
-  });
   return next();
 }
 
