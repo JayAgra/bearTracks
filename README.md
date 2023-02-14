@@ -15,6 +15,7 @@
 - Discord pings before matches
 - Easy submission removal
 - Ability to download JSON of form data to upload later
+- Ability to allow a member of another team to access data temporarily
 ## Preview
 See the demo site: <br>
 <a href="">demo site not currently live. install this locally to see pages</a><br>
