@@ -262,11 +262,37 @@ app.get('/', checkAuth, async function(req, res) {
       rolesHTML += `<span style="color: ${oauthDataCookieSet[i][1]}; background-color: ${oauthDataCookieSet[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[i][0]}</span><br class="roleThing">`
       }
     }
-    res.render('../src/index.ejs', { 
-      root: __dirname,
-      userName: req.user.username,
-      rolesBody: rolesHTML
-    })
+    if (oauthDataCookieSet[0][0] == "Drive Team") {
+      res.render('../src/index.ejs', { 
+        root: __dirname,
+        userName: req.user.username,
+        rolesBody: rolesHTML,
+        order1: "2",
+        order2: "0",
+        order3: "1",
+        order4: "3"
+      })
+    } else if (oauthDataCookieSet[0][0] == "Pit Team") {
+      res.render('../src/index.ejs', { 
+        root: __dirname,
+        userName: req.user.username,
+        rolesBody: rolesHTML,
+        order1: "2",
+        order2: "0",
+        order3: "1",
+        order4: "3"
+      })
+    } else {
+      res.render('../src/index.ejs', { 
+        root: __dirname,
+        userName: req.user.username,
+        rolesBody: rolesHTML,
+        order1: "0",
+        order2: "3",
+        order3: "2",
+        order4: "1"
+      })
+    }
   } else {
   var oauthData =  JSON.parse(req.cookies.role);
   var rolesHTMLfromCookie = "";
@@ -275,35 +301,35 @@ app.get('/', checkAuth, async function(req, res) {
     rolesHTMLfromCookie += `<span style="color: ${oauthData[i][1]}; background-color: ${oauthData[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[i][0]}</span><br class="roleThing">`
     }
   }
-  if (oauthData[0][1] == "Drive Team") {
+  if (oauthData[0][0] == "Drive Team") {
     res.render('../src/index.ejs', { 
       root: __dirname,
       userName: req.user.username,
       rolesBody: rolesHTMLfromCookie,
-      order1: 2,
-      order2: 0,
-      order3: 1,
-      order4: 3
+      order1: "2",
+      order2: "0",
+      order3: "1",
+      order4: "3"
     })
-  } else if (oauthData[0][1] == "Pit Team") {
+  } else if (oauthData[0][0] == "Pit Team") {
     res.render('../src/index.ejs', { 
       root: __dirname,
       userName: req.user.username,
       rolesBody: rolesHTMLfromCookie,
-      order1: 2,
-      order2: 0,
-      order3: 1,
-      order4: 3
+      order1: "2",
+      order2: "0",
+      order3: "1",
+      order4: "3"
     })
   } else {
     res.render('../src/index.ejs', { 
       root: __dirname,
       userName: req.user.username,
       rolesBody: rolesHTMLfromCookie,
-      order1: 0,
-      order2: 3,
-      order3: 2,
-      order4: 1
+      order1: "0",
+      order2: "3",
+      order3: "2",
+      order4: "1"
     })
   }
   }
