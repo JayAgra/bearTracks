@@ -2,8 +2,8 @@
 ![GitHub](https://img.shields.io/github/license/JayAgra/scouting-app) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/scouting-app) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/scouting-app)<br>
 
 ## Preview
-See this demo site: <br>
-<a href="">demo site not currently live</a><br>
+See the demo site: <br>
+<a href="">demo site not currently live. install this locally to see pages</a><br>
 Log in with Discord, only allows joining if part of the testing server (https://discord.gg/nmQQKZGnVH)<br>
 It will record data, and you will be able to query it. Do NOT rely on this for comp, data may be purged and is public.
 ## Setup
