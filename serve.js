@@ -702,6 +702,14 @@ app.get('/callback', passport.authenticate('discord', {
     res.redirect('/');
 });
 
+//not requiring auth for offline version, you cannot submit with this and submit url is secured anyway
+app.get('/offline.html', function(req, res) {
+  res.sendFile('src/offline.html', { 
+    root: __dirname
+  })
+});
+
+
 
 if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
 
