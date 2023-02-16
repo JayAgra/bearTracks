@@ -368,6 +368,9 @@ app.get('/', checkAuth, async function(req, res) {
 app.get('/sw.js', function(req, res) {
   res.sendFile('src/sw.js', { root: __dirname })
 });
+app.get('/appinstall.js', function(req, res) {
+  res.sendFile('src/appinstall.js', { root: __dirname })
+});
 
 //main scouting form
 app.get('/main', checkAuth, function(req, res) {
