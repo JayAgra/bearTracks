@@ -1,21 +1,19 @@
 //SERVICE WORKER
-const cacheName = "scouting-app-v1";
-const contentToCache = [
-    '/2023_float.css',
-    '/2023_float.min.css',
-    '/fonts/Raleway-500.ttf',
-    '/fonts/Raleway-300.ttf',
-    '/offline.html'
-];
-
+const addResourcesToCache = async (resources) => {
+  const cache = await caches.open("v1");
+  await cache.addAll(resources);
+};
 
 console.log('sw executed')
 self.addEventListener('install', event => {
-  console.log('Attempting to install service worker and cache static assets');
   event.waitUntil(
-    caches.open(cacheName).then(cache => {
-      return cache.addAll(contentToCache);
-    })
+    addResourcesToCache([
+      "/",
+      "/offline.html",
+      "/sw.js",
+      "/appinstall.js",
+      "/2023_float.css"
+    ])
   );
 });
 
