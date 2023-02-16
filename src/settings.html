@@ -22,6 +22,9 @@
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h2>Settings</h2><br>
+            <button style="background-color: rgba(0,0,0,0); border: 2px solid #f00; color: #f00; border-radius: 10px; padding: 5px; font-weight: 700; width: 75%;" onclick="updateSW()">
+                <p>Update SW</p>
+            </button>
             <button style="background-color: rgba(0,0,0,0); border: 2px solid #f00; color: #f00; border-radius: 10px; padding: 5px; font-weight: 700; width: 75%;" onclick="window.location.href='clearCookies'">
                 <p>Reset Cookies</p>
             </button><br><br>
@@ -30,5 +33,11 @@
             </button>
         </div>
     </div>
+    <script>
+        async function updateSW() {
+            sw = await navigator.serviceWorker.ready
+            sw.update()
+        }
+    </script>
 </body>
 </html>
