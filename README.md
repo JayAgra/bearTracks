@@ -12,9 +12,9 @@
 - PWA support on iOS
 - Layout of homepage different based on user's roles
 - "Easy" submission removal
+- Ability to download JSON of form data to upload later
 ### To Add:
 - Discord pings before matches
-- Ability to download JSON of form data to upload later
 - Ability to allow a member of another team to access data temporarily
 ## Preview
 See the demo site: <br>

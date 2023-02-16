@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <form action="/submit" target="_self" method="POST" name="mainForm">
+    <form action="/submit" target="_self" method="POST" name="mainForm" id="mainFormHTML">
         <input type="text" value="main" name="formType" hidden>
         <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
         <h2 class="gameflair1">Pre-Match</h2>
@@ -118,13 +118,49 @@
         <br>
         <p style="text-align:center">
             <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Submit</button><br>
-            <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem;; border-style: solid; border-color: #E90202; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem;; border-style: solid; border-color: #E90202; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button><br><br>
+            <small><button type="button" id="downloadFormButton" onclick="exportSubmissionJSON()" style="color: red; background-color: rgba(0,0,0,0); border: none;">Download Submission</button><a id="downloadFileLink" style="color: green; background-color: rgba(0,0,0,0); text-decoration: none; border: none; display: none;"></a></small><br></small>
+            <small><button type="button" id="uploadFormButton" onclick="uploadSubmissionJSON()" style="color: red; background-color: rgba(0,0,0,0); border: none;">Upload Submission</button></small>
         </p>
     </form>
+    <input type="file" name="jsonScoutFile" accept=".scout" style="display: none;" id="jsonScoutFile" disabled="disabled">
     <br><br>
     <script>
         function goToHome() {
             window.location.href = "/";
+        }
+        function exportSubmissionJSON() {
+            const downloadFormButton = document.getElementById('downloadFormButton')
+            const downloadFileLink = document.getElementById('downloadFileLink')
+            downloadFormButton.innerHTML = "Please wait..."
+            const form = document.getElementById('mainFormHTML')
+            const blob = new Blob([btoa(JSON.stringify(Object.fromEntries(new FormData(form))))], {type: 'text/plain'});
+            const downloadURL = URL.createObjectURL(blob);
+            downloadFormButton.style.display = "none";
+            downloadFileLink.style.display = "inline";
+            downloadFileLink.download = "main_submission_" + Date.now() + "_" + Math.random().toString(36).slice(2) + ".scout";
+            downloadFileLink.href = downloadURL;
+            downloadFileLink.innerHTML = "Ready! Click again to download"
+        }
+        function uploadSubmissionJSON() {
+            const fileUploadInput = document.getElementById('jsonScoutFile');
+            fileUploadInput.disabled = false;
+            fileUploadInput.click();
+            fileUploadInput.addEventListener('change', async function(){
+                let reader = new FileReader()
+                await reader.readAsText(fileUploadInput.files[0]);
+                reader.onload = () => useFileToFill(reader.result);
+                async function useFileToFill(result) {
+                    console.log(JSON.parse(atob(result)))
+                    const uploadedData = JSON.parse(atob(result))
+                    var inputs = Array.prototype.slice.call(document.querySelectorAll('form input'));
+                    Object.keys(uploadedData).map(function (dataItem) {
+                    inputs.map(function (inputItem) {
+                        return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false;
+                    });
+                    });
+                }
+            })
         }
     </script>
 </body>
