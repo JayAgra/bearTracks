@@ -16,11 +16,6 @@
 ### To Add:
 - Discord pings before matches
 - Ability to allow a member of another team to access data temporarily
-## Preview
-See the demo site: <br>
-<a href="">demo site not currently live. install this locally to see pages</a><br>
-Log in with Discord, only allows joining if part of the testing server (https://discord.gg/nmQQKZGnVH)<br>
-It will record data, and you will be able to query it. Do NOT rely on this for comp, data may be purged and is public.
 ## Setup
 ### Discord App
 1. **Create app** Visit http://discord.com/developers/applications to create an app. Name it whatever you would like, and keep the token, client secret, and app ID for use in the config file.<br>

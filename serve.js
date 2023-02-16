@@ -169,7 +169,7 @@ app.get('/.well-known/acme-challenge/', function(req, res) {
 });
 
 //get the main form submissions
-app.post('/submit', function(req, res) {
+app.post('/submit', checkAuth, function(req, res) {
     let body = '';
 
     req.on('data', chunk => {
@@ -351,12 +351,8 @@ app.get('/sw.js', checkAuth, function(req, res) {
 
 //main scouting form
 app.get('/main', checkAuth, function(req, res) {
-  res.render('../src/main.ejs', { 
-    root: __dirname,
-    discordID: req.user.id,
-    discordName: req.user.username,
-    discordTag: req.user.discriminator,
-    discordAvatarId: req.user.avatar
+  res.sendFile('../src/main.html', { 
+    root: __dirname
   })
 });
 
@@ -367,12 +363,8 @@ app.get('/app.webmanifest', function(req, res) {
 
 //pit form
 app.get('/pit', checkAuth, function(req, res) {
-  res.render('../src/pit.ejs', { 
-    root: __dirname,
-    discordID: req.user.id,
-    discordName: req.user.username,
-    discordTag: req.user.discriminator,
-    discordAvatarId: req.user.avatar
+  res.sendFile('../src/pit.html', { 
+    root: __dirname
   })
 });
 
