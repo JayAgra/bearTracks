@@ -1,6 +1,8 @@
 //SERVICE WORKER
+const cacheName = "sa_v1"
+
 const addResourcesToCache = async (resources) => {
-  const cache = await caches.open("v1");
+  const cache = await caches.open(cacheName);
   await cache.addAll(resources);
 };
 
