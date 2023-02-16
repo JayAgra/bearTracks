@@ -70,8 +70,10 @@
     </style>
     <script>
     if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("sw.js");
-        console.log("registered sw");
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js');
+            console.log("registered sw");
+        });
     }
     </script>
 </head>

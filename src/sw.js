@@ -1,6 +1,4 @@
 //SERVICE WORKER
-
-console.log("SW Installed");
 const cacheName = "scouting-app-v1";
 const contentToCache = [
     '/2023_float.css',
@@ -13,6 +11,7 @@ const contentToCache = [
 
 console.log('sw executed')
 self.addEventListener('install', function(e) {
+  console.log("install")
     e.waitUntil(
         caches.open(cacheName).then(function(cache) {
             return cache.addAll(contentToCache);
