@@ -1,42 +1,73 @@
-const qs = require('querystring');
+//CONFIG
+const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID } = require('./config.json');
+
+//SETUP OAUTH
+const DiscordOauth2 = require("discord-oauth2");
+const getOauthData = new DiscordOauth2;
+const passport = require('passport')
+const Strategy = require('passport-discord').Strategy;
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
+passport.use(new Strategy({
+  clientID: clientId,
+  clientSecret: clientSec,
+  callbackURL: redirectURI,
+  scope: scopes
+}, function(accessToken, refreshToken, profile, done) {
+  process.nextTick(function() {
+    return done(null, profile);
+  });
+}));
+
+//SETUP DATABASE
 const sqlite3 = require('sqlite3');
 let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
 db.run( 'PRAGMA journal_mode = WAL;' );
-db.run( 'PRAGMA schema.wal_checkpoint(PASSIVE);' );
+
+//SETUP SERVER(S)
+const fs = require('fs');
 const express = require('express')
 const session  = require('express-session')
-const fs = require('fs');
 const https = require('https');
 const http = require('http');
-var EventEmitter = require("events").EventEmitter;
-const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit } = require('./config.json');
-const multer  = require('multer')
-const upload = multer({ dest: 'images/' })
-const { exec } = require('child_process');
-const DiscordOauth2 = require("discord-oauth2");
 const cookieParser = require("cookie-parser");
 const crypto = require('crypto');
-
-const getOauthData = new DiscordOauth2;
-
+var EventEmitter = require("events").EventEmitter;
 var app = express();
 app.use(cookieParser());
-
 const options = {
   key: fs.readFileSync(__dirname + '/ssl/privatekey.pem', 'utf8'),
   cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
 };
-
 //checks file size of ssl, if it exists (is filled), use HTTPS on port 443
 if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer(options, app).listen(443)}
-
 const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
-
 app.use('/images', express.static('images'))
 app.use('/public', express.static('src/public'))
+app.use(session({
+  //i have no clue what this secret is but stackoverflow said to make it a random string
+  secret: crypto.randomBytes(48).toString('hex'),
+  resave: false,
+  saveUninitialized: false,
+  maxAge: 24 * 60 * 60 * 1000 * 183 // 183 days
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
+//SETUP IMAGE UPLOADING
+const qs = require('querystring');
+const multer  = require('multer')
+const upload = multer({ dest: 'images/' })
+const { exec } = require('child_process');
+
+//BASIC FUNCTIONS TO SHORTEN CODE
 function valueToEmote(value) {
   if (value == null || value == "false") {
     return "❌";
@@ -62,20 +93,6 @@ function logErrors(errortodisplay) {
   console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  errortodisplay);
 }
 
-const passport = require('passport')
-const Strategy = require('passport-discord').Strategy;
-
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
-});
-
-const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
-
-const { clientId, clientSec, redirectURI, teamServerID } = require('./config.json');
-
 //check the JSON file to see if the user is in the team discord server
 function inTeamServer(json) {
   var isInTheServer = false;
@@ -91,17 +108,6 @@ function inTeamServer(json) {
 
 //THIS IS NOT THE DISCORD.JS MODULE, THIS IS THE FILE NAMED DISCORD.JS
 const discordSendData = require("./discord.js");
-
-passport.use(new Strategy({
-  clientID: clientId,
-  clientSecret: clientSec,
-  callbackURL: redirectURI,
-  scope: scopes
-}, function(accessToken, refreshToken, profile, done) {
-  process.nextTick(function() {
-    return done(null, profile);
-  });
-}));
 
 function findTopRole(roles) {
   var rolesOut = [];
@@ -123,19 +129,35 @@ function findTopRole(roles) {
   return rolesOut;
 }
 
+//check the authentication and server membership
+function checkAuth(req, res, next) {
+  if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return addToDataBase(req, next);
+  if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return res.redirect('/denied')
+  res.redirect('/login');
+}
+
+//add scouts to database
+function addToDataBase(req, next) {
+  const password = crypto.randomBytes(12).toString('hex')
+  db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
+    if (err) {
+      return;
+    } else {
+      if (accountQueryResults) {
+        return;
+      } else {
+        //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
+      }
+    }
+  });
+  db.run(`INSERT OR IGNORE INTO scouts(discordID, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
+  return next();
+}
+
 //before server creation
 logInfo("Preparing...");
 
-app.use(session({
-  //i have no clue what this secret is but stackoverflow said to make it a random string
-  secret: crypto.randomBytes(48).toString('hex'),
-  resave: false,
-  saveUninitialized: false,
-  maxAge: 24 * 60 * 60 * 1000 * 183 // 183 days
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
+//EXPRESSJS APP RESPONSES
 app.get('/login', function(req, res) {
   res.sendFile('src/login.html', {root: __dirname})
 });
@@ -190,7 +212,7 @@ app.post('/submit', checkAuth, function(req, res) {
             }
             discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
         });
-        res.sendFile('../src/submitted.html', { 
+        res.sendFile('src/submitted.html', { 
           root: __dirname
         })
       } else {
@@ -221,7 +243,7 @@ app.post('/submitPit', imageUploads, function(req, res) {
     }
     discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
   });
-  res.sendFile('../src/submitted.html', { 
+  res.sendFile('src/submitted.html', { 
     root: __dirname
   })
 });
@@ -349,7 +371,7 @@ app.get('/sw.js', checkAuth, function(req, res) {
 
 //main scouting form
 app.get('/main', checkAuth, function(req, res) {
-  res.sendFile('../src/main.html', { 
+  res.sendFile('src/main.html', { 
     root: __dirname
   })
 });
@@ -361,7 +383,7 @@ app.get('/app.webmanifest', function(req, res) {
 
 //pit form
 app.get('/pit', checkAuth, function(req, res) {
-  res.sendFile('../src/pit.html', { 
+  res.sendFile('src/pit.html', { 
     root: __dirname
   })
 });
@@ -384,7 +406,7 @@ app.get('/fonts/Raleway-500.ttf', function(req, res) {
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
-  res.sendFile('../src/denied.html', { 
+  res.sendFile('src/denied.html', { 
     root: __dirname
   })
   } catch (error) {
@@ -400,7 +422,6 @@ app.get('/info', checkAuth, function(req, res) {
   console.log(req.user.discriminator)
   console.log(inTeamServer(req.user.guilds))
   res.json(req.user);
-  //res.redirect('/')
 });
 
 app.get('/teamRoleInfo', checkAuth, function(req, res) {  
@@ -526,7 +547,7 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
   })
   }
 } else {
-  res.sendFile('../src/denied.html', { 
+  res.sendFile('src/denied.html', { 
     root: __dirname
   })
 }
@@ -538,12 +559,12 @@ app.get('/deleteSubmission', checkAuth, function(req, res) {
       db.run(`DELETE FROM main WHERE id=${req.query.submissionID}`, () => {});
       res.redirect('/manage');
     } else {
-      res.sendFile('../src/denied.html', { 
+      res.sendFile('src/denied.html', { 
         root: __dirname
       })
     }
   } else {
-    res.sendFile('../src/denied.html', { 
+    res.sendFile('src/denied.html', { 
       root: __dirname
     })
   }
@@ -681,30 +702,6 @@ app.get('/callback', passport.authenticate('discord', {
     res.redirect('/');
 });
 
-//check the authentication and server membership
-function checkAuth(req, res, next) {
-  if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return addToDataBase(req, next);
-  if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return res.redirect('/denied')
-  res.redirect('/login');
-}
-
-//add scouts to database
-function addToDataBase(req, next) {
-  const password = crypto.randomBytes(12).toString('hex')
-  db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
-    if (err) {
-      return;
-    } else {
-      if (accountQueryResults) {
-        return;
-      } else {
-        //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
-      }
-    }
-  });
-  db.run(`INSERT OR IGNORE INTO scouts(discordID, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
-  return next();
-}
 
 if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
 
