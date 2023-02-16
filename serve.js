@@ -190,9 +190,8 @@ app.post('/submit', checkAuth, function(req, res) {
             }
             discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
         });
-        res.render('../src/submitted.ejs', { 
-          root: __dirname,
-          SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
+        res.sendFile('../src/submitted.html', { 
+          root: __dirname
         })
       } else {
         console.log(formData);
@@ -222,9 +221,8 @@ app.post('/submitPit', imageUploads, function(req, res) {
     }
     discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
   });
-  res.render('../src/submitted.ejs', { 
-    root: __dirname,
-    SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
+  res.sendFile('../src/submitted.html', { 
+    root: __dirname
   })
 });
 
@@ -386,7 +384,7 @@ app.get('/fonts/Raleway-500.ttf', function(req, res) {
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
-  res.render('../src/denied.html', { 
+  res.sendFile('../src/denied.html', { 
     root: __dirname
   })
   } catch (error) {
