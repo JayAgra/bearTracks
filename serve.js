@@ -1,7 +1,8 @@
 const qs = require('querystring');
 const sqlite3 = require('sqlite3');
 let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
-//db.run( 'PRAGMA journal_mode = WAL;' );
+db.run( 'PRAGMA journal_mode = WAL;' );
+db.run( 'PRAGMA schema.wal_checkpoint(PASSIVE);' );
 const express = require('express')
 const session  = require('express-session')
 const fs = require('fs');
@@ -250,7 +251,8 @@ app.get('/', checkAuth, async function(req, res) {
         order1: "2",
         order2: "0",
         order3: "1",
-        order4: "3"
+        order4: "3",
+        additionalURLs: "<span></span>"
       })
     } else if (oauthDataCookieSet[0][0] == "Pit Team") {
       res.render('../src/index.ejs', { 
@@ -260,7 +262,19 @@ app.get('/', checkAuth, async function(req, res) {
         order1: "2",
         order2: "0",
         order3: "1",
-        order4: "3"
+        order4: "3",
+        additionalURLs: "<span></span>"
+      })
+    } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
+      res.render('../src/index.ejs', { 
+        root: __dirname,
+        userName: req.user.username,
+        rolesBody: rolesHTML,
+        order1: "0",
+        order2: "3",
+        order3: "2",
+        order4: "1",
+        additionalURLs: `<a href="delete" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Delete Submissions<br></a>`
       })
     } else {
       res.render('../src/index.ejs', { 
@@ -270,7 +284,8 @@ app.get('/', checkAuth, async function(req, res) {
         order1: "0",
         order2: "3",
         order3: "2",
-        order4: "1"
+        order4: "1",
+        additionalURLs: "<span></span>"
       })
     }
   } else {
@@ -289,7 +304,8 @@ app.get('/', checkAuth, async function(req, res) {
       order1: "2",
       order2: "0",
       order3: "1",
-      order4: "3"
+      order4: "3",
+      additionalURLs: "<span></span>"
     })
   } else if (oauthData[0][0] == "Pit Team") {
     res.render('../src/index.ejs', { 
@@ -299,7 +315,19 @@ app.get('/', checkAuth, async function(req, res) {
       order1: "2",
       order2: "0",
       order3: "1",
-      order4: "3"
+      order4: "3",
+      additionalURLs: "<span></span>"
+    })
+  } else if (oauthData[0][0] == "Lead Scout") {
+    res.render('../src/index.ejs', { 
+      root: __dirname,
+      userName: req.user.username,
+      rolesBody: rolesHTMLfromCookie,
+      order1: "0",
+      order2: "3",
+      order3: "2",
+      order4: "1",
+      additionalURLs: `<a href="delete" class="gameflair1" style="order: 4; margin-bottom: 5%;">Delete Submissions<br></a>`
     })
   } else {
     res.render('../src/index.ejs', { 
@@ -309,7 +337,8 @@ app.get('/', checkAuth, async function(req, res) {
       order1: "0",
       order2: "3",
       order3: "2",
-      order4: "1"
+      order4: "1",
+      additionalURLs: "<span></span>"
     })
   }
   }
