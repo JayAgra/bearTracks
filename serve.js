@@ -365,8 +365,8 @@ app.get('/', checkAuth, async function(req, res) {
 });
 
 //service worker for PWA installs
-app.get('/sw.js', checkAuth, function(req, res) {
-  res.sendFile('./src/sw.js', { root: __dirname })
+app.get('/sw.js', function(req, res) {
+  res.sendFile('src/sw.js', { root: __dirname })
 });
 
 //main scouting form
