@@ -1,5 +1,5 @@
 //SERVICE WORKER
-const cacheName = "sa_v1"
+const cacheName = "sa_v1.1"
 
 const addResourcesToCache = async (resources) => {
   const cache = await caches.open(cacheName);
@@ -18,6 +18,7 @@ self.addEventListener('install', event => {
 
 console.log('service worker executed')
 self.addEventListener('install', function(e) {
+    self.skipWaiting()
     e.waitUntil(
         caches.open(cacheName).then(function(cache) {
             return cache.addAll(contentToCache);
@@ -25,17 +26,12 @@ self.addEventListener('install', function(e) {
     );
 });
 
-self.addEventListener('activate', (evt) => {
-    evt.waitUntil(
-        caches.keys().then((keyList) => {
-            return Promise.all(keyList.map((key) => {
-                if (key !== cacheName) {
-                    return caches.delete(key);
-                }
-            }));
-        })
-    );
-    self.clients.claim();
+self.addEventListener('activate', event => {
+  caches.keys().then(cacheNames => {for (let name of cacheNames) {caches.delete(name);}});
+
+  self.registration.unregister()
+    .then(() => self.clients.matchAll())
+    .then((clients) => clients.forEach(client => client.navigate(client.url)))
 });
 
 /* Serve cache when online */
