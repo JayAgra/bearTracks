@@ -10,13 +10,13 @@ const contentToCache = [
 
 
 console.log('sw executed')
-self.addEventListener('install', function(e) {
-  console.log("install")
-    e.waitUntil(
-        caches.open(cacheName).then(function(cache) {
-            return cache.addAll(contentToCache);
-        })
-    );
+self.addEventListener('install', event => {
+  console.log('Attempting to install service worker and cache static assets');
+  event.waitUntil(
+    caches.open(cacheName).then(cache => {
+      return cache.addAll(contentToCache);
+    })
+  );
 });
 
 console.log('service worker executed')
