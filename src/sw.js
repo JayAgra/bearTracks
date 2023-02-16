@@ -10,6 +10,7 @@ console.log('sw executed')
 self.addEventListener('install', event => {
   event.waitUntil(
     addResourcesToCache([
+      "/",
       "/offline.html",
       "/appinstall.js",
       "/2023_float.css"
