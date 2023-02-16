@@ -94,20 +94,6 @@
     </div>
     <br><small><a href="offline.html" style="all: unset;">Access Offline Version</a></small>
     <script>
-        function updatePWACache() {
-                caches.keys().then((keyList) => {
-                    return Promise.all(
-                        keyList.map((key) => {
-                            if (key === "scouting-app-v1") {
-                                return;
-                            }
-                            return caches.delete(key);
-                            console.log(key);
-                        })
-                    );
-                })
-                console.log("done, I think")
-        }
         document.getElementById("profileName").addEventListener("click", showHideAllChildren);
         function showHideAllChildren() {
             var parentID = document.getElementById('rolesDisplay');
