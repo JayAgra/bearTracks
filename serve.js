@@ -386,9 +386,8 @@ app.get('/fonts/Raleway-500.ttf', function(req, res) {
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
-  res.render('../src/denied.ejs', { 
-    root: __dirname,
-    SubmissionDetails: "User ID: " + req.user.id + "\nUsername: " + req.user.username + "\nUser Tag: " + req.user.discriminator
+  res.render('../src/denied.html', { 
+    root: __dirname
   })
   } catch (error) {
     res.write("Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error)
@@ -529,9 +528,8 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
   })
   }
 } else {
-  res.render('../src/denied.ejs', { 
-    root: __dirname,
-    SubmissionDetails: "You cannot modify submissions!"
+  res.sendFile('../src/denied.html', { 
+    root: __dirname
   })
 }
 });
@@ -542,15 +540,13 @@ app.get('/deleteSubmission', checkAuth, function(req, res) {
       db.run(`DELETE FROM main WHERE id=${req.query.submissionID}`, () => {});
       res.redirect('/manage');
     } else {
-      res.render('../src/denied.ejs', { 
-        root: __dirname,
-        SubmissionDetails: "You provided invalid parameters!"
+      res.sendFile('../src/denied.html', { 
+        root: __dirname
       })
     }
   } else {
-    res.render('../src/denied.ejs', { 
-      root: __dirname,
-      SubmissionDetails: "You cannot modify submissions!"
+    res.sendFile('../src/denied.html', { 
+      root: __dirname
     })
   }
 });
