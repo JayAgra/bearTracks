@@ -36,14 +36,15 @@
     <script>
         async function updateSW() {
             if(window.navigator && navigator.serviceWorker) {
-            navigator.serviceWorker.getRegistrations()
-            .then(function(registrations) {
-                for(let registration of registrations) {
-                registration.unregister();
+                const url = window.location.protocol + '//' + window.location.host + '/sw.js';
+                navigator.serviceWorker.getRegistration(url).then(function (sw) {
+                if (sw) {
+                    sw.unregister().then(() => {
+                        navigator.serviceWorker.register('sw.js');
+                    });
                 }
-            });
+                });
             }
-            window.location.reload(true);
         }
     </script>
 </body>

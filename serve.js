@@ -371,6 +371,9 @@ app.get('/sw.js', function(req, res) {
 app.get('/appinstall.js', function(req, res) {
   res.sendFile('src/appinstall.js', { root: __dirname })
 });
+app.get('/favicon.ico', function(req, res) {
+  res.sendFile('src/favicon.ico', { root: __dirname })
+});
 
 //main scouting form
 app.get('/main', checkAuth, function(req, res) {
