@@ -155,8 +155,6 @@ label {
 	max-width: 65% !important;
 }
 input, textarea, select {
-	appearance: none;
-	-webkit-appearance: none;
 	-webkit-border-radius:0; 
     border-radius:0;
 }
@@ -172,4 +170,8 @@ textarea {
 textarea:focus {
 	outline: none;
 	border-bottom: 1px solid var(--inputColorSelected);
+}
+
+input[type=checkbox]:checked, input[type=radio]:checked {
+	accent-color: var(--gameFlairColor) !important;
 }
