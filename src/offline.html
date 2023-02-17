@@ -124,7 +124,7 @@
             const downloadFileLink = document.getElementById('downloadFileLink')
             downloadFormButton.innerHTML = "Please wait..."
             const form = document.getElementById('mainFormHTML')
-            const blob = new Blob([btoa(JSON.stringify(Object.fromEntries(new FormData(form))))], {type: 'text/plain'});
+            const blob = new Blob([btoa(JSON.stringify(Object.fromEntries(new FormData(form))))], {type: 'application/octet-stream'});
             const downloadURL = URL.createObjectURL(blob);
             downloadFormButton.style.display = "none";
             downloadFileLink.style.display = "inline";
