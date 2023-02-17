@@ -1,5 +1,5 @@
 body {
-    --fieldsetColor: rgba(35,35,35,0.2);
+    --fieldsetColor: rgba(0,0,0,0);
 	--bodyColor: #121212;
 	--textColor: #fff;
 	--transparency: rgba(0,0,0,0);
@@ -10,7 +10,7 @@ body {
 
 @media (prefers-color-scheme: light) {
     body {
-		--fieldsetColor: rgba(235,235,235,0.2);
+		--fieldsetColor: #fff;
 		--bodyColor: #fff;
 		--textColor: #000;
 		--defaultInputColor: #000;
@@ -21,7 +21,7 @@ body {
 }
 
 body.dark-mode {
-    --fieldsetColor: rgba(35,35,35,0.2);
+    --fieldsetColor: rgba(0,0,0,0);
 	--bodyColor: #121212;
 	--textColor: #fff;
 	--transparency: rgba(0,0,0,0);
@@ -31,7 +31,7 @@ body.dark-mode {
 }
 
 body.light-mode {
-	--fieldsetColor: rgba(235,235,235,0.2);
+	--fieldsetColor: #fff;
 	--bodyColor: #fff;
 	--textColor: #000;
 	--defaultInputColor: #000;

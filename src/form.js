@@ -11,20 +11,20 @@ function themeHandle() {
     let theme = getThemeCookie();
     switch (theme) {
         case "light":
-            document.getElementById('body').classList.add("light-mode");
-            document.getElementById('body').classList.remove("dark-mode");
+            document.getElementById('body').classList.replace("dark-mode", "light-mode");
+            document.getElementById("themeMeta").content = "#ffffff"
         break;
         case "dark":
-            document.getElementById('body').classList.remove("light-mode");
-            document.getElementById('body').classList.add("dark-mode");
+            document.getElementById('body').classList.replace("light-mode", "dark-mode");
+            document.getElementById("themeMeta").content = "#121212"
         break;
         case undefined:
-            document.getElementById('body').classList.remove("light-mode");
-            document.getElementById('body').classList.add("dark-mode");
+            document.getElementById('body').classList.replace("light-mode", "dark-mode");
+            document.getElementById("themeMeta").content = "#121212"
         break;
         default:
-            document.getElementById('body').classList.remove("light-mode");
-            document.getElementById('body').classList.add("dark-mode");
+            document.getElementById('body').classList.replace("light-mode", "dark-mode");
+            document.getElementById("themeMeta").content = "#121212"
     }
 }
 function goToHome() {
