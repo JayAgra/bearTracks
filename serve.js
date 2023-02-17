@@ -364,27 +364,11 @@ app.get('/', checkAuth, async function(req, res) {
   }
 });
 
-//service worker for PWA installs
-app.get('/sw.js', function(req, res) {
-  res.sendFile('src/sw.js', { root: __dirname })
-});
-app.get('/appinstall.js', function(req, res) {
-  res.sendFile('src/appinstall.js', { root: __dirname })
-});
-app.get('/favicon.ico', function(req, res) {
-  res.sendFile('src/favicon.ico', { root: __dirname })
-});
-
 //main scouting form
 app.get('/main', checkAuth, function(req, res) {
   res.sendFile('src/main.html', { 
     root: __dirname
   })
-});
-
-//webmanifest for PWAs
-app.get('/app.webmanifest', function(req, res) {
-  res.sendFile('./src/app.webmanifest', { root: __dirname })
 });
 
 //pit form
@@ -394,8 +378,19 @@ app.get('/pit', checkAuth, function(req, res) {
   })
 });
 
+//webmanifest for PWAs
+//serve resources
+app.get('/app.webmanifest', function(req, res) {
+  res.sendFile('./src/app.webmanifest', { root: __dirname })
+});
+
 //serve resources
 app.get('/2023_float.css', function(req, res) {
+  res.sendFile('./src/2023_float.css', { root: __dirname })
+});
+
+//serve resources
+app.get('/2023_float.min.css', function(req, res) {
   res.sendFile('./src/2023_float.min.css', { root: __dirname })
 });
 
@@ -408,6 +403,33 @@ app.get('/fonts/Raleway-300.ttf', function(req, res) {
 app.get('/fonts/Raleway-500.ttf', function(req, res) {
   res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname })
 });
+
+//serve resources
+app.get('/form.js', function(req, res) {
+  res.sendFile('./src/form.js', { root: __dirname })
+});
+
+//serve resources
+app.get('/form.min.js', function(req, res) {
+  res.sendFile('./src/form.min.js', { root: __dirname })
+});
+
+//service worker for PWA installs
+//serve resources
+app.get('/sw.js', function(req, res) {
+  res.sendFile('src/sw.js', { root: __dirname })
+});
+
+//serve resources
+app.get('/appinstall.js', function(req, res) {
+  res.sendFile('src/appinstall.js', { root: __dirname })
+});
+
+//serve resources
+app.get('/favicon.ico', function(req, res) {
+  res.sendFile('src/favicon.ico', { root: __dirname })
+});
+
 
 //allow people to get denied :)
 app.get('/denied', function(req, res) {

@@ -11,7 +11,9 @@ self.addEventListener('install', event => {
   event.waitUntil(
     addResourcesToCache([
       "/offline.html",
-      "/2023_float.css"
+      "/2023_float.min.css",
+      "/form.min.js",
+      "/"
     ])
   );
 });
