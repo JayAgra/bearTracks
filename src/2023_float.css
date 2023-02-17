@@ -1,3 +1,45 @@
+body {
+    --fieldsetColor: rgba(35,35,35,0.2);
+	--bodyColor: #121212;
+	--textColor: #fff;
+	--transparency: rgba(0,0,0,0);
+	--defaultInputColor: #fff;
+	--inputColorSelected: #FFB600;
+	--gameFlairColor: #68C3E2;
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+		--fieldsetColor: rgba(235,235,235,0.2);
+		--bodyColor: #fff;
+		--textColor: #000;
+		--defaultInputColor: #000;
+        --transparency: rgba(0,0,0,0);
+		--inputColorSelected: #FFB600;
+		--gameFlairColor: #68C3E2;
+    }
+}
+
+body.dark-mode {
+    --fieldsetColor: rgba(35,35,35,0.2);
+	--bodyColor: #121212;
+	--textColor: #fff;
+	--transparency: rgba(0,0,0,0);
+	--defaultInputColor: #fff;
+	--inputColorSelected: #FFB600;
+	--gameFlairColor: #68C3E2;
+}
+
+body.light-mode {
+	--fieldsetColor: rgba(235,235,235,0.2);
+	--bodyColor: #fff;
+	--textColor: #000;
+	--defaultInputColor: #000;
+	--transparency: rgba(0,0,0,0);
+	--inputColorSelected: #FFB600;
+	--gameFlairColor: #68C3E2;
+}
+
 @font-face {
 	font-family: 'raleway-300';
 	src: url('fonts/Raleway-300.ttf') format('truetype');
@@ -12,18 +54,18 @@ html,body {
 }
 
 body {
-	background-color: #121212;
-	color: #fff;
+	background-color: var(--bodyColor);
+	color: var(--textColor);
 }
 
 fieldset {
-	border: rgba(35,35,35,0.2);
+	border: var(--fieldsetColor);
 	border-width: 0.15rem;
 	border-style: solid;
 	border-radius: 0.5rem;
 	margin-top: 0.25rem;
 	margin-bottom: 0.25rem;
-	background-color: rgba(35,35,35,0.2);
+	background-color: var(--fieldsetColor);
 }
 
 h1 {
@@ -37,70 +79,70 @@ h1 {
 }
 
 select {
-	background-color: rgba(18,18,18,0); /*  make this transparent  */
+	background-color: var(--transparency);
 	border: none;
-	color: #fff;
-	border-bottom: 2px solid #fff;		
+	color: var(--textColor);
+	border-bottom: 2px solid var(--defaultInputColor);		
 }
 
 input[type='text'] {
 	border: none;
-	background-color: rgba(35,35,35,0); /*  make this transparent  */
-	color: #fff;
-	border-bottom: 1px solid #fff;
+	background-color: var(--transparency);
+	color: var(--textColor);
+	border-bottom: 1px solid var(--defaultInputColor);
 	width: 95%;
 }
 
 input[type='number'] {
 	border: none;
-	background-color: rgba(35,35,35,0); /*  make this transparent  */
-	color: #fff;
-	border-bottom: 1px solid #fff;
+	background-color: var(--transparency);
+	color: var(--textColor);
+	border-bottom: 1px solid var(--defaultInputColor);
 	width: 95%;
 }
 
 input[type='tel'] {
 	border: none;
-	background-color: rgba(35,35,35,0); /*  make this transparent  */
-	color: #fff;
-	border-bottom: 1px solid #fff;
+	background-color: var(--transparency);
+	color: var(--textColor);
+	border-bottom: 1px solid var(--defaultInputColor);
 	width: 95%;
 }
 
 input[type='number']:focus {
-	background-color: rgba(18,18,18,0); /*  make this transparent  */
+	background-color: var(--transparency);
 	outline: none;
-	border-bottom: 2px solid #FFB600;
+	border-bottom: 2px solid var(--inputColorSelected);
 }
 
 input[type='tel']:focus {
-	background-color: rgba(18,18,18,0); /*  make this transparent  */
+	background-color: var(--transparency);
 	outline: none;
-	border-bottom: 2px solid #FFB600;
+	border-bottom: 2px solid var(--inputColorSelected);
 }
 
 input[type='text']:focus {
-	background-color: rgba(18,18,18,0); /*  make this transparent  */
+	background-color: var(--transparency);
 	outline: none;
-	border-bottom: 2px solid #FFB600;
+	border-bottom: 2px solid var(--inputColorSelected);
 }
 
 select:focus {
 	outline: none;
-	border-bottom: 2px solid #FFB600;
+	border-bottom: 2px solid var(--inputColorSelected);
 }
 span {
-	color: #fff;
+	color: var(--textColor);
 }
 label {
-	color: #fff;
+	color: var(--textColor);
 }
 .gametitle {
-	color: #FFB600;
+	color: var(--inputColorSelected);
 	font-family: 'raleway-500';
 }
 .gameflair1 {
-	color: #68C3E2;
+	color: var(--gameFlairColor);
 }
 .checkbig {
 	-webkit-transform: scale(2);
@@ -113,7 +155,21 @@ label {
 	max-width: 65% !important;
 }
 input, textarea, select {
-	/*-webkit-appearance: none;*/
+	appearance: none;
+	-webkit-appearance: none;
 	-webkit-border-radius:0; 
     border-radius:0;
+}
+textarea {
+	border: none;
+	border-bottom: 1px solid var(--defaultInputColor);
+	background-color: var(--transparency);
+	color: var(--textColor);
+	resize: none;
+	width:  85vw;
+}
+
+textarea:focus {
+	outline: none;
+	border-bottom: 1px solid var(--inputColorSelected);
 }

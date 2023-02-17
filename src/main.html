@@ -12,9 +12,10 @@
     <meta name="apple-mobile-web-app-title" content="Scouting">
     <link rel="manifest" href="/app.webmanifest"/>
     <meta name="mobile-web-app-capable" content="yes">
+    <script src="form.js"></script>
 </head>
 
-<body>
+<body onload="themeHandle()" class="light-mode" id="body">
     <form action="/submit" target="_self" method="POST" name="mainForm" id="mainFormHTML">
         <input type="text" value="main" name="formType" hidden>
         <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
@@ -121,42 +122,6 @@
     <input type="file" name="jsonScoutFile" accept=".scout" style="display: none;" id="jsonScoutFile" disabled="disabled">
     <br><br>
     <script>
-        function goToHome() {
-            window.location.href = "/";
-        }
-        function exportSubmissionJSON() {
-            const downloadFormButton = document.getElementById('downloadFormButton')
-            const downloadFileLink = document.getElementById('downloadFileLink')
-            downloadFormButton.innerHTML = "Please wait..."
-            const form = document.getElementById('mainFormHTML')
-            const blob = new Blob([btoa(JSON.stringify(Object.fromEntries(new FormData(form))))], {type: 'application/octet-stream'});
-            const downloadURL = URL.createObjectURL(blob);
-            downloadFormButton.style.display = "none";
-            downloadFileLink.style.display = "inline";
-            downloadFileLink.download = "main_submission_" + Date.now() + "_" + Math.random().toString(36).slice(2) + ".scout";
-            downloadFileLink.href = downloadURL;
-            downloadFileLink.innerHTML = "Ready! Click again to download"
-        }
-        function uploadSubmissionJSON() {
-            const fileUploadInput = document.getElementById('jsonScoutFile');
-            fileUploadInput.disabled = false;
-            fileUploadInput.click();
-            fileUploadInput.addEventListener('change', async function(){
-                let reader = new FileReader()
-                await reader.readAsText(fileUploadInput.files[0]);
-                reader.onload = () => useFileToFill(reader.result);
-                async function useFileToFill(result) {
-                    console.log(JSON.parse(atob(result)))
-                    const uploadedData = JSON.parse(atob(result))
-                    var inputs = Array.prototype.slice.call(document.querySelectorAll('form input'));
-                    Object.keys(uploadedData).map(function (dataItem) {
-                    inputs.map(function (inputItem) {
-                        return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false;
-                    });
-                    });
-                }
-            })
-        }
         const inputItems = document.getElementsByTagName('input');
         for(var i = 0; i < inputItems.length; i++) {
             inputItems[i].addEventListener('change', (event) => {resetExportButton()});

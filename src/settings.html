@@ -11,17 +11,21 @@
     <link rel="manifest" href="/app.webmanifest"/>
     <link rel="stylesheet" href="2023_float.css" type="text/css">
     <link rel="apple-touch-icon" sizes="180x180" href="public/icon.png">
+    <script src="form.js"></script>
     <style>
         body {
             text-align: center;
         }
     </style>
 </head>
-<body>
+<body id="body" onload="themeHandle()">
     <div class="container">
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h2>Settings</h2><br>
+            <button style="background-color: rgba(0,0,0,0); border: 2px solid gray; color: gray; border-radius: 10px; padding: 5px; font-weight: 700; width: 75%;" onclick="changeTheme()">
+                <p>Switch Theme</p>
+            </button><br><br>
             <button style="background-color: rgba(0,0,0,0); border: 2px solid #f00; color: #f00; border-radius: 10px; padding: 5px; font-weight: 700; width: 75%;" onclick="updateSW()">
                 <p>Update SW</p>
             </button><br><br>
@@ -45,6 +49,23 @@
                     }
                 });
             }
+        }
+        function changeTheme() {
+            let theme = getThemeCookie();
+            switch (theme) {
+                case "light":
+                    document.cookie = "4c454a5b1bedf6a1=dark; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+                break;
+                case "dark":
+                    document.cookie = "4c454a5b1bedf6a1=light; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+                break;
+                case undefined:
+                    document.cookie = "4c454a5b1bedf6a1=dark; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+                break;
+                default:
+                    document.cookie = "4c454a5b1bedf6a1=dark; expires=Fri, 31 Dec 9999 23:59:59 GMT";
+            }
+            themeHandle()
         }
     </script>
 </body>

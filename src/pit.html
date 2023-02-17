@@ -12,9 +12,10 @@
     <meta name="apple-mobile-web-app-title" content="Scouting">
     <link rel="manifest" href="/app.webmanifest"/>
     <meta name="mobile-web-app-capable" content="yes">
+    <script src="form.js"></script>
 </head>
 
-<body>
+<body id="body" onload="themeHandle()">
     <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
             <form action="/submitPit" target="_self" method="POST" enctype="multipart/form-data">
                 <input type="text" value="pit" name="formType" hidden>
