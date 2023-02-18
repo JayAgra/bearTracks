@@ -67,8 +67,8 @@ app.use(lusca({
   nosniff: true
 }));
 var limiter = RateLimit({
-  windowMs: 1*60*1000, // 1 minute
-  max: 30,
+  windowMs: 10*60*1000, // 10 minutes
+  max: 1000,
   standardHeaders: true,
 	legacyHeaders: false
 });
