@@ -32,7 +32,6 @@ db.run( 'PRAGMA journal_mode = WAL;' );
 //SETUP SERVER(S)
 const fs = require('fs');
 const express = require('express');
-const lusca = require('lusca');
 const session  = require('express-session');
 const https = require('https');
 const http = require('http');
@@ -58,13 +57,6 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   maxAge: 24 * 60 * 60 * 1000 * 183 // 183 days
-}));
-app.use(lusca({
-  csrf: true,
-  xframe: 'SAMEORIGIN',
-  hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
-  xssProtection: true,
-  nosniff: true
 }));
 var limiter = RateLimit({
   windowMs: 10*60*1000, // 10 minutes
@@ -231,7 +223,6 @@ app.post('/submit', checkAuth, function(req, res) {
           root: __dirname
         })
       } else {
-        console.log(formData);
         return res.status(500).send(
           "unknown form type"
         );
@@ -241,11 +232,10 @@ app.post('/submit', checkAuth, function(req, res) {
 
 //use this thing to do the pit form image thing
 const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
-app.post('/submitPit', imageUploads, function(req, res) {
+app.post('/submitPit', checkAuth, imageUploads, function(req, res) {
   let formData = req.body
 
   Object.values(req.files).forEach((image) => {
-    console.log(req.files)
     exec(`mv images/${image[0].filename} images/${image[0].filename+"."+(image[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
   });
 
@@ -476,7 +466,9 @@ app.get('/teamRoleInfo', checkAuth, function(req, res) {
 //tool to browse match scouting data
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
-    db.get(`SELECT * FROM main WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id ASC LIMIT 1 OFFSET ${req.query.page}`, (err, dbQueryResult) => {
+    const stmt = `SELECT * FROM main WHERE team=$? AND event=? ORDER BY id ASC LIMIT 1 OFFSET ?`;
+    const values = [req.query.page, req.query.event, req.query.team];
+    db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
       res.render('../src/browse.ejs', { 
         root: __dirname,
@@ -543,7 +535,9 @@ app.get('/browse', checkAuth, function(req, res) {
 app.get('/delete', checkAuth, function(req, res) {
 if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
   if (req.query.submissionID) {
-    db.get(`SELECT * FROM main WHERE id=${req.query.submissionID} ORDER BY id ASC LIMIT 1`, (err, dbQueryResult) => {
+    const stmt = `SELECT * FROM main WHERE id=? ORDER BY id ASC LIMIT 1`;
+    const values = [req.query.submissionID];
+    db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
       res.render('../src/delete.ejs', { 
         root: __dirname,
@@ -600,6 +594,9 @@ app.get('/deleteSubmission', checkAuth, function(req, res) {
   if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
     if (req.query.submissionID) {
       db.run(`DELETE FROM main WHERE id=${req.query.submissionID}`, () => {});
+      const stmt = `DELETE FROM main WHERE id=?`;
+      const values = [req.query.submissionID];
+      db.run(stmt, values, (err, dbQueryResult) => {});
       res.redirect('/manage');
     } else {
       res.sendFile('src/denied.html', { 
@@ -678,7 +675,9 @@ app.get('/matches', checkAuth, function(req, res) {
 //serve the uploaded images
 app.get('/pitimages', checkAuth, function(req, res) {
   if (req.query.team && req.query.event) {
-    db.get(`SELECT * FROM pit WHERE team=${req.query.team} AND event="${req.query.event}" ORDER BY id LIMIT 1`, (err, dbQueryResult) => {
+    const stmt = `SELECT * FROM pit WHERE team=? AND event=? ORDER BY id LIMIT 1`;
+    const values = [req.query.team, req.query.event];
+    db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
       res.render('../src/pitimg.ejs', { 
         root: __dirname,
