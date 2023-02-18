@@ -66,9 +66,11 @@ app.use(lusca({
   xssProtection: true,
   nosniff: true
 }));
-var limiter = new RateLimit({
+var limiter = RateLimit({
   windowMs: 1*60*1000, // 1 minute
-  max: 30
+  max: 30,
+  standardHeaders: true,
+	legacyHeaders: false
 });
 app.use(limiter);
 app.use(passport.initialize());
