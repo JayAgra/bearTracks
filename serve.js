@@ -61,13 +61,10 @@ app.use(session({
 }));
 app.use(lusca({
   csrf: true,
-  csp: { /* ... */},
   xframe: 'SAMEORIGIN',
-  p3p: 'ABCDEF',
   hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
   xssProtection: true,
-  nosniff: true,
-  referrerPolicy: 'same-origin'
+  nosniff: true
 }));
 var limiter = new RateLimit({
   windowMs: 1*60*1000, // 1 minute
