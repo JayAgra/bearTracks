@@ -64,6 +64,14 @@ var limiter = RateLimit({
   standardHeaders: true,
 	legacyHeaders: false
 });
+app.use(lusca({
+  csrf: true,
+  xframe: 'SAMEORIGIN',
+  hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
+  xssProtection: true,
+  nosniff: true,
+  referrerPolicy: 'same-origin'
+}));
 app.use(limiter);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -391,48 +399,57 @@ app.get('/app.webmanifest', function(req, res) {
 
 //serve resources
 app.get('/2023_float.css', function(req, res) {
-  res.sendFile('./src/2023_float.css', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('./src/2023_float.css', { root: __dirname });
 });
 
 //serve resources
 app.get('/2023_float.min.css', function(req, res) {
-  res.sendFile('./src/2023_float.min.css', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('./src/2023_float.min.css', { root: __dirname });
 });
 
 //serve resources
 app.get('/fonts/Raleway-300.ttf', function(req, res) {
-  res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname });
 });
 
 //serve resources
 app.get('/fonts/Raleway-500.ttf', function(req, res) {
-  res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname });
 });
 
 //serve resources
 app.get('/form.js', function(req, res) {
-  res.sendFile('./src/form.js', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('./src/form.js', { root: __dirname });
 });
 
 //serve resources
 app.get('/form.min.js', function(req, res) {
-  res.sendFile('./src/form.min.js', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('./src/form.min.js', { root: __dirname });
 });
 
 //service worker for PWA installs
 //serve resources
 app.get('/sw.js', function(req, res) {
-  res.sendFile('src/sw.js', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/sw.js', { root: __dirname });
 });
 
 //serve resources
 app.get('/appinstall.js', function(req, res) {
-  res.sendFile('src/appinstall.js', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/appinstall.js', { root: __dirname });
 });
 
 //serve resources
 app.get('/favicon.ico', function(req, res) {
-  res.sendFile('src/favicon.ico', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/favicon.ico', { root: __dirname });
 });
 
 
@@ -593,10 +610,9 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
 app.get('/deleteSubmission', checkAuth, function(req, res) {
   if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
     if (req.query.submissionID) {
-      db.run(`DELETE FROM main WHERE id=${req.query.submissionID}`, () => {});
       const stmt = `DELETE FROM main WHERE id=?`;
       const values = [req.query.submissionID];
-      db.run(stmt, values, (err, dbQueryResult) => {});
+      db.run(stmt, values, (err) => {if(err){console.log(err)}});
       res.redirect('/manage');
     } else {
       res.sendFile('src/denied.html', { 
