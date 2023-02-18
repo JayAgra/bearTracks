@@ -31,12 +31,14 @@ db.run( 'PRAGMA journal_mode = WAL;' );
 
 //SETUP SERVER(S)
 const fs = require('fs');
-const express = require('express')
-const session  = require('express-session')
+const express = require('express');
+const lusca = require('lusca');
+const session  = require('express-session');
 const https = require('https');
 const http = require('http');
 const cookieParser = require("cookie-parser");
 const crypto = require('crypto');
+var RateLimit = require('express-rate-limit');
 var EventEmitter = require("events").EventEmitter;
 var app = express();
 app.use(cookieParser());
@@ -52,12 +54,26 @@ app.engine('html', ejs.renderFile);
 app.use('/images', express.static('images'))
 app.use('/public', express.static('src/public'))
 app.use(session({
-  //i have no clue what this secret is but stackoverflow said to make it a random string
   secret: crypto.randomBytes(48).toString('hex'),
   resave: false,
   saveUninitialized: false,
   maxAge: 24 * 60 * 60 * 1000 * 183 // 183 days
 }));
+app.use(lusca({
+  csrf: true,
+  csp: { /* ... */},
+  xframe: 'SAMEORIGIN',
+  p3p: 'ABCDEF',
+  hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
+  xssProtection: true,
+  nosniff: true,
+  referrerPolicy: 'same-origin'
+}));
+var limiter = new RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 30
+});
+app.use(limiter);
 app.use(passport.initialize());
 app.use(passport.session());
 
