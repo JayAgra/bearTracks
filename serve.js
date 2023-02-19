@@ -57,7 +57,8 @@ app.use(session({
   secret: crypto.randomBytes(48).toString('hex'),
   resave: false,
   saveUninitialized: false,
-  maxAge: 24 * 60 * 60 * 1000 * 183 // 183 days
+  maxAge: 24 * 60 * 60 * 1000 * 183, // 183 days
+  secure: true
 }));
 var limiter = RateLimit({
   windowMs: 10*60*1000, // 10 minutes
