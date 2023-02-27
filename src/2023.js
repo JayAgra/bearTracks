@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3');
 const { MessageEmbed } = require('discord.js');
-const { baseURL } = require('./config.json');
+const { baseURL } = require('../config.json');
 
 function teamData(team, event, interaction) {
   if (event == "NONE") {
