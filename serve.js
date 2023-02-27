@@ -38,7 +38,7 @@ const https = require('https');
 const http = require('http');
 const cookieParser = require("cookie-parser");
 const crypto = require('crypto');
-const season = require('./src/2023.js')
+const seasonProcess = require('./src/2023.js')
 var RateLimit = require('express-rate-limit');
 var EventEmitter = require("events").EventEmitter;
 var app = express();
@@ -449,7 +449,7 @@ app.get('/browse', checkAuth, function(req, res) {
             resultsTeamNumber: `${dbQueryResult.team}`,
             resultsMatchNumber: `${dbQueryResult.match}`,
             resultsEventCode: `${dbQueryResult.event}`,
-            resultsBody: season.createHTMLExport(dbQueryResult)
+            resultsBody: seasonProcess.createHTMLExport(dbQueryResult)
           })
           return;
         }
