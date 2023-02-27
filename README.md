@@ -41,7 +41,8 @@
 	"currentComp": "NONE",
 	"clientSec": "",
 	"redirectURI": "http://scout.example.com",
-	"teamServerID": ""
+	"teamServerID": "",
+	"baseURL": "http://localhost/"
 }
 ```
 + **clientId** Discord application ID<br>
@@ -59,4 +60,5 @@
 + **currentComp** 4-letter code for the team's current competition. Use "NONE" if no competition.<br>
 + **clientSec** Discord oauth secret<br>
 + **redirectURI** Where to redirect user after oauth. Must be added to discord, or the oauth will *not* work<br>
-+ **teamServerID** Server ID of team discord. Used to check user's permissions.
++ **teamServerID** Server ID of team discord. Used to check user's permissions. <br>
++ ** baseURL** Is the server's base URL
