@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3');
 const { MessageEmbed } = require('discord.js');
 const { baseURL } = require('../config.json');
 
-function teamData(team, event, interaction) {
+function teamData(season, team, event, interaction) {
   if (event == "NONE") {
     return interaction.reply({
       content: "We are not competing, so you must specify the event code!",
@@ -59,7 +59,7 @@ function teamData(team, event, interaction) {
         })
       }
     });    
-    db.get(`SELECT * FROM main WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, result) => {
+    db.get(`SELECT * FROM main WHERE team=${team} AND event="${event}" AND season="${season}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
           console.log(err);
           return interaction.reply({
@@ -127,7 +127,7 @@ function teamData(team, event, interaction) {
   });
 }
   
-function pitData(team, event, interaction) {
+function pitData(season, team, event, interaction) {
   if (event == "NONE") {
     return interaction.reply({
       content: "We are not competing, so you must specify the event code!",
@@ -159,7 +159,7 @@ function pitData(team, event, interaction) {
         })
       }
     });
-    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
+    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" AND season="${season}" ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
         if (err) {
           console.log(err);
           return interaction.reply({

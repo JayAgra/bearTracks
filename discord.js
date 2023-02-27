@@ -1,6 +1,5 @@
 const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
-var datetime = new Date();
 const seasonData = require("./src/2023.js");
 
 if (!fs.existsSync('config.example.json') && !fs.existsSync('config.json')) {
@@ -28,7 +27,7 @@ var https = require('follow-redirects').https;
 client.once(Events.ClientReady, () => {
     client.user.setActivity("the 766 Ws", { type: "WATCHING" });
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Ready!');
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + datetime);
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + new Date());
 });
 
 //emotes
@@ -42,6 +41,22 @@ function invalidJSON(str) {
   } catch (error) {
       return true
   }
+}
+
+function defaultSeason(fallback) {
+    if (typeof(fallback) == undefined) {
+        return season;
+    } else {
+        return fallback;
+    }
+}
+
+function defaultEvent(fallback) {
+    if (typeof(fallback) == undefined) {
+        return currentComp;
+    } else {
+        return fallback;
+    }
 }
 
 function newSubmission(formType, Id, scoutIP, scoutName) {
@@ -285,24 +300,14 @@ client.on('interactionCreate', async interaction => {
           }
       });
   } else if (interaction.commandName === 'data') {
-    var opseason;
-    if (typeof(interaction.options.getInteger('season')) == undefined) {
-        opseason = season;
-    } else {
-        opseason = interaction.options.getInteger('season');
-    }
-    
-    var eventcode;
-    if (typeof(interaction.options.getString('eventcode')) == undefined) {
-        eventcode = season;
-    } else {
-        eventcode = interaction.options.getString('eventcode');
-    }
+    var opseason = defaultSeason(interaction.options.getInteger('season'));
+
+    var eventcode = defaultEvent(interaction.options.getString('eventcode'))
 
     const teamnum = interaction.options.getInteger('teamnum');
 
     try {
-        seasonData.teamData(teamnum, eventcode, interaction);
+        seasonData.teamData(opseason, teamnum, eventcode, interaction);
     } catch (error) {
         console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
         interaction.reply({
@@ -311,24 +316,14 @@ client.on('interactionCreate', async interaction => {
         })
     }
   } else if (interaction.commandName === 'pit') {
-    var opseason;
-    if (typeof(interaction.options.getInteger('season')) == undefined) {
-        opseason = season;
-    } else {
-        opseason = interaction.options.getInteger('season');
-    }
+    var opseason = defaultSeason(interaction.options.getInteger('season'));
 
-    var eventcode;
-    if (typeof(interaction.options.getString('eventcode')) == undefined) {
-        eventcode = season;
-    } else {
-        eventcode = interaction.options.getString('eventcode');
-    }
+    var eventcode = defaultEvent(interaction.options.getString('eventcode'));
 
     const teamnum = interaction.options.getInteger('teamnum');
 
     try {
-        seasonData.pitData(teamnum, eventcode, interaction);
+        seasonData.pitData(opseason, teamnum, eventcode, interaction);
     } catch (error) {
         console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
         interaction.reply({

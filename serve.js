@@ -87,20 +87,11 @@ const { exec } = require('child_process');
 
 //BASIC FUNCTIONS TO SHORTEN CODE
 function valueToEmote(value) {
-  if (value == null || value == "false") {
-    return "❌";
-  } else {
-    return "✅";
-  }
+  if ( value == null || value == "false" ) { return "❌"; } else { return "✅"; }
 }
 
 function invalidJSON(str) {
-  try {
-      JSON.parse(str);
-      return false
-  } catch (error) {
-      return true
-  }
+  try { JSON.parse(str); return false } catch (error) { return true }
 }
 
 function logInfo(info) {
@@ -402,9 +393,7 @@ app.get('/favicon.ico', function(req, res) {
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
-  res.sendFile('src/denied.html', { 
-    root: __dirname
-  })
+  res.sendFile('src/denied.html', { root: __dirname })
   } catch (error) {
     res.write("Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error)
   } 
@@ -433,15 +422,11 @@ app.get('/browse', checkAuth, function(req, res) {
     const values = [req.query.team, req.query.event, req.query.page];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
-        res.render('../src/browse.ejs', { 
-          root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
-        })
+        res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
         return;
       } else {
         if (typeof dbQueryResult == "undefined") {
-          res.render('../src/browse.ejs', { 
-            root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
-          })
+          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
           return;
         } else {
           res.render('../src/browse.ejs', { 
@@ -456,9 +441,7 @@ app.get('/browse', checkAuth, function(req, res) {
       }
     });
   } else {
-  res.render('../src/browse.ejs', { 
-    root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
-  })
+  res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
   return;
   }
 });
@@ -472,14 +455,10 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
     const values = [req.query.submissionID];
     db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
-      res.render('../src/delete.ejs', { 
-        root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
-      })
+      res.render('../src/delete.ejs', { root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
     } else {
     if (typeof dbQueryResult == "undefined") {
-      res.render('../src/delete.ejs', { 
-        root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
-      })
+      res.render('../src/delete.ejs', { root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
     } else {
       res.render('../src/delete.ejs', { 
         root: __dirname, displaySearch: "none", displayResults: "flex",
@@ -492,9 +471,7 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
     }
     });
   } else {
-  res.render('../src/delete.ejs', { 
-    root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
-  })
+  res.render('../src/delete.ejs', {  root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
   }
 } else {
   res.sendFile('src/denied.html', { 
@@ -676,17 +653,13 @@ app.get('/api/pit/:season/:event/:team', checkAuth, function(req, res) {
 //auth functions
 app.get('/', passport.authenticate('discord'));
 
-app.get('/callback', passport.authenticate('discord', {
-    failureRedirect: '/'
-}), function(req, res) {
+app.get('/callback', passport.authenticate('discord', { failureRedirect: '/' }), function(req, res) {
     res.redirect('/');
 });
 
 //not requiring auth for offline version, you cannot submit with this and submit url is secured anyway
 app.get('/offline.html', function(req, res) {
-  res.sendFile('src/offline.html', { 
-    root: __dirname
-  })
+  res.sendFile('src/offline.html', { root: __dirname })
 });
 
 if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
