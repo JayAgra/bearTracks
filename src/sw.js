@@ -1,48 +1,44 @@
-//SERVICE WORKER
-const cacheName = "sa_v1.1"
-
-const addResourcesToCache = async (resources) => {
-  const cache = await caches.open(cacheName);
-  await cache.addAll(resources);
-};
-
-console.log('sw executed')
-self.addEventListener('install', event => {
-  event.waitUntil(
-    addResourcesToCache([
-      "/offline.html",
-      "/2023_float.min.css",
-      "/form.min.js",
-      "/"
-    ])
-  );
-});
+var version = '1.0.0'
+var cacheName = `scouting-pwa-${version}`
+var filesToCache = [
+  'offline.html',
+  '/',
+  'appinstall.js',
+  '2023_float.min.css',
+  'form.min.js',
+  'fonts/Raleway-300.ttf',
+  'fonts/Raleway-500.ttf',
+  'settings'
+];
 
 console.log('service worker executed')
+//Start the service worker and cache all
 self.addEventListener('install', function(e) {
-    self.skipWaiting()
     e.waitUntil(
         caches.open(cacheName).then(function(cache) {
-            return cache.addAll(contentToCache);
+            return cache.addAll(filesToCache);
         })
     );
 });
 
-self.addEventListener('activate', event => {
-  caches.keys().then(cacheNames => {for (let name of cacheNames) {caches.delete(name);}});
-
-  self.registration.unregister()
-    .then(() => self.clients.matchAll())
-    .then((clients) => clients.forEach(client => client.navigate(client.url)))
+self.addEventListener('activate', (evt) => {
+    evt.waitUntil(
+        caches.keys().then((keyList) => {
+            return Promise.all(keyList.map((key) => {
+                if (key !== cacheName) {
+                    return caches.delete(key);
+                }
+            }));
+        })
+    );
+    self.clients.claim();
 });
 
-/* Serve cache when online */
+/* Serve cached content when offline */
 self.addEventListener('fetch', function(event) {
-    event.respondWith(
-      fetch(event.request).catch(function(e) {
+    event.respondWith(fetch(event.request).catch(function(e) {
         return caches.open(cacheName).then(function(cache) {
-          return cache.match(event.request,
-            {'ignoreSearch': true}).then(response => response);
+          return cache.match(event.request, {'ignoreSearch': true}).then(response => response);
         });
     }));
 });
