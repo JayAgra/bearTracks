@@ -266,7 +266,7 @@ app.get('/', checkAuth, async function(req, res) {
     var oauthDataCookieSet =  await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}));
     //btoa and atob bad idea
     //Buffer.from(str, 'base64') and buf.toString('base64') instead
-    res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now()}); 
+    res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
     var rolesHTML = "";
     for (let i = 0; i < oauthDataCookieSet.length; i++) {
       if (i===0) {rolesHTML += `<span style="color: ${oauthDataCookieSet[i][1]}; background-color: ${oauthDataCookieSet[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[i][0]}</span><br class="roleThing"><br class="roleThing">`} else {
