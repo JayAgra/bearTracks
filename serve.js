@@ -59,7 +59,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   maxAge: 24 * 60 * 60 * 1000 * 183, // 183 days
-  secure: true
+  cookie : {
+    sameSite: 'strict',
+    secure: 'true'
+  }
 }));
 var limiter = RateLimit({
   windowMs: 10*60*1000, // 10 minutes
