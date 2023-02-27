@@ -38,6 +38,7 @@ const https = require('https');
 const http = require('http');
 const cookieParser = require("cookie-parser");
 const crypto = require('crypto');
+const season = require('./src/2023.js')
 var RateLimit = require('express-rate-limit');
 var EventEmitter = require("events").EventEmitter;
 var app = express();
@@ -280,47 +281,19 @@ app.get('/', checkAuth, async function(req, res) {
     }
     if (oauthDataCookieSet[0][0] == "Drive Team") {
       res.render('../src/index.ejs', { 
-        root: __dirname,
-        userName: req.user.username,
-        rolesBody: rolesHTML,
-        order1: "2",
-        order2: "0",
-        order3: "1",
-        order4: "3",
-        additionalURLs: "<span></span>"
+        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
       })
     } else if (oauthDataCookieSet[0][0] == "Pit Team") {
       res.render('../src/index.ejs', { 
-        root: __dirname,
-        userName: req.user.username,
-        rolesBody: rolesHTML,
-        order1: "2",
-        order2: "0",
-        order3: "1",
-        order4: "3",
-        additionalURLs: "<span></span>"
+        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
       })
     } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
       res.render('../src/index.ejs', { 
-        root: __dirname,
-        userName: req.user.username,
-        rolesBody: rolesHTML,
-        order1: "0",
-        order2: "3",
-        order3: "2",
-        order4: "1",
-        additionalURLs: `<a href="delete" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Delete Submissions<br></a>`
+        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="delete" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Delete Submissions<br></a>`
       })
     } else {
       res.render('../src/index.ejs', { 
-        root: __dirname,
-        userName: req.user.username,
-        rolesBody: rolesHTML,
-        order1: "0",
-        order2: "3",
-        order3: "2",
-        order4: "1",
-        additionalURLs: "<span></span>"
+        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
       })
     }
   } else {
@@ -333,47 +306,19 @@ app.get('/', checkAuth, async function(req, res) {
   }
   if (oauthData[0][0] == "Drive Team") {
     res.render('../src/index.ejs', { 
-      root: __dirname,
-      userName: req.user.username,
-      rolesBody: rolesHTMLfromCookie,
-      order1: "2",
-      order2: "0",
-      order3: "1",
-      order4: "3",
-      additionalURLs: "<span></span>"
+      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
     })
   } else if (oauthData[0][0] == "Pit Team") {
     res.render('../src/index.ejs', { 
-      root: __dirname,
-      userName: req.user.username,
-      rolesBody: rolesHTMLfromCookie,
-      order1: "2",
-      order2: "0",
-      order3: "1",
-      order4: "3",
-      additionalURLs: "<span></span>"
+      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
     })
   } else if (oauthData[0][0] == "Lead Scout") {
     res.render('../src/index.ejs', { 
-      root: __dirname,
-      userName: req.user.username,
-      rolesBody: rolesHTMLfromCookie,
-      order1: "0",
-      order2: "3",
-      order3: "2",
-      order4: "1",
-      additionalURLs: `<a href="delete" class="gameflair1" style="order: 4; margin-bottom: 5%;">Delete Submissions<br></a>`
+      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="delete" class="gameflair1" style="order: 4; margin-bottom: 5%;">Delete Submissions<br></a>`
     })
   } else {
     res.render('../src/index.ejs', { 
-      root: __dirname,
-      userName: req.user.username,
-      rolesBody: rolesHTMLfromCookie,
-      order1: "0",
-      order2: "3",
-      order3: "2",
-      order4: "1",
-      additionalURLs: "<span></span>"
+      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
     })
   }
   }
@@ -454,7 +399,6 @@ app.get('/favicon.ico', function(req, res) {
   res.sendFile('src/favicon.ico', { root: __dirname });
 });
 
-
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
@@ -485,65 +429,35 @@ app.get('/teamRoleInfo', checkAuth, function(req, res) {
 //tool to browse match scouting data
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
-    const stmt = `SELECT * FROM main WHERE team=$? AND event=? ORDER BY id ASC LIMIT 1 OFFSET ?`;
-    const values = [req.query.page, req.query.event, req.query.team];
+    const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id ASC LIMIT 1 OFFSET ?`;
+    const values = [req.query.team, req.query.event, req.query.page];
     db.get(stmt, values, (err, dbQueryResult) => {
-    if (err) {
-      res.render('../src/browse.ejs', { 
-        root: __dirname,
-        errorDisplay: "block",
-        errorMessage: 'Error: No results!',
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsTeamNumber: 0,
-        resultsMatchNumber: 0,
-        resultsEventCode: 0,
-        resultsBody: 0
-      })
-      return;
-    } else {
-    if (typeof dbQueryResult == "undefined") {
-      res.render('../src/browse.ejs', { 
-        root: __dirname,
-        errorDisplay: "block",
-        errorMessage: 'Error: No results!',
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsTeamNumber: 0,
-        resultsMatchNumber: 0,
-        resultsEventCode: 0,
-        resultsBody: 0
-      })
-      return;
-    } else {
-      res.render('../src/browse.ejs', { 
-        root: __dirname,
-        errorDisplay: "none",
-        errorMessage: 'no errors :)',
-        errorMessage: null,
-        displaySearch: "none",
-        displayResults: "flex",
-        resultsTeamNumber: `${dbQueryResult.team}`,
-        resultsMatchNumber: `${dbQueryResult.match}`,
-        resultsEventCode: `${dbQueryResult.event}`,
-        resultsBody: `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Submission Info:<br>ID: ${dbQueryResult.id} | Discord Username ${dbQueryResult.discordName}`
-      })
-      return;
-    }
-    }
+      if (err) {
+        res.render('../src/browse.ejs', { 
+          root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
+        })
+        return;
+      } else {
+        if (typeof dbQueryResult == "undefined") {
+          res.render('../src/browse.ejs', { 
+            root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
+          })
+          return;
+        } else {
+          res.render('../src/browse.ejs', { 
+            root: __dirname, errorDisplay: "none", errorMessage: 'no errors :)', errorMessage: null, displaySearch: "none", displayResults: "flex",
+            resultsTeamNumber: `${dbQueryResult.team}`,
+            resultsMatchNumber: `${dbQueryResult.match}`,
+            resultsEventCode: `${dbQueryResult.event}`,
+            resultsBody: season.createHTMLExport(dbQueryResult)
+          })
+          return;
+        }
+      }
     });
   } else {
   res.render('../src/browse.ejs', { 
-    root: __dirname,
-    errorDisplay: "none",
-    errorMessage: 'no errors :)',
-    errorMessage: null,
-    displaySearch: "flex",
-    displayResults: "none",
-    resultsTeamNumber: 0,
-    resultsMatchNumber: 0,
-    resultsEventCode: 0,
-    resultsBody: 0
+    root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
   })
   return;
   }
@@ -559,30 +473,16 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
     db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
       res.render('../src/delete.ejs', { 
-        root: __dirname,
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsTeamNumber: 0,
-        resultsMatchNumber: 0,
-        resultsEventCode: 0,
-        resultsBody: 0
+        root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
       })
     } else {
     if (typeof dbQueryResult == "undefined") {
       res.render('../src/delete.ejs', { 
-        root: __dirname,
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsTeamNumber: 0,
-        resultsMatchNumber: 0,
-        resultsEventCode: 0,
-        resultsBody: 0
+        root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
       })
     } else {
       res.render('../src/delete.ejs', { 
-        root: __dirname,
-        displaySearch: "none",
-        displayResults: "flex",
+        root: __dirname, displaySearch: "none", displayResults: "flex",
         resultsTeamNumber: `${dbQueryResult.team}`,
         resultsMatchNumber: `${dbQueryResult.match}`,
         resultsEventCode: `${dbQueryResult.event}`,
@@ -593,13 +493,7 @@ if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
     });
   } else {
   res.render('../src/delete.ejs', { 
-    root: __dirname,
-    displaySearch: "flex",
-    displayResults: "none",
-    resultsTeamNumber: 0,
-    resultsMatchNumber: 0,
-    resultsEventCode: 0,
-    resultsBody: 0
+    root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0
   })
   }
 } else {
@@ -671,20 +565,14 @@ app.get('/matches', checkAuth, function(req, res) {
             matchesContent = matchesContent + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #ff0000;"><a href="browse?team=${parsedData.Schedule[i].teams[0].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[1].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[2].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #0000ff;"><a href="browse?team=${parsedData.Schedule[i].teams[3].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[4].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[5].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
           }
           res.render('../src/matches.ejs', { 
-            root: __dirname,
-            displaySelect: 'none',
-            displayResults: 'flex',
-            matchesBody: matchesContent
+            root: __dirname, displaySelect: 'none', displayResults: 'flex', matchesBody: matchesContent
           })
           return;
         }
     });
   } else {
   res.render('../src/matches.ejs', { 
-    root: __dirname,
-    displaySelect: 'flex',
-    displayResults: 'none',
-    matchesBody: "null"
+    root: __dirname, displaySelect: 'flex', displayResults: 'none', matchesBody: null
   })
   return;
   }
@@ -696,58 +584,31 @@ app.get('/pitimages', checkAuth, function(req, res) {
     const stmt = `SELECT * FROM pit WHERE team=? AND event=? ORDER BY id LIMIT 1`;
     const values = [req.query.team, req.query.event];
     db.get(stmt, values, (err, dbQueryResult) => {
-    if (err) {
-      res.render('../src/pitimg.ejs', { 
-        root: __dirname,
-        errorDisplay: "block",
-        errorMessage: 'Error: No results!',
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsTeamNumber: 0,
-        resultsEventCode: 0,
-        resultsBody: 0
-      })
-      return;
-    } else {
-    if (typeof dbQueryResult == "undefined") {
-      res.render('../src/pitimg.ejs', { 
-        root: __dirname,
-        errorDisplay: "block",
-        errorMessage: 'Error: No results!',
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsTeamNumber: 0,
-        resultsEventCode: 0,
-        resultsBody: 0
-      })
-      return;
-    } else {
-      res.render('../src/pitimg.ejs', { 
-        root: __dirname,
-        errorDisplay: "none",
-        errorMessage: 'no errors :)',
-        errorMessage: null,
-        displaySearch: "none",
-        displayResults: "flex",
-        resultsTeamNumber: `${dbQueryResult.team}`,
-        resultsEventCode: `${dbQueryResult.event}`,
-        resultsBody: `<img src="images/${dbQueryResult.image1}"/><br><img src="images/${dbQueryResult.image2}"/><br><img src="images/${dbQueryResult.image3}"/><br><img src="images/${dbQueryResult.image4}"/><br><img src="images/${dbQueryResult.image5}"/>`
-      })
-      return;
-    }
-    }
+      if (err) {
+        res.render('../src/pitimg.ejs', { 
+          root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
+        })
+        return;
+      } else {
+        if (typeof dbQueryResult == "undefined") {
+          res.render('../src/pitimg.ejs', { 
+            root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
+          })
+          return;
+        } else {
+          res.render('../src/pitimg.ejs', { 
+            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex", 
+            resultsTeamNumber: `${dbQueryResult.team}`, 
+            resultsEventCode: `${dbQueryResult.event}`, 
+            resultsBody: `<img src="images/${dbQueryResult.image1}"/><br><img src="images/${dbQueryResult.image2}"/><br><img src="images/${dbQueryResult.image3}"/><br><img src="images/${dbQueryResult.image4}"/><br><img src="images/${dbQueryResult.image5}"/>`
+          })
+          return;
+        }
+      }
     });
   } else {
   res.render('../src/pitimg.ejs', { 
-    root: __dirname,
-    errorDisplay: "none",
-    errorMessage: 'no errors :)',
-    errorMessage: null,
-    displaySearch: "flex",
-    displayResults: "none",
-    resultsTeamNumber: 0,
-    resultsEventCode: 0,
-    resultsBody: 0
+    root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
   })
   return;
   }
@@ -769,11 +630,7 @@ app.get('/offline.html', function(req, res) {
   })
 });
 
-
-
 if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
 
 //server created and ready for a request
 logInfo("Ready!");
-
-//https://discord.com/oauth2/authorize?client_id=CLIENT_ID&redirect_uri=REDIRECT&response_type=code&scope=identify%20guilds%20guilds.members.read%20email%20role_connections.write

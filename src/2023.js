@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3');
 const { MessageEmbed } = require('discord.js');
+const { baseURL } = require('./config.json');
 
 function teamData(team, event, interaction) {
   if (event == "NONE") {
@@ -186,7 +187,7 @@ function pitData(team, event, interaction) {
             inline: true
           },{
             name: 'Images',
-            value: `[Image 1](https://scout.team766.com/images/${pitresult.image1}\n[Image 2](https://scout.team766.com/images/${pitresult.image2})\n[Image 3](https://scout.team766.com/images/${pitresult.image3}\n[Image 4](https://scout.team766.com/images/${pitresult.image4}\n[Image 5](https://scout.team766.com/images/${pitresult.image5}`,
+            value: `[Image 1](${baseURL}images/${pitresult.image1}\n[Image 2](${baseURL}images/${pitresult.image2})\n[Image 3](${baseURL}images/${pitresult.image3}\n[Image 4](${baseURL}images/${pitresult.image4}\n[Image 5](${baseURL}images/${pitresult.image5}`,
             inline: true
           })
           .setTimestamp()
@@ -206,5 +207,9 @@ function pitData(team, event, interaction) {
       }
   });
 }
-  
-module.exports = { teamData, pitData };
+
+function createHTMLExport(dbQueryResult) {
+  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}`
+}
+
+module.exports = { teamData, pitData, createHTMLExport };

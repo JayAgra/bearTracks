@@ -160,3 +160,6 @@ input[type=checkbox]:checked,
 input[type=radio]:checked {
     accent-color: var(--gameFlairColor) !important;
 }
+code {
+    font-family:'SF Mono', SFMono-Regular, ui-monospace, Menlo, courier new, monospace;
+}
