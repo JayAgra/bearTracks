@@ -75,7 +75,7 @@ client.on('interactionCreate', async interaction => {
   if (interaction.commandName === 'matches') {
 
     var opseason;
-    if (typeof interaction.options.getInteger('season')) == 'undefined') {
+    if (typeof interaction.options.getInteger('season') == 'undefined') {
         opseason = season;
     } else {
         opseason = interaction.options.getInteger('season');
