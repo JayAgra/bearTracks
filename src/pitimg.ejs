@@ -72,7 +72,6 @@
                 <h5 style="text-align: left"><%- resultsBody %></h5>
             </fieldset>
             <!--buttons-->
-            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='pageControl("bck")'>Previous</button>&emsp;<button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='pageControl("fwd")'>Next</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>
             </fieldset>
             <small style="text-align: center;">To see match scouting data, go <a href="browse" style="all: unset; color: #68C3E2;">here</a></small>
@@ -80,12 +79,7 @@
     </div>
     <script>
         function removeURLParams() {
-            let url = new URL(location.href)
-            let urlparams = new URLSearchParams(url.search);
-            urlparams.delete('team');
-            urlparams.delete('page');
-            urlparams.delete('event');
-            location.reload();
+            window.location.href = "/pitimages"
         }
         function goToHome() {
             window.location.href = "/";

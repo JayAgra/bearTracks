@@ -78,11 +78,7 @@
     </div>
     <script>
         function removeURLParams() {
-            let url = new URL(location.href);
-            url.searchParams.delete('team');
-            url.searchParams.delete('page');
-            url.searchParams.delete('event');
-            window.location.href = url;
+            window.location.href = "/browse"
         }
         function pageControl(dir) {
             if (dir == "fwd") {
