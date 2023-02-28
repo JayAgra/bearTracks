@@ -48,12 +48,7 @@ app.disable('x-powered-by');
 app.use(cookieParser());
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        "script-src": ["'self'", "'unsafe-inline'", "example.com"],
-      },
-    },
+    contentSecurityPolicy: false,
   })
 );
 const options = {
