@@ -80,11 +80,12 @@
     </div>
     <script>
         function removeURLParams() {
-            let url = new URL(location.href);
-            url.searchParams.delete('team');
-            url.searchParams.delete('page');
-            url.searchParams.delete('event');
-            window.location.href = url;
+            let url = new URL(location.href)
+            let urlparams = new URLSearchParams(url.search);
+            urlparams.delete('team');
+            urlparams.delete('page');
+            urlparams.delete('event');
+            location.reload();
         }
         function goToHome() {
             window.location.href = "/";

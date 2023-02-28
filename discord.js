@@ -44,7 +44,7 @@ function invalidJSON(str) {
 }
 
 function defaultSeason(fallback) {
-    if (typeof(fallback) == undefined) {
+    if (typeof fallback == 'undefined') {
         return season;
     } else {
         return fallback;
@@ -52,7 +52,7 @@ function defaultSeason(fallback) {
 }
 
 function defaultEvent(fallback) {
-    if (typeof(fallback) == undefined) {
+    if (typeof fallback == 'undefined') {
         return currentComp;
     } else {
         return fallback;
@@ -75,14 +75,14 @@ client.on('interactionCreate', async interaction => {
   if (interaction.commandName === 'matches') {
 
     var opseason;
-    if (typeof(interaction.options.getInteger('season')) == undefined) {
+    if (typeof interaction.options.getInteger('season')) == 'undefined') {
         opseason = season;
     } else {
         opseason = interaction.options.getInteger('season');
     }
 
     var eventcode;
-    if (typeof(interaction.options.getString('eventcode')) == undefined) {
+    if (typeof interaction.options.getString('eventcode') == 'undefined') {
         if (currentComp == "NONE") {
             interaction.reply({
                 content: "We are not competing, you must specify an event code.",
@@ -356,16 +356,8 @@ client.on('interactionCreate', async interaction => {
                   ephemeral: true
               });
           } else {
-              var adjective = ["are less intelligent", "have less brainpower", "are more terrifying", "have less honor"];
-              var thing = ["member of team 254", "porcupine", "discord moderator", "farm animal"];
-
-              var a, ad;
-              var a = adjective[Math.floor(Math.random() * 4)];
-              var ad = thing[Math.floor(Math.random() * 4)];
-              var insult = "You " + a + " than a " + ad + ".";
-
               interaction.reply({
-                  content: `You do not have permission to use this command.\nTo use this command, you must have the Lead Scout role (${leadscout}), even if you are an admin or a server owner!\n${insult}`,
+                  content: `You do not have permission to use this command.\nTo use this command, you must have the Lead Scout role (${leadscout}), even if you are an admin or a server owner!`,
                   ephemeral: true
               });
           }
@@ -394,13 +386,13 @@ client.on('interactionCreate', async interaction => {
       }
   } else if (interaction.commandName === 'rankings') {
     var opseason;
-    if (typeof(interaction.options.getInteger('season')) == undefined) {
+    if (typeof interaction.options.getInteger('season') == 'undefined') {
         opseason = season;
     } else {
         opseason = interaction.options.getInteger('season');
     }
     var eventcode;
-    if (typeof(interaction.options.getString('eventcode')) == undefined) {
+    if (typeof interaction.options.getString('eventcode') == 'undefined') {
         if (currentComp == "NONE") {
             interaction.reply({
                 content: "We are not competing, you must specify an event code.",

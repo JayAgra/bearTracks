@@ -14,10 +14,7 @@ function themeHandle() {
             document.getElementById('body').classList.replace("dark-mode", "light-mode");
             document.getElementById("themeMeta").content = "#ffffff";
             break;
-        case "dark":
-            document.getElementById('body').classList.replace("light-mode", "dark-mode");
-            document.getElementById("themeMeta").content = "#121212";
-            break;
+        case "dark": 
         case undefined:
             document.getElementById('body').classList.replace("light-mode", "dark-mode");
             document.getElementById("themeMeta").content = "#121212";

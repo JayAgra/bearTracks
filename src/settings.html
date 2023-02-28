@@ -55,7 +55,7 @@
                             navigator.serviceWorker.register('sw.js');
                         });
                     }
-                });
+                }).catch((error) => {console.log(error);});
             }
         }
         function getThemeCookieS() {
@@ -74,10 +74,8 @@
                     document.cookie = "4c454a5b1bedf6a1=dark; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure; SameSite=Lax";
                 break;
                 case "dark":
-                    document.cookie = "4c454a5b1bedf6a1=light; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure; SameSite=Lax";
-                break;
                 case undefined:
-                    document.cookie = "4c454a5b1bedf6a1=dark; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure; SameSite=Lax";
+                    document.cookie = "4c454a5b1bedf6a1=light; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure; SameSite=Lax";
                 break;
                 default:
                     document.cookie = "4c454a5b1bedf6a1=dark; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure; SameSite=Lax";

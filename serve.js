@@ -41,8 +41,11 @@ const crypto = require('crypto');
 const seasonProcess = require('./src/2023.js')
 var RateLimit = require('express-rate-limit');
 var EventEmitter = require("events").EventEmitter;
+const helmet = require('helmet')
 var app = express();
+app.disable('x-powered-by');
 app.use(cookieParser());
+app.use(helmet())
 const options = {
   key: fs.readFileSync(__dirname + '/ssl/privatekey.pem', 'utf8'),
   cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
@@ -239,9 +242,8 @@ app.post('/submit', checkAuth, function(req, res) {
 const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
 app.post('/submitPit', checkAuth, imageUploads, function(req, res) {
   let formData = req.body
-
   Object.values(req.files).forEach((image) => {
-    exec(`mv images/${image[0].filename} images/${image[0].filename+"."+(image[0].mimetype).substr(6)}`, (err, stdout, stderr) => {});
+    exec(`mv images/${image[0].filename} images/${image[0].filename+"."+(image[0].mimetype).substring(6)}`, (err, stdout, stderr) => {});
   });
 
   let stmt = `INSERT INTO pit (event, season, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -273,11 +275,7 @@ app.get('/', checkAuth, async function(req, res) {
       rolesHTML += `<span style="color: ${oauthDataCookieSet[i][1]}; background-color: ${oauthDataCookieSet[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[i][0]}</span><br class="roleThing">`
       }
     }
-    if (oauthDataCookieSet[0][0] == "Drive Team") {
-      res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
-      })
-    } else if (oauthDataCookieSet[0][0] == "Pit Team") {
+    if (oauthDataCookieSet[0][0] == "Pit Team" || oauthDataCookieSet[0][0] == "Drive Team") {
       res.render('../src/index.ejs', { 
         root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
       })
@@ -298,11 +296,7 @@ app.get('/', checkAuth, async function(req, res) {
     rolesHTMLfromCookie += `<span style="color: ${oauthData[i][1]}; background-color: ${oauthData[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[i][0]}</span><br class="roleThing">`
     }
   }
-  if (oauthData[0][0] == "Drive Team") {
-    res.render('../src/index.ejs', { 
-      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
-    })
-  } else if (oauthData[0][0] == "Pit Team") {
+  if (oauthData[0][0] == "Pit Team" || oauthData[0][0] == "Drive Team") {
     res.render('../src/index.ejs', { 
       root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
     })
@@ -415,7 +409,7 @@ app.get('/info', checkAuth, function(req, res) {
 app.get('/teamRoleInfo', checkAuth, function(req, res) {  
   getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {
     console.log(data.roles)
-  });
+  }).catch(error);
 });
 
 //tool to browse match scouting data
@@ -433,7 +427,7 @@ app.get('/browse', checkAuth, function(req, res) {
           return;
         } else {
           res.render('../src/browse.ejs', { 
-            root: __dirname, errorDisplay: "none", errorMessage: 'no errors :)', errorMessage: null, displaySearch: "none", displayResults: "flex",
+            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `${dbQueryResult.team}`,
             resultsMatchNumber: `${dbQueryResult.match}`,
             resultsEventCode: `${dbQueryResult.event}`,
