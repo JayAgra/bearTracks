@@ -53,7 +53,7 @@
                     if (sw) {
                         sw.unregister().then(() => {
                             navigator.serviceWorker.register('sw.js');
-                        });
+                        }).catch((error) => {console.log(error);});;
                     }
                 }).catch((error) => {console.log(error);});
             }

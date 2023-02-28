@@ -42,6 +42,7 @@ const seasonProcess = require('./src/2023.js')
 var RateLimit = require('express-rate-limit');
 var EventEmitter = require("events").EventEmitter;
 const helmet = require('helmet')
+var sanitize = require("sanitize-filename");
 var app = express();
 app.disable('x-powered-by');
 app.use(cookieParser());
@@ -87,9 +88,17 @@ app.use(passport.session());
 
 //SETUP IMAGE UPLOADING
 const qs = require('querystring');
-const multer  = require('multer')
-const upload = multer({ dest: 'images/' })
+const multer  = require('multer');
 const { exec } = require('child_process');
+const mulstorage = multer.diskStorage(
+  {
+      destination: './images/',
+      filename: function (req, file, cb ) {
+          cb(crypto.randomBytes(12).toString('hex') + sanitize(file.originalname) + (file.mimetype).substring(6));
+      }
+  }
+);
+const upload = multer( { storage: mulstorage } );
 
 //BASIC FUNCTIONS TO SHORTEN CODE
 function valueToEmote(value) {
