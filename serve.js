@@ -48,7 +48,7 @@ app.disable('x-powered-by');
 app.use(cookieParser());
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+    scriptSrc: ['self', 'unsafe-inline', 'unsafe-eval'],
   },
 }));
 const options = {
