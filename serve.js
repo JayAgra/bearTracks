@@ -46,11 +46,15 @@ var sanitize = require("sanitize-filename");
 var app = express();
 app.disable('x-powered-by');
 app.use(cookieParser());
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
-);
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+    connectSrc: validConnectSrc,
+    styleSrc: ["'self'", "'unsafe-inline'"],
+    imgSrc: ["'self'"],
+  },
+}));
 const options = {
   key: fs.readFileSync(__dirname + '/ssl/privatekey.pem', 'utf8'),
   cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
