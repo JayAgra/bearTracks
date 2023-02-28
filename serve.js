@@ -79,7 +79,10 @@ var limiter = RateLimit({
 	legacyHeaders: false
 });
 app.use(lusca({
-  csrf: true,
+  csrf: {
+    cookie: {name: '_csrf'},
+    secret: crypto.randomBytes(48).toString('hex')
+  },
   xframe: 'SAMEORIGIN',
   hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
   xssProtection: true,
