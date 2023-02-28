@@ -71,6 +71,30 @@
         #rolesDisplay span:first-child{
             display:inline;
         }
+        .offlineAlert {
+            padding: 10px;
+            background-color: #f00;
+            color: white;
+            position: absolute;
+        }
+        .closeAlert {
+            margin-left: 15px;
+            color: #fff;
+            float: right;
+            font-size: 22px;
+            line-height: 17.5px;
+            cursor: pointer;
+        }
+        .closeAlert:hover {
+            color: #121212;
+        }
+        .fadeout {
+            animation: fade 1s forwards ease-out;
+        }
+        @keyframes fade {
+            0% { opacity: 1 }
+            100% { opacity: 0 }
+        }
     </style>
     <script src="appinstall.js"></script>
 </head>
@@ -78,6 +102,10 @@
 <body id="body" class="dark-mode">
     <script>themeHandle()</script>
     <div class="container">
+        <div class="offlineAlert" id="offlineAlert" style="display: none">
+            <span class="closeAlert" onclick="this.parentElement.classList.add('fadeout');">&times;</span> 
+            You are offline
+        </div>
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h3><span style="color: rgb(88, 101, 242); background-color: rgba(88, 101, 242, 0.1); border-radius: 4px; padding: 5px;" id="profileName"><%= userName %></span><span>&emsp;</span><span id="rolesDisplay"><%- rolesBody %></span></h3><br>
@@ -94,6 +122,24 @@
     <br><small><a href="settings" style="all: unset;">Settings</a></small>
     <br><small><a href="offline.html" style="all: unset;">Access Offline Version</a></small>
     <script>
+        window.addEventListener("load", () => {
+            checkNetwork(navigator.onLine);
+
+            window.addEventListener("online", () => {
+                checkNetwork(true);
+            });
+
+            window.addEventListener("offline", () => {
+                checkNetwork(false);
+            });
+        });
+        function checkNetwork(online) {
+            const alert = document.getElementById("offlineAlert");
+            if (online) {
+            } else {
+                alert.style.display = "inline"
+            }
+        }
         document.getElementById("profileName").addEventListener("click", showHideAllChildren);
         function showHideAllChildren() {
             var parentID = document.getElementById('rolesDisplay');
