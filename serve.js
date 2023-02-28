@@ -98,7 +98,7 @@ const mulstorage = multer.diskStorage(
   {
       destination: './images/',
       filename: function (req, file, cb ) {
-          cb(crypto.randomBytes(12).toString('hex') + sanitize(file.originalname) + (file.mimetype).substring(6));
+          cb(null, crypto.randomBytes(12).toString('hex') + sanitize(file.originalname));
       }
   }
 );
