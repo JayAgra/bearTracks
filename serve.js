@@ -93,7 +93,6 @@ app.use(passport.session());
 //SETUP IMAGE UPLOADING
 const qs = require('querystring');
 const multer  = require('multer');
-const { exec } = require('child_process');
 const mulstorage = multer.diskStorage(
   {
       destination: './images/',

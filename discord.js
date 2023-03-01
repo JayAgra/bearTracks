@@ -1,6 +1,7 @@
 const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
 const seasonData = require("./src/2023.js");
+const { exec } = require('child_process');
 
 if (!fs.existsSync('config.example.json') && !fs.existsSync('config.json')) {
     console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not find config.json! Fill out config.example.json and rename it to config.json');
@@ -15,7 +16,7 @@ if (fs.statSync("config.json").size < 300) {
 } else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
 
 //safe to require config.json
-const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, season, currentComp } = require('./config.json');
+const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, season, currentComp, baseURL } = require('./config.json');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -710,51 +711,52 @@ client.on('interactionCreate', async interaction => {
               });
           }
       });
-  } else if (interaction.commandName === 'frcapi') {
-      const requesturl = interaction.options.getString('path');
-      var dbody = new EventEmitter();
-      var options = {
-          'method': 'GET',
-          'hostname': 'frc-api.firstinspires.org',
-          'path': `${requesturl}`,
-          'headers': {
-              'Authorization': 'Basic ' + frcapi
-          },
-          'maxRedirects': 20
-      };
-
-      var req = https.request(options, function(res) {
-          var chunks = [];
-
-          res.on("data", function(chunk) {
-              chunks.push(chunk);
-          });
-
-          res.on("end", function(chunk) {
-              var body = Buffer.concat(chunks);
-              data = body;
-              dbody.emit('update');
-          });
-
-          res.on("error", function(error) {
-              console.error(error);
-          });
-      });
-      req.end();
-      dbody.on('update', function() {
-          if (invalidJSON(data)) {
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
-              interaction.reply({
-                  content: 'the FRC API returned invalid data',
-                  ephemeral: true
-              });
-          } else {
-              interaction.reply({
-                  content: `${data.slice(0,1750)}\n\nand ${data.length - 1750} more characters`,
-                  ephemeral: true
-              });
-          }
-      });
+  } else if (interaction.commandName === 'info') {
+    function lastCommit() {
+        exec('git log -n 1 --pretty=format:"%H"', (error, stdout, stderr) => {
+            if (error) {
+                return "Unknown";
+            }
+            if (stderr) {
+                return "Unknown";
+            }
+            return stdout;
+        });
+    }
+    async function pingWebServer() {
+        var stats =  await require('ping').promise.probe(baseURL, {
+            timeout: 10,
+            extra: ["-i", "2"],
+        });
+        if(stats.alive){return stats.time;}else{return stats.alive}
+    }
+    async function pingFRCAPI() {
+        var stats =  await require('ping').promise.probe('https://frc-api.firstinspires.org/v3.0/', {
+            timeout: 10,
+            extra: ["-i", "2"],
+        });
+        if(stats.alive){return stats.time;}else{return stats.alive}
+     }
+    const infoEmbed = new EmbedBuilder()
+        .setColor(0x740000)
+        .setTitle(`App Info`)
+        .addFields({
+            name: 'Last Commit: ',
+            value: `Hash: ${lastCommit()}`,
+            inline: true
+        }, {
+            name: 'Version: ',
+            value: `NodeJS ${process.version}\n${require('./package.json').name}: ${require('./package.json').version}`,
+            inline: true
+        }, {
+            name: 'Latency: ',
+            value: `Scouting Web latency: ${pingWebServer()}\nFRC API latency: ${pingFRCAPI}\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}`,
+            inline: false
+        })
+        .setTimestamp()
+    interaction.reply({
+        embeds: [infoEmbed]
+    });
   } else {
       interaction.reply({
           content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows user you know.',
