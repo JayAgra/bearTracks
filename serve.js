@@ -447,69 +447,68 @@ app.get('/browse', checkAuth, function(req, res) {
       }
     });
   } else {
-  res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+  res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsBody: 0 })
   return;
   }
 });
 
-//tool to manage match scouting data
-//yes, this is almost the exact same as the browse tool
-app.get('/delete', checkAuth, function(req, res) {
-if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
-  if (req.query.submissionID) {
-    const stmt = `SELECT * FROM main WHERE id=? ORDER BY id ASC LIMIT 1`;
-    const values = [req.query.submissionID];
-    db.get(stmt, values, (err, dbQueryResult) => {
-    if (err) {
-      res.render('../src/delete.ejs', { root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+app.get('/manage', checkAuth, async function(req, res) {
+  const roles = await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}))
+  if (roles[0][0] == "Lead Scout") {
+    if (req.query.dbase) {
+      const stmt = `SELECT id FROM ? ORDER BY id ASC`;
+      const values = [req.query.dbase];
+      db.all(stmt, values, (err, dbQueryResult) => {
+        if (err) {
+          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
+          return;
+        } else {
+          if (typeof dbQueryResult == "undefined") {
+            res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
+            return;
+          } else {
+            var listHTML = "";
+            for (var i = 0; i < dbQueryResult.length; i++) {
+              listHTML = listHTML + `<fieldset><span><span>ID: ${dbQueryResult[i].id}</span><span>View Delete</span></span></fieldset>`
+            }
+            res.render('../src/browse.ejs', { 
+              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
+              resultsBody: listHTML
+            })
+            return;
+          }
+        }
+      });
     } else {
-    if (typeof dbQueryResult == "undefined") {
-      res.render('../src/delete.ejs', { root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-    } else {
-      res.render('../src/delete.ejs', { 
-        root: __dirname, displaySearch: "none", displayResults: "flex",
-        resultsTeamNumber: `${dbQueryResult.team}`,
-        resultsMatchNumber: `${dbQueryResult.match}`,
-        resultsEventCode: `${dbQueryResult.event}`,
-        resultsBody: `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}`
-      })
+    res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none",  resultsBody: 0 })
+    return;
     }
-    }
-    });
   } else {
-  res.render('../src/delete.ejs', {  root: __dirname, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+    res.status(401).send("Access Denied!");
   }
-} else {
-  res.sendFile('src/denied.html', { 
-    root: __dirname
-  })
-}
 });
 
-app.get('/deleteSubmission', checkAuth, async function(req, res) {
-  if (req.cookies.role && JSON.parse(req.cookies.role)[0][0] == "Lead Scout") {
-    const roles = await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}))
-    if (roles[0][0] == "Lead Scout") {
-      if (req.query.submissionID) {
-        const stmt = `DELETE FROM main WHERE id=?`;
-        const values = [req.query.submissionID];
-        db.run(stmt, values, (err) => {if(err){console.log(err)}});
-        res.redirect('/manage');
+app.post('/deleteSubmission', checkAuth, async function(req, res) {
+  let body = '';
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+  req.on('end', async () => {
+    let reqData = qs.parse(body);
+      const roles = await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}))
+      if (roles[0][0] == "Lead Scout") {
+        if (reqData.submissionID && reqData.db) {
+          const stmt = `DELETE FROM ? WHERE id=?`;
+          const values = [reqData.db, reqData.submissionID];
+          db.run(stmt, values, (err) => {if(err){console.log(err); res.status(500).send("error!"); return;}});
+          res.redirect('/manage?done=true');
+        } else {
+          res.status(401).send("Access Denied!");
+        }
       } else {
-        res.sendFile('src/denied.html', { 
-          root: __dirname
-        })
+        res.status(401).send("Access Denied!");
       }
-    } else {
-      res.sendFile('src/denied.html', { 
-        root: __dirname
-      })
-    }
-  } else {
-    res.sendFile('src/denied.html', { 
-      root: __dirname
-    })
-  }
+  });
 });
 
 //get list of matches

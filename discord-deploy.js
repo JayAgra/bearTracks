@@ -81,12 +81,8 @@ new SlashCommandBuilder()
 		.setDescription('Current Year')
 		.setRequired(false)),
 new SlashCommandBuilder()
-	.setName('frcapi')
-	.setDescription('send a request to the FRC API')
-	.addStringOption(option =>
-		option.setName('path')
-			.setDescription('request path: please see frc-api-docs.firstinspires.org')
-			.setRequired(true))
+	.setName('info')
+	.setDescription('get general bot data')
 ]
 .map(command => command.toJSON());
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Delete Data - 766 Scouting</title>
+    <title>Manage Data - 766 Scouting</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,11 +38,14 @@
     <div class="container" id="search" style="display: <%= displaySearch %>;"> <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h4>Delete Data</h4><br>
+            <h4>Manage Data</h4><br>
             <fieldset>
-                <label>Submission ID: <br></label>
-                <input type="tel" name="submissionID" required><br>
-            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">View</button><br>
+                <label>Database: <br></label>
+                <select name="dbase">
+                    <option value="main">main</option>
+                    <option value="pit">pit</option>
+                </select>
+            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">View Data</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
         </form>
@@ -51,14 +54,9 @@
     <div class="container" id="results" style="display: <%= displayResults %>;"> <!--flex is shown-->
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h4>Match Data</h4><br>
+            <h4>Manage Data</h4><br>
             <fieldset>
-            <fieldset>
-                <h3>Team Number: <%= resultsTeamNumber %></h3>
-                <h5>Match Number:  <%= resultsMatchNumber %> |  Event: <%= resultsEventCode %></h5>
-                <h5 style="text-align: left"><%- resultsBody %></h5>
-            </fieldset>
-            <button id="deleteButton" type="button" style="color: #000; background-color: #F00; border-radius: 0.5rem;; border-style: solid; border-color: #F00; border-width: 0.875rem;; margin-top: 1rem;" onclick="deleteFormSubmission()">Delete Submission</button>
+            <%- resultsBody %>
             <!--buttons-->
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>
             </fieldset>
