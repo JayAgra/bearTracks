@@ -183,7 +183,7 @@ function pitData(season, team, event, interaction) {
           })
         } else {
           if (pitresult) {
-          const pitEmbed = new MessageEmbed()
+          const pitEmbed = new EmbedBuilder()
           .setColor('#181f2f')
           .setTitle(`Pit data for team ${team}:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
