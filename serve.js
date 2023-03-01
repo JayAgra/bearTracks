@@ -470,7 +470,7 @@ app.get('/manage', checkAuth, async function(req, res) {
             return;
           } else {
             var listHTML = "";
-            for (var i = 0; i < dbQueryResult.rows.length; i++) {
+            for (var i = 0; i < dbQueryResult.length; i++) {
               listHTML = listHTML + `<fieldset><span><span>ID: ${dbQueryResult[i].id}</span><span>View Delete</span></span></fieldset>`
             }
             res.render('../src/manage.ejs', { 
