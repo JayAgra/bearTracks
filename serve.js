@@ -446,6 +446,29 @@ app.get('/browse', checkAuth, function(req, res) {
         }
       }
     });
+  } else if (req.query.id) {
+    const stmt = `SELECT * FROM main WHERE id=? LIMIT 1`;
+    const values = [req.query.id];
+    db.get(stmt, values, (err, dbQueryResult) => {
+      if (err) {
+        res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+        return;
+      } else {
+        if (typeof dbQueryResult == "undefined") {
+          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+          return;
+        } else {
+          res.render('../src/browse.ejs', { 
+            root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex",
+            resultsTeamNumber: `${dbQueryResult.team}`,
+            resultsMatchNumber: `${dbQueryResult.match}`,
+            resultsEventCode: `${dbQueryResult.event}`,
+            resultsBody: seasonProcess.createHTMLExport(dbQueryResult)
+          })
+          return;
+        }
+      }
+    });
   } else {
   res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
   return;
@@ -471,7 +494,7 @@ app.get('/manage', checkAuth, async function(req, res) {
           } else {
             var listHTML = "";
             for (var i = 0; i < dbQueryResult.length; i++) {
-              listHTML = listHTML + `<fieldset><span><span>ID: ${dbQueryResult[i].id}</span><span>View Delete</span></span></fieldset>`
+              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/browse?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;Delete</span></span></fieldset>`
             }
             res.render('../src/manage.ejs', { 
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
