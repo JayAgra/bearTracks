@@ -16,6 +16,14 @@ function fullGridString(str) {
   return iconstrings.join('\n');
 }
 
+function valueToEmote(value) {
+  if (value == null || value == "false") {
+    return "❌";
+  } else {
+    return "✅";
+  }
+}
+
 function teamData(season, team, event, interaction) {
   if (event == "NONE") {
     return interaction.reply({
@@ -58,13 +66,6 @@ function teamData(season, team, event, interaction) {
     //game12 - game25 is INT (0)
     //formType is STRING the form that was submitted and is not entered into db
 
-    function valueToEmote(value) {
-      if (value == null || value == "false") {
-        return "❌";
-      } else {
-        return "✅";
-      }
-    }
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         return interaction.reply({
