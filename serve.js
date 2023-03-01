@@ -460,7 +460,7 @@ app.get('/manage', checkAuth, async function(req, res) {
         if (req.query.dbase == pit) {return "pit"} else {return "main"}
       }
       const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
-      db.all(stmt, values, (err, dbQueryResult) => {
+      db.all(stmt, (err, dbQueryResult) => {
         console.log(dbQueryResult);
         if (err) {
           res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: Query Error!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
