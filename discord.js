@@ -724,17 +724,17 @@ client.on('interactionCreate', async interaction => {
         });
     }
     async function pingWebServer() {
-        var stats = await Promise.resolve(require('ping').promise.probe(baseURL, {
+        var stats = await require('ping').promise.probe(baseURL, {
             timeout: 10,
             extra: ["-i", "2"],
-        }));
+        });
         if(stats.alive){return stats.time;}else{return stats.alive}
     }
     async function pingFRCAPI() {
-        var stats =  await Promise.resolve(require('ping').promise.probe('https://frc-api.firstinspires.org/v3.0/', {
+        var stats =  await require('ping').promise.probe('https://frc-api.firstinspires.org/v3.0/', {
             timeout: 10,
             extra: ["-i", "2"],
-        }));
+        });
         if(stats.alive){return stats.time;}else{return stats.alive}
      }
     const infoEmbed = new EmbedBuilder()
@@ -750,7 +750,7 @@ client.on('interactionCreate', async interaction => {
             inline: true
         }, {
             name: 'Latency: ',
-            value: `Scouting Web latency: ${pingWebServer()}\nFRC API latency: ${pingFRCAPI()}\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}`,
+            value: `Scouting Web latency: ${await pingWebServer()}\nFRC API latency: ${await pingFRCAPI()}\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}`,
             inline: false
         })
         .setTimestamp()
