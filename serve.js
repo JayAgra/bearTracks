@@ -456,8 +456,10 @@ app.get('/manage', checkAuth, async function(req, res) {
   const roles = await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}))
   if (roles[0][0] == "Lead Scout") {
     if (req.query.dbase) {
-      const stmt = `SELECT id FROM ? ORDER BY id ASC`;
-      const values = [req.query.dbase];
+      function sanitizeDBName() {
+        if (req.query.dbase == pit) {return "pit"} else {return "main"}
+      }
+      const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
       db.all(stmt, values, (err, dbQueryResult) => {
         console.log(dbQueryResult);
         if (err) {
