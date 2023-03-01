@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { baseURL } = require('../config.json');
 
 function toIcons(str) {
@@ -83,7 +83,7 @@ function teamData(season, team, event, interaction) {
           })
         } else {
           if (result) {
-          const teamEmbed = new MessageEmbed()
+          const teamEmbed = new EmbedBuilder()
           .setColor('#181f2f')
           .setTitle(`Data from team ${team}'s last match:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
