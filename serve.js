@@ -480,7 +480,7 @@ app.get('/manage', checkAuth, async function(req, res) {
   if (roles[0][0] == "Lead Scout") {
     if (req.query.dbase) {
       function sanitizeDBName() {
-        if (req.query.dbase == pit) {return "pit"} else {return "main"}
+        if (req.query.dbase == "pit") {return "pit"} else {return "main"}
       }
       const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
       db.all(stmt, (err, dbQueryResult) => {
