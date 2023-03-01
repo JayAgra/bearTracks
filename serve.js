@@ -459,16 +459,20 @@ app.get('/manage', checkAuth, async function(req, res) {
       const stmt = `SELECT id FROM ? ORDER BY id ASC`;
       const values = [req.query.dbase];
       db.all(stmt, values, (err, dbQueryResult) => {
+        console.log(dbQueryResult);
         if (err) {
-          res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
+          res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: Query Error!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
           return;
         } else {
           if (typeof dbQueryResult == "undefined") {
-            res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
+            res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: Results Undefined!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
             return;
           } else {
+            console.log(dbQueryResult);
+            console.log(dbQueryResult.rows.length);
+            console.log(dbQueryResult.length);
             var listHTML = "";
-            for (var i = 0; i < dbQueryResult.length; i++) {
+            for (var i = 0; i < dbQueryResult.rows.length; i++) {
               listHTML = listHTML + `<fieldset><span><span>ID: ${dbQueryResult[i].id}</span><span>View Delete</span></span></fieldset>`
             }
             res.render('../src/manage.ejs', { 
