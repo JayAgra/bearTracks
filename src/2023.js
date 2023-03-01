@@ -2,6 +2,20 @@ const sqlite3 = require('sqlite3');
 const { MessageEmbed } = require('discord.js');
 const { baseURL } = require('../config.json');
 
+function toIcons(str) {
+  var step1 = str.replaceAll("0", "⬜");
+  var step2 = step1.replaceAll("1", "🟪");
+  return step2.replaceAll("2", "🟨");
+}
+function fullGridString(str) {
+  var strings = str.match(/.{1,9}/g)
+  var iconstrings = [];
+  iconstrings.push(toIcons(strings[0]))
+  iconstrings.push(toIcons(strings[1]))
+  iconstrings.push(toIcons(strings[2]))
+  return iconstrings.join('\n');
+}
+
 function teamData(season, team, event, interaction) {
   if (event == "NONE") {
     return interaction.reply({
@@ -72,7 +86,7 @@ function teamData(season, team, event, interaction) {
           .setColor('#181f2f')
           .setTitle(`Data from team ${team}'s last match:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
-          .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023`)
+          .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023\n\nGrid: \n${fullGridString((result.game12).toString)}`)
           .addFields({
             name: 'AUTO',
             value: `Taxi: ${valueToEmote(result.game1)} \nScore B/M/T: ${valueToEmote(result.game2)}${valueToEmote(result.game3)}${valueToEmote(result.game4)}`,
@@ -209,7 +223,7 @@ function pitData(season, team, event, interaction) {
 }
 
 function createHTMLExport(dbQueryResult) {
-  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}`
+  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString())}`
 }
 
 module.exports = { teamData, pitData, createHTMLExport };
