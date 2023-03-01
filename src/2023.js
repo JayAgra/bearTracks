@@ -87,7 +87,7 @@ function teamData(season, team, event, interaction) {
           .setColor('#181f2f')
           .setTitle(`Data from team ${team}'s last match:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
-          .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023\n\nGrid: \n${fullGridString((result.game12).toString, '\n')}`)
+          .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023\n\nGrid: \n${fullGridString((result.game12).toString(), '\n')}`)
           .addFields({
             name: 'AUTO',
             value: `Taxi: ${valueToEmote(result.game1)} \nScore B/M/T: ${valueToEmote(result.game2)}${valueToEmote(result.game3)}${valueToEmote(result.game4)}`,
