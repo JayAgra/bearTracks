@@ -17,9 +17,11 @@ new SlashCommandBuilder()
       option.setName('tlevel')
   		.setDescription('Level')
 			.setRequired(true)
-			.addChoice('qualification', 'qualification')
-			.addChoice('practice', 'practice')
-			.addChoice('playoff', 'playoff'))
+			.addChoices(
+				{ name: 'qualification', value: 'qualification' },
+				{ name: 'practice', value: 'practice' },
+				{ name: 'playoff', value: 'playoff' }
+			))
 	.addIntegerOption(option =>
 		option.setName('season')
 			.setDescription('Current Year')
@@ -65,10 +67,12 @@ new SlashCommandBuilder()
 			option.setName('group')
 			   .setDescription('Group to add scout to')
 			   .setRequired(true)
-				.addChoice('Scout Team A', 'Scout A')
-				.addChoice('Scout Team B', 'Scout B')
-				.addChoice('Drive Team', 'Drive')
-				.addChoice('Pit', 'Pit')),
+				.addChoices(
+					{ name: 'Scout Team A', value: 'Scout A' },
+					{ name: 'Scout Team B', value: 'Scout B' },
+					{ name: 'Drive Team', value: 'Drive' },
+					{ name: 'Pit', value: 'Pit' }
+				)),
 new SlashCommandBuilder()
 	.setName('rankings')
 	.setDescription('event rankings')
