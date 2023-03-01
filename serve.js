@@ -290,7 +290,7 @@ app.get('/', checkAuth, async function(req, res) {
       })
     } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
       res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="delete" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Delete Submissions<br></a>`
+        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Manage Submissions<br></a>`
       })
     } else {
       res.render('../src/index.ejs', { 
@@ -311,7 +311,7 @@ app.get('/', checkAuth, async function(req, res) {
     })
   } else if (oauthData[0][0] == "Lead Scout") {
     res.render('../src/index.ejs', { 
-      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="delete" class="gameflair1" style="order: 4; margin-bottom: 5%;">Delete Submissions<br></a>`
+      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
     })
   } else {
     res.render('../src/index.ejs', { 
@@ -460,18 +460,18 @@ app.get('/manage', checkAuth, async function(req, res) {
       const values = [req.query.dbase];
       db.all(stmt, values, (err, dbQueryResult) => {
         if (err) {
-          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
+          res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
           return;
         } else {
           if (typeof dbQueryResult == "undefined") {
-            res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
+            res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
             return;
           } else {
             var listHTML = "";
             for (var i = 0; i < dbQueryResult.length; i++) {
               listHTML = listHTML + `<fieldset><span><span>ID: ${dbQueryResult[i].id}</span><span>View Delete</span></span></fieldset>`
             }
-            res.render('../src/browse.ejs', { 
+            res.render('../src/manage.ejs', { 
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
               resultsBody: listHTML
             })
@@ -480,7 +480,7 @@ app.get('/manage', checkAuth, async function(req, res) {
         }
       });
     } else {
-    res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none",  resultsBody: 0 })
+    res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none",  resultsBody: 0 })
     return;
     }
   } else {
