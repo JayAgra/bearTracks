@@ -461,7 +461,6 @@ app.get('/manage', checkAuth, async function(req, res) {
       }
       const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
       db.all(stmt, (err, dbQueryResult) => {
-        console.log(dbQueryResult);
         if (err) {
           res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: Query Error!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
           return;
@@ -470,9 +469,6 @@ app.get('/manage', checkAuth, async function(req, res) {
             res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: Results Undefined!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
             return;
           } else {
-            console.log(dbQueryResult);
-            console.log(dbQueryResult.rows.length);
-            console.log(dbQueryResult.length);
             var listHTML = "";
             for (var i = 0; i < dbQueryResult.rows.length; i++) {
               listHTML = listHTML + `<fieldset><span><span>ID: ${dbQueryResult[i].id}</span><span>View Delete</span></span></fieldset>`
