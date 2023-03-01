@@ -731,7 +731,7 @@ client.on('interactionCreate', async interaction => {
         if(stats.alive){return stats.time;}else{return stats.alive}
     }
     async function pingFRCAPI() {
-        var stats =  await require('ping').promise.probe('https://frc-api.firstinspires.org/v3.0/', {
+        var stats =  await require('ping').promise.probe('https://frc-api.firstinspires.org/', {
             timeout: 10,
             extra: ["-i", "2"],
         });
@@ -750,7 +750,7 @@ client.on('interactionCreate', async interaction => {
             inline: true
         }, {
             name: 'Latency: ',
-            value: `Scouting Web latency: ${await pingWebServer()}\nFRC API latency: ${await pingFRCAPI()}\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}`,
+            value: `Scouting Web latency: ${await pingWebServer()}ms\nFRC API latency: ${await pingFRCAPI()}ms\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}ms`,
             inline: false
         })
         .setTimestamp()
