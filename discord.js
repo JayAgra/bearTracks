@@ -724,33 +724,23 @@ client.on('interactionCreate', async interaction => {
         });
     }
     async function pingWebServer() {
-        var stats = await require('ping').promise.probe(baseURL, {
-            timeout: 10,
-            extra: ["-i", "2"],
-        });
-        if(stats.alive){return stats.time;}else{return stats.alive}
+        var stats = await require('ping').promise.probe(baseURL);
+        if(stats.alive){return stats.time + "ms";}else{return "Host is not alive!"}
     }
     async function pingFRCAPI() {
-        var stats =  await require('ping').promise.probe('https://frc-api.firstinspires.org/', {
-            timeout: 10,
-            extra: ["-i", "2"],
-        });
-        if(stats.alive){return stats.time;}else{return stats.alive}
+        var stats =  await require('ping').promise.probe('https://frc-api.firstinspires.org/');
+        if(stats.alive){return stats.time + "ms";}else{return "Host is not alive!"}
      }
     const infoEmbed = new EmbedBuilder()
         .setColor(0x740000)
         .setTitle(`App Info`)
         .addFields({
-            name: 'Last Commit: ',
-            value: `Hash: ${lastCommit()}`,
-            inline: true
-        }, {
             name: 'Version: ',
             value: `NodeJS ${process.version}\n${require('./package.json').name}: ${require('./package.json').version}`,
             inline: true
         }, {
             name: 'Latency: ',
-            value: `Scouting Web latency: ${await pingWebServer()}ms\nFRC API latency: ${await pingFRCAPI()}ms\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}ms`,
+            value: `Scouting Web latency: ${await pingWebServer()}ms\nFRC API latency: ${await pingFRCAPI()}ms\nDiscord API latency: ${Math.round(client.ws.ping)}\nLatency for this message: ${Date.now() - interaction.createdTimestamp}`,
             inline: false
         })
         .setTimestamp()
