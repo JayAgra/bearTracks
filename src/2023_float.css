@@ -163,3 +163,6 @@ input[type=radio]:checked {
 code {
     font-family:'SF Mono', SFMono-Regular, ui-monospace, Menlo, courier new, monospace;
 }
+label {
+    font-weight: 700;
+}
