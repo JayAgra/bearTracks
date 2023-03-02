@@ -138,7 +138,7 @@ client.on('interactionCreate', async interaction => {
           } else {
               const outputget = JSON.parse(data);
               const matchEmbed = new EmbedBuilder()
-                  .setColor('#740000')
+                  .setColor(0x68C3E2)
                   .setTitle(`${outputget.Schedule[0].description}`)
                   .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                   .addFields({
@@ -202,7 +202,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       matchno = updatedp;
                       const matchEmbedu = new EmbedBuilder()
-                          .setColor('#740000')
+                          .setColor(0x68C3E2)
                           .setTitle(`${outputget.Schedule[matchno].description}`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .addFields({
@@ -249,7 +249,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       matchno = updated;
                       const matchEmbedu = new EmbedBuilder()
-                          .setColor('#740000')
+                          .setColor(0x68C3E2)
                           .setTitle(`${outputget.Schedule[matchno].description}`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .addFields({
@@ -445,7 +445,7 @@ client.on('interactionCreate', async interaction => {
           } else {
               const outputget = JSON.parse(data);
               const rankEmbed = new EmbedBuilder()
-                  .setColor(0x740000)
+                  .setColor(0x68C3E2)
                   .setTitle(`${eventcode} team rankings`)
                   .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                   .setDescription(`Rank ${outputget.Rankings[0].rank}: ${outputget.Rankings[0].teamNumber}`)
@@ -532,7 +532,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       rankno = updatedp;
                       const rankEmbedu = new EmbedBuilder()
-                          .setColor('#740000')
+                          .setColor(0x68C3E2)
                           .setTitle(`${eventcode} team rankings`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
@@ -584,7 +584,7 @@ client.on('interactionCreate', async interaction => {
                       }
                       rankno = updatedp;
                       const rankEmbedu = new EmbedBuilder()
-                          .setColor('#740000')
+                          .setColor(0x68C3E2)
                           .setTitle(`${eventcode} team rankings`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
@@ -665,7 +665,7 @@ client.on('interactionCreate', async interaction => {
                       });
                       console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + rankno);
                       const rankEmbedu = new EmbedBuilder()
-                          .setColor('#740000')
+                          .setColor(0x68C3E2)
                           .setTitle(`${eventcode} team rankings`)
                           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
                           .setDescription(`Rank ${outputget.Rankings[rankno].rank}: ${outputget.Rankings[rankno].teamNumber}`)
@@ -714,16 +714,14 @@ client.on('interactionCreate', async interaction => {
   } else if (interaction.commandName === 'info') {
     async function pingWebServer() {
         var stats = await require('ping').promise.probe(baseURL);
-        //if(stats.alive){return stats.time + "ms";}else{return "Host is not alive!"}
         return stats.time;
     }
     async function pingFRCAPI() {
         var stats =  await require('ping').promise.probe('https://frc-api.firstinspires.org/');
-        //if(stats.alive){return stats.time + "ms";}else{return "Host is not alive!"}
         return stats.time;
      }
     const infoEmbed = new EmbedBuilder()
-        .setColor(0x740000)
+        .setColor(0x68C3E2)
         .setTitle(`App Info`)
         .addFields({
             name: 'Version: ',
