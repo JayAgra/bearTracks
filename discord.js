@@ -55,7 +55,7 @@ function defaultSeason(fallback) {
 function defaultEvent(fallback, interaction) {
     if (typeof fallback == 'undefined') {
         if (currentComp == "NONE") {
-            interaction.reply({
+            return interaction.reply({
                 content: "We are not competing, you must specify an event code.",
                 ephemeral: true
             })
