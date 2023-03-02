@@ -82,6 +82,9 @@
             const targetSubmission = URL.searchParams.get('submissionID'); 
             window.location.href = "/deleteSubmission?submissionID=" + targetSubmission;
         }
+        function confirmDelete(db, id) {
+            window.location.href = `/confirm?db=` + db + `&id=` + id;
+        }
     </script>
 </body>
 </html>

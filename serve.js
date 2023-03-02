@@ -493,7 +493,7 @@ app.get('/manage', checkAuth, async function(req, res) {
           } else {
             var listHTML = "";
             for (var i = 0; i < dbQueryResult.length; i++) {
-              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/browse?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;Delete</span></span></fieldset>`
+              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/browse?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<p onclick="confirmDelete(${req.query.dbase}, ${dbQueryResult[i].id})" style="color: none">Delete</p></span></span></fieldset>`
             }
             res.render('../src/manage.ejs', { 
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
@@ -509,6 +509,18 @@ app.get('/manage', checkAuth, async function(req, res) {
     }
   } else {
     res.status(401).send("Access Denied!");
+  }
+});
+
+app.get('/confirm', checkAuth, function(req, res) {
+  if (req.query.db && req.query.id) {
+    res.render('../src/confirm.ejs', { 
+      root: __dirname, 
+      db: req.query.db, 
+      submissionID: req.query.id
+    });
+  } else {
+    res.redirect('/manage');
   }
 });
 

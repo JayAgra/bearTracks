@@ -428,7 +428,7 @@ client.on('interactionCreate', async interaction => {
           if (invalidJSON(data)) {
               console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
               interaction.reply({
-                  content: 'invalid input, or i messed it up',
+                  content: `Invalid inputs, or the FRC API failed to respond`,
                   ephemeral: true
               });
               console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + opseason + eventcode)
