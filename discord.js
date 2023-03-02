@@ -52,8 +52,14 @@ function defaultSeason(fallback) {
     }
 }
 
-function defaultEvent(fallback) {
+function defaultEvent(fallback, interaction) {
     if (typeof fallback == 'undefined') {
+        if (currentComp == "NONE") {
+            interaction.reply({
+                content: "We are not competing, you must specify an event code.",
+                ephemeral: true
+            })
+        }
         return currentComp;
     } else {
         return fallback;
@@ -303,7 +309,7 @@ client.on('interactionCreate', async interaction => {
   } else if (interaction.commandName === 'data') {
     var opseason = defaultSeason(interaction.options.getInteger('season'));
 
-    var eventcode = defaultEvent(interaction.options.getString('eventcode'))
+    var eventcode = defaultEvent(interaction.options.getString('eventcode'), interaction)
 
     const teamnum = interaction.options.getInteger('teamnum');
 
@@ -319,7 +325,7 @@ client.on('interactionCreate', async interaction => {
   } else if (interaction.commandName === 'pit') {
     var opseason = defaultSeason(interaction.options.getInteger('season'));
 
-    var eventcode = defaultEvent(interaction.options.getString('eventcode'));
+    var eventcode = defaultEvent(interaction.options.getString('eventcode'), interaction);
 
     const teamnum = interaction.options.getInteger('teamnum');
 
@@ -386,25 +392,8 @@ client.on('interactionCreate', async interaction => {
           });
       }
   } else if (interaction.commandName === 'rankings') {
-    var opseason;
-    if (typeof interaction.options.getInteger('season') == 'undefined') {
-        opseason = season;
-    } else {
-        opseason = interaction.options.getInteger('season');
-    }
-    var eventcode;
-    if (typeof interaction.options.getString('eventcode') == 'undefined') {
-        if (currentComp == "NONE") {
-            interaction.reply({
-                content: "We are not competing, you must specify an event code.",
-                ephemeral: true
-            })
-            return;
-        }
-        eventcode = currentComp;
-    } else {
-        eventcode = interaction.options.getString('eventcode');
-    }
+    var opseason = defaultSeason(interaction.options.getInteger('season'))
+    var eventcode = defaultEvent(interaction.options.getString('eventcode'), interaction)
       var dbody = new EventEmitter();
       var options = {
           'method': 'GET',
