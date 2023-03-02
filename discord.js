@@ -393,6 +393,7 @@ client.on('interactionCreate', async interaction => {
       }
   } else if (interaction.commandName === 'rankings') {
     var opseason = defaultSeason(interaction.options.getInteger('season'))
+    defaultEvent("aaa", interaction)
     var eventcode = defaultEvent(interaction.options.getString('eventcode'), interaction)
       var dbody = new EventEmitter();
       var options = {
@@ -430,7 +431,7 @@ client.on('interactionCreate', async interaction => {
                   content: 'invalid input, or i messed it up',
                   ephemeral: true
               });
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + opseason + eventcode + teamnum + tlevel)
+              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + opseason + eventcode)
           } else {
               const outputget = JSON.parse(data);
               const rankEmbed = new EmbedBuilder()
