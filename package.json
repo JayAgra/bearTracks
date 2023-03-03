@@ -23,8 +23,8 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node startup.js",
-        "startOnly": "node discord.js & node serve.js"
+        "ssl": "node ssl.js",
+        "start": "node discord.js & node serve.js"
     },
     "keywords": [],
     "author": "JayAgra",
