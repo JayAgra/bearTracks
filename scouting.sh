@@ -18,7 +18,7 @@ if [ $1 ]; then
         pm2 startup
     elif [ $1 = "install" ]; then
         npm install
-    elif [ $1 = "ssl"]; then
+    elif [ $1 = "ssl" ]; then
         if [ $2 ]; then
             certbot certonly --standalone --keep-until-expiring --agree-tos -d $2
         else
