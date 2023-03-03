@@ -3,7 +3,6 @@
     "version": "1.1.0",
     "main": "serve.js",
     "dependencies": {
-        "command-exists": "^1.2.9",
         "cookie-parser": "^1.4.6",
         "discord-oauth2": "^2.11.0",
         "discord.js": "^14.7.1",
@@ -23,7 +22,6 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "ssl": "node ssl.js",
         "start": "node discord.js & node serve.js"
     },
     "keywords": [],
