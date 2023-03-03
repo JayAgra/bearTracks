@@ -69,7 +69,7 @@ const {keysize, certsize} = (async () => {
 })();
 
 //checks file size of ssl, if it exists (is filled), use HTTPS on port 443
-if (keysize <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer({LEkey, LEcert}, app).listen(443)}
+if (certsize <= 100 || keysize <= 100) {} else {https.createServer({LEkey, LEcert}, app).listen(443)}
 const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
