@@ -51,12 +51,18 @@ app.use(
     contentSecurityPolicy: false,
   })
 );
-const options = {
-  key: fs.readFileSync(__dirname + '/ssl/privatekey.pem', 'utf8'),
-  cert: fs.readFileSync(__dirname + '/ssl/certificate.crt', 'utf8')
-};
+
+const {LEkey, LEcert} = await (async () => {
+	const certdir = (await fs.readdir("/etc/letsencrypt/live"))[0];
+
+	return {
+		key: await fs.readFile(`/etc/letsencrypt/live/${certdir}/privkey.pem`),
+		cert: await fs.readFile(`/etc/letsencrypt/live/${certdir}/fullchain.pem`)
+	}
+})();
+
 //checks file size of ssl, if it exists (is filled), use HTTPS on port 443
-if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer(options, app).listen(443)}
+if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer({LEkey, LEcert}, app).listen(443)}
 const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
