@@ -1,9 +1,18 @@
 const { baseURL } = require('./config.json');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const commandExists = require('command-exists')
 commandExists('ls', function(err, commandExists) {
     if(commandExists) {
-        exec(`certbot certonly --standalone --keep-until-expiring --agree-tos -d ${baseURL} && npm startOnly`)
+        const spawnProcess = spawn(`certbot certonly --standalone --keep-until-expiring --agree-tos -d ${baseURL} && npm startOnly`);
+        spawnProcess.stdout.on('data', data => {
+            console.log(`\n${data}`);
+        })
+        spawnProcess.stderr.on("data", (data) => {
+            console.log(`${data}`);
+        });
+        spawnProcess.on('exit', code => {
+            console.log(`Process ended with ${code}`);
+        })
     } else {
         console.log("Please install certbot to start app! Try running (sudo) apt install certbot.")
     }
