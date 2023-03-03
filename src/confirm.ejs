@@ -26,7 +26,7 @@
         <script>themeHandle()</script>
         <h1 style="color: #FFB600">Please Confirm</h1>
         <h3 style="text-align: center;" class="gameflair1">You are about to delete a submission!</h3>
-        <form action="/deleteSubmission" target="_self">
+        <form action="/deleteSubmission" target="_self" method="post">
             <fieldset>
                 <input type="text" name="db" value="<%= db %>" readonly>
                 <input type="text" name="submissionID" value="<%= submissionID %>" readonly>
