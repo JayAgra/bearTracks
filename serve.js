@@ -52,9 +52,8 @@ app.use(
   })
 );
 
-const {LEkey, LEcert} = await (async () => {
+const {LEkey, LEcert} = (async () => {
 	const certdir = (fs.readdir("/etc/letsencrypt/live"))[0];
-
 	return {
 		key: fs.readFile(`/etc/letsencrypt/live/${certdir}/privkey.pem`),
 		cert: fs.readFile(`/etc/letsencrypt/live/${certdir}/fullchain.pem`)
