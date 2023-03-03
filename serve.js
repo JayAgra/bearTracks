@@ -52,22 +52,18 @@ app.use(
   })
 );
 
-const {LEkey, LEcert} = await (async () => {
-	return {
-		LEkey: fs.readFile(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`),
-		LEcert: fs.readFile(`/etc/letsencrypt/live/${baseURLNoPcl}/fullchain.pem`)
-	}
-})();
+const options = {
+  key: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8'),
+  cert: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8')
+};
 
-const {keysize, certsize} = await (async () => {
-	return {
-		keysize: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`).size,
-		certsize: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/fullchain.pem`).size
-	}
-})();
+const certsizes = {
+  key: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8'),
+  cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8')
+};
 
 //checks file size of ssl, if it exists (is filled), use HTTPS on port 443
-if (certsize <= 100 || keysize <= 100) {} else {https.createServer({LEkey, LEcert}, app).listen(443)}
+if (certsizes.key <= 100 || certsizes.cert <= 100) {} else {https.createServer(options, app).listen(443)}
 const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
@@ -714,7 +710,7 @@ app.get('/offline.html', function(req, res) {
   res.sendFile('src/offline.html', { root: __dirname })
 });
 
-if (certsize <= 100 || keysize <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
+if (certsizes.key <= 100 || certsizes.cert <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
 
 //server created and ready for a request
 logInfo("Ready!");
