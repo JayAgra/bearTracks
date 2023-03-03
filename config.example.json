@@ -14,5 +14,6 @@
 	"clientSec": "",
 	"redirectURI": "https://scout.example.com/callback",
 	"teamServerID": "",
-	"baseURL": "https://scout.example.com/"
+	"baseURL": "https://scout.example.com/",
+	"baseURLNoPcl": "scout.example.com"
 }

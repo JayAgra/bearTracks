@@ -1,9 +1,9 @@
-const { baseURL } = require('./config.json');
+const { baseURLNoPcl } = require('./config.json');
 const { spawn } = require('child_process');
 const commandExists = require('command-exists')
-commandExists('ls', function(err, commandExists) {
+commandExists('certbot', function(err, commandExists) {
     if(commandExists) {
-        const spawnProcess = spawn(`certbot certonly --standalone --keep-until-expiring --agree-tos -d ${baseURL} && npm startOnly`);
+        const spawnProcess = spawn(`certbot certonly --standalone --keep-until-expiring --agree-tos -d ${baseURLNoPcl} && npm startOnly`);
         spawnProcess.stdout.on('data', data => {
             console.log(`\n${data}`);
         })
