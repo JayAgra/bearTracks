@@ -1,5 +1,5 @@
 //CONFIG
-const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID } = require('./config.json');
+const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl } = require('./config.json');
 
 //SETUP OAUTH
 const DiscordOauth2 = require("discord-oauth2");
@@ -52,19 +52,17 @@ app.use(
   })
 );
 
-const {LEkey, LEcert} = (async () => {
-	const certdir = (fs.readdir("/etc/letsencrypt/live"))[0];
+const {LEkey, LEcert} = await (async () => {
 	return {
-		LEkey: fs.readFile(`/etc/letsencrypt/live/${certdir}/privkey.pem`),
-		LEcert: fs.readFile(`/etc/letsencrypt/live/${certdir}/fullchain.pem`)
+		LEkey: fs.readFile(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`),
+		LEcert: fs.readFile(`/etc/letsencrypt/live/${baseURLNoPcl}/fullchain.pem`)
 	}
 })();
 
-const {keysize, certsize} = (async () => {
-	const certdir = (fs.readdir("/etc/letsencrypt/live"))[0];
+const {keysize, certsize} = await (async () => {
 	return {
-		keysize: fs.statSync(`/etc/letsencrypt/live/${certdir}/privkey.pem`).size,
-		certsize: fs.statSync(`/etc/letsencrypt/live/${certdir}/fullchain.pem`).size
+		keysize: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`).size,
+		certsize: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/fullchain.pem`).size
 	}
 })();
 
