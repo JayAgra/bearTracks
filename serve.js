@@ -54,12 +54,12 @@ app.use(
 
 const options = {
   key: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8'),
-  cert: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8')
+  cert: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, 'utf8')
 };
 
 const certsizes = {
   key: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8'),
-  cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8')
+  cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, 'utf8')
 };
 
 //checks file size of ssl, if it exists (is filled), use HTTPS on port 443
