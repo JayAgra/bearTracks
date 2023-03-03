@@ -5,7 +5,7 @@ commandExists('certbot', function(err, commandExists) {
     if(commandExists) {
         const spawnProcess = spawn(`certbot`, [ 'certonly','--standalone', '--keep-until-expiring', '--agree-tos', `-d ${baseURLNoPcl}` ]);
         spawnProcess.stdout.on('data', data => {
-            console.log(`\n${data}`);
+            console.log(`${data}`);
         })
         spawnProcess.stderr.on("data", (data) => {
             console.log(`${data}`);
