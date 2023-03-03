@@ -55,13 +55,21 @@ app.use(
 const {LEkey, LEcert} = (async () => {
 	const certdir = (fs.readdir("/etc/letsencrypt/live"))[0];
 	return {
-		key: fs.readFile(`/etc/letsencrypt/live/${certdir}/privkey.pem`),
-		cert: fs.readFile(`/etc/letsencrypt/live/${certdir}/fullchain.pem`)
+		LEkey: fs.readFile(`/etc/letsencrypt/live/${certdir}/privkey.pem`),
+		LEcert: fs.readFile(`/etc/letsencrypt/live/${certdir}/fullchain.pem`)
+	}
+})();
+
+const {keysize, certsize} = (async () => {
+	const certdir = (fs.readdir("/etc/letsencrypt/live"))[0];
+	return {
+		keysize: fs.statSync(`/etc/letsencrypt/live/${certdir}/privkey.pem`).size,
+		certsize: fs.statSync(`/etc/letsencrypt/live/${certdir}/fullchain.pem`).size
 	}
 })();
 
 //checks file size of ssl, if it exists (is filled), use HTTPS on port 443
-if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer({LEkey, LEcert}, app).listen(443)}
+if (keysize <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {} else {https.createServer({LEkey, LEcert}, app).listen(443)}
 const ejs = require('ejs')
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
@@ -708,7 +716,7 @@ app.get('/offline.html', function(req, res) {
   res.sendFile('src/offline.html', { root: __dirname })
 });
 
-if (fs.statSync("ssl/certificate.crt").size <= 100 || fs.statSync("ssl/privatekey.pem").size <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
+if (certsize <= 100 || keysize <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
 
 //server created and ready for a request
 logInfo("Ready!");
