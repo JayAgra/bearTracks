@@ -24,6 +24,9 @@ if [ $1 ]; then
         else
             echo "Please add domain (w/o protocol)"
         fi
+    elif [ $1 = "renewssl" ];then 
+        ## assumes pm2
+        certbot renew --deploy-hook='pm2 restart all'
     else
         echo "invalad parameter"
     fi
