@@ -160,6 +160,9 @@ function findTopRole(roles) {
   if (roles.indexOf(scoutteamb) >= 0) {
     rolesOut.push(["Scout Team B", "rgb(52, 152, 219)", "rgba(52, 152, 219, 0.1)"]);
   }
+  if (roles.length == 0) {
+    rolesOut.push(["No Roles", "rgb(200, 200, 200)", "rgba(200, 200, 200, 0.1)"]);
+  }
   return rolesOut;
 }
 
