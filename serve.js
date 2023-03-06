@@ -38,7 +38,7 @@ const https = require('https');
 const http = require('http');
 const cookieParser = require("cookie-parser");
 const crypto = require('crypto');
-const seasonProcess = require('./src/2023.js')
+const seasonProcess = require('./2023.js')
 var RateLimit = require('express-rate-limit');
 var EventEmitter = require("events").EventEmitter;
 const helmet = require('helmet')
@@ -160,6 +160,7 @@ function findTopRole(roles) {
   if (roles.indexOf(scoutteamb) >= 0) {
     rolesOut.push(["Scout Team B", "rgb(52, 152, 219)", "rgba(52, 152, 219, 0.1)"]);
   }
+  rolesOut.push(["Default Role", "rgb(200, 200, 200)", "rgba(200, 200, 200, 0.1)"]);
   return rolesOut;
 }
 
@@ -348,26 +349,26 @@ app.get('/app.webmanifest', function(req, res) {
 });
 
 //serve resources
-app.get('/2023_float.css', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('./src/2023_float.css', { root: __dirname });
+app.get('/float.css', function(req, res) {
+  res.set('Cache-control', 'public, max-age=2592000');
+  res.sendFile('./src/float.css', { root: __dirname });
 });
 
 //serve resources
-app.get('/2023_float.min.css', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('./src/2023_float.min.css', { root: __dirname });
+app.get('/float.min.css', function(req, res) {
+  res.set('Cache-control', 'public, max-age=2592000');
+  res.sendFile('./src/float.min.css', { root: __dirname });
 });
 
 //serve resources
 app.get('/fonts/Raleway-300.ttf', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
+  res.set('Cache-control', 'public, max-age=2592000');
   res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname });
 });
 
 //serve resources
 app.get('/fonts/Raleway-500.ttf', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
+  res.set('Cache-control', 'public, max-age=2592000');
   res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname });
 });
 
@@ -632,7 +633,7 @@ app.get('/pitimages', checkAuth, function(req, res) {
             root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex", 
             resultsTeamNumber: `${dbQueryResult.team}`, 
             resultsEventCode: `${dbQueryResult.event}`, 
-            resultsBody: `<img src="images/${dbQueryResult.image1}"/><br><img src="images/${dbQueryResult.image2}"/><br><img src="images/${dbQueryResult.image3}"/><br><img src="images/${dbQueryResult.image4}"/><br><img src="images/${dbQueryResult.image5}"/>`
+            resultsBody: `<img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
           })
           return;
         }

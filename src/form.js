@@ -52,9 +52,13 @@ function uploadSubmissionJSON() {
             console.log(JSON.parse(atob(result)));
             const uploadedData = JSON.parse(atob(result));
             var inputs = Array.prototype.slice.call(document.querySelectorAll('form input'));
+            var textinputs = Array.prototype.slice.call(document.querySelectorAll('textarea'));
+            var selectMenus = Array.prototype.slice.call(document.querySelectorAll('select'));
             Object.keys(uploadedData).map(function (dataItem) {
                     inputs.map(function (inputItem) {return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false})
+                    textinputs.map(function (inputItem) {return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false})
+                    selectMenus.map(function (inputItem) {return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false})
             })
         }
     })
-}
+}z

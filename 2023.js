@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3');
 const { EmbedBuilder } = require('discord.js');
-const { baseURL } = require('../config.json');
+const { baseURL } = require('config.json');
 
 function toIcons(str) {
   var step1 = str.replaceAll("0", "⬜");

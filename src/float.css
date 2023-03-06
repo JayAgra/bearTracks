@@ -39,10 +39,12 @@ body.light-mode {
 @font-face {
     font-family: 'raleway-300';
     src: url('fonts/Raleway-300.ttf') format('truetype');
+    font-display: swap;
 }
 @font-face {
     font-family: 'raleway-500';
     src: url('fonts/Raleway-500.ttf') format('truetype');
+    font-display: swap;
 }
 body,
 html {
