@@ -490,6 +490,9 @@ app.get('/manage', checkAuth, async function(req, res) {
       function sanitizeDBName() {
         if (req.query.dbase == "pit") {return "pit"} else {return "main"}
       }
+      function mainOrPitLink(type) {
+        if (type == "pit") {return "pitimages"} else {return "browse"}
+      }
       const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
       db.all(stmt, (err, dbQueryResult) => {
         if (err) {
@@ -502,7 +505,7 @@ app.get('/manage', checkAuth, async function(req, res) {
           } else {
             var listHTML = "";
             for (var i = 0; i < dbQueryResult.length; i++) {
-              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/browse?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="confirmDelete('${req.query.dbase}', '${dbQueryResult[i].id}')" style="color: red">Delete</span></span></span></fieldset>`
+              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink(req.query.dbase)}?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="confirmDelete('${req.query.dbase}', '${dbQueryResult[i].id}')" style="color: red">Delete</span></span></span></fieldset>`
             }
             res.render('../src/manage.ejs', { 
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
@@ -632,6 +635,32 @@ app.get('/pitimages', checkAuth, function(req, res) {
         } else {
           res.render('../src/pitimg.ejs', { 
             root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex", 
+            resultsTeamNumber: `${dbQueryResult.team}`, 
+            resultsEventCode: `${dbQueryResult.event}`, 
+            resultsBody: `<img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
+          })
+          return;
+        }
+      }
+    });
+  } else if (req.query.id) {
+    const stmt = `SELECT * FROM pit WHERE id=? ORDER BY id LIMIT 1`;
+    const values = [req.query.id];
+    db.get(stmt, values, (err, dbQueryResult) => {
+      if (err) {
+        res.render('../src/pitimg.ejs', { 
+          root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
+        })
+        return;
+      } else {
+        if (typeof dbQueryResult == "undefined") {
+          res.render('../src/pitimg.ejs', { 
+            root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
+          })
+          return;
+        } else {
+          res.render('../src/pitimg.ejs', { 
+            root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex", 
             resultsTeamNumber: `${dbQueryResult.team}`, 
             resultsEventCode: `${dbQueryResult.event}`, 
             resultsBody: `<img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
