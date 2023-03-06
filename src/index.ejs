@@ -108,7 +108,7 @@
         </div>
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h3><span style="color: rgb(88, 101, 242); background-color: rgba(88, 101, 242, 0.1); border-radius: 4px; padding: 5px;" id="profileName"><%= userName %></span><span>&emsp;</span><span id="rolesDisplay"><%- rolesBody %></span></h3><br>
+            <h3><span style="color: rgb(88, 101, 242); background-color: rgba(88, 101, 242, 0.1); border-radius: 4px; padding: 5px;" id="profileName">@<%= userName %></span><span>&emsp;</span><span id="rolesDisplay"><%- rolesBody %></span></h3><br>
             <div style="display: flex; flex-direction: column;">
             <a href="main" class="gameflair1" style="order: <%- order1 %>; margin-bottom: 5%;">Match Scouting<br></a>
             <a href="browse" class="gameflair1" style="order: <%- order2 %>; margin-bottom: 5%;">Browse Data<br></a>
@@ -138,19 +138,6 @@
             if (online) {
             } else {
                 alert.style.display = "inline"
-            }
-        }
-        document.getElementById("profileName").addEventListener("click", showHideAllChildren);
-        function showHideAllChildren() {
-            var parentID = document.getElementById('rolesDisplay');
-            var innerDiv = parentID.getElementsByClassName('roleThing');
-            for(var i = 1; i < innerDiv.length; i++){
-            var a = innerDiv[i];
-                if (a.style.display === "none") {
-                    a.style.display = 'block';
-                } else {
-                    a.style.display = 'none';
-                }
             }
         }
     </script>

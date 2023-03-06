@@ -285,12 +285,7 @@ app.get('/', checkAuth, async function(req, res) {
     //btoa and atob bad idea
     //Buffer.from(str, 'base64') and buf.toString('base64') instead
     res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
-    var rolesHTML = "";
-    for (let i = 0; i < oauthDataCookieSet.length; i++) {
-      if (i===0) {rolesHTML += `<span style="color: ${oauthDataCookieSet[i][1]}; background-color: ${oauthDataCookieSet[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[i][0]}</span><br class="roleThing"><br class="roleThing">`} else {
-      rolesHTML += `<span style="color: ${oauthDataCookieSet[i][1]}; background-color: ${oauthDataCookieSet[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[i][0]}</span><br class="roleThing">`
-      }
-    }
+    var rolesHTML = `<span style="color: ${oauthDataCookieSet[0][1]}; background-color: ${oauthDataCookieSet[0][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[0][0]}</span><br class="roleThing"><br class="roleThing">`;
     if (oauthDataCookieSet[0][0] == "Pit Team" || oauthDataCookieSet[0][0] == "Drive Team") {
       res.render('../src/index.ejs', { 
         root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
@@ -307,11 +302,7 @@ app.get('/', checkAuth, async function(req, res) {
   } else {
   var oauthData =  JSON.parse(req.cookies.role);
   var rolesHTMLfromCookie = "";
-  for (let i = 0; i < oauthData.length; i++) {
-    if (i===0) {rolesHTMLfromCookie += `<span style="color: ${oauthData[i][1]}; background-color: ${oauthData[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[i][0]}</span><br class="roleThing"><br class="roleThing">`} else {
-    rolesHTMLfromCookie += `<span style="color: ${oauthData[i][1]}; background-color: ${oauthData[i][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[i][0]}</span><br class="roleThing">`
-    }
-  }
+  rolesHTMLfromCookie += `<span style="color: ${oauthData[0][1]}; background-color: ${oauthData[0][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[0][0]}</span><br class="roleThing"><br class="roleThing">`
   if (oauthData[0][0] == "Pit Team" || oauthData[0][0] == "Drive Team") {
     res.render('../src/index.ejs', { 
       root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
