@@ -164,6 +164,14 @@ function findTopRole(roles) {
   return rolesOut;
 }
 
+function checkIfLead(roles) {
+  if (roles.indexOf(leadscout) >= 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 //check the authentication and server membership
 function checkAuth(req, res, next) {
   if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return addToDataBase(req, next);
@@ -475,8 +483,9 @@ app.get('/browse', checkAuth, function(req, res) {
 });
 
 app.get('/manage', checkAuth, async function(req, res) {
-  const roles = await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}))
-  if (roles[0][0] == "Lead Scout") {
+  async function checkifLeadScoutfromAPI() { await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)})) }
+  const isLeadScout = checkifLeadScoutfromAPI()
+  if (isLeadScout) {
     if (req.query.dbase) {
       function sanitizeDBName() {
         if (req.query.dbase == "pit") {return "pit"} else {return "main"}
