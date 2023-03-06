@@ -61,4 +61,8 @@
 + **clientSec** Discord oauth secret<br>
 + **redirectURI** Where to redirect user after oauth. Must be added to discord, or the oauth will *not* work<br>
 + **teamServerID** Server ID of team discord. Used to check user's permissions. <br>
-+ ** baseURL** Is the server's base URL
++ **baseURL** Is the server's base URL
+## Web Server
+1. Set up DNS. This is done by creating an `A` record pointing to the IP address of the host (DigitalOcean can do this for you!) <br>
+2. Using HTTPS is a very good idea. Set up a free certificate by running the ./scouting.sh script with the option ssl, and add the domain. The command should look like this: `./scouting.sh ssl scout.example.com`. The app should find the SSL automatically. To renew the SSL, run `./scouting.sh renewssl` (command works best when you use PM2).  <br>
+ <br>Note about using the web server: The scouting app was designed to work perfectly using Ubuntu 20, it will work on other platforms but may require modifications.
