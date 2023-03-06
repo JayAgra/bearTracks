@@ -51,14 +51,16 @@ function uploadSubmissionJSON() {
         async function useFileToFill(result) {
             console.log(JSON.parse(atob(result)));
             const uploadedData = JSON.parse(atob(result));
-            var inputs = Array.prototype.slice.call(document.querySelectorAll('form input'));
+            var inputs = Array.prototype.slice.call(document.querySelectorAll('input'));
+            var checks = Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox]'));
             var textinputs = Array.prototype.slice.call(document.querySelectorAll('textarea'));
             var selectMenus = Array.prototype.slice.call(document.querySelectorAll('select'));
             Object.keys(uploadedData).map(function (dataItem) {
                     inputs.map(function (inputItem) {return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false})
+                    checks.map(function (inputItem) {if (uploadedData[dataItem] !== 'true') {inputItem.selected == "true"}})
                     textinputs.map(function (inputItem) {return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false})
                     selectMenus.map(function (inputItem) {return (inputItem.name === dataItem) ? (inputItem.value = uploadedData[dataItem]) : false})
             })
         }
     })
-}z
+}
