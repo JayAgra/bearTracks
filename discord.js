@@ -719,15 +719,15 @@ client.on('interactionCreate', async interaction => {
         .setTitle(`App Info`)
         .addFields({
             name: 'Version: ',
-            value: `NodeJS ${process.version}\n${require('./package.json').name}: ${require('./package.json').version}`,
+            value: `**NodeJS**: ${process.version}\n**${require('./package.json').name}**: ${require('./package.json').version}`,
             inline: true
         }, {
             name: 'Latency: ',
-            value: `Scouting Web latency: ${await pingWebServer()}\nFRC API latency: ${await pingFRCAPI()}\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}ms`,
+            value: `**Scouting Web**: ${await pingWebServer()}\nFRC API**: ${await pingFRCAPI()}\nDiscord API**: ${Math.round(client.ws.ping)}ms\n**This message**: ${Date.now() - interaction.createdTimestamp}ms`,
             inline: false
         }, {
             name: "Hardware: ",
-            value: `Memory: ${os.freemem()} of ${os.totalmem()} (${((1-(os.freemem()/os.totalmem()))*100).toFixed(2)}% used)\nLoad Avg (1m, 5m, 15m): ${((os.loadavg()[0])*100).toFixed(2)}%, ${((os.loadavg()[1])*100).toFixed(2)}, ${((os.loadavg()[2])*100).toFixed(2)}\nCPU: ${cpu.manufacturer}/${cpu.brand} (${cpu.cores} cores at ${cpu.speed} GHz)\nDisk: ${diskGB} GB (${disk.vendor}/${disk.name}, ${disk.type} over ${disk.interfaceType})`,
+            value: `**Memory:** ${os.freemem()} of ${os.totalmem()} (${((1-(os.freemem()/os.totalmem()))*100).toFixed(2)}% used)\n**Load Avg** (1m, 5m, 15m): ${((os.loadavg()[0])*100).toFixed(2)}%, ${((os.loadavg()[1])*100).toFixed(2)}%, ${((os.loadavg()[2])*100).toFixed(2)}%\n**CPU**: ${cpu.manufacturer}/${cpu.brand} (${cpu.cores} cores at ${cpu.speed} GHz)\n**Disk**: ${diskGB} GB (${disk.vendor}/${disk.name}, ${disk.type}, interface ${disk.interfaceType})`,
             inline: false
         })
         .setTimestamp()
