@@ -706,7 +706,6 @@ client.on('interactionCreate', async interaction => {
     const cpu = await si.cpu();
     const disk = (await si.diskLayout())[0];
     const diskGB = Math.round(disk.size / 1024 / 1024 / 1024);
-    const os = await si.osInfo();
     async function pingWebServer() {
         var stats = await require('ping').promise.probe(baseURL);
         return stats.time;
