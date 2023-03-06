@@ -701,6 +701,12 @@ client.on('interactionCreate', async interaction => {
           }
       });
   } else if (interaction.commandName === 'info') {
+    var os = require('os');
+    var si = require('systeminformation');
+    const cpu = await si.cpu();
+    const disk = (await si.diskLayout())[0];
+    const diskGB = Math.round(disk.size / 1024 / 1024 / 1024);
+    const os = await si.osInfo();
     async function pingWebServer() {
         var stats = await require('ping').promise.probe(baseURL);
         return stats.time;
@@ -719,6 +725,10 @@ client.on('interactionCreate', async interaction => {
         }, {
             name: 'Latency: ',
             value: `Scouting Web latency: ${await pingWebServer()}\nFRC API latency: ${await pingFRCAPI()}\nDiscord API latency: ${Math.round(client.ws.ping)}ms\nLatency for this message: ${Date.now() - interaction.createdTimestamp}ms`,
+            inline: false
+        }, {
+            name: "Hardware: ",
+            value: `Memory: ${os.freemem()} of ${os.totalmem()} (${((1-(os.freemem()/os.totalmem()))*100).toFixed(2)}% used)\nLoad Avg (1m, 5m, 15m): ${((os.loadavg()[0])*100).toFixed(2)}%, ${((os.loadavg()[1])*100).toFixed(2)}, ${((os.loadavg()[2])*100).toFixed(2)}\nCPU: ${cpu.manufacturer}/${cpu.brand} (${cpu.cores} cores at ${cpu.speed} GHz)\nDisk: ${diskGB} GB (${disk.vendor}/${disk.name}, ${disk.type} over ${disk.interfaceType})`,
             inline: false
         })
         .setTimestamp()
