@@ -723,7 +723,7 @@ client.on('interactionCreate', async interaction => {
             inline: true
         }, {
             name: 'Latency: ',
-            value: `**Scouting Web**: ${await pingWebServer()}\nFRC API**: ${await pingFRCAPI()}\nDiscord API**: ${Math.round(client.ws.ping)}ms\n**This message**: ${Date.now() - interaction.createdTimestamp}ms`,
+            value: `**Scouting Web**: ${await pingWebServer()}\n**FRC API**: ${await pingFRCAPI()}\nDiscord API: ${Math.round(client.ws.ping)}ms\n**This message**: ${Date.now() - interaction.createdTimestamp}ms`,
             inline: false
         }, {
             name: "Hardware: ",
