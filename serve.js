@@ -346,54 +346,55 @@ app.get('/pit', checkAuth, function(req, res) {
 //serve resources
 app.get('/app.webmanifest', function(req, res) {
   res.sendFile('./src/app.webmanifest', { root: __dirname })
+  res.set('Cache-control', 'public, max-age=7776000');
 });
 
 //serve resources
 app.get('/float.css', function(req, res) {
-  res.set('Cache-control', 'public, max-age=2592000');
+  res.set('Cache-control', 'public, max-age=7776000');
   res.sendFile('./src/float.css', { root: __dirname });
 });
 
 //serve resources
 app.get('/float.min.css', function(req, res) {
-  res.set('Cache-control', 'public, max-age=2592000');
+  res.set('Cache-control', 'public, max-age=7776000');
   res.sendFile('./src/float.min.css', { root: __dirname });
 });
 
 //serve resources
 app.get('/fonts/Raleway-300.ttf', function(req, res) {
-  res.set('Cache-control', 'public, max-age=2592000');
+  res.set('Cache-control', 'public, max-age=7776000');
   res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname });
 });
 
 //serve resources
 app.get('/fonts/Raleway-500.ttf', function(req, res) {
-  res.set('Cache-control', 'public, max-age=2592000');
+  res.set('Cache-control', 'public, max-age=7776000');
   res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname });
 });
 
 //serve resources
 app.get('/form.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
+  res.set('Cache-control', 'public, max-age=7776000');
   res.sendFile('./src/form.js', { root: __dirname });
 });
 
 //serve resources
 app.get('/form.min.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
+  res.set('Cache-control', 'public, max-age=7776000');
   res.sendFile('./src/form.min.js', { root: __dirname });
 });
 
 //service worker for PWA installs
 //serve resources
 app.get('/sw.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
+  res.set('Cache-control', 'public, max-age=2592000');
   res.sendFile('src/sw.js', { root: __dirname });
 });
 
 //serve resources
 app.get('/appinstall.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
+  res.set('Cache-control', 'public, max-age=7776000');
   res.sendFile('src/appinstall.js', { root: __dirname });
 });
 
