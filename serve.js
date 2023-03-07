@@ -124,7 +124,8 @@ function logInfo(info) {
 }
 
 function logErrors(errortodisplay) {
-  console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' +  errortodisplay);
+  console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + errortodisplay);
+  console.log('╰─> ' + Date.now);
 }
 
 //check the JSON file to see if the user is in the team discord server

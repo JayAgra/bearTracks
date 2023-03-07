@@ -2,17 +2,26 @@ const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, Butto
 const fs = require('fs');
 const seasonData = require("./2023.js");
 
+function logInfo(info) {
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + info)
+}
+
+function logErrors(errortodisplay) {
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + errortodisplay);
+    console.log('╰─> ' + Date.now);
+}
+
 if (!fs.existsSync('config.example.json') && !fs.existsSync('config.json')) {
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not find config.json! Fill out config.example.json and rename it to config.json');
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
+    logErrors('Could not find config.json! Fill out config.example.json and rename it to config.json');
+    logInfo('Killing');
     process.exit();
-} else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Found config.json file!');}
+} else {logInfo('Found config.json file!');}
 
 if (fs.statSync("config.json").size < 300) {
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'The file config.json seems to be empty! Please fill it out.');
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Killing');
+    logErrors('The file config.json seems to be empty! Please fill it out.');
+    logInfo('Killing');
     process.exit();
-} else {console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'The file config.json seems to be filled out');}
+} else {logInfo('The file config.json seems to be filled out');}
 
 //safe to require config.json
 const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, season, currentComp, baseURL } = require('./config.json');
@@ -26,8 +35,8 @@ var https = require('follow-redirects').https;
 
 client.once(Events.ClientReady, () => {
     client.user.setActivity("the 766 Ws", { type: "WATCHING" });
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + 'Ready!');
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + new Date());
+    logInfo('Ready!');
+    logInfo(new Date());
 });
 
 //emotes
@@ -134,12 +143,12 @@ client.on('interactionCreate', async interaction => {
       req.end();
       dbody.on('update', function() {
           if (invalidJSON(data)) {
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
+              logErrors(data)
               interaction.reply({
                   content: 'invalid input, or i messed it up',
                   ephemeral: true
               });
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + opseason + eventcode + teamnum + tlevel)
+              logErrors(`${opseason} - ${eventcode} - ${teamnum} - ${tlevel}`);
           } else {
               const outputget = JSON.parse(data);
               const matchEmbed = new EmbedBuilder()
@@ -301,7 +310,7 @@ client.on('interactionCreate', async interaction => {
                   components: [actrow]
               });
             } catch (error) {
-                console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+                logErrors('Could not send message');
             }
           }
       });
@@ -315,7 +324,7 @@ client.on('interactionCreate', async interaction => {
     try {
         seasonData.teamData(opseason, teamnum, eventcode, interaction);
     } catch (error) {
-        console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+        logErrors('Could not send message');
         interaction.reply({
             content: `There was an unexpected error! ${error}`,
             ephemeral: true
@@ -331,7 +340,7 @@ client.on('interactionCreate', async interaction => {
     try {
         seasonData.pitData(opseason, teamnum, eventcode, interaction);
     } catch (error) {
-        console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[31m', '  [', '\x1b[0m\x1b[41m', 'ERROR', '\x1b[0m\x1b[31m', '] ' ,'\x1b[0m' + 'Could not send message');
+        logErrors('Could not send message');
         interaction.reply({
             content: `There was an unexpected error! ${error}`,
             ephemeral: true
@@ -425,12 +434,12 @@ client.on('interactionCreate', async interaction => {
       req.end();
       dbody.on('update', function() {
           if (invalidJSON(data)) {
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + data);
+              logErrors(data);
               interaction.reply({
                   content: `Invalid inputs, or the FRC API failed to respond`,
                   ephemeral: true
               });
-              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + 'potential error ' + opseason + eventcode)
+              logErrors('potential error ' + opseason + eventcode)
           } else {
               const outputget = JSON.parse(data);
               const rankEmbed = new EmbedBuilder()
@@ -642,7 +651,7 @@ client.on('interactionCreate', async interaction => {
                       req.end();
                       dbodyteam.on('update', function() {
                           if (invalidJSON(teamdata)) {
-                              console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + teamdata);
+                              logInfo(teamdata);
                               interaction.reply({
                                   content: 'invalid input, or i messed it up',
                                   ephemeral: true
@@ -652,7 +661,7 @@ client.on('interactionCreate', async interaction => {
                               rankno = outputgetteam.Rankings[0].rank - 1;
                           }
                       });
-                      console.log('\x1b[36m', '[DISCORD BOT] ' ,'\x1b[0m' + rankno);
+                      logInfo(rankno);
                       const rankEmbedu = new EmbedBuilder()
                           .setColor(0x68C3E2)
                           .setTitle(`${eventcode} team rankings`)
