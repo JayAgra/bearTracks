@@ -314,7 +314,7 @@ function createHTMLTable(data) {
 function createHTMLTableWithTeamNum(data) {
   var html = ``;
   for (var i = 0; i < data.length; i++) {
-    html = html + ` <tr><td>Team ${data[i].team}<br>Match ${data[i].match}</td><td>${valueToEmote(data.game1)}</td><td>${valueToEmote(data.game2)}${valueToEmote(data.game3)}${valueToEmote(data.game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data.game6)}${valueToEmote(data.game7)}${valueToEmote(data.game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
+    html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br>Match ${data[i].match}</td><td>${valueToEmote(data.game1)}</td><td>${valueToEmote(data.game2)}${valueToEmote(data.game3)}${valueToEmote(data.game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data.game6)}${valueToEmote(data.game7)}${valueToEmote(data.game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
   }
   return html;
 }
