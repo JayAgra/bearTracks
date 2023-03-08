@@ -486,7 +486,7 @@ app.get('/detail', checkAuth, function(req, res) {
 
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event) {
-    if (req.query.team == "ALL" || req.query.team == "*") {
+    if (req.query.team == "ALL" || req.query.team == "*" || req.query.team == "0000" || req.query.team == "0") {
       const stmt = `SELECT * FROM main WHERE event=? ORDER BY team ASC`;
       const values = [req.query.event];
       db.all(stmt, values, (err, dbQueryResult) => {
@@ -533,6 +533,38 @@ app.get('/browse', checkAuth, function(req, res) {
     }
   } else {
   res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+  return;
+  }
+});
+
+app.get('/teams', checkAuth, function(req, res) {
+  if (req.query.event) {
+      const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? GROUP BY team ORDER BY AVG(weight) DESC`;
+      const values = [req.query.event];
+      db.all(stmt, values, (err, dbQueryResult) => {
+        if (err) {
+          res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
+          return;
+        } else {
+          if (typeof dbQueryResult == "undefined") {
+            res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
+            return;
+          } else {
+            var htmltable = ``;
+            for (var i = 0; i < dbQueryResult.length; i++) {
+              htmltable = htmltable + `<tr><td>${dbQueryResult[i]['team']}</td><td>${dbQueryResult[i]['AVG(weight)']}</td>`;
+            }
+            res.render('../src/teams.ejs', { 
+              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
+              resultsEventCode: `${req.query.event}`,
+              resultsBody: htmltable
+            })
+            return;
+          }
+        }
+      });
+  } else {
+  res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
   return;
   }
 });

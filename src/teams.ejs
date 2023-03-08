@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Browse Data - 766 Scouting</title>
+    <title>Teams - 766 Scouting</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -60,12 +60,8 @@
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4 style="color: red; display: <%= errorDisplay %>"><%= errorMessage %></h4>
-            <h4>Match Data</h4><br>
+            <h4>Team Data</h4><br>
             <fieldset>
-                <label>Target Team Number: <br></label>
-                <input type="tel" name="team" required><br>
-                <input type="hidden" name="page" value="0">
-            <br><fieldset>
                 <label>Event Code: </label><br>
                 <select name="event">
                     <option value="CADA" selected>CADA - Sacramento Regional</option>
@@ -75,8 +71,6 @@
             <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Search</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
-            <small style="text-align: center;">To see all teams ranked by weighted score <a href="teams" style="all: unset; color: #68C3E2;">here</a></small>
-            <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: #68C3E2;">here</a></small>
         </form>
         <br><br>
     </div>
@@ -86,32 +80,22 @@
             <h4>Match Data</h4><br>
             <fieldset>
             <fieldset>
-                <h3>Team <%= resultsTeamNumber %> at <%= resultsEventCode %></h3>
+                <h3>Top teams at <%= resultsEventCode %></h3>
                 <table>
                     <tr>
-                      <th>Match Number</th>
-                      <th>Auto Taxi</th> 
-                      <th>Auto Score</th>
-                      <th>Auto Charge</th>
-                      <th>Teleop Score</th>
-                      <th>Teleop Charge</th>
-                      <th>Cycle Time</th>
-                      <th>Performance Score</th>
+                      <th>Team Number</th>
+                      <th>Avg Analysis Score</th> 
                     </tr>
                     <%- resultsBody %>
                   </table>
             </fieldset>
             <!--buttons-->
-            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>&emsp;<button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
         <br><br>
-        <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: #68C3E2;">here</a></small>
     </div>
     </div>
     <script>
-        function removeURLParams() {
-            window.location.href = "/browse"
-        }
         function goToHome() {
             window.location.href = "/";
         }
