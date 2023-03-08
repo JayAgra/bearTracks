@@ -546,7 +546,7 @@ app.get('/manage', checkAuth, async function(req, res) {
         if (req.query.dbase == "pit") {return "pit"} else {return "main"}
       }
       function mainOrPitLink(type) {
-        if (type == "pit") {return "pitimages"} else {return "browse"}
+        if (type == "pit") {return "pitimages"} else {return "detail"}
       }
       const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
       db.all(stmt, (err, dbQueryResult) => {
