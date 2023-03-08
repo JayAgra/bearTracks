@@ -238,10 +238,10 @@ function weightScores(submissionID) {
   db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
     if (result && !err) {
       //teleop, defend, driving, overall
-      analysisResults.push(saModule.analyze(result.teleop))
-      analysisResults.push(saModule.analyze(result.defend))
-      analysisResults.push(saModule.analyze(result.driving))
-      analysisResults.push(saModule.analyze(result.overall))
+      analysisResults.push(saModule.analyze(String(result.teleop)))
+      analysisResults.push(saModule.analyze(String(result.defend)))
+      analysisResults.push(saModule.analyze(String(result.driving)))
+      analysisResults.push(saModule.analyze(String(result.overall)))
       
       //MAXIMUM SCORE: 30
       //sent analysis
