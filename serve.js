@@ -486,27 +486,51 @@ app.get('/detail', checkAuth, function(req, res) {
 
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event) {
-    const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC`;
-    const values = [req.query.team, req.query.event];
-    db.all(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
+    if (req.query.team == "ALL" || req.query.team == "*") {
+      const stmt = `SELECT * FROM main WHERE event=? ORDER BY team ASC`;
+      const values = [req.query.event];
+      db.all(stmt, values, (err, dbQueryResult) => {
+        if (err) {
           res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
           return;
         } else {
-          res.render('../src/browse.ejs', { 
-            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-            resultsTeamNumber: `${req.query.team}`,
-            resultsEventCode: `${req.query.event}`,
-            resultsBody: seasonProcess.createHTMLTable(dbQueryResult)
-          })
-          return;
+          if (typeof dbQueryResult == "undefined") {
+            res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+            return;
+          } else {
+            res.render('../src/browse.ejs', { 
+              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
+              resultsTeamNumber: `All teams`,
+              resultsEventCode: `${req.query.event}`,
+              resultsBody: seasonProcess.createHTMLTable(dbQueryResult)
+            })
+            return;
+          }
         }
-      }
-    });
+      });
+    } else {
+      const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC`;
+      const values = [req.query.team, req.query.event];
+      db.all(stmt, values, (err, dbQueryResult) => {
+        if (err) {
+          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+          return;
+        } else {
+          if (typeof dbQueryResult == "undefined") {
+            res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+            return;
+          } else {
+            res.render('../src/browse.ejs', { 
+              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
+              resultsTeamNumber: `${req.query.team}`,
+              resultsEventCode: `${req.query.event}`,
+              resultsBody: seasonProcess.createHTMLTable(dbQueryResult)
+            })
+            return;
+          }
+        }
+      });
+    }
   } else {
   res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
   return;
