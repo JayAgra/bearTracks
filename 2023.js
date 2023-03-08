@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3');
 const { EmbedBuilder } = require('discord.js');
 const { baseURL } = require('./config.json');
+const saModule = require('./sentiment-analysis.js');
 
 function toIcons(str) {
   var step1 = str.replaceAll("0", "⬜");
@@ -14,6 +15,10 @@ function fullGridString(str, sep) {
   iconstrings.push(toIcons(strings[1]))
   iconstrings.push(toIcons(strings[2]))
   return iconstrings.join(sep);
+}
+
+function boolToNum(val) {
+  if (val) {return 1} else {return 0}
 }
 
 function valueToEmote(value) {
@@ -224,7 +229,66 @@ function pitData(season, team, event, interaction) {
 }
 
 function createHTMLExport(dbQueryResult) {
-  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}`
+  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Score: ${dbQueryResult.weight}`
 }
 
-module.exports = { teamData, pitData, createHTMLExport };
+function weightScores(submissionID) {
+  var analysisResults = [];
+  var score = 1;
+  db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
+    if (result && !err) {
+      //teleop, defend, driving, overall
+      analysisResults.push(saModule.analyze(result.teleop))
+      analysisResults.push(saModule.analyze(result.defend))
+      analysisResults.push(saModule.analyze(result.driving))
+      analysisResults.push(saModule.analyze(result.overall))
+      
+      //MAXIMUM SCORE: 30
+      //sent analysis
+      score = score + analysisResults[0]*5
+      score = score + analysisResults[1]*5
+      score = score + analysisResults[2]*5
+      score = score + analysisResults[3]*15
+
+      //MAXIMUM 11
+      //charging pts
+      score = score + result.game5/2
+      score = score + result.game10/2
+
+      //MAXIMUM 13
+      //auto pts
+      score = score + boolToNum(result.game1) * 3 //taxi
+      score = score + boolToNum(result.game2) * 3 //score btm
+      score = score + boolToNum(result.game3) * 4 //score mid
+      score = score + boolToNum(result.game4) * 6 //score top
+
+      //MAXIMUM 8
+      //teleop pts
+      score = score + boolToNum(result.game6) * 2 //score btm
+      score = score + boolToNum(result.game7) * 2 //score mid
+      score = score + boolToNum(result.game8) * 2 //score top
+      score = score + boolToNum(result.game9) * 2 //coop bonus
+
+      //MAXIMUM 38
+      //grid items
+      var gridwt = 0;
+      result.game12.split("").forEach(function(item, index, array) {
+        if (index <= 8 && item !== "0") {
+          gridwt = gridwt + 5
+        } else if (index <= 17 && item !== "0") {
+          gridwt = gridwt + 3
+        } else if (index <= 26 && item !== "0") {
+          gridwt = gridwt + 2
+        }
+      });
+      //assume reasonable max is 65
+      score = score + (gridwt/1.6875)
+      db.run(`UPDATE main SET weight=${score.toFixed(2)} WHERE id=${submissionID}`, (err, result) => {console.log("Error updating DB!")})
+      db.run(`UPDATE main SET analysis='${analysisResults.toString()}' WHERE id=${submissionID}`, (err, result) => {console.log("Error updating DB!")})
+    } else {
+      return "error!";
+    }
+  });
+}
+
+module.exports = { teamData, pitData, createHTMLExport, weightScores };
