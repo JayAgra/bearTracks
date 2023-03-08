@@ -485,9 +485,9 @@ app.get('/detail', checkAuth, function(req, res) {
 });
 
 app.get('/browse', checkAuth, function(req, res) {
-  if (req.query.team && req.query.event && req.query.page) {
+  if (req.query.team && req.query.event) {
     const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC`;
-    const values = [req.query.team, req.query.event, req.query.page];
+    const values = [req.query.team, req.query.event];
     db.all(stmt, values, (err, dbQueryResult) => {
       if (err) {
         res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
