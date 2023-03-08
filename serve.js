@@ -629,12 +629,15 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
     body += chunk.toString();
   });
   req.on('end', async () => {
+    function sanitizeDBName() {
+      if (reqData.db == "pit") {return "pit"} else {return "main"}
+    }
     let reqData = qs.parse(body);
       const roles = await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}))
       if (roles[0][0] == "Lead Scout") {
         if (reqData.submissionID && reqData.db) {
-          const stmt = `DELETE FROM ? WHERE id=?`;
-          const values = [reqData.db, reqData.submissionID];
+          const stmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
+          const values = [reqData.submissionID];
           db.run(stmt, values, (err) => {if(err){console.log(err);return;}});
           res.redirect('/manage?done=true');
         } else {
