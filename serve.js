@@ -635,7 +635,7 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
         if (reqData.submissionID && reqData.db) {
           const stmt = `DELETE FROM ? WHERE id=?`;
           const values = [reqData.db, reqData.submissionID];
-          db.run(stmt, values, (err) => {if(err){console.log(err); res.status(500).send("error!"); return;}});
+          db.run(stmt, values, (err) => {if(err){console.log(err);return;}});
           res.redirect('/manage?done=true');
         } else {
           res.status(401).send("Access Denied!");
