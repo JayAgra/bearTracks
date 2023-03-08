@@ -500,9 +500,9 @@ app.get('/browse', checkAuth, function(req, res) {
           } else {
             res.render('../src/browse.ejs', { 
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-              resultsTeamNumber: `All teams`,
+              resultsTeamNumber: `ALL`,
               resultsEventCode: `${req.query.event}`,
-              resultsBody: seasonProcess.createHTMLTable(dbQueryResult)
+              resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult)
             })
             return;
           }
