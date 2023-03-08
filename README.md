@@ -14,7 +14,6 @@
 - "Easy" submission removal
 - Ability to download JSON of form data to upload later
 ### To Add:
-- **percentage option when querying data**
 - Discord pings before matches
 - Ability to allow a member of another team to access data temporarily
 ## Setup
