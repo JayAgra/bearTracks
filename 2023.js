@@ -229,7 +229,7 @@ function pitData(season, team, event, interaction) {
 }
 
 function createHTMLExport(dbQueryResult) {
-  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Score: ${dbQueryResult.weight}`
+  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Weight: ${dbQueryResult.weight}%`
 }
 
 function weightScores(submissionID) {
@@ -303,4 +303,12 @@ function weightScores(submissionID) {
   });
 }
 
-module.exports = { teamData, pitData, createHTMLExport, weightScores };
+function createHTMLTable(data) {
+  var html = ``;
+  for (var i = 0; i < data.length; i++) {
+    html = html + ` <tr> <td>${data[i].match}</td><td>${valueToEmote(data.game1)}</td><td>${valueToEmote(data.game2)}${valueToEmote(data.game3)}${valueToEmote(data.game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data.game6)}${valueToEmote(data.game7)}${valueToEmote(data.game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
+  }
+  return html;
+}
+
+module.exports = { teamData, pitData, createHTMLExport, weightScores, createHTMLTable };

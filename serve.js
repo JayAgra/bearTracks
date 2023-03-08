@@ -431,20 +431,20 @@ app.get('/teamRoleInfo', checkAuth, function(req, res) {
 });
 
 //tool to browse match scouting data
-app.get('/browse', checkAuth, function(req, res) {
+app.get('/detail', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
     const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
     const values = [req.query.team, req.query.event, req.query.page];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
-        res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+        res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
         return;
       } else {
         if (typeof dbQueryResult == "undefined") {
-          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+          res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
           return;
         } else {
-          res.render('../src/browse.ejs', { 
+          res.render('../src/detail.ejs', { 
             root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `${dbQueryResult.team}`,
             resultsMatchNumber: `${dbQueryResult.match}`,
@@ -460,14 +460,14 @@ app.get('/browse', checkAuth, function(req, res) {
     const values = [req.query.id];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
-        res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+        res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
         return;
       } else {
         if (typeof dbQueryResult == "undefined") {
-          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+          res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
           return;
         } else {
-          res.render('../src/browse.ejs', { 
+          res.render('../src/detail.ejs', { 
             root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `${dbQueryResult.team}`,
             resultsMatchNumber: `${dbQueryResult.match}`,
@@ -479,7 +479,36 @@ app.get('/browse', checkAuth, function(req, res) {
       }
     });
   } else {
-  res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+  res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+  return;
+  }
+});
+
+app.get('/browse', checkAuth, function(req, res) {
+  if (req.query.team && req.query.event && req.query.page) {
+    const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC`;
+    const values = [req.query.team, req.query.event, req.query.page];
+    db.all(stmt, values, (err, dbQueryResult) => {
+      if (err) {
+        res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+        return;
+      } else {
+        if (typeof dbQueryResult == "undefined") {
+          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+          return;
+        } else {
+          res.render('../src/browse.ejs', { 
+            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
+            resultsTeamNumber: `${req.query.team}`,
+            resultsEventCode: `${req.query.event}`,
+            resultsBody: seasonProcess.createHTMLTable(dbQueryResult)
+          })
+          return;
+        }
+      }
+    });
+  } else {
+  res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
   return;
   }
 });
