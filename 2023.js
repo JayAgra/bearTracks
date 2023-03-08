@@ -233,15 +233,23 @@ function createHTMLExport(dbQueryResult) {
 }
 
 function weightScores(submissionID) {
+  let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return interaction.reply({
+        content: `Error getting data! ${err}`,
+        ephemeral: true
+      })
+    }
+  });
   var analysisResults = [];
   var score = 1;
   db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
     if (result && !err) {
       //teleop, defend, driving, overall
-      analysisResults.push(saModule.analyze(String(result.teleop)))
-      analysisResults.push(saModule.analyze(String(result.defend)))
-      analysisResults.push(saModule.analyze(String(result.driving)))
-      analysisResults.push(saModule.analyze(String(result.overall)))
+      analysisResults.push(saModule.analyze(toString(result.teleop)))
+      analysisResults.push(saModule.analyze(toString(result.defend)))
+      analysisResults.push(saModule.analyze(toString(result.driving)))
+      analysisResults.push(saModule.analyze(toString(result.overall)))
       
       //MAXIMUM SCORE: 30
       //sent analysis
@@ -287,6 +295,10 @@ function weightScores(submissionID) {
       db.run(`UPDATE main SET analysis='${analysisResults.toString()}' WHERE id=${submissionID}`, (err, result) => {console.log("Error updating DB!")})
     } else {
       return "error!";
+    }
+  });
+  db.close((err) => {
+    if (err) {
     }
   });
 }

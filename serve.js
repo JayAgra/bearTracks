@@ -28,7 +28,6 @@ passport.use(new Strategy({
 const sqlite3 = require('sqlite3');
 let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
 db.run( 'PRAGMA journal_mode = WAL;' );
-const saModule = require('./sentiment-analysis.js');
 
 //SETUP SERVER(S)
 const fs = require('fs');
@@ -256,7 +255,7 @@ app.post('/submit', checkAuth, function(req, res) {
               res.end(err.message);
             }
             discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
-            saModule.analyze(this.lastID)
+            seasonProcess.weightScores(this.lastID)
         });
         res.sendFile('src/submitted.html', { 
           root: __dirname
@@ -434,7 +433,7 @@ app.get('/teamRoleInfo', checkAuth, function(req, res) {
 //tool to browse match scouting data
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
-    const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id ASC LIMIT 1 OFFSET ?`;
+    const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
     const values = [req.query.team, req.query.event, req.query.page];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
