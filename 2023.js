@@ -246,10 +246,11 @@ function weightScores(submissionID) {
   db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
     if (result && !err) {
       //teleop, defend, driving, overall
-      analysisResults.push(saModule.analyze(toString(result.teleop)))
-      analysisResults.push(saModule.analyze(toString(result.defend)))
-      analysisResults.push(saModule.analyze(toString(result.driving)))
-      analysisResults.push(saModule.analyze(toString(result.overall)))
+      analysisResults.push(saModule.analyze(result.teleop))
+      analysisResults.push(saModule.analyze(result.defend))
+      analysisResults.push(saModule.analyze(result.driving))
+      analysisResults.push(saModule.analyze(result.overall))
+      console.log(analysisResults)
       
       //MAXIMUM SCORE: 30
       //sent analysis
@@ -291,8 +292,8 @@ function weightScores(submissionID) {
       });
       //assume reasonable max is 65
       score = score + (gridwt/1.6875)
-      db.run(`UPDATE main SET weight=${score.toFixed(2)} WHERE id=${submissionID}`, (err, result) => {console.log("Error updating DB!")})
-      db.run(`UPDATE main SET analysis='${analysisResults.toString()}' WHERE id=${submissionID}`, (err, result) => {console.log("Error updating DB!")})
+      db.run(`UPDATE main SET weight=${score.toFixed(2)} WHERE id=${submissionID}`, (err, result) => {if (err) {console.log("Error updating DB!")}})
+      db.run(`UPDATE main SET analysis='${analysisResults.toString()}' WHERE id=${submissionID}`, (err, result) => {if (err) {console.log("Error updating DB!")}})
     } else {
       return "error!";
     }
