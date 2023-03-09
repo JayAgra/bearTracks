@@ -574,8 +574,18 @@ app.get('/teams', checkAuth, function(req, res) {
 });
 
 app.get('/manage', checkAuth, async function(req, res) {
-  async function checkifLeadScoutfromAPI() { await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)})) }
-  const isLeadScout = checkifLeadScoutfromAPI()
+  async function checkIfLeadScout() {
+    if (req.cookies.lead) {
+      if (req.cookies.lead == leadToken) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  const isLeadScout = await checkIfLeadScout()
   if (isLeadScout) {
     if (req.query.dbase) {
       function sanitizeDBName() {
@@ -642,14 +652,11 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
         if (req.cookies.lead) {
           if (req.cookies.lead == leadToken) {
             return true;
-          }
-        } else {
-          if (await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)}))) {
-            res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
-            return true;
           } else {
             return false;
           }
+        } else {
+          return false;
         }
       }
       const isLeadScout = await checkIfLeadScout()
