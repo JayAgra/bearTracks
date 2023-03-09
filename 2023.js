@@ -92,7 +92,7 @@ function teamData(season, team, event, interaction) {
           .setColor('#181f2f')
           .setTitle(`Data from team ${team}'s last match:`)
           .setThumbnail('https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FRC-Vertical.png')
-          .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023\n\nGrid: \n${fullGridString((result.game12).toString(), '\n')}`)
+          .setDescription(`Match ${result.match} (${result.level}) ${event}, 2023\n\nGrid: \n${fullGridString((result.game12).toString(), '\n')}\nMatch Performance Score: ${result.weight}`)
           .addFields({
             name: 'AUTO',
             value: `Taxi: ${valueToEmote(result.game1)} \nScore B/M/T: ${valueToEmote(result.game2)}${valueToEmote(result.game3)}${valueToEmote(result.game4)}`,
@@ -179,7 +179,7 @@ function pitData(season, team, event, interaction) {
         })
       }
     });
-    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" AND season="${season}" ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
+    db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" AND season=${season} ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
         if (err) {
           console.log(err);
           return interaction.reply({
@@ -229,7 +229,7 @@ function pitData(season, team, event, interaction) {
 }
 
 function createHTMLExport(dbQueryResult) {
-  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Weight: ${dbQueryResult.weight}%`
+  return `AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Performance Score: ${dbQueryResult.weight}%`
 }
 
 function weightScores(submissionID) {

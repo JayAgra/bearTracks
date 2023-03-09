@@ -433,8 +433,8 @@ app.get('/teamRoleInfo', checkAuth, function(req, res) {
 //tool to browse match scouting data
 app.get('/detail', checkAuth, function(req, res) {
   if (req.query.team && req.query.event && req.query.page) {
-    const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
-    const values = [req.query.team, req.query.event, req.query.page];
+    const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
+    const values = [req.query.team, req.query.event, season, req.query.page];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
         res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
@@ -487,8 +487,8 @@ app.get('/detail', checkAuth, function(req, res) {
 app.get('/browse', checkAuth, function(req, res) {
   if (req.query.team && req.query.event) {
     if (req.query.team == "ALL" || req.query.team == "*" || req.query.team == "0000" || req.query.team == "0") {
-      const stmt = `SELECT * FROM main WHERE event=? ORDER BY team ASC`;
-      const values = [req.query.event];
+      const stmt = `SELECT * FROM main WHERE event=? AND season=? ORDER BY team ASC`;
+      const values = [req.query.event, season];
       db.all(stmt, values, (err, dbQueryResult) => {
         if (err) {
           res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
@@ -509,8 +509,8 @@ app.get('/browse', checkAuth, function(req, res) {
         }
       });
     } else {
-      const stmt = `SELECT * FROM main WHERE team=? AND event=? ORDER BY id DESC`;
-      const values = [req.query.team, req.query.event];
+      const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC`;
+      const values = [req.query.team, req.query.event, season];
       db.all(stmt, values, (err, dbQueryResult) => {
         if (err) {
           res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
@@ -536,11 +536,11 @@ app.get('/browse', checkAuth, function(req, res) {
   return;
   }
 });
-
+ 
 app.get('/teams', checkAuth, function(req, res) {
   if (req.query.event) {
-      const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? GROUP BY team ORDER BY AVG(weight) DESC`;
-      const values = [req.query.event];
+      const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? AND season=? GROUP BY team ORDER BY AVG(weight) DESC`;
+      const values = [req.query.event, season];
       db.all(stmt, values, (err, dbQueryResult) => {
         if (err) {
           res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
@@ -552,7 +552,7 @@ app.get('/teams', checkAuth, function(req, res) {
           } else {
             var htmltable = ``;
             for (var i = 0; i < dbQueryResult.length; i++) {
-              htmltable = htmltable + `<tr><td>${dbQueryResult[i]['team']}</td><td>${dbQueryResult[i]['AVG(weight)']}</td>`;
+              htmltable = htmltable + `<tr><td>${dbQueryResult[i]['team']}</td><td>${dbQueryResult[i]['AVG(weight)']}% <progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
             }
             res.render('../src/teams.ejs', { 
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
@@ -708,8 +708,8 @@ app.get('/matches', checkAuth, function(req, res) {
 //serve the uploaded images
 app.get('/pitimages', checkAuth, function(req, res) {
   if (req.query.team && req.query.event) {
-    const stmt = `SELECT * FROM pit WHERE team=? AND event=? ORDER BY id LIMIT 1`;
-    const values = [req.query.team, req.query.event];
+    const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
+    const values = [req.query.team, req.query.event, season];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
         res.render('../src/pitimg.ejs', { 
