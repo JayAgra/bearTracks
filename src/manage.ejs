@@ -97,6 +97,9 @@
             } else if (xhr.status === 401) {
                 console.log("failure")
                 document.getElementById(linkID).innerHTML = "401 Access Denied";
+            } else if (xhr.status === 400) {
+                console.log("failure")
+                document.getElementById(linkID).innerHTML = "400 Bad Request";
             } else {
                 console.log("awaiting response")
                 document.getElementById(linkID).innerHTML = "Deleting...";

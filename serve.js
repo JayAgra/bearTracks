@@ -634,16 +634,16 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
     }
     let reqData = qs.parse(body);
       async function checkifLeadScoutfromAPI() { await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)})) }
-      const roles = await checkifLeadScoutfromAPI()
-      console.log(roles)
-      if (roles) {
+      const isLeadScout = await checkifLeadScoutfromAPI()
+      console.log(isLeadScout)
+      if (isLeadScout) {
         if (reqData.submissionID && reqData.db) {
           const stmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
           const values = [reqData.submissionID];
           db.run(stmt, values, (err) => {if(err){console.log(err);return;}});
           res.status(200).send("done!");
         } else {
-          res.status(401).send("Access Denied!");
+          res.status(400).send("Bad Request!");
         }
       } else {
         res.status(401).send("Access Denied!");
