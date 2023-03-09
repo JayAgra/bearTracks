@@ -84,7 +84,7 @@
             window.location.href = "/deleteSubmission?submissionID=" + targetSubmission;
         }
         function deleteSubmission(database, submission, linkID) {
-            document.getElementById(linkID).innerHTML = "Deleting...";
+            document.getElementById(linkID).innerHTML = "Preparing Request...";
             const xhr = new XMLHttpRequest();
             xhr.open("POST", '/deleteSubmission', true);
             xhr.withCredentials = true;
@@ -105,7 +105,7 @@
                 document.getElementById(linkID).innerHTML = "Deleting...";
             }
             }
-            xhr.send('db=' + database + '&submissionID=' + submission);
+            xhr.send('db=' + database + '&submissionID=' + submission).then(document.getElementById(linkID).innerHTML = "Sending Request...");
         }
     </script>
 </body>

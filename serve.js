@@ -43,6 +43,7 @@ var RateLimit = require('express-rate-limit');
 var EventEmitter = require("events").EventEmitter;
 const helmet = require('helmet')
 var sanitize = require("sanitize-filename");
+const leadToken = crypto.randomBytes(48).toString('hex');
 var app = express();
 app.disable('x-powered-by');
 app.use(cookieParser());
@@ -292,6 +293,7 @@ app.get('/', checkAuth, async function(req, res) {
     //set cookie if not exists
     //I am setting a cookie because it takes a while to wait for role data from API
     var oauthDataCookieSet =  await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}));
+
     //btoa and atob bad idea
     //Buffer.from(str, 'base64') and buf.toString('base64') instead
     res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
@@ -301,6 +303,7 @@ app.get('/', checkAuth, async function(req, res) {
         root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
       })
     } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
+      res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
       res.render('../src/index.ejs', { 
         root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Manage Submissions<br></a>`
       })
@@ -318,6 +321,7 @@ app.get('/', checkAuth, async function(req, res) {
       root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
     })
   } else if (oauthData[0][0] == "Lead Scout") {
+    res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
     res.render('../src/index.ejs', { 
       root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
     })
@@ -633,11 +637,27 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
       if (reqData.db == "pit") {return "pit"} else {return "main"}
     }
     let reqData = qs.parse(body);
-      async function checkifLeadScoutfromAPI() { await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)})) }
-      const isLeadScout = await checkifLeadScoutfromAPI()
+    console.log("got request")
+      async function checkIfLeadScout() {
+        if (req.cookies.lead) {
+          if (req.cookies.lead == leadToken) {
+            return true;
+          }
+        } else {
+          if (await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)}))) {
+            res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+      const isLeadScout = await checkIfLeadScout()
       console.log(isLeadScout)
       if (isLeadScout) {
+        console.log("is ok")
         if (reqData.submissionID && reqData.db) {
+          console.log("has params")
           const stmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
           const values = [reqData.submissionID];
           db.run(stmt, values, (err) => {if(err){console.log(err);return;}});
