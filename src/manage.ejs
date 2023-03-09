@@ -8,6 +8,7 @@
     <link rel="apple-touch-startup-image" href="public/launch.png">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Scouting">
+    <meta name="theme-color" content="#121212" id="themeMeta">
     <link rel="manifest" href="/app.webmanifest"/>
     <link rel="stylesheet" href="float.min.css" type="text/css">
     <meta name="mobile-web-app-capable" content="yes">
@@ -82,8 +83,24 @@
             const targetSubmission = URL.searchParams.get('submissionID'); 
             window.location.href = "/deleteSubmission?submissionID=" + targetSubmission;
         }
-        function confirmDelete(db, id) {
-            window.location.href = `/confirm?db=` + db + `&id=` + id;
+        function deleteSubmission(database, submission, linkID) {
+            document.getElementById(linkID).innerHTML = "Deleting...";
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", '/deleteSubmission', true);
+            xhr.withCredentials = true;
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("done")
+            } else if (xhr.status === 401) {
+                console.log("failure")
+            } else {
+                console.log("awaiting response")
+            }
+            }
+            xhr.send('"' + 'db=' + database + '&submissionID=' + submission + '"');
+            document.getElementById(linkID).innerHTML = "Deleted!";
         }
     </script>
 </body>

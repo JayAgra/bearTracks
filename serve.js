@@ -552,9 +552,9 @@ app.get('/teams', checkAuth, function(req, res) {
           } else {
             var htmltable = ``;
             for (var i = 0; i < dbQueryResult.length; i++) {
-              htmltable = htmltable + `<tr><td>${dbQueryResult[i]['team']}</td><td>${dbQueryResult[i]['AVG(weight)']}% <progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
+              htmltable = htmltable + `<tr><td><a href="/browse?team=${dbQueryResult[i]['team']}&event=${req.query.event}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['team']}</a></td><td>${(dbQueryResult[i]['AVG(weight)']).toFixed(2)}%</td><td><progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
             }
-            res.render('../src/teams.ejs', { 
+            res.render('../src/teams.ejs', {
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
               resultsEventCode: `${req.query.event}`,
               resultsBody: htmltable
@@ -592,7 +592,7 @@ app.get('/manage', checkAuth, async function(req, res) {
           } else {
             var listHTML = "";
             for (var i = 0; i < dbQueryResult.length; i++) {
-              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink(req.query.dbase)}?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="confirmDelete('${req.query.dbase}', '${dbQueryResult[i].id}')" style="color: red">Delete</span></span></span></fieldset>`
+              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink(req.query.dbase)}?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${req.query.dbase}', ${dbQueryResult[i].id}, '${req.query.dbase}${dbQueryResult[i].id}')" style="color: red" id="${req.query.dbase}${dbQueryResult[i].id}">Delete</span></span></span></fieldset>`
             }
             res.render('../src/manage.ejs', { 
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
@@ -633,13 +633,18 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
       if (reqData.db == "pit") {return "pit"} else {return "main"}
     }
     let reqData = qs.parse(body);
-      const roles = await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}))
-      if (roles[0][0] == "Lead Scout") {
+    console.log(reqData)
+      console.log("getting roles")
+      async function checkifLeadScoutfromAPI() { await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)})) }
+      const roles = checkifLeadScoutfromAPI()
+      console.log("got roles!")
+      console.log(roles)
+      if (roles) {
         if (reqData.submissionID && reqData.db) {
           const stmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
           const values = [reqData.submissionID];
           db.run(stmt, values, (err) => {if(err){console.log(err);return;}});
-          res.redirect('/manage?done=true');
+          res.status(200).send("done!");
         } else {
           res.status(401).send("Access Denied!");
         }
