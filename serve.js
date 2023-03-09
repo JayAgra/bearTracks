@@ -218,6 +218,7 @@ app.get('/callback',
 app.get('/clearCookies', function(req, res) {
   res.clearCookie('role');
   res.clearCookie('connect.sid');
+  res.clearCookie('lead');
   res.redirect('/');
 });
 
