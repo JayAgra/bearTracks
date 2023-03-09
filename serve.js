@@ -633,11 +633,8 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
       if (reqData.db == "pit") {return "pit"} else {return "main"}
     }
     let reqData = qs.parse(body);
-    console.log(reqData)
-      console.log("getting roles")
       async function checkifLeadScoutfromAPI() { await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then(data =>{checkIfLead(data.roles)})) }
-      const roles = checkifLeadScoutfromAPI()
-      console.log("got roles!")
+      const roles = await checkifLeadScoutfromAPI()
       console.log(roles)
       if (roles) {
         if (reqData.submissionID && reqData.db) {

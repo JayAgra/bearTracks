@@ -93,14 +93,16 @@
             xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 console.log("done")
+                document.getElementById(linkID).innerHTML = "Deleted!";
             } else if (xhr.status === 401) {
                 console.log("failure")
+                document.getElementById(linkID).innerHTML = "401 Access Denied";
             } else {
                 console.log("awaiting response")
+                document.getElementById(linkID).innerHTML = "Deleting...";
             }
             }
-            xhr.send('"' + 'db=' + database + '&submissionID=' + submission + '"');
-            document.getElementById(linkID).innerHTML = "Deleted!";
+            xhr.send('db=' + database + '&submissionID=' + submission);
         }
     </script>
 </body>
