@@ -61,34 +61,35 @@
         }
         function getMatches() {
             eventCode = document.getElementById("eventCode").value
-            document.getElementById("viewMatchButton").innerHTML = "Sending Request...";
+            document.getElementById("viewMatchButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/api/matches/2023/${eventCode}/qual`, true);
             xhr.withCredentials = true;
 
             xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log("done")
+                console.log("200 ok")
                 console.log(xhr.responseText)
-                document.getElementById("viewMatchButton").innerHTML = "Loaded!";
+                document.getElementById("viewMatchButton").innerHTML = "Rendering View...";
                 document.getElementById("matchHeader").insertAdjacentHTML("afterend", xhr.responseText)
                 document.getElementById("search").style.display = "none";
                 document.getElementById("results").style.display = "flex";
                 document.getElementById("viewMatchButton").innerHTML = "View";
             } else if (xhr.status === 401) {
-                console.log("failure")
-                document.getElementById("viewMatchButton").innerHTML = "401 Access Denied";
+                console.log("401 failure")
+                document.getElementById("viewMatchButton").innerHTML = "401 Unauthorized";
             } else if (xhr.status === 400) {
-                console.log("failure")
+                console.log("400 failure")
                 document.getElementById("viewMatchButton").innerHTML = "400 Bad Request";
             } else if (xhr.status === 500) {
-                console.log("500 internal server error")
-                document.getElementById("viewMatchButton").innerHTML = "Failed!";
+                console.log("500 failure")
+                document.getElementById("viewMatchButton").innerHTML = "500 Internal Server Error";
             } else {
                 console.log("awaiting response")
-                document.getElementById("viewMatchButton").innerHTML = "Loading Data...";
+                document.getElementById("viewMatchButton").innerHTML = "Downloading Data...";
             }
             }
+
             xhr.send()
         }
     </script>

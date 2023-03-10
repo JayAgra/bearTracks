@@ -543,6 +543,7 @@ app.get('/browse', checkAuth, function(req, res) {
 });
  
 app.get('/teams', checkAuth, function(req, res) {
+  /*
   if (req.query.event) {
       const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? AND season=? GROUP BY team ORDER BY AVG(weight) DESC`;
       const values = [req.query.event, season];
@@ -572,6 +573,8 @@ app.get('/teams', checkAuth, function(req, res) {
   res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
   return;
   }
+  */
+  res.sendFile('src/teams.html', { root: __dirname });
 });
 
 app.get('/manage', checkAuth, async function(req, res) {

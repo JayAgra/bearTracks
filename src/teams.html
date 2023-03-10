@@ -57,37 +57,35 @@
 
 <body id="body" class="dark-mode">
     <script>themeHandle()</script>
-    <div class="container" id="search" style="display: <%= displaySearch %>;"> <!--flex is shown-->
+    <div class="container" id="search" style="display: flex;"> <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h4 style="color: red; display: <%= errorDisplay %>"><%= errorMessage %></h4>
             <h4>Team Data</h4><br>
             <fieldset>
                 <label>Event Code: </label><br>
-                <select name="event">
+                <select name="event" id="eventCode">
                     <option value="CADA" selected>CADA - Sacramento Regional</option>
                     <option value="CASJ">CASJ - Silicon Valley Regional</option>
                 </select>
             </fieldset>
-            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Search</button><br>
+            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewTeamsButton" onclick="getTeamRanks()">View</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
         </form>
         <br><br>
     </div>
-    <div class="container" id="results" style="display: <%= displayResults %>;"> <!--flex is shown-->
+    <div class="container" id="results" style="display: none;"> <!--flex is shown-->
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4>Match Data</h4><br>
             <fieldset>
             <fieldset>
-                <h3>Top teams at <%= resultsEventCode %></h3>
+                <h3 id="eventCodeDisplay"></h3>
                 <table>
-                    <tr>
+                    <tr id="preInsert">
                       <th>Team Number</th>
                       <th colspan="2">Match Performance Score (Avg)</th> 
                     </tr>
-                    <%- resultsBody %>
                   </table>
             </fieldset>
             <!--buttons-->
@@ -99,6 +97,40 @@
     <script>
         function goToHome() {
             window.location.href = "/";
+        }
+        function getTeamRanks() {
+            eventCode = document.getElementById("eventCode").value
+            document.getElementById("viewTeamsButton").innerHTML = "Requesting Data...";
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/api/teams/2023/${eventCode}`, true);
+            xhr.withCredentials = true;
+
+            xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("200 ok")
+                console.log(xhr.responseText)
+                document.getElementById("viewTeamsButton").innerHTML = "Rendering View...";
+                document.getElementById("preInsert").insertAdjacentHTML("afterend", xhr.responseText)
+                document.getElementById("search").style.display = "none";
+                document.getElementById("results").style.display = "flex";
+                document.getElementById("eventCodeDisplay").innerHTML = `Top teams at ${eventCode}`;
+                document.getElementById("viewTeamsButton").innerHTML = "View";
+            } else if (xhr.status === 401) {
+                console.log("401 failure")
+                document.getElementById("viewTeamsButton").innerHTML = "401 Unauthorized";
+            } else if (xhr.status === 400) {
+                console.log("400 failure")
+                document.getElementById("viewTeamsButton").innerHTML = "400 Bad Request";
+            } else if (xhr.status === 500) {
+                console.log("500 failure")
+                document.getElementById("viewTeamsButton").innerHTML = "500 Internal Server Error";
+            } else {
+                console.log("awaiting response")
+                document.getElementById("viewTeamsButton").innerHTML = "Downloading Data...";
+            }
+            }
+
+            xhr.send()
         }
     </script>
 </body>
