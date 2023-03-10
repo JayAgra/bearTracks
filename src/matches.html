@@ -61,7 +61,7 @@
         }
         function getMatches() {
             eventCode = document.getElementById("eventCode").value
-            document.getElementById("viewMatchButton").innerHTML = "Getting Data...";
+            document.getElementById("viewMatchButton").innerHTML = "Sending Request...";
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/api/matches/2023/${eventCode}/qual`, true);
             xhr.withCredentials = true;
@@ -86,7 +86,7 @@
                 document.getElementById("viewMatchButton").innerHTML = "Failed!";
             } else {
                 console.log("awaiting response")
-                document.getElementById("viewMatchButton").innerHTML = "Loading...";
+                document.getElementById("viewMatchButton").innerHTML = "Loading Data...";
             }
             }
             xhr.send()
