@@ -626,18 +626,6 @@ app.get('/manage', checkAuth, async function(req, res) {
   }
 });
 
-app.get('/confirm', checkAuth, function(req, res) {
-  if (req.query.db && req.query.id) {
-    res.render('../src/confirm.ejs', { 
-      root: __dirname, 
-      db: req.query.db, 
-      submissionID: req.query.id
-    });
-  } else {
-    res.redirect('/manage');
-  }
-});
-
 app.post('/deleteSubmission', checkAuth, async function(req, res) {
   let body = '';
   req.on('data', chunk => {
@@ -829,7 +817,7 @@ app.get('/api/matches/:season/:event/:level', checkAuth, function(req, res) {
   });
   request.end();
   dbody.on('update', function() {
-      if (invalidJSON(data)) {res.end('{ "ERROR": "ERROR" }')} else {res.json(JSON.parse(data));}
+      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {res.status(200).json(JSON.parse(data));}
   });
 });
 
@@ -837,7 +825,11 @@ app.get('/api/data/:season/:event/:team', checkAuth, function(req, res) {
   const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
   const values = [req.params.team, req.params.event, req.params.season];
   db.get(stmt, values, (err, dbQueryResult) => {
-    res.json(JSON.parse(dbQueryResult));
+    if (err) {
+      res.status(500).send("got an error from query");
+    } else {
+      res.status(200).json(JSON.parse(dbQueryResult));
+    }
   });
 });
 
@@ -845,8 +837,40 @@ app.get('/api/pit/:season/:event/:team', checkAuth, function(req, res) {
   const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
   const values = [req.params.team, req.params.event, req.params.season];
   db.get(stmt, values, (err, dbQueryResult) => {
-    res.json(JSON.parse(dbQueryResult));
+    if (err) {
+      res.status(500).send("got an error from query");
+    } else {
+      res.status(200).json(JSON.parse(dbQueryResult));
+    }
   });
+});
+
+app.get('/api/teams/:season/:event', checkAuth, function(req, res) {
+  if (req.params.event) {
+      const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? AND season=? GROUP BY team ORDER BY AVG(weight) DESC`;
+      const requestedEvent = sanitize(req.params.event);
+      const values = [requestedEvent, season];
+      db.all(stmt, values, (err, dbQueryResult) => {
+        if (err) {
+          res.status(500).send("got an error from query");
+          return;
+        } else {
+          if (typeof dbQueryResult == "undefined") {
+            res.status(204).send("no query results");
+          } else {
+            var htmltable = ``;
+            for (var i = 0; i < dbQueryResult.length; i++) {
+              htmltable = htmltable + `<tr><td><a href="/browse?team=${dbQueryResult[i]['team']}&event=${requestedEvent}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['team']}</a></td><td>${(dbQueryResult[i]['AVG(weight)']).toFixed(2)}%</td><td><progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
+            }
+            res.status(200).setHeader('Content-type','text/plain').send(htmltable);
+          }
+        }
+      });
+  } else {
+    res.status(400).send(
+      "parameters not provided, or invalid!"
+    );
+  }
 });
 
 //auth functions
