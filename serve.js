@@ -543,37 +543,6 @@ app.get('/browse', checkAuth, function(req, res) {
 });
  
 app.get('/teams', checkAuth, function(req, res) {
-  /*
-  if (req.query.event) {
-      const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? AND season=? GROUP BY team ORDER BY AVG(weight) DESC`;
-      const values = [req.query.event, season];
-      db.all(stmt, values, (err, dbQueryResult) => {
-        if (err) {
-          res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
-          return;
-        } else {
-          if (typeof dbQueryResult == "undefined") {
-            res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
-            return;
-          } else {
-            var htmltable = ``;
-            for (var i = 0; i < dbQueryResult.length; i++) {
-              htmltable = htmltable + `<tr><td><a href="/browse?team=${dbQueryResult[i]['team']}&event=${req.query.event}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['team']}</a></td><td>${(dbQueryResult[i]['AVG(weight)']).toFixed(2)}%</td><td><progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
-            }
-            res.render('../src/teams.ejs', {
-              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-              resultsEventCode: `${req.query.event}`,
-              resultsBody: htmltable
-            })
-            return;
-          }
-        }
-      });
-  } else {
-  res.render('../src/teams.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsEventCode: 0, resultsBody: 0 })
-  return;
-  }
-  */
   res.sendFile('src/teams.html', { root: __dirname });
 });
 

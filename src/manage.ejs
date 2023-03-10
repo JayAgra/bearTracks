@@ -105,7 +105,7 @@
                 document.getElementById(linkID).innerHTML = "Deleting...";
             }
             }
-            xhr.send('db=' + database + '&submissionID=' + submission).then(document.getElementById(linkID).innerHTML = "Sending Request...");
+            xhr.send('db=' + database + '&submissionID=' + submission);
         }
     </script>
 </body>
