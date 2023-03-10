@@ -669,7 +669,7 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
 
 //get list of matches
 app.get('/matches', checkAuth, function(req, res) {
-  if (req.query.event) {
+  /*if (req.query.event) {
     const eventCode = req.query.event
     var dbody = new EventEmitter();
     var options = {
@@ -720,7 +720,8 @@ app.get('/matches', checkAuth, function(req, res) {
     root: __dirname, displaySelect: 'flex', displayResults: 'none', matchesBody: null
   })
   return;
-  }
+  }*/
+  res.sendFile('src/matches.html', { root: __dirname });
 });
 
 //serve the uploaded images
