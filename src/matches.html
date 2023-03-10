@@ -31,25 +31,23 @@
 </head>
 <body id="body" class="dark-mode">
     <script>themeHandle()</script>
-    <div class="container" id="search" style="display: <%= displaySelect %>;"> <!--flex is shown-->
-        <form>
+    <div class="container" id="search" style="display: flex;">
             <h1 style="font-family: 'raleway-300'">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
             <fieldset>
                 <label>Event Code: </label><br>
-                <select name="event">
+                <select name="event" id="eventCode">
                     <option value="CADA" selected>CADA - Sacramento Regional</option>
                     <option value="CASJ">CASJ - Silicon Valley Regional</option>
                 </select><br>   
-                <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">View</button><br>
+                <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewMatchButton" onclick="getMatches()">View</button><br>
                 <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
             </fieldset>
-        </form>
         <br><br>
     </div>
-    <div class="container" id="results" style="display: <%= displayResults %>;"> <!--flex is shown-->
+    <div class="container" id="results" style="display: none;"> <!--flex is shown-->
         <div class="dummy">
-            <h1 style="font-family: 'raleway-300'">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
-            <%- matchesBody %>
+            <h1 style="font-family: 'raleway-300'" id="matchHeader">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
+            
             <!--buttons-->
             <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='goToHome()'>Back</button><br>
         <br><br>
@@ -58,6 +56,37 @@
     <script>
         function goToHome() {
             window.location.href = "/";
+        }
+        function getMatches() {
+            eventCode = document.getElementById("eventCode").value
+            document.getElementById("viewMatchButton").innerHTML = "Preparing Request...";
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/api/matches/2023/${eventCode}/qual`, true);
+            xhr.withCredentials = true;
+
+            xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("done")
+                document.getElementById("viewMatchButton").innerHTML = "Loaded!";
+                document.getElementById("matchHeader").insertAdjacentHTML("afterend", xhr.responseText)
+                document.getElementById("search").style.display = "none";
+                document.getElementById("results").style.display = "flex";
+                document.getElementById("viewMatchButton").innerHTML = "View";
+            } else if (xhr.status === 401) {
+                console.log("failure")
+                document.getElementById("viewMatchButton").innerHTML = "401 Access Denied";
+            } else if (xhr.status === 400) {
+                console.log("failure")
+                document.getElementById("viewMatchButton").innerHTML = "400 Bad Request";
+            } else if (xhr.status === 500) {
+                console.log("500 internal server error")
+                document.getElementById("viewMatchButton").innerHTML = "Failed!";
+            } else {
+                console.log("awaiting response")
+                document.getElementById("viewMatchButton").innerHTML = "Loading...";
+            }
+            }
+            xhr.send()
         }
     </script>
 </body>

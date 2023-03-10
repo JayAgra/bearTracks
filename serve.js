@@ -707,7 +707,7 @@ app.get('/matches', checkAuth, function(req, res) {
           const parsedData = JSON.parse(data);
           var matchesContent = "";
           for (let i = 0; i < parsedData.Schedule.length; i++) {
-            matchesContent = matchesContent + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #ff0000;"><a href="browse?team=${parsedData.Schedule[i].teams[0].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[1].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[2].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #0000ff;"><a href="browse?team=${parsedData.Schedule[i].teams[3].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[4].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[5].teamNumber}&page=0&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
+            matchesContent = matchesContent + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #ff0000;"><a href="browse?team=${parsedData.Schedule[i].teams[0].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[1].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[2].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #0000ff;"><a href="browse?team=${parsedData.Schedule[i].teams[3].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[4].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[5].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
           }
           res.render('../src/matches.ejs', { 
             root: __dirname, displaySelect: 'none', displayResults: 'flex', matchesBody: matchesContent
@@ -817,7 +817,14 @@ app.get('/api/matches/:season/:event/:level', checkAuth, function(req, res) {
   });
   request.end();
   dbody.on('update', function() {
-      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {res.status(200).json(JSON.parse(data));}
+      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
+        const parsedData = JSON.parse(data);
+        var matchesContent = "";
+        for (let i = 0; i < parsedData.Schedule.length; i++) {
+          matchesContent = matchesContent + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #ff0000;"><a href="browse?team=${parsedData.Schedule[i].teams[0].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[1].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[2].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #0000ff;"><a href="browse?team=${parsedData.Schedule[i].teams[3].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[4].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[5].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
+        }
+        res.status(200).setHeader('Content-type','text/plain').send(matchesContent);
+      }
   });
 });
 
