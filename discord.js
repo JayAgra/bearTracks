@@ -53,7 +53,7 @@ function invalidJSON(str) {
 }
 
 function defaultSeason(fallback) {
-    if (typeof fallback == 'undefined') {
+    if (fallback == null || typeof fallback == 'undefined') {
         return season;
     } else {
         return fallback;
@@ -61,7 +61,7 @@ function defaultSeason(fallback) {
 }
 
 function defaultEvent(fallback, interaction) {
-    if (typeof fallback == 'undefined') {
+    if (fallback == null || typeof fallback == 'undefined') {
         if (currentComp == "NONE") {
             return interaction.reply({
                 content: "We are not competing, you must specify an event code.",

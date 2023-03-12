@@ -74,7 +74,7 @@ function teamData(season, team, event, interaction) {
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         return interaction.reply({
-          content: "Error getting data!",
+          content: "Error getting data (database open)!",
           ephemeral: true
         })
       }
@@ -83,7 +83,7 @@ function teamData(season, team, event, interaction) {
         if (err) {
           console.log(err);
           return interaction.reply({
-            content: "Error getting data!",
+            content: "Error getting data (query stage)!",
             ephemeral: true
           })
         } else {
@@ -135,7 +135,7 @@ function teamData(season, team, event, interaction) {
           return interaction.reply({embeds: [teamEmbed]});
           } else {
             return interaction.reply({
-              content: "Error getting data!",
+              content: "No results!",
               ephemeral: true
             })
           }
@@ -174,7 +174,7 @@ function pitData(season, team, event, interaction) {
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         return interaction.reply({
-          content: `Error getting data! ${err}`,
+          content: `Error getting data (database open)! ${err}`,
           ephemeral: true
         })
       }
@@ -183,7 +183,7 @@ function pitData(season, team, event, interaction) {
         if (err) {
           console.log(err);
           return interaction.reply({
-            content: `Error getting data! ${err}`,
+            content: `Error getting data (query stage)! ${err}`,
             ephemeral: true
           })
         } else {
@@ -207,7 +207,7 @@ function pitData(season, team, event, interaction) {
             inline: true
           },{
             name: 'Images',
-            value: `[Image 1](${baseURL}images/${pitresult.image1}\n[Image 2](${baseURL}images/${pitresult.image2})\n[Image 3](${baseURL}images/${pitresult.image3}\n[Image 4](${baseURL}images/${pitresult.image4}\n[Image 5](${baseURL}images/${pitresult.image5}`,
+            value: `[Image 1](${baseURL}images/${pitresult.image1})\n[Image 2](${baseURL}images/${pitresult.image2})\n[Image 3](${baseURL}images/${pitresult.image3})\n[Image 4](${baseURL}images/${pitresult.image4})\n[Image 5](${baseURL}images/${pitresult.image5})`,
             inline: true
           })
           .setTimestamp()
@@ -216,7 +216,7 @@ function pitData(season, team, event, interaction) {
           } else {
             console.log(err, pitresult);
             return interaction.reply({
-              content: `Error getting data! ${err} ${pitresult}`,
+              content: `No results!`,
               ephemeral: true
             })
           }
