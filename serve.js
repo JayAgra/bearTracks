@@ -642,12 +642,12 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
       }
       function selectDeductionAmount() {if (reqData.db == "pit") {return 35} else {return 25}}
       const isLeadScout = await checkIfLeadScout()
-      console.log(isLeadScout)
       if (isLeadScout) {
         if (reqData.submissionID && reqData.db) {
           const stmt = `SELECT discordID FROM ${sanitizeDBName()} WHERE id=?`;
           const values = [reqData.submissionID];
           db.get(stmt, values, (err, result) => {
+            console.log(result)
             const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${result}"`;
             db.run(getUserIDstmt, (err) => {if(err){console.log(err);return;}});
           });
