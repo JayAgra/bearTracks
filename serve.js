@@ -195,7 +195,7 @@ function addToDataBase(req, next) {
       }
     }
   });
-  db.run(`INSERT OR IGNORE INTO scouts(discordID, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
+  db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, 0, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
   return next();
 }
 
