@@ -825,7 +825,7 @@ app.get('/api/teams/:season/:event', checkAuth, function(req, res) {
 });
 
 app.get('/api/scouts', checkAuth, function(req, res) {
-  const stmt = `SELECT discordID, discriminator, username, score, MAX(score) FROM scouts ORDER BY score DESC`;
+  const stmt = `SELECT discordID, discriminator, username, score FROM scouts ORDER BY score DESC`;
   db.all(stmt, (err, dbQueryResult) => {
     if (err) {
       res.status(500).send("got an error from query");
@@ -836,7 +836,7 @@ app.get('/api/scouts', checkAuth, function(req, res) {
       } else {
         var htmltable = ``;
         for (var i = 0; i < dbQueryResult.length; i++) {
-          htmltable = htmltable + `<tr><td><a href="/scoutProfile?discordID=${dbQueryResult[i]['discordID']}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['username']}#${dbQueryResult[i]['discriminator']}</a></td><td>${(dbQueryResult[i]['score']).toFixed(2)}</td><td><progress id="scoreWt" max="${dbQueryResult[i]['MAX(score)']}" value="${dbQueryResult[i]['score']}"></progress></td>`;
+          htmltable = htmltable + `<tr><td><a href="/scoutProfile?discordID=${dbQueryResult[i]['discordID']}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['username']}#${dbQueryResult[i]['discriminator']}</a></td><td>${(dbQueryResult[i]['score']).toFixed(2)}</td></tr>`;
         }
         res.status(200).setHeader('Content-type','text/plain').send(htmltable);
       }
