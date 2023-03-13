@@ -291,7 +291,7 @@ app.post('/submitPit', checkAuth, imageUploads, function(req, res) {
     }
     discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
   });
-  let pointStmt = `UPDATE scouts SET score = score + 35x WHERE id=?`;
+  let pointStmt = `UPDATE scouts SET score = score + 35 WHERE id=?`;
   let pointValues = [req.user.id];
   db.run(pointStmt, pointValues, function(err) {
       if (err) {
