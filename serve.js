@@ -648,7 +648,7 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
           const values = [reqData.submissionID];
           db.get(stmt, values, (err, result) => {
             console.log(result)
-            const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${result}"`;
+            const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${result.discordID}"`;
             db.run(getUserIDstmt, (err) => {if(err){console.log(err);return;}});
           });
           const deleteStmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
