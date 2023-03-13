@@ -55,13 +55,12 @@
     </style>
 </head>
 
-<body id="body" class="dark-mode">
+<body id="body" class="dark-mode" onload="getTeamRanks()">
     <script>themeHandle()</script>
     <div class="container" id="search" style="display: flex;"> <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4>Scout Ranks</h4><br>
-            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewTeamsButton" onclick="getTeamRanks()">View</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
         </form>
@@ -82,7 +81,7 @@
                   </table>
             </fieldset>
             <!--buttons-->
-            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewTeamsButton" onclick="getTeamRanks()">Reload</button><br>
+            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewScoutsButton" onclick="getTeamRanks()">Reload</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
         <br><br>
@@ -93,8 +92,7 @@
             window.location.href = "/";
         }
         function getTeamRanks() {
-            eventCode = document.getElementById("eventCode").value
-            document.getElementById("viewTeamsButton").innerHTML = "Requesting Data...";
+            document.getElementById("viewScoutsButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/api/scouts`, true);
             xhr.withCredentials = true;
@@ -103,24 +101,24 @@
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 console.log("200 ok")
                 console.log(xhr.responseText)
-                document.getElementById("viewTeamsButton").innerHTML = "Rendering View...";
+                document.getElementById("viewScoutsButton").innerHTML = "Rendering View...";
                 document.getElementById("preInsert").insertAdjacentHTML("afterend", xhr.responseText)
                 document.getElementById("search").style.display = "none";
                 document.getElementById("results").style.display = "flex";
                 document.getElementById("eventCodeDisplay").innerHTML = `Top scouts`;
-                document.getElementById("viewTeamsButton").innerHTML = "View";
+                document.getElementById("viewScoutsButton").innerHTML = "View";
             } else if (xhr.status === 401) {
                 console.log("401 failure")
-                document.getElementById("viewTeamsButton").innerHTML = "401 Unauthorized";
+                document.getElementById("viewScoutsButton").innerHTML = "401 Unauthorized";
             } else if (xhr.status === 400) {
                 console.log("400 failure")
-                document.getElementById("viewTeamsButton").innerHTML = "400 Bad Request";
+                document.getElementById("viewScoutsButton").innerHTML = "400 Bad Request";
             } else if (xhr.status === 500) {
                 console.log("500 failure")
-                document.getElementById("viewTeamsButton").innerHTML = "500 Internal Server Error";
+                document.getElementById("viewScoutsButton").innerHTML = "500 Internal Server Error";
             } else {
                 console.log("awaiting response")
-                document.getElementById("viewTeamsButton").innerHTML = "Downloading Data...";
+                document.getElementById("viewScoutsButton").innerHTML = "Downloading Data...";
             }
             }
 
