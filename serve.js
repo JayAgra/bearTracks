@@ -629,7 +629,6 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
       if (reqData.db == "pit") {return "pit"} else {return "main"}
     }
     let reqData = qs.parse(body);
-    console.log("got request")
       async function checkIfLeadScout() {
         if (req.cookies.lead) {
           if (req.cookies.lead == leadToken) {
@@ -641,15 +640,20 @@ app.post('/deleteSubmission', checkAuth, async function(req, res) {
           return false;
         }
       }
+      function selectDeductionAmount() {if (reqData.db == "pit") {return 35} else {return 25}}
       const isLeadScout = await checkIfLeadScout()
       console.log(isLeadScout)
       if (isLeadScout) {
-        console.log("is ok")
         if (reqData.submissionID && reqData.db) {
-          console.log("has params")
-          const stmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
+          const stmt = `SELECT discordID FROM ${sanitizeDBName()} WHERE id=?`;
           const values = [reqData.submissionID];
-          db.run(stmt, values, (err) => {if(err){console.log(err);return;}});
+          db.get(stmt, values, (err, result) => {
+            const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${result}"`;
+            db.run(getUserIDstmt, (err) => {if(err){console.log(err);return;}});
+          });
+          const deleteStmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
+          const deleteValues = [reqData.submissionID];
+          db.run(deleteStmt, deleteValues, (err) => {if(err){console.log(err);return;}});
           res.status(200).send("done!");
         } else {
           res.status(400).send("Bad Request!");
