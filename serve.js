@@ -259,6 +259,14 @@ app.post('/submit', checkAuth, function(req, res) {
             discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
             seasonProcess.weightScores(this.lastID)
         });
+        let pointStmt = `UPDATE scouts SET score = score + 25 WHERE id=?`;
+        let pointValues = [req.user.id];
+        db.run(pointStmt, pointValues, function(err) {
+            if (err) {
+              logErrors(err.message);
+              res.end(err.message);
+            }
+        });
         res.sendFile('src/submitted.html', { 
           root: __dirname
         })
@@ -282,6 +290,14 @@ app.post('/submitPit', checkAuth, imageUploads, function(req, res) {
       res.end('pit form error! ' + err.message);
     }
     discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
+  });
+  let pointStmt = `UPDATE scouts SET score = score + 35x WHERE id=?`;
+  let pointValues = [req.user.id];
+  db.run(pointStmt, pointValues, function(err) {
+      if (err) {
+        logErrors(err.message);
+        res.end(err.message);
+      }
   });
   res.sendFile('src/submitted.html', { 
     root: __dirname
