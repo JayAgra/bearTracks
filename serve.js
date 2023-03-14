@@ -864,7 +864,7 @@ app.get('/api/scoutByID/:discordID', checkAuth, function(req, res) {
       if (typeof dbQueryResult == "undefined") {
         res.status(204).send("no query results");
       } else {
-        res.status(200).setHeader('Content-type','text/plain').send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordAvatarId}.png?size=512"></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
+        res.status(200).setHeader('Content-type','text/plain').send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512"></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
       }
     }
   });

@@ -29,7 +29,7 @@
         }
     </style>
 </head>
-<body id="body" class="dark-mode">
+<body id="body" class="dark-mode" onload="getScoutData()">
     <script>themeHandle()</script>
     <div class="container" id="search" style="display: flex;">
         <div class="maincontent">
@@ -40,7 +40,7 @@
                     <option value="CADA" selected>CADA - Sacramento Regional</option>
                     <option value="CASJ">CASJ - Silicon Valley Regional</option>
                 </select><br>   
-                <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewMatchButton" onclick="getMatches()">View</button><br>
+                <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewMatchButton" onclick="getScoutData()">View</button><br>
                 <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
             </fieldset>
         </div>
@@ -59,7 +59,7 @@
         function goToHome() {
             window.location.href = "/";
         }
-        function getMatches() {
+        function getScoutData() {
             let params = new URLSearchParams(document.location.search);
             let scoutDiscordID = params.get("discordID")
             document.getElementById("viewMatchButton").innerHTML = "Requesting Data...";
