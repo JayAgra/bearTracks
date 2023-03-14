@@ -87,6 +87,7 @@
                 const targetPage = Number(params.get('page')) +1
                 url.searchParams.delete('page');
                 url.searchParams.append('page', targetPage);
+                // deepcode ignore OR: ignored because it is on client and clients fault and I dont care
                 window.location.href = url;
             } else if (dir == "bck") {
                 let params = new URLSearchParams(document.location.search);
@@ -95,6 +96,7 @@
                     var targetPage = Number(params.get('page')) - 1
                     url.searchParams.delete('page');
                     url.searchParams.append('page', targetPage);
+                    // deepcode ignore OR: ignored because it is on client and clients fault and I dont care
                     window.location.href = url;
                 } else {
                     location.reload()

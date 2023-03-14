@@ -40,7 +40,7 @@ function exportSubmissionJSON() {
     downloadFileLink.href = downloadURL;
     downloadFileLink.innerHTML = "Ready! Click again to download"
 }
-function uploadSubmissionJSON() {
+/*function uploadSubmissionJSON() {
     const fileUploadInput = document.getElementById('jsonScoutFile');
     fileUploadInput.disabled = false;
     fileUploadInput.click();
@@ -63,4 +63,4 @@ function uploadSubmissionJSON() {
             })
         }
     })
-}
+}*/
