@@ -773,6 +773,11 @@ client.on('interactionCreate', async interaction => {
                             });
                         } else {
                             function ifUndefinedZero (num) {if (num == undefined) {return 0;} else {return num}}
+                            function getRandomInt(min, max) {
+                                min = Math.ceil(min);
+                                max = Math.floor(max);
+                                return Math.floor(Math.random() * (max - min) + min);
+                              }                              
                             var array = [];
                             const result = getRandomInt(0,16).toString(2).split('');
                             array.push(ifUndefinedZero(result[3]))
