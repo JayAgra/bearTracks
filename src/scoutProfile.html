@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Matches - 766 Scouting</title>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Scouting">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#121212" id="themeMeta">
+    <link rel="stylesheet" href="float.min.css" type="text/css">
+    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="apple-touch-startup-image" href="public/launch.png">
+    <script src="form.min.js"></script>
+    <style>
+        a,a:visited {
+            text-align: center;
+            text-decoration: none;
+            font-size: 6vh;
+            border-bottom: #fff;
+            color: inherit
+        }
+        body {
+            text-align: center;
+        }
+    </style>
+</head>
+<body id="body" class="dark-mode">
+    <script>themeHandle()</script>
+    <div class="container" id="search" style="display: flex;">
+        <div class="maincontent">
+            <h1 style="font-family: 'raleway-300'">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
+            <fieldset>
+                <label>Event Code: </label><br>
+                <select name="event" id="eventCode">
+                    <option value="CADA" selected>CADA - Sacramento Regional</option>
+                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                </select><br>   
+                <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewMatchButton" onclick="getMatches()">View</button><br>
+                <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
+            </fieldset>
+        </div>
+        <br><br>
+    </div>
+    <div class="container" id="results" style="display: none;"> <!--flex is shown-->
+        <div class="dummy">
+            <h1 style="font-family: 'raleway-300'" id="matchHeader">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
+            
+            <!--buttons-->
+            <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" onclick='goToHome()'>Back</button><br>
+        <br><br>
+    </div>
+    </div>
+    <script>
+        function goToHome() {
+            window.location.href = "/";
+        }
+        function getMatches() {
+            eventCode = document.getElementById("eventCode").value
+            document.getElementById("viewMatchButton").innerHTML = "Requesting Data...";
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/api/scoutByID/${scoutDiscordID}`, true);
+            xhr.withCredentials = true;
+
+            xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("200 ok")
+                console.log(xhr.responseText)
+                document.getElementById("viewMatchButton").innerHTML = "Rendering View...";
+                document.getElementById("matchHeader").insertAdjacentHTML("afterend", xhr.responseText)
+                document.getElementById("search").style.display = "none";
+                document.getElementById("results").style.display = "flex";
+                document.getElementById("viewMatchButton").innerHTML = "View";
+            } else if (xhr.status === 401) {
+                console.log("401 failure")
+                document.getElementById("viewMatchButton").innerHTML = "401 Unauthorized";
+            } else if (xhr.status === 400) {
+                console.log("400 failure")
+                document.getElementById("viewMatchButton").innerHTML = "400 Bad Request";
+            } else if (xhr.status === 500) {
+                console.log("500 failure")
+                document.getElementById("viewMatchButton").innerHTML = "500 Internal Server Error";
+            } else {
+                console.log("awaiting response")
+                document.getElementById("viewMatchButton").innerHTML = "Downloading Data...";
+            }
+            }
+
+            xhr.send()
+        }
+    </script>
+</body>
+</html>

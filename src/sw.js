@@ -8,7 +8,8 @@ var filesToCache = [
   'form.min.js',
   'fonts/Raleway-300.ttf',
   'fonts/Raleway-500.ttf',
-  'settings'
+  'settings',
+  'matches '
 ];
 
 console.log('service worker executed')

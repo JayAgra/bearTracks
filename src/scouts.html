@@ -60,7 +60,7 @@
     <div class="container" id="search" style="display: flex;"> <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h4>Scout Ranks</h4><br>
+            <h4>Loading Scout Data...</h4><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
         </form>
@@ -69,16 +69,7 @@
     <div class="container" id="results" style="display: none;"> <!--flex is shown-->
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <fieldset>
-            <fieldset>
-                <h3 id="eventCodeDisplay"></h3>
-                <table>
-                    <tr id="preInsert">
-                      <th>Scout Name</th>
-                      <th>Score</th> 
-                    </tr>
-                  </table>
-            </fieldset>
+            <fieldset id="preInsert">
             <!--buttons-->
             <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewScoutsButton" onclick="window.location.reload()">Reload</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
@@ -91,9 +82,11 @@
             window.location.href = "/";
         }
         function getTeamRanks() {
+            let params = new URLSearchParams(document.location.search);
+            let discordID = params.get("discordID")
             document.getElementById("viewScoutsButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/scouts`, true);
+            xhr.open("GET", `/api/scoutByID/${discordID}`, true);
             xhr.withCredentials = true;
 
             xhr.onreadystatechange = () => {
