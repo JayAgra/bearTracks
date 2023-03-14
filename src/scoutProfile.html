@@ -60,8 +60,8 @@
             window.location.href = "/";
         }
         function getMatches() {
-            let scoutDiscordID = new URLSearchParams(document.location.search);
-            let discordID = params.get("discordID")
+            let params = new URLSearchParams(document.location.search);
+            let scoutDiscordID = params.get("discordID")
             document.getElementById("viewMatchButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/api/scoutByID/${scoutDiscordID}`, true);
