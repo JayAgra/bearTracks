@@ -86,7 +86,10 @@ new SlashCommandBuilder()
 		.setRequired(false)),
 new SlashCommandBuilder()
 	.setName('info')
-	.setDescription('get general bot data')
+	.setDescription('get general bot data'),
+new SlashCommandBuilder()
+	.setName('slots')
+	.setDescription('play slots with scouting points')
 ]
 .map(command => command.toJSON());
 

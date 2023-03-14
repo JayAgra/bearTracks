@@ -1,5 +1,7 @@
 const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
+const sqlite3 = require('sqlite3');
+let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
 const seasonData = require("./2023.js");
 
 function logInfo(info) {
@@ -743,7 +745,66 @@ client.on('interactionCreate', async interaction => {
     interaction.reply({
         embeds: [infoEmbed]
     });
-  } else {
+    } else if (interaction.commandName === 'slots') {
+        const stmt = `SELECT score FROM scouts WHERE discordID=?`;
+        const values = [interaction.user.id];
+        db.get(stmt, values, (err, dbQueryResult) => {
+          if (err) {
+            interaction.reply({
+                content: 'Error finding you in the database!',
+                ephemeral: true
+            });
+            return;
+          } else {
+            if (typeof dbQueryResult == "undefined") {
+                interaction.reply({
+                    content: 'Error finding you in the database!',
+                    ephemeral: true
+                });
+            } else {
+                if (dbQueryResult.score >= 25) {
+                    let pointDeductStmt = `UPDATE scouts SET score = score - 25 WHERE discordID=?`;
+                    let pointDeductValues = [interaction.user.id];
+                    db.run(pointDeductStmt, pointDeductValues, function(err) {
+                        if (err) {
+                            interaction.reply({
+                                content: 'Error removing points, betting failed!',
+                                ephemeral: true
+                            });
+                        } else {
+                            function ifUndefinedZero (num) {if (num == undefined) {return 0;} else {return num}}
+                            var array = [];
+                            const result = getRandomInt(0,16).toString(2).split('');
+                            array.push(ifUndefinedZero(result[3]))
+                            array.push(ifUndefinedZero(result[2]))
+                            array.push(ifUndefinedZero(result[1]))
+                            array.push(ifUndefinedZero(result[0]))
+                            if (array.join('') == '0000' || array.join('') == '1111') {
+                                let addWinPointsStmt = `UPDATE scouts SET score = score + 222 WHERE discordID=?`;
+                                let addWinPointsVals = [interaction.user.id];
+                                db.run(addWinPointsStmt, addWinPointsVals, function(err) {});
+                                interaction.reply({
+                                    content: `You won 222 coins.\nRoll: ${array.join(' - ')}`,
+                                    ephemeral: true
+                                });
+                            } else {
+                                interaction.reply({
+                                    content: `You lost.\nRoll: ${array.join(' - ')}`,
+                                    ephemeral: true
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    interaction.reply({
+                        content: `You are poor and only have ${dbQueryResult.score} points. You need 25 to gamble.`,
+                        ephemeral: true
+                    });
+                }
+            }
+          }
+        });
+    } else {
       interaction.reply({
           content: 'You have been lied to.\nThis feature is not yet supported because the devs are on strike.\nThey need people to understand that macOS is the superior operating system. You can end this strike endlessly insulting every Windows user you know.',
           ephemeral: true
