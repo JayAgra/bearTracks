@@ -431,6 +431,11 @@ app.get('/scouts', function(req, res) {
   res.sendFile('src/scouts.html', { root: __dirname });
 });
 
+app.get('/scoutProfile', function(req, res) {
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/scoutProfile.html', { root: __dirname });
+});
+
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
