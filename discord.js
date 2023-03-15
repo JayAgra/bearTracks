@@ -758,7 +758,7 @@ client.on('interactionCreate', async interaction => {
           } else {
             if (typeof dbQueryResult == "undefined") {
                 interaction.reply({
-                    content: 'Error finding you in the database!',
+                    content: 'You are not signed in to the scouting app!',
                     ephemeral: true
                 });
             } else {
@@ -785,11 +785,11 @@ client.on('interactionCreate', async interaction => {
                             array.push(ifUndefinedZero(result[1]))
                             array.push(ifUndefinedZero(result[0]))
                             if (array.join('') == '0000' || array.join('') == '1111') {
-                                let addWinPointsStmt = `UPDATE scouts SET score = score + 222 WHERE discordID=?`;
+                                let addWinPointsStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
                                 let addWinPointsVals = [interaction.user.id];
                                 db.run(addWinPointsStmt, addWinPointsVals, function(err) {});
                                 interaction.reply({
-                                    content: `You won 222 coins.\nRoll: ${array.join(' - ')}`,
+                                    content: `You won 766 points.\nRoll: ${array.join(' - ')}\nYou now have ${dbQueryResult.score} points`,
                                     ephemeral: true
                                 });
                             } else {
@@ -802,7 +802,7 @@ client.on('interactionCreate', async interaction => {
                     });
                 } else {
                     interaction.reply({
-                        content: `You are poor and only have ${dbQueryResult.score} points. You need 25 to gamble.`,
+                        content: `You only have ${dbQueryResult.score} points. You need 50 to gamble.`,
                         ephemeral: true
                     });
                 }
