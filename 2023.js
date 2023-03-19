@@ -305,7 +305,7 @@ function weightScores(submissionID) {
 function createHTMLTable(data) {
   var html = ``;
   for (var i = 0; i < data.length; i++) {
-    html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data.game1)}</td><td>${valueToEmote(data.game2)}${valueToEmote(data.game3)}${valueToEmote(data.game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data.game6)}${valueToEmote(data.game7)}${valueToEmote(data.game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
+    html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data[i].game1)}</td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
   }
   return html;
 }
@@ -313,7 +313,7 @@ function createHTMLTable(data) {
 function createHTMLTableWithTeamNum(data) {
   var html = ``;
   for (var i = 0; i < data.length; i++) {
-    html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data.game1)}</td><td>${valueToEmote(data.game2)}${valueToEmote(data.game3)}${valueToEmote(data.game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data.game6)}${valueToEmote(data.game7)}${valueToEmote(data.game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
+    html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data[i].game1)}</td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
   }
   return html;
 }
