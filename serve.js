@@ -44,6 +44,7 @@ var EventEmitter = require("events").EventEmitter;
 const helmet = require('helmet')
 var sanitize = require("sanitize-filename");
 const leadToken = crypto.randomBytes(48).toString('hex');
+const casinoToken = crypto.randomBytes(48).toString('hex');
 var app = express();
 app.disable('x-powered-by');
 app.use(cookieParser());
@@ -70,6 +71,7 @@ app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
 app.use('/images', express.static('images'))
 app.use('/public', express.static('src/public'))
+app.use('/assets', express.static('src/assets'))
 app.use(session({
   secret: crypto.randomBytes(48).toString('hex'),
   resave: false,
@@ -434,6 +436,11 @@ app.get('/scouts', function(req, res) {
 app.get('/scoutProfile', function(req, res) {
   res.set('Cache-control', 'public, max-age=259200');
   res.sendFile('src/scoutProfile.html', { root: __dirname });
+});
+
+app.get('/blackjack', checkAuth, function(req, res) {
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/blackjack.html', { root: __dirname });
 });
 
 //allow people to get denied :)
@@ -868,6 +875,120 @@ app.get('/api/scoutByID/:discordID', checkAuth, function(req, res) {
       }
     }
   });
+});
+
+app.get('/api/casino/slots/slotSpin', checkAuth, function(req, res) {
+  const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
+  if (spin[0] == spin[1] == spin[2]) {
+    let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
+    let pointValues = [req.user.id];
+    db.run(pointStmt, pointValues, (err) => {
+      if (err) {
+        res.status(500).send("got an error from transaction");
+        return;
+      } else {
+          res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
+      }
+    });
+  } else {
+    let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
+    let pointValues = [req.user.id];
+    db.run(pointStmt, pointValues, (err) => {
+      if (err) {
+        res.status(500).send("got an error from transaction");
+        return;
+      } else {
+          res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
+      }
+    });
+  }
+});
+
+app.get('/api/casino/blackjack/startingCards', checkAuth, function(req, res) {
+  const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
+  var cards = [];
+  var cardValues = 0;
+  cards.push(possibleCards[Math.floor(Math.random() * 51)])
+  cards.push(possibleCards[Math.floor(Math.random() * 51)])
+  cards.push(possibleCards[Math.floor(Math.random() * 51)])
+  //prevent cards from being duplicated
+  if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+    while (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+      if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+        cards = [];
+        cards.push(possibleCards[Math.floor(Math.random() * 51)])
+        cards.push(possibleCards[Math.floor(Math.random() * 51)])
+        cards.push(possibleCards[Math.floor(Math.random() * 51)])
+      } else {
+        break;
+      }
+    }
+  }
+
+  for (var i = 1; i < 3; i++) {
+    if (typeof(cards[i].value) !== "number") {
+      cardValues = cardValues + 10
+    } else {
+      cardValues = cardValues + cards[i].value
+    }
+  }
+  function findDealerTotal() {if(typeof(cards[0].value) !== "number"){return 10;}else{return cards[0].value;}}
+
+  let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
+  let pointValues = [req.user.id];
+  db.run(pointStmt, pointValues, (err) => {
+    if (err) {
+      res.status(500).send("got an error from transaction");
+      return;
+    }
+  });
+
+  res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}"}`);
+});
+
+app.get('/api/casino/blackjack/newCard', checkAuth, function(req, res) {
+  const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
+  var cards = [];
+  var cardValue = 0;
+  cards.push(possibleCards[Math.floor(Math.random() * 51)])
+  if (typeof(cards[0].value) !== "number") {cardValue = 10} else {cardValue = cards[0].value}
+  res.status(200).json(`{"card": "assets/card-${cards[0].suit}_${cards[0].value}.png", "cardValue": ${cardValue}}`);
+});
+
+app.get('/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard', checkAuth, function(req, res) {
+  if (req.params.casinoToken == casinoToken) {
+    const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
+    if (((possibleCards[Math.floor(Math.random() * 51)].value) + Number(req.params.dealerCard)) < Number(req.params.playerTotal)) {
+      let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
+      let pointValues = [req.user.id];
+      db.run(pointStmt, pointValues, (err) => {
+        if (err) {
+          res.status(500).send("got an error from transaction");
+          return;
+        }
+      });
+      res.status(200).json(`{"result": "win"}`);
+    } else {
+      res.status(200).json(`{"result": "loss"}`);
+    }
+  } else {
+    res.send("you pig")
+  }
+});
+
+app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', checkAuth, function(req, res) {
+  if (req.params.cval == 21 && req.params.casinoToken == casinoToken) {
+    let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
+    let pointValues = [req.user.id];
+    db.run(pointStmt, pointValues, (err) => {
+      if (err) {
+        res.status(500).send("got an error from transaction");
+        return;
+      }
+    });
+  } else {
+    res.send("you pig")
+  }
 });
 
 //auth functions
