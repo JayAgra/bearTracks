@@ -443,6 +443,11 @@ app.get('/blackjack', checkAuth, function(req, res) {
   res.sendFile('src/blackjack.html', { root: __dirname });
 });
 
+app.get('/casino', function(req, res) {
+  res.set('Cache-control', 'public, max-age=7776000');
+  res.sendFile('src/casino.html', { root: __dirname });
+});
+
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
