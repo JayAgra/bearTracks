@@ -122,10 +122,11 @@
 
         async function checkForLoss(cardTotal, card) {
             if (cardTotal == 21) {
+                window.disableBtns = true;
                 const newPlayerCard = new Image()
                 newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
                 newPlayerCard.src = card;
-                window.disableBtns = true;
+
                 await waitMs(2000)
 
                 var audio = new Audio('assets/yummy.mp3');
@@ -157,11 +158,13 @@
                 }
                 xhr.send() 
             } else if (cardTotal > 21) {
+                window.disableBtns = true;
                 const newPlayerCard = new Image()
                 newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
                 newPlayerCard.src = card;
-                window.disableBtns = true;
+
                 await waitMs(2000)
+
                 document.getElementById("bjCanvas").style.display = "none"
                 document.getElementById("title").style.display = "inline";
                 document.getElementById("playBtn").style.display = "inline";
@@ -307,11 +310,11 @@
             var dealt = false;
             window.playerCards = ["assets/card_back.png", "assets/card_back.png"];
             var drawnCards = ["assets/card_back.png", "assets/card_back.png"];
-            if (window.disableBtns) {
-                console.log("buttons are disabled")
-            } else {
                 cvs.addEventListener('click', async function(evt) {
                     var mousePos = getMousePos(cvs, evt);
+                    if (window.disableBtns) {
+                        console.log("buttons are disabled")
+                    } else {
                     if (isInside(getMousePos(cvs, evt), dealButton)) {
                         console.log('deal button')
                         if (dealt) {
@@ -441,8 +444,8 @@
                             console.log("not yet dealt")
                         }
                     }
+                    }
                 }, false);
-            }
             }
         }
     </script>
