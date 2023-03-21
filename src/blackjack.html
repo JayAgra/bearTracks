@@ -132,6 +132,7 @@
                 var audio = new Audio('assets/yummy.mp3');
                 audio.play();
 
+                document.body.style.backgroundColor = "#121212";
                 document.getElementById("bjCanvas").style.display = "none"
                 document.getElementById("title").style.display = "inline";
                 document.getElementById("playBtn").style.display = "inline";
@@ -165,6 +166,7 @@
 
                 await waitMs(0750)
 
+                document.body.style.backgroundColor = "#121212";
                 document.getElementById("bjCanvas").style.display = "none"
                 document.getElementById("title").style.display = "inline";
                 document.getElementById("playBtn").style.display = "inline";
@@ -243,8 +245,9 @@
 
             //Clear canvas
             ctx.globalCompositeOperation = 'destination-over';
-            ctx.fillStyle = "#121212";
+            ctx.fillStyle = "#4c8232";
             ctx.fillRect(0, 0, cvs.width, cvs.height);
+            document.body.style.backgroundColor = "#4c8232";
 
             //Disable image smoothing
             ctx.imageSmoothingEnabled = false;
@@ -336,7 +339,7 @@
                                 console.log("200 ok");
 
                                 ctx.globalCompositeOperation = 'destination-over';
-                                ctx.fillStyle = "#121212";
+                                ctx.fillStyle = "#4c8232";
                                 ctx.fillRect(0, 0, cvs.width, cvs.height);
 
                                 const APIFirstCards = JSON.parse(JSON.parse(xhr.responseText));
@@ -416,6 +419,7 @@
                                 if (APINewCard.result == "win") {
                                     var audio = new Audio('assets/yummy.mp3');
                                     audio.play();
+                                    document.body.style.backgroundColor = "#121212";
                                     document.getElementById("bjCanvas").style.display = "none"
                                     document.getElementById("title").style.display = "inline";
                                     document.getElementById("playBtn").style.display = "inline";
@@ -423,6 +427,7 @@
                                     document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Win!</h3>`)
                                     document.getElementById("playBtn").onclick = function(){window.location.reload();};
                                 } else if (APINewCard.result == "loss") {
+                                    document.body.style.backgroundColor = "#121212";
                                     document.getElementById("bjCanvas").style.display = "none"
                                     document.getElementById("title").style.display = "inline";
                                     document.getElementById("playBtn").style.display = "inline";
