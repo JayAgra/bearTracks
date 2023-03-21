@@ -128,6 +128,9 @@
                 window.disableBtns = true;
                 await waitMs(2000)
 
+                var audio = new Audio('assets/yummy.mp3');
+                audio.play();
+
                 document.getElementById("bjCanvas").style.display = "none"
                 document.getElementById("title").style.display = "inline";
                 document.getElementById("playBtn").style.display = "inline";
@@ -400,13 +403,15 @@
                             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                                 const APINewCard = await JSON.parse(JSON.parse(xhr.responseText))
                                 if (APINewCard.result == "win") {
+                                    var audio = new Audio('assets/yummy.mp3');
+                                    audio.play();
                                     document.getElementById("bjCanvas").style.display = "none"
                                     document.getElementById("title").style.display = "inline";
                                     document.getElementById("playBtn").style.display = "inline";
                                     document.getElementById("backBtn").style.display = "inline";
                                     document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Win!</h3>`)
                                     document.getElementById("playBtn").onclick = function(){window.location.reload();};
-                                } else if (APINewCard.result == "loss"){
+                                } else if (APINewCard.result == "loss") {
                                     document.getElementById("bjCanvas").style.display = "none"
                                     document.getElementById("title").style.display = "inline";
                                     document.getElementById("playBtn").style.display = "inline";
