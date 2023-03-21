@@ -127,7 +127,7 @@
                 newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
                 newPlayerCard.src = card;
 
-                await waitMs(2000)
+                await waitMs(0750)
 
                 var audio = new Audio('assets/yummy.mp3');
                 audio.play();
@@ -163,7 +163,7 @@
                 newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
                 newPlayerCard.src = card;
 
-                await waitMs(2000)
+                await waitMs(0750)
 
                 document.getElementById("bjCanvas").style.display = "none"
                 document.getElementById("title").style.display = "inline";
@@ -255,6 +255,12 @@
             //const playerCard = new Image();
 
             ctx.globalCompositeOperation = 'source-over';
+
+            ctx.shadowColor = "#121212";
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = -2.5;
+            ctx.shadowOffsetY = 2.5;
+
             //dealerHandCard.onload = function(){ctx.drawImage(this, (cvs.width/26), 0, cvs.width/2, cvs.width/2);}
             cardBack.onload = function(){
                 //Dealer hand
@@ -343,22 +349,20 @@
 
                                 const firstDrawnCard = new Image();
                                 firstDrawnCard.onload = function(){
-                                    ctx.drawImage(cardBack, (cvs.width/8), 0, cvs.width/2.5, cvs.width/2);
+                                    ctx.drawImage(cardBack, (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
                                     ctx.drawImage(this, (cvs.width/8) + (cvs.width/8), 0, cvs.width/2, cvs.width/2);
+                                    const firstPlayerCard = new Image();
+                                    firstPlayerCard.onload = function(){
+                                        ctx.drawImage(this, (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
+                                    }
+                                    firstPlayerCard.src = APIFirstCards.player1;
+                                    const secondPlayerCard = new Image();
+                                    secondPlayerCard.onload = function(){
+                                        ctx.drawImage(this, (cvs.width/8) + (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
+                                    }
+                                    secondPlayerCard.src = APIFirstCards.player0;
                                 }
                                 firstDrawnCard.src = APIFirstCards.dealt;
-
-                                const secondPlayerCard = new Image();
-                                secondPlayerCard.onload = function(){
-                                    ctx.drawImage(this, (cvs.width/8) + (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
-                                }
-                                secondPlayerCard.src = APIFirstCards.player1;
-
-                                const firstPlayerCard = new Image();
-                                firstPlayerCard.onload = function(){
-                                    ctx.drawImage(this, (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
-                                }
-                                firstPlayerCard.src = APIFirstCards.player0;
 
                                 ctx.drawImage(hitBtn, hitButton.x, hitButton.y, hitButton.width, hitButton.height);
                                 ctx.drawImage(standBtn, standButton.x, standButton.y, standButton.width, standButton.height);
