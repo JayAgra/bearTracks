@@ -210,6 +210,9 @@
         }
 
         function startBlackjack() {
+        if (window.innerHeight < window.innerWidth) {
+            alert("play in portrait mode, on a phone.")
+        } else {
             window.allCardValues = 0;
             window.allCards = [];
 
@@ -304,7 +307,7 @@
             var dealt = false;
             window.playerCards = ["assets/card_back.png", "assets/card_back.png"];
             var drawnCards = ["assets/card_back.png", "assets/card_back.png"];
-            if (disableBtns) {
+            if (window.disableBtns) {
                 console.log("buttons are disabled")
             } else {
                 cvs.addEventListener('click', async function(evt) {
@@ -439,6 +442,7 @@
                         }
                     }
                 }, false);
+            }
             }
         }
     </script>
