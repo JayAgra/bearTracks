@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>766 Casino - 766 Scouting</title>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Scouting">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#121212" id="themeMeta">
+    <link rel="stylesheet" href="float.min.css" type="text/css">
+    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="apple-touch-startup-image" href="public/launch.png">
+    <style>
+        body {
+            text-align: center;
+        }
+        a,a:visited {
+            text-align: center;
+            text-decoration: none;
+            font-size: 6vh;
+        }
+        a:hover,a:active {
+            color: var(--textColor);
+        }
+        #rolesDisplay span{
+            display:none;
+        }
+        #rolesDisplay br{
+            display:none;
+        }
+        #rolesDisplay span:first-child{
+            display:inline;
+        }
+        .offlineAlert {
+            padding: 10px;
+            background-color: #f00;
+            color: white;
+            position: absolute;
+        }
+        .closeAlert {
+            margin-left: 15px;
+            color: #fff;
+            float: right;
+            font-size: 22px;
+            line-height: 17.5px;
+            cursor: pointer;
+        }
+        .closeAlert:hover {
+            color: #121212;
+        }
+        .fadeout {
+            animation: fade 1s forwards ease-out;
+        }
+        @keyframes fade {
+            0% { opacity: 1 }
+            100% { opacity: 0 }
+        }
+    </style>
+    <script src="appinstall.js"></script>
+</head>
+
+<body id="body" class="dark-mode">
+    <script>themeHandle()</script>
+    <div class="container">
+        <div class="offlineAlert" id="offlineAlert" style="display: none">
+            <span class="closeAlert" onclick="this.parentElement.classList.add('fadeout');">&times;</span> 
+            You are offline
+        </div>
+        <form>
+            <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
+            <h3><span style="color: rgb(88, 101, 242); background-color: rgba(88, 101, 242, 0.1); border-radius: 4px; padding: 5px;" id="profileName">@<%= userName %></span><span>&emsp;</span><span id="rolesDisplay"><%- rolesBody %></span></h3><br>
+            <div style="display: flex; flex-direction: column;">
+            <a href="blackjack" class="gameflair1" style="margin-bottom: 5%;">Blackjack<br></a>
+            </div>
+            <br><br>
+            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
+        </form>
+    </div>
+    <br><small><a href="settings" style="all: unset;">Settings</a></small>
+    <!--<br><small><a href="offline.html" style="all: unset;">Access Offline Version</a></small>-->
+    <script>
+        window.addEventListener("load", () => {
+            checkNetwork(navigator.onLine);
+
+            window.addEventListener("online", () => {
+                checkNetwork(true);
+            });
+
+            window.addEventListener("offline", () => {
+                checkNetwork(false);
+            });
+        });
+        function checkNetwork(online) {
+            const alert = document.getElementById("offlineAlert");
+            if (online) {
+            } else {
+                alert.style.display = "inline"
+            }
+        }
+    </script>
+</body>
+</html>
