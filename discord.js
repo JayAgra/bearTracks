@@ -26,7 +26,7 @@ if (fs.statSync("config.json").size < 300) {
 } else {logInfo('The file config.json seems to be filled out');}
 
 //safe to require config.json
-const { token, frcapi, scoutteama, scoutteamb, leadscout, drive, pit, myteam, season, currentComp, baseURL } = require('./config.json');
+const { token, frcapi, scoutteama, scoutteamb, scoutteamc, leadscout, drive, pit, myteam, season, currentComp, baseURL } = require('./config.json');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -358,6 +358,8 @@ client.on('interactionCreate', async interaction => {
                   user.roles.add(`${scoutteama}`);
               } else if (targetedgroup === "Scout B") {
                   user.roles.add(`${scoutteamb}`);
+              } else if (targetedgroup === "Scout C") {
+                  user.roles.add(`${scoutteamc}`);
               } else if (targetedgroup === "Drive") {
                   user.roles.add(`${drive}`);
               } else if (targetedgroup === "Pit") {

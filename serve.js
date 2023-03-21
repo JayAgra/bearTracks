@@ -871,12 +871,13 @@ app.get('/api/scoutByID/:discordID', checkAuth, function(req, res) {
       if (typeof dbQueryResult == "undefined") {
         res.status(204).send("no query results");
       } else {
-        res.status(200).setHeader('Content-type','text/plain').send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512" crossorigin="anonymous"></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
+        res.status(200).setHeader('Content-type','text/plain').send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512" crossorigin="anonymous"x></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
       }
     }
   });
 });
 
+//slots API
 app.get('/api/casino/slots/slotSpin', checkAuth, function(req, res) {
   const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
   if (spin[0] == spin[1] == spin[2]) {
@@ -903,7 +904,9 @@ app.get('/api/casino/slots/slotSpin', checkAuth, function(req, res) {
     });
   }
 });
+//end slots API
 
+//blackjack API
 app.get('/api/casino/blackjack/startingCards', checkAuth, function(req, res) {
   const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
   var cards = [];
@@ -994,6 +997,7 @@ app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', checkAuth, f
     res.send("you pig")
   }
 });
+//end blackjack API
 
 //auth functions
 app.get('/', passport.authenticate('discord'));

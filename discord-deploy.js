@@ -70,6 +70,7 @@ new SlashCommandBuilder()
 				.addChoices(
 					{ name: 'Scout Team A', value: 'Scout A' },
 					{ name: 'Scout Team B', value: 'Scout B' },
+					{ name: 'Scout Team C', value: 'Scout C' },
 					{ name: 'Drive Team', value: 'Drive' },
 					{ name: 'Pit', value: 'Pit' }
 				)),
