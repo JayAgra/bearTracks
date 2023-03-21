@@ -84,8 +84,8 @@
         function getMousePos(canvas, event) {
             var rect = canvas.getBoundingClientRect();
             return {
-                x: (event.clientX - rect.left)/2,
-                y: (event.clientY - rect.top)/2
+                x: (event.clientX - rect.left),
+                y: (event.clientY - rect.top)
             };
         }
 
@@ -228,10 +228,10 @@
             }*/
             
             //Scale canvas
-            cvs.style.width = (window.innerWidth) + "px"
-            cvs.style.height = (window.innerHeight) + "px"
-            cvs.width = window.innerWidth/2
-            cvs.height = window.innerHeight/2
+            cvs.style.width = window.innerWidth - ((window.innerWidth)%64) + "px"
+            cvs.style.height = window.innerHeight - ((window.innerHeight)%64) + "px"
+            cvs.width = (window.innerWidth - ((window.innerWidth)%64))
+            cvs.height = (window.innerHeight - ((window.innerHeight)%64))
 
             //Hide all but canvas
             cvs.style.display = "inline";
@@ -258,7 +258,7 @@
             //dealerHandCard.onload = function(){ctx.drawImage(this, (cvs.width/26), 0, cvs.width/2, cvs.width/2);}
             cardBack.onload = function(){
                 //Dealer hand
-                ctx.drawImage(this, (cvs.width/8), 0, cvs.width/2.5, cvs.width/2);
+                ctx.drawImage(this, (cvs.width/8), 0, cvs.width/2, cvs.width/2);
                 ctx.drawImage(this, (cvs.width/8) + (cvs.width/8), 0, cvs.width/2, cvs.width/2);
                 //Player hand
                 ctx.drawImage(this, (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
@@ -274,21 +274,21 @@
             //buttons
             const dealButton = {
                 x: (cvs.width/2 - cvs.width/6) - cvs.width/14,
-                y: (cvs.height/8)*7,
+                y: (cvs.height/8)*6,
                 width: cvs.width/6,
                 height: cvs.width/6
             };
 
             const hitButton = {
                 x: cvs.width/2 - cvs.width/14,
-                y: (cvs.height/8)*7,
+                y: (cvs.height/8)*6,
                 width: cvs.width/6,
                 height: cvs.width/6
             };
 
             const standButton = {
                 x: (cvs.width/2 + cvs.width/6) - cvs.width/14,
-                y: (cvs.height/8)*7,
+                y: (cvs.height/8)*6,
                 width: cvs.width/6,
                 height: cvs.width/6
             };
@@ -312,6 +312,7 @@
             var drawnCards = ["assets/card_back.png", "assets/card_back.png"];
                 cvs.addEventListener('click', async function(evt) {
                     var mousePos = getMousePos(cvs, evt);
+                    console.log("click!!")
                     if (window.disableBtns) {
                         console.log("buttons are disabled")
                     } else {
