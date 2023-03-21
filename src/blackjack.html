@@ -251,11 +251,11 @@
             ctx.webkitImageSmoothingEnabled = false;
 
             const cardBack = new Image();
-            const dealerHandCard = new Image();
-            const playerCard = new Image();
+            //const dealerHandCard = new Image();
+            //const playerCard = new Image();
 
             ctx.globalCompositeOperation = 'source-over';
-            dealerHandCard.onload = function(){ctx.drawImage(this, (cvs.width/26), 0, cvs.width/2, cvs.width/2);}
+            //dealerHandCard.onload = function(){ctx.drawImage(this, (cvs.width/26), 0, cvs.width/2, cvs.width/2);}
             cardBack.onload = function(){
                 //Dealer hand
                 ctx.drawImage(this, (cvs.width/8), 0, cvs.width/2.5, cvs.width/2);
@@ -265,10 +265,10 @@
                 ctx.drawImage(this, (cvs.width/8) + (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
             };
             //Player hand
-            playerCard.onload = function(){ctx.drawImage(this, (cvs.width/20), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);}
+            //playerCard.onload = function(){ctx.drawImage(this, (cvs.width/20), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);}
 
-            playerCard.src = "assets/player.png";
-            dealerHandCard.src = "assets/dealerhand.png";
+            //playerCard.src = "assets/player.png";
+            //dealerHandCard.src = "assets/dealerhand.png";
             cardBack.src = "assets/card_back.png";
 
             //buttons
@@ -362,8 +362,8 @@
                                 ctx.drawImage(hitBtn, hitButton.x, hitButton.y, hitButton.width, hitButton.height);
                                 ctx.drawImage(standBtn, standButton.x, standButton.y, standButton.width, standButton.height);
 
-                                ctx.drawImage(dealerHandCard, (cvs.width/26), 0, cvs.width/2, cvs.width/2)
-                                ctx.drawImage(playerCard, (cvs.width/20), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
+                                //ctx.drawImage(dealerHandCard, (cvs.width/26), 0, cvs.width/2, cvs.width/2)
+                                //ctx.drawImage(playerCard, (cvs.width/20), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
 
                                 window.allCardValues = Number(APIFirstCards.playerTotal);
                                 console.log(APIFirstCards.playerTotal)
