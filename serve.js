@@ -71,6 +71,7 @@ app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
 app.use('/images', express.static('images'))
 app.use('/public', express.static('src/public'))
+//all cards by Lydia Honerkamp (https://github.com/1yd1a)
 app.use('/assets', express.static('src/assets'))
 app.use(session({
   secret: crypto.randomBytes(48).toString('hex'),
@@ -441,6 +442,11 @@ app.get('/scoutProfile', function(req, res) {
 app.get('/blackjack', checkAuth, function(req, res) {
   res.set('Cache-control', 'public, max-age=259200');
   res.sendFile('src/blackjack.html', { root: __dirname });
+});
+
+app.get('/spin', checkAuth, function(req, res) {
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/spin.html', { root: __dirname });
 });
 
 app.get('/points', function(req, res) {
@@ -1009,6 +1015,36 @@ app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', checkAuth, f
   }
 });
 //end blackjack API
+
+app.get('/api/casino/spinner/spinWheel', checkAuth, function(req, res) {
+  //12 spins
+  const spins = [10, 20, 50, -10, -20, -25, -50, 100, -100, 250, -1000, 1250]
+
+  //weighting (you didnt think this was fair, did you??)
+  var spin = Math.floor(Math.random() * 12);
+  for (var i = 0; i < 2; i++) {
+    if (spin >= 8) {
+      spin = Math.floor(Math.random() * 12);
+      if (spin >= 9) {
+        spin = Math.floor(Math.random() * 12)
+        if (spin >= 10) {
+          spin = Math.floor(Math.random() * 12)
+        }
+      }
+    }
+  }
+
+  let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+  let pointValues = [score, req.user.id];
+  db.run(pointStmt, pointValues, (err) => {
+    if (err) {
+      res.status(500).send("got an error from transaction");
+      return;
+    }
+  });
+
+  res.status(200).json(`{"spin": ${spin}}`);
+});
 
 //auth functions
 app.get('/', passport.authenticate('discord'));
