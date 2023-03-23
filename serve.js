@@ -461,6 +461,11 @@ app.get('/points', function(req, res) {
   res.sendFile('src/points.html', { root: __dirname });
 });
 
+app.get('/topitscout', checkAuth, function(req, res) {
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/topitscout.html', { root: __dirname });
+});
+
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
