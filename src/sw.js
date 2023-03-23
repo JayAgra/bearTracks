@@ -9,7 +9,8 @@ var filesToCache = [
   'fonts/Raleway-300.ttf',
   'fonts/Raleway-500.ttf',
   'settings',
-  'matches '
+  'matches',
+  'scouts'
 ];
 
 console.log('service worker executed')

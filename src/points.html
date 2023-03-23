@@ -27,15 +27,6 @@
         a:hover,a:active {
             color: var(--textColor);
         }
-        #rolesDisplay span{
-            display:none;
-        }
-        #rolesDisplay br{
-            display:none;
-        }
-        #rolesDisplay span:first-child{
-            display:inline;
-        }
     </style>
     <script src="appinstall.js"></script>
 </head>
@@ -54,20 +45,10 @@
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
         </form>
     </div>
-    <br><small><a href="settings" style="all: unset;">Settings</a></small>
-    <!--<br><small><a href="offline.html" style="all: unset;">Access Offline Version</a></small>-->
     <script>
-        window.addEventListener("load", () => {
-            checkNetwork(navigator.onLine);
-
-            window.addEventListener("online", () => {
-                checkNetwork(true);
-            });
-
-            window.addEventListener("offline", () => {
-                checkNetwork(false);
-            });
-        });
+        function goToHome() {
+            window.location.href = "/";
+        }
     </script>
 </body>
 </html>
