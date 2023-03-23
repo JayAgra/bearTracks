@@ -1096,27 +1096,27 @@ app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
 });
 
 app.get('/api/events/:event/pitscoutedteams', apiCheckAuth, function(req, res) {
-  if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-    var teams = [];
-    const stmt = `SELECT team FROM pit WHERE event=? AND season=? ORDER BY team ASC`;
-    const values = [req.query.event, season];
-    db.all(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.status(500).send("error!")
+  var teams = [];
+  const stmt = `SELECT * FROM pit WHERE event=? AND season=?`;
+  const values = [req.params.event, season];
+  db.all(stmt, values, (err, dbQueryResult) => {
+    if (err) {
+      res.status(500).send("error!")
+      return;
+    } else {
+      console.log(err);
+      console.log(dbQueryResult);
+      if (typeof dbQueryResult == "undefined") {
+        res.status(500).send("fail")
         return;
       } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.status(500).send(teams.toString())
-          return;
-        } else {
-          for (var i = 0; i < dbQueryResult.length; i++) {
-            teams.push(dbQueryResult[i].team);
-          }
+        for (var i = 0; i < dbQueryResult.length; i++) {
+          teams.push(dbQueryResult[i].team);
         }
+        res.status(200).setHeader('Content-type','text/plain').send(teams.toString())
       }
-    });
-    res.status(200).setHeader('Content-type','text/plain').send(teams.toString())
-  }
+    }
+  });
 });
 
 //auth functions
