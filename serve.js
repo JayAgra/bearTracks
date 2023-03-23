@@ -875,7 +875,7 @@ app.get('/api/scouts', apiCheckAuth, function(req, res) {
       } else {
         var htmltable = ``;
         for (var i = 0; i < dbQueryResult.length; i++) {
-          htmltable = htmltable + `<tr><td><a href="/scoutProfile?discordID=${dbQueryResult[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i].username}#${dbQueryResult[i].discriminator}</a></td><td>${(dbQueryResult[i].score).toFixed(2)}</td></tr>`;
+          htmltable = htmltable + `<tr><td><a href="/scoutProfile?discordID=${dbQueryResult[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i].username}#${dbQueryResult[i].discriminator}</a></td><td>${Math.round(dbQueryResult[i].score)}</td></tr>`;
         }
         res.status(200).setHeader('Content-type','text/plain').send(htmltable);
       }
