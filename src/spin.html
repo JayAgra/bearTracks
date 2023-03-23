@@ -56,7 +56,7 @@
     </div>
     <script>
         window.alreadySpun = false;
-        const spins = [10, 20, 50, -15, -25, -35, -50, 100, -100, 250, -1000, 1250]
+        const spins = [10, 20, 50, -15, -25, -35,  -100, -50, 100, 250, -1000, 1250]
         const waitMs = ms => new Promise(res => setTimeout(res, ms));
         async function spinWheel() {
             if (window.alreadySpun) {} else {
@@ -81,7 +81,7 @@
                     }
                     document.getElementById('result').style.display = "inherit";
                     document.getElementById('playBtn').style.display = "inherit";
-                    document.getElementById('backBtn').style.display = "none";
+                    document.getElementById('backBtn').style.display = "inherit";
                     window.alreadySpun = false;
                 } else if (xhr.status === 401) {
                     console.log("401 unauth")
