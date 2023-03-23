@@ -1090,9 +1090,33 @@ app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
         for (var i = 0; i < parsedData.teams.length; i++) {
           teams.push(parsedData.teams[i].teamNumber);
         }
-        res.status(200).json(JSON.stringify(teams))
+        res.status(200).setHeader('Content-type','text/plain').send(teams.toString())
       }
   });
+});
+
+app.get('/api/events/:event/pitscoutedteams', apiCheckAuth, function(req, res) {
+  if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
+    var teams = [];
+    const stmt = `SELECT team FROM pit WHERE event=? AND season=? ORDER BY team ASC`;
+    const values = [req.query.event, season];
+    db.all(stmt, values, (err, dbQueryResult) => {
+      if (err) {
+        res.status(500).send("error!")
+        return;
+      } else {
+        if (typeof dbQueryResult == "undefined") {
+          res.status(500).send(teams.toString())
+          return;
+        } else {
+          for (var i = 0; i < dbQueryResult.length; i++) {
+            teams.push(dbQueryResult[i].team);
+          }
+        }
+      }
+    });
+    res.status(200).setHeader('Content-type','text/plain').send(teams.toString())
+  }
 });
 
 //auth functions
