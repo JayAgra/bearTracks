@@ -56,10 +56,11 @@
     </div>
     </div>
     <script>
+        const waitMs = ms => new Promise(res => setTimeout(res, ms));
         function goToHome() {
             window.location.href = "/";
         }
-        function getScoutData() {
+        async function getScoutData() {
             let params = new URLSearchParams(document.location.search);
             let scoutDiscordID = params.get("discordID")
             document.getElementById("viewMatchButton").innerHTML = "Requesting Data...";
@@ -67,7 +68,7 @@
             xhr.open("GET", `/api/scoutByID/${scoutDiscordID}`, true);
             xhr.withCredentials = true;
 
-            xhr.onreadystatechange = () => {
+            xhr.onreadystatechange = async () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 console.log("200 ok")
                 console.log(xhr.responseText)
@@ -79,6 +80,8 @@
             } else if (xhr.status === 401) {
                 console.log("401 failure")
                 document.getElementById("viewMatchButton").innerHTML = "401 Unauthorized";
+                await waitMs(1000);
+                window.location.href = "/login";
             } else if (xhr.status === 400) {
                 console.log("400 failure")
                 document.getElementById("viewMatchButton").innerHTML = "400 Bad Request";

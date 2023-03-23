@@ -106,7 +106,8 @@
                 console.log(JSON.parse(xhr.responseText))
                 return JSON.parse(xhr.responseText)
             } else if (xhr.status === 401) {
-                console.log("401 failure")
+                console.log("401 failure");
+                window.location.href = "/login";
             } else if (xhr.status === 400) {
                 console.log("400 failure")
             } else if (xhr.status === 500) {
@@ -150,7 +151,8 @@
                     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                         console.log("200 good")
                     } else if (xhr.status === 401) {
-                        console.log("401 failure")
+                        console.log("401 failure");
+                        window.location.href = "/login";
                     } else if (xhr.status === 400) {
                         console.log("400 failure")
                     } else if (xhr.status === 500) {
@@ -199,7 +201,8 @@
                     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                         console.log("200 good")
                     } else if (xhr.status === 401) {
-                        console.log("401 failure")
+                        console.log("401 failure");
+                        window.location.href = "/login";
                     } else if (xhr.status === 400) {
                         console.log("400 failure")
                     } else if (xhr.status === 500) {
@@ -242,7 +245,8 @@
                 newCardForPlayer.src = window.playerCards[window.playerCards.length - 1];
                 return APINewCard.card;
             } else if (xhr.status === 401) {
-                console.log("401 failure")
+                console.log("401 unauth");
+                window.location.href = "/login";
                 return "401";
             } else if (xhr.status === 400) {
                 console.log("400 failure")
@@ -433,7 +437,8 @@
 
                                 dealt = true;
                             } else if (xhr.status === 401) {
-                                console.log("401 failure")
+                                console.log("401 unauth");
+                                window.location.href = "/login";
                             } else if (xhr.status === 400) {
                                 console.log("400 failure")
                             } else if (xhr.status === 500) {
@@ -488,7 +493,8 @@
                                     document.getElementById("playBtn").onclick = function(){window.location.reload();};
                                 }
                             } else if (xhr.status === 401) {
-                                console.log("401 failure")
+                                console.log("401 unauth");
+                                window.location.href = "/login";
                                 return "401";
                             } else if (xhr.status === 400) {
                                 console.log("400 failure")

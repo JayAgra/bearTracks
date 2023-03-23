@@ -184,6 +184,13 @@ function checkAuth(req, res, next) {
   res.redirect('/login');
 }
 
+//check the authentication and server membership
+function apiCheckAuth(req, res, next) {
+  if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return next();
+  if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return res.status(401).json(`{"status": 401}`);
+  res.status(401).json(`{"status": 401}`)
+}
+
 //add scouts to database
 function addToDataBase(req, next) {
   const password = crypto.randomBytes(12).toString('hex')
@@ -889,7 +896,7 @@ app.get('/api/scoutByID/:discordID', checkAuth, function(req, res) {
 });
 
 //slots API
-app.get('/api/casino/slots/slotSpin', checkAuth, function(req, res) {
+app.get('/api/casino/slots/slotSpin', apiCheckAuth, function(req, res) {
   const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
   if (spin[0] == spin[1] == spin[2]) {
     let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
@@ -918,7 +925,7 @@ app.get('/api/casino/slots/slotSpin', checkAuth, function(req, res) {
 //end slots API
 
 //blackjack API
-app.get('/api/casino/blackjack/startingCards', checkAuth, function(req, res) {
+app.get('/api/casino/blackjack/startingCards', apiCheckAuth, function(req, res) {
   const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
   var cards = [];
   var cardValues = 0;
@@ -965,7 +972,7 @@ app.get('/api/casino/blackjack/startingCards', checkAuth, function(req, res) {
   res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
 });
 
-app.get('/api/casino/blackjack/newCard', checkAuth, function(req, res) {
+app.get('/api/casino/blackjack/newCard', apiCheckAuth, function(req, res) {
   //shh, tell nobody that there are no aces here
   const possibleCards = [{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
   var cards = [];
@@ -975,7 +982,7 @@ app.get('/api/casino/blackjack/newCard', checkAuth, function(req, res) {
   res.status(200).json(`{"card": "assets/card-${cards[0].suit}_${cards[0].value}.png", "cardValue": ${cardValue}}`);
 });
 
-app.get('/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard', checkAuth, function(req, res) {
+app.get('/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard', apiCheckAuth, function(req, res) {
   if (req.params.casinoToken == casinoToken) {
     const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
     if (((possibleCards[Math.floor(Math.random() * 51)].value) + Number(req.params.dealerCard)) < Number(req.params.playerTotal)) {
@@ -1000,7 +1007,7 @@ app.get('/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard', che
   }
 });
 
-app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', checkAuth, function(req, res) {
+app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', apiCheckAuth, function(req, res) {
   if (req.params.cval == 21 && req.params.casinoToken == casinoToken) {
     let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
     let pointValues = [req.user.id];
@@ -1016,7 +1023,7 @@ app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', checkAuth, f
 });
 //end blackjack API
 
-app.get('/api/casino/spinner/spinWheel', checkAuth, function(req, res) {
+app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
   //12 spins
   const spins = [10, 20, 50, -10, -20, -25, -50, 100, -100, 250, -1000, 1250]
 
