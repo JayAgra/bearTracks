@@ -75,9 +75,9 @@
                     document.getElementById('wheel').className = "spinc" + spin;
                     await waitMs(8015)
                     if (spins[spin] > 0) {
-                        document.getElementById('result').innerHTML = 'You won ' +  Math.abs(spins[spin]) + 'points'
+                        document.getElementById('result').innerHTML = 'You won ' +  Math.abs(spins[spin]) + ' points <br>'
                     } else {
-                        document.getElementById('result').innerHTML = 'You lost ' +  Math.abs(spins[spin]) + 'points'
+                        document.getElementById('result').innerHTML = 'You lost ' +  Math.abs(spins[spin]) + ' points <br>'
                     }
                     document.getElementById('result').style.display = "inherit";
                     document.getElementById('playBtn').style.display = "inherit";

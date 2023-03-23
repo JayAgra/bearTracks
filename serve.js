@@ -1042,7 +1042,7 @@ app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
   }
 
   let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
-  let pointValues = [spins[spin], req.user.id];
+  let pointValues = [(spins[spin] - 10), req.user.id];
   db.run(pointStmt, pointValues, (err) => {
     if (err) {
       res.status(500).send("got an error from transaction");
