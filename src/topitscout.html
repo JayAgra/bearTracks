@@ -74,8 +74,9 @@
                 window.allTeams = xhr.responseText.split(",")
                 console.log(getDifference())
                 document.getElementById('eventLabel').style.display = "none"
-                document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted"><br><span>To Scout: </span>${getDifference().join("<br>")}</div>`);
+                document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted"><br><span>To Scout: </span><br>${getDifference().join("<br>")}</div>`);
                 document.getElementById('eventCode').style.display = "none"
+                document.getElementById("viewTeamsButton").innerHTML = "Done!";
                 return 0;
             } else if (xhr.status === 401) {
                 console.log("401 failure")
@@ -135,15 +136,7 @@
         }
 
         function getUnscoutedTeams() {
-            getScoutedTeams();    
-            /*const unscoutedTeams = Promise.resolve(allTeams.filter(teamNumber => !scoutedTeams.includes(teamNumber))).then(unscouted => function() {
-                console.log(unscouted)
-                var unscoutedTeamsExport = unscouted.join("<br>");
-                document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted">${unscoutedTeamsExport}</div>`);
-            }).catch()*/
-            //Promise.resolve(unscoutedTeams)
-            //var unscoutedTeamsExport = unscoutedTeams.join("<br>");
-            //document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted">${unscoutedTeamsExport}</div>`);
+            getScoutedTeams();
         }
     </script>
 </body>
