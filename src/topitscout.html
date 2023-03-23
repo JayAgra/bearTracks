@@ -41,7 +41,7 @@
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4>Teams To Pit Scout</h4><br>
             <fieldset>
-                <label>Event Code: </label><br>
+                <label id="eventLabel">Event Code: </label><br>
                 <select name="event" id="eventCode">
                     <option value="CADA" selected>CADA - Sacramento Regional</option>
                     <option value="CASJ">CASJ - Silicon Valley Regional</option>
@@ -58,9 +58,9 @@
         function goToHome() {
             window.location.href = "/";
         }
-        var allTeams = [];
-        var scoutedTeams = [];
-        async function getAllTeams() {
+        window.allTeams = [];
+        window.scoutedTeams = [];
+        function getAllTeams() {
             eventCode = document.getElementById("eventCode").value
             document.getElementById("viewTeamsButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
@@ -71,7 +71,11 @@
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 console.log("200 ok")
                 console.log(xhr.responseText)
-                allTeams = await xhr.responseText.split(",");
+                window.allTeams = xhr.responseText.split(",")
+                console.log(getDifference())
+                document.getElementById('eventLabel').style.display = "none"
+                document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted"><br><span>To Scout: </span>${getDifference().join("<br>")}</div>`);
+                document.getElementById('eventCode').style.display = "none"
                 return 0;
             } else if (xhr.status === 401) {
                 console.log("401 failure")
@@ -92,7 +96,7 @@
 
             xhr.send()
         }
-        async function getScoutedTeams() {
+        function getScoutedTeams() {
             eventCode = document.getElementById("eventCode").value
             document.getElementById("viewTeamsButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
@@ -103,7 +107,8 @@
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 console.log("200 ok")
                 console.log(xhr.responseText)
-                scoutedTeams = await xhr.responseText.split(",");
+                window.scoutedTeams = xhr.responseText.split(",")
+                getAllTeams()
                 return 0;
             } else if (xhr.status === 401) {
                 console.log("401 failure")
@@ -124,12 +129,21 @@
 
             xhr.send()
         }
-        async function getUnscoutedTeams() {
-            await getAllTeams();
-            await getScoutedTeams();
-            var unscoutedTeams = allTeams.filter(teamNumber => !scoutedTeams.includes(teamNumber));
-            var unscoutedTeamsExport = unscoutedTeams.join("<br>");
-            document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div class="unscouted">` + unscoutedTeamsExport + "</div>");
+
+        function getDifference() {
+            return window.allTeams.filter(teamNumber => !window.scoutedTeams.includes(teamNumber))
+        }
+
+        function getUnscoutedTeams() {
+            getScoutedTeams();    
+            /*const unscoutedTeams = Promise.resolve(allTeams.filter(teamNumber => !scoutedTeams.includes(teamNumber))).then(unscouted => function() {
+                console.log(unscouted)
+                var unscoutedTeamsExport = unscouted.join("<br>");
+                document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted">${unscoutedTeamsExport}</div>`);
+            }).catch()*/
+            //Promise.resolve(unscoutedTeams)
+            //var unscoutedTeamsExport = unscoutedTeams.join("<br>");
+            //document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted">${unscoutedTeamsExport}</div>`);
         }
     </script>
 </body>
