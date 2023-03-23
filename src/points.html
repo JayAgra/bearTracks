@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>766 Casino - 766 Scouting</title>
+    <title>Points - 766 Scouting</title>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="language" content="English">
@@ -36,30 +36,6 @@
         #rolesDisplay span:first-child{
             display:inline;
         }
-        .offlineAlert {
-            padding: 10px;
-            background-color: #f00;
-            color: white;
-            position: absolute;
-        }
-        .closeAlert {
-            margin-left: 15px;
-            color: #fff;
-            float: right;
-            font-size: 22px;
-            line-height: 17.5px;
-            cursor: pointer;
-        }
-        .closeAlert:hover {
-            color: #121212;
-        }
-        .fadeout {
-            animation: fade 1s forwards ease-out;
-        }
-        @keyframes fade {
-            0% { opacity: 1 }
-            100% { opacity: 0 }
-        }
     </style>
     <script src="appinstall.js"></script>
 </head>
@@ -67,14 +43,11 @@
 <body id="body" class="dark-mode">
     <script>themeHandle()</script>
     <div class="container">
-        <div class="offlineAlert" id="offlineAlert" style="display: none">
-            <span class="closeAlert" onclick="this.parentElement.classList.add('fadeout');">&times;</span> 
-            You are offline
-        </div>
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1>
             <div style="display: flex; flex-direction: column;">
-            <a href="blackjack" class="gameflair1" style="margin-bottom: 5%;">Blackjack<br></a>
+                <a href="shop" class="gameflair1" style="margin-bottom: 5%;">Item Shop<br></a>
+                <a href="blackjack" class="gameflair1" style="margin-bottom: 5%;">Blackjack<br></a>
             </div>
             <br><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
@@ -94,16 +67,6 @@
                 checkNetwork(false);
             });
         });
-        function checkNetwork(online) {
-            const alert = document.getElementById("offlineAlert");
-            if (online) {
-            } else {
-                alert.style.display = "inline"
-            }
-        }
-        function goToHome() {
-            window.location.href = "/";
-        }
     </script>
 </body>
 </html>
