@@ -63,6 +63,8 @@
                 window.alreadySpun = true;
                 document.getElementById('playBtn').style.display = "none";
                 document.getElementById('backBtn').style.display = "none";
+                
+                const xhr = new XMLHttpRequest();
                 xhr.open("GET", `/api/casino/spinner/spinWheel`, true);
                 xhr.withCredentials = true;
 
