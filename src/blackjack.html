@@ -79,6 +79,7 @@
         window.playerCards = [];
         window.casinoSecToken = "";
         window.dealerTotal = 0;
+        window.playerAces = 0;
         //var allCards = [];
         //helper function to get mouse positions
         function getMousePos(canvas, event) {
@@ -121,60 +122,96 @@
         const waitMs = ms => new Promise(res => setTimeout(res, ms));
 
         async function checkForLoss(cardTotal, card) {
-            if (cardTotal == 21) {
-                window.disableBtns = true;
-                const newPlayerCard = new Image()
-                newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
-                newPlayerCard.src = card;
+            if (card) {
+                if (cardTotal == 21) {
+                    window.disableBtns = true;
+                    const newPlayerCard = new Image()
+                    newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
+                    newPlayerCard.src = card;
 
-                await waitMs(0750)
+                    await waitMs(0750)
 
-                var audio = new Audio('assets/yummy.mp3');
-                audio.play();
+                    var audio = new Audio('assets/yummy.mp3');
+                    audio.play();
 
-                document.body.style.backgroundColor = "#121212";
-                document.getElementById("bjCanvas").style.display = "none"
-                document.getElementById("title").style.display = "inline";
-                document.getElementById("playBtn").style.display = "inline";
-                document.getElementById("backBtn").style.display = "inline";
-                document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Blackjack!</h3>`)
-                document.getElementById("playBtn").onclick = function(){window.location.reload();};
+                    document.body.style.backgroundColor = "#121212";
+                    document.getElementById("bjCanvas").style.display = "none"
+                    document.getElementById("title").style.display = "inline";
+                    document.getElementById("playBtn").style.display = "inline";
+                    document.getElementById("backBtn").style.display = "inline";
+                    document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Blackjack!</h3>`)
+                    document.getElementById("playBtn").onclick = function(){window.location.reload();};
 
-                const xhr = new XMLHttpRequest();
-                xhr.open("GET", `/api/casino/blackjack/${cardTotal}/${window.casinoSecToken}/wonViaBlackjack`, true);
-                xhr.withCredentials = true;
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("GET", `/api/casino/blackjack/${cardTotal}/${window.casinoSecToken}/wonViaBlackjack`, true);
+                    xhr.withCredentials = true;
 
-                xhr.onreadystatechange = async () => {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    console.log("200 good")
-                } else if (xhr.status === 401) {
-                    console.log("401 failure")
-                } else if (xhr.status === 400) {
-                    console.log("400 failure")
-                } else if (xhr.status === 500) {
-                    console.log("500 failure")
+                    xhr.onreadystatechange = async () => {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        console.log("200 good")
+                    } else if (xhr.status === 401) {
+                        console.log("401 failure")
+                    } else if (xhr.status === 400) {
+                        console.log("400 failure")
+                    } else if (xhr.status === 500) {
+                        console.log("500 failure")
+                    } else {
+                        console.log("awaiting response")
+                    }
+                    }
+                    xhr.send() 
+                } else if (cardTotal > 21) {
+                    window.disableBtns = true;
+                    const newPlayerCard = new Image()
+                    newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
+                    newPlayerCard.src = card;
+
+                    await waitMs(0750)
+
+                    document.body.style.backgroundColor = "#121212";
+                    document.getElementById("bjCanvas").style.display = "none"
+                    document.getElementById("title").style.display = "inline";
+                    document.getElementById("playBtn").style.display = "inline";
+                    document.getElementById("backBtn").style.display = "inline";
+                    document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Bust!</h3>`)
+                    document.getElementById("playBtn").onclick = function(){window.location.reload();};
                 } else {
-                    console.log("awaiting response")
+                    return;
                 }
-                }
-                xhr.send() 
-            } else if (cardTotal > 21) {
-                window.disableBtns = true;
-                const newPlayerCard = new Image()
-                newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
-                newPlayerCard.src = card;
-
-                await waitMs(0750)
-
-                document.body.style.backgroundColor = "#121212";
-                document.getElementById("bjCanvas").style.display = "none"
-                document.getElementById("title").style.display = "inline";
-                document.getElementById("playBtn").style.display = "inline";
-                document.getElementById("backBtn").style.display = "inline";
-                document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Bust!</h3>`)
-                document.getElementById("playBtn").onclick = function(){window.location.reload();};
             } else {
-                return;
+                if (cardTotal == 21) {
+                    var audio = new Audio('assets/yummy.mp3');
+                    audio.play();
+
+                    document.body.style.backgroundColor = "#121212";
+                    document.getElementById("bjCanvas").style.display = "none"
+                    document.getElementById("title").style.display = "inline";
+                    document.getElementById("playBtn").style.display = "inline";
+                    document.getElementById("backBtn").style.display = "inline";
+                    document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Blackjack!</h3>`)
+                    document.getElementById("playBtn").onclick = function(){window.location.reload();};
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("GET", `/api/casino/blackjack/${cardTotal}/${window.casinoSecToken}/wonViaBlackjack`, true);
+                    xhr.withCredentials = true;
+
+                    xhr.onreadystatechange = async () => {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        console.log("200 good")
+                    } else if (xhr.status === 401) {
+                        console.log("401 failure")
+                    } else if (xhr.status === 400) {
+                        console.log("400 failure")
+                    } else if (xhr.status === 500) {
+                        console.log("500 failure")
+                    } else {
+                        console.log("awaiting response")
+                    }
+                    }
+                    xhr.send()
+                } else {
+                    return;
+                }
             }
         }
 
@@ -190,6 +227,13 @@
                 console.log(APINewCard.card)
                 window.allCards.push(APINewCard.card)
                 window.playerCards.push(APINewCard.card)
+                if (window.playerAces === 1) {
+                    if ((window.allCardValues + APINewCard.cardValue) === 10) {
+                        await checkForLoss(21, APINewCard.card)
+                    } else {
+                        await checkForLoss(window.allCardValues + APINewCard.cardValue + 1, APINewCard.card)
+                    }
+                }
                 await checkForLoss(window.allCardValues + APINewCard.cardValue, APINewCard.card)
                 window.allCardValues = window.allCardValues + APINewCard.cardValue;
                 ctx.globalCompositeOperation = 'source-over';
@@ -374,10 +418,18 @@
                                 //ctx.drawImage(playerCard, (cvs.width/20), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
 
                                 window.allCardValues = Number(APIFirstCards.playerTotal);
-                                console.log(APIFirstCards.playerTotal)
-
+                                window.playerAces = APIFirstCards.aces;
                                 window.casinoSecToken = APIFirstCards.casinoToken
                                 window.dealerTotal = APIFirstCards.dealerTotal
+
+                                //value aces as 11 if total is less than or equal to 10
+                                if (APIFirstCards.aces > 0) {
+                                    if (APIFirstCards.aces === 1 && APIFirstCards.playerTotal === 10) {window.playerTotal = 21; checkForLoss(21)};
+                                    if (window.playerAces === 2) {window.allCardValues = window.allCardValues + 12; window.playerAces = 0;};
+                                }
+
+                                console.log(APIFirstCards.playerTotal)
+                                console.log(APIFirstCards.aces)
 
                                 dealt = true;
                             } else if (xhr.status === 401) {
@@ -416,7 +468,7 @@
                             xhr.onreadystatechange = async () => {
                             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                                 const APINewCard = await JSON.parse(JSON.parse(xhr.responseText))
-                                if (APINewCard.result == "win") {
+                                if (APINewCard.result === "win") {
                                     var audio = new Audio('assets/yummy.mp3');
                                     audio.play();
                                     document.body.style.backgroundColor = "#121212";
@@ -426,7 +478,7 @@
                                     document.getElementById("backBtn").style.display = "inline";
                                     document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Win!</h3>`)
                                     document.getElementById("playBtn").onclick = function(){window.location.reload();};
-                                } else if (APINewCard.result == "loss") {
+                                } else if (APINewCard.result === "loss") {
                                     document.body.style.backgroundColor = "#121212";
                                     document.getElementById("bjCanvas").style.display = "none"
                                     document.getElementById("title").style.display = "inline";
