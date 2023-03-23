@@ -1053,6 +1053,48 @@ app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
   res.status(200).json(`{"spin": ${spin}}`);
 });
 
+app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
+  var dbody = new EventEmitter();
+  var options = {
+      'method': 'GET',
+      'hostname': 'frc-api.firstinspires.org',
+      'path': `/v3.0/2023/teams?eventCode=${req.params.event}`,
+      'headers': {
+          'Authorization': 'Basic ' + frcapi
+      },
+      'maxRedirects': 20
+  };
+
+  var request = https.request(options, function(response) {
+      var chunks = [];
+
+      response.on("data", function(chunk) {
+          chunks.push(chunk);
+      });
+
+      response.on("end", function(chunk) {
+          var body = Buffer.concat(chunks);
+          data = body;
+          dbody.emit('update');
+      });
+
+      response.on("error", function(error) {
+          console.error(error);
+      });
+  });
+  request.end();
+  dbody.on('update', function() {
+      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
+        const parsedData = JSON.parse(data);
+        var teams = [];
+        for (var i = 0; i < parsedData.teams.length; i++) {
+          teams.push(parsedData.teams[i].teamNumber);
+        }
+        res.status(200).json(JSON.stringify(teams))
+      }
+  });
+});
+
 //auth functions
 app.get('/', passport.authenticate('discord'));
 
