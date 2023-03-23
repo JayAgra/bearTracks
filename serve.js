@@ -1025,7 +1025,7 @@ app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', apiCheckAuth
 
 app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
   //12 spins
-  const spins = [10, 20, 50, -10, -20, -25, -50, 100, -100, 250, -1000, 1250]
+  const spins = [10, 20, 50, -15, -25, -35, -50, 100, -100, 250, -1000, 1250]
 
   //weighting (you didnt think this was fair, did you??)
   var spin = Math.floor(Math.random() * 12);
@@ -1042,7 +1042,7 @@ app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
   }
 
   let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
-  let pointValues = [(spins[spin] - 10), req.user.id];
+  let pointValues = [spins[spin], req.user.id];
   db.run(pointStmt, pointValues, (err) => {
     if (err) {
       res.status(500).send("got an error from transaction");
