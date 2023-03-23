@@ -763,7 +763,7 @@ app.get('/pitimages', checkAuth, function(req, res) {
 });
 
 //api
-app.get('/api/matches/:season/:event/:level', checkAuth, function(req, res) {
+app.get('/api/matches/:season/:event/:level', apiCheckAuth, function(req, res) {
   var dbody = new EventEmitter();
   var options = {
       'method': 'GET',
@@ -806,7 +806,7 @@ app.get('/api/matches/:season/:event/:level', checkAuth, function(req, res) {
   });
 });
 
-app.get('/api/data/:season/:event/:team', checkAuth, function(req, res) {
+app.get('/api/data/:season/:event/:team', apiCheckAuth, function(req, res) {
   const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
   const values = [req.params.team, req.params.event, req.params.season];
   db.get(stmt, values, (err, dbQueryResult) => {
@@ -818,7 +818,7 @@ app.get('/api/data/:season/:event/:team', checkAuth, function(req, res) {
   });
 });
 
-app.get('/api/pit/:season/:event/:team', checkAuth, function(req, res) {
+app.get('/api/pit/:season/:event/:team', apiCheckAuth, function(req, res) {
   const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
   const values = [req.params.team, req.params.event, req.params.season];
   db.get(stmt, values, (err, dbQueryResult) => {
@@ -830,7 +830,7 @@ app.get('/api/pit/:season/:event/:team', checkAuth, function(req, res) {
   });
 });
 
-app.get('/api/teams/:season/:event', checkAuth, function(req, res) {
+app.get('/api/teams/:season/:event', apiCheckAuth, function(req, res) {
   if (req.params.event) {
       const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? AND season=? GROUP BY team ORDER BY AVG(weight) DESC`;
       const requestedEvent = sanitize(req.params.event);
@@ -858,7 +858,7 @@ app.get('/api/teams/:season/:event', checkAuth, function(req, res) {
   }
 });
 
-app.get('/api/scouts', checkAuth, function(req, res) {
+app.get('/api/scouts', apiCheckAuth, function(req, res) {
   const stmt = `SELECT * FROM scouts ORDER BY score DESC`;
   db.all(stmt, (err, dbQueryResult) => {
     if (err) {
@@ -878,7 +878,7 @@ app.get('/api/scouts', checkAuth, function(req, res) {
   });
 });
 
-app.get('/api/scoutByID/:discordID', checkAuth, function(req, res) {
+app.get('/api/scoutByID/:discordID', apiCheckAuth, function(req, res) {
   const stmt = `SELECT * FROM scouts WHERE discordID=?`;
   const values = [req.params.discordID];
   db.get(stmt, values, (err, dbQueryResult) => {
