@@ -369,15 +369,17 @@ if (window.innerHeight < window.innerWidth) {
                     } else if (xhr.status === 400) {
                         console.log("400 failure")
                     } else if (xhr.status === 403) {
-                        console.log("403 access denied")
-                        document.body.style.backgroundColor = "#121212";
-                        document.getElementById("bjCanvas").style.display = "none"
-                        document.getElementById("title").style.display = "inline";
-                        document.getElementById("playBtn").style.display = "inline";
-                        document.getElementById("backBtn").style.display = "inline";
-                        document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">You have a balance of under -2000 points, you cannot gamble!</h3>`)
-                        document.getElementById("playBtn").onclick = function(){window.location.reload();}
-                        throw new Error('unable to gamble');
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            console.log("403 access denied")
+                            document.body.style.backgroundColor = "#121212";
+                            document.getElementById("bjCanvas").style.display = "none"
+                            document.getElementById("title").style.display = "inline";
+                            document.getElementById("playBtn").style.display = "inline";
+                            document.getElementById("backBtn").style.display = "inline";
+                            document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">You have a balance of under -2000 points, you cannot gamble!</h3>`)
+                            document.getElementById("playBtn").onclick = function(){window.location.reload();}
+                            throw new Error('unable to gamble');
+                        }
                     } else if (xhr.status === 500) {
                         console.log("500 failure")
                     } else {

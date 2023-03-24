@@ -77,7 +77,7 @@ app.use(session({
   secret: crypto.randomBytes(48).toString('hex'),
   resave: false,
   saveUninitialized: false,
-  maxAge: 24 * 60 * 60 * 1000 * 183, // 183 days
+  maxAge: 24 * 60 * 60 * 1000 * 365, // 183 days
   cookie : {
     sameSite: 'lax',
     secure: 'true'
@@ -92,7 +92,7 @@ var limiter = RateLimit({
 app.use(lusca({
   csrf: false,
   xframe: 'SAMEORIGIN',
-  hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
+  hsts: {maxAge: 31557600000, includeSubDomains: true, preload: true},
   xssProtection: true,
   nosniff: true,
   referrerPolicy: 'same-origin'
@@ -191,22 +191,25 @@ function apiCheckAuth(req, res, next) {
   res.status(401).json(`{"status": 401}`)
 }
 
-function checkGambleEligibility(userID) {
-  let pointStmt = `SELECT points FROM scouts WHERE discordID=? LIMIT 1`;
-  let pointValues = [userID];
+function checkGamble(req, res, next) {
+  let pointStmt = `SELECT score FROM scouts WHERE discordID=?`;
+  let pointValues = [req.user.id];
   db.get(pointStmt, pointValues, (err,  result) => {
-    if (err) {
-      res.status(500).send("got an error from transaction");
-      return false;
-    } else {
-      if (result <= -2000) {
-        return false;
+      if (Number(result.score) > (-2000)) {
+        return next()
       } else {
-        return true;
+        return res.status(403).json(`{"status": 403}`);
       }
-    }
   });
 }
+
+/*function checkGambleEligibility(userID) {
+  let pointStmt = `SELECT score FROM scouts WHERE discordID=?`;
+  let pointValues = [userID];
+  db.get(pointStmt, pointValues, (err,  result) => {
+      return (Number(result.score) > (-2000));
+  });
+}*/
 
 //add scouts to database
 function addToDataBase(req, next) {
@@ -918,8 +921,8 @@ app.get('/api/scoutByID/:discordID', apiCheckAuth, function(req, res) {
 });
 
 //slots API
-app.get('/api/casino/slots/slotSpin', apiCheckAuth, function(req, res) {
-  if (checkGambleEligibility(req.user.id)) {
+app.get('/api/casino/slots/slotSpin', apiCheckAuth, checkGamble, function(req, res) {
+  //if (checkGambleEligibility(String(req.user.id))) {
     const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
     if (spin[0] == spin[1] == spin[2]) {
       let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
@@ -944,9 +947,9 @@ app.get('/api/casino/slots/slotSpin', apiCheckAuth, function(req, res) {
         }
       });
     }
-  } else {
+  /*} else if (!checkGambleEligibility(req.user.id)) {
     res.status(403).send("not enough money bozo");
-  }
+  }*/
 });
 //end slots API
 
@@ -997,7 +1000,7 @@ app.get('/api/casino/blackjack/startingCards', apiCheckAuth, function(req, res) 
     });
 
     res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
-  } else {
+  } else if (!checkGambleEligibility(req.user.id)) {
     res.status(403).send("not enough money bozo");
   }
 });
@@ -1053,8 +1056,8 @@ app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', apiCheckAuth
 });
 //end blackjack API
 
-app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
- if (checkGambleEligibility(req.user.id)) {
+app.get('/api/casino/spinner/spinWheel', apiCheckAuth, checkGamble, function(req, res) {
+ //if (checkGambleEligibility(req.user.id)) {
     //12 spins
     const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250]
 
@@ -1082,9 +1085,9 @@ app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
     });
 
     res.status(200).json(`{"spin": ${spin}}`);
-  } else {
+  /*} else {
     res.status(403).send("not enough money bozo");
-  }
+  }*/
 });
 
 app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {

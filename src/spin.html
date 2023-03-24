@@ -93,8 +93,12 @@
                     console.log("500 failure")
                     return "500";
                 } else if (xhr.status === 403) {
-                    console.log("403 access denied")
-                    document.getElementById('result').innerHTML = 'You have a balance of under -2000 points, you cannot gamble!'
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        console.log("403 access denied");
+                        document.getElementById('result').innerHTML = 'You have a balance of under -2000 points, you cannot gamble!';
+                        document.getElementById('result').style.display = "inherit";
+                        throw new Error('unable to gamble');
+                    }
                 } else {
                     console.log("awaiting response")
                 }
