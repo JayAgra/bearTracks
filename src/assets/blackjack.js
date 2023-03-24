@@ -288,7 +288,7 @@ if (window.innerHeight < window.innerWidth) {
     
     dealBtn.src = "assets/deal.png";
     hitBtn.src = "assets/hit.png";
-    standBtn.src = "assets/deal.png";
+    standBtn.src = "assets/stand.png";
 
     //gameVars
     var dealt = false;
