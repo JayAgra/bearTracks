@@ -7,7 +7,7 @@ window.playerCards = [];
 window.casinoSecToken = "";
 window.dealerTotal = 0;
 window.playerAces = 0;
-window.cardsURL = "assets/"
+window.cardsURL = "assets/progcards/"
 window.progCardsURL = "assets/progcards/"
 //var allCards = [];
 //helper function to get mouse positions
