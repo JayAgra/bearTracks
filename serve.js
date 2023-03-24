@@ -72,7 +72,11 @@ app.engine('html', ejs.renderFile);
 app.use('/images', express.static('images'))
 app.use('/public', express.static('src/public'))
 //all cards by Lydia Honerkamp (https://github.com/1yd1a)
-app.use('/assets', express.static('src/assets'))
+app.use('/assets', express.static('src/assets', {
+  setHeaders: function(res, path) {
+    res.set("X-Author", "Lydia Honerkamp");
+  }
+}))
 app.use(session({
   secret: crypto.randomBytes(48).toString('hex'),
   resave: false,
