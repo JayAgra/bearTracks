@@ -490,6 +490,11 @@ app.get('/topitscout', checkAuth, function(req, res) {
   res.sendFile('src/topitscout.html', { root: __dirname });
 });
 
+app.get('/notes', checkAuth, function(req, res) {
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/notes.html', { root: __dirname });
+});
+
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
@@ -1133,8 +1138,6 @@ app.get('/api/events/:event/pitscoutedteams', apiCheckAuth, function(req, res) {
       res.status(500).send("error!")
       return;
     } else {
-      console.log(err);
-      console.log(dbQueryResult);
       if (typeof dbQueryResult == "undefined") {
         res.status(500).send("fail")
         return;
@@ -1145,6 +1148,48 @@ app.get('/api/events/:event/pitscoutedteams', apiCheckAuth, function(req, res) {
         res.status(200).setHeader('Content-type','text/plain').send(teams.toString())
       }
     }
+  });
+});
+
+app.get('/api/notes/:event/:team/getNotes', apiCheckAuth, function(req, res) {
+  db.run(`INSERT OR IGNORE INTO notes(team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.season}", '{\"ops\":[{\"insert\":\"Write a note...\\n\"}]}'`);
+  const stmt = `SELECT * FROM notes WHERE event=? AND season=? AND team=?`;
+  const values = [req.params.event, season, req.params.team];
+  db.get(stmt, values, (err, dbQueryResult) => {
+    if (err) {
+      res.status(500).send("error!")
+      return;
+    } else {
+      if (typeof dbQueryResult == "undefined") {
+        res.status(500).send("fail")
+        return;
+      } else {
+        res.status(200).setHeader('Content-type','text/plain').send(dbQueryResult.note)
+      }
+    }
+  });
+});
+
+app.post('/api/notes/:event/:team/updateNotes', apiCheckAuth, function(req, res) {
+  let body = '';
+
+  req.on('data', chunk => {
+    body += chunk.toString();
+  });
+
+  req.on('end', () => {
+    let newNote = qs.parse(body);
+    var teams = [];
+    const stmt = `UPDATE notes SET note=? WHERE event=? AND season=? AND team=?`;
+    const values = [newNote.save, req.params.event, season, req.params.team];
+    db.run(stmt, values, (err) => {
+      if (err) {
+        res.status(500).send("error!")
+        return;
+      } else {
+        res.status(200).send("200")
+      }
+    });
   });
 });
 
