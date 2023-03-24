@@ -8,7 +8,6 @@ window.casinoSecToken = "";
 window.dealerTotal = 0;
 window.playerAces = 0;
 window.cardsURL = "assets/progcards/"
-window.progCardsURL = "assets/progcards/"
 //var allCards = [];
 //helper function to get mouse positions
 function getMousePos(canvas, event) {
@@ -191,7 +190,12 @@ async function getNewCard() {
     xhr.send()
 }
 
-function startBlackjack() {
+function startBlackjack(progdeck) {
+if (progdeck) {
+    window.cardsURL = "assets/progcards/"
+} else {
+    window.cardsURL = "assets/"
+}
 if (window.innerHeight < window.innerWidth) {
     alert("play in portrait mode, on a phone.")
 } else {
