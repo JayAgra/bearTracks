@@ -7,6 +7,8 @@ window.playerCards = [];
 window.casinoSecToken = "";
 window.dealerTotal = 0;
 window.playerAces = 0;
+window.cardsURL = "assets/"
+window.progCardsURL = "assets/progcards/"
 //var allCards = [];
 //helper function to get mouse positions
 function getMousePos(canvas, event) {
@@ -55,7 +57,7 @@ async function checkForLoss(cardTotal, card) {
             window.disableBtns = true;
             const newPlayerCard = new Image()
             newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
-            newPlayerCard.src = card;
+            newPlayerCard.src = window.cardsURL + card;
 
             await waitMs(0750)
 
@@ -93,7 +95,7 @@ async function checkForLoss(cardTotal, card) {
             window.disableBtns = true;
             const newPlayerCard = new Image()
             newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
-            newPlayerCard.src = card;
+            newPlayerCard.src = window.cardsURL + card;
 
             await waitMs(0750)
 
@@ -253,7 +255,7 @@ if (window.innerHeight < window.innerWidth) {
 
     //playerCard.src = "assets/player.png";
     //dealerHandCard.src = "assets/dealerhand.png";
-    cardBack.src = "assets/card_back.png";
+    cardBack.src = `${window.cardsURL}card_back.png`;
 
     //buttons
     const dealButton = {
@@ -292,8 +294,8 @@ if (window.innerHeight < window.innerWidth) {
 
     //gameVars
     var dealt = false;
-    window.playerCards = ["assets/card_back.png", "assets/card_back.png"];
-    var drawnCards = ["assets/card_back.png", "assets/card_back.png"];
+    window.playerCards = [`${window.cardsURL}card_back.png`, `${window.cardsURL}card_back.png`];
+    var drawnCards = [`${window.cardsURL}card_back.png`, `${window.cardsURL}card_back.png`];
         cvs.addEventListener('click', async function(evt) {
             var mousePos = getMousePos(cvs, evt);
             console.log("click!!")
@@ -321,9 +323,9 @@ if (window.innerHeight < window.innerWidth) {
                         console.log(APIFirstCards);
 
                         ctx.globalCompositeOperation = 'source-over';
-                        window.playerCards = [APIFirstCards.player0, APIFirstCards.player1];
-                        drawnCards = [APIFirstCards.dealt, "assets/card_back.png"];
-                        window.allCards.push(APIFirstCards.player0, APIFirstCards.player1, APIFirstCards.dealt);
+                        window.playerCards = [window.cardsURL + APIFirstCards.player0, window.cardsURL + APIFirstCards.player1];
+                        drawnCards = [window.cardsURL + APIFirstCards.dealt, `${window.cardsURL}card_back.png`];
+                        window.allCards.push(window.cardsURL + APIFirstCards.player0, window.cardsURL + APIFirstCards.player1, window.cardsURL + APIFirstCards.dealt);
 
                         const firstDrawnCard = new Image();
                         firstDrawnCard.onload = function(){
@@ -333,14 +335,14 @@ if (window.innerHeight < window.innerWidth) {
                             firstPlayerCard.onload = function(){
                                 ctx.drawImage(this, (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
                             }
-                            firstPlayerCard.src = APIFirstCards.player1;
+                            firstPlayerCard.src = window.cardsURL + APIFirstCards.player1;
                             const secondPlayerCard = new Image();
                             secondPlayerCard.onload = function(){
                                 ctx.drawImage(this, (cvs.width/8) + (cvs.width/8), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
                             }
-                            secondPlayerCard.src = APIFirstCards.player0;
+                            secondPlayerCard.src = window.cardsURL + APIFirstCards.player0;
                         }
-                        firstDrawnCard.src = APIFirstCards.dealt;
+                        firstDrawnCard.src = window.cardsURL + APIFirstCards.dealt;
 
                         ctx.drawImage(hitBtn, hitButton.x, hitButton.y, hitButton.width, hitButton.height);
                         ctx.drawImage(standBtn, standButton.x, standButton.y, standButton.width, standButton.height);

@@ -998,7 +998,7 @@ app.get('/api/casino/blackjack/startingCards', apiCheckAuth, checkGamble, functi
       }
     });
 
-    res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
+    res.status(200).json(`{"dealt": "card-${cards[0].suit}_${cards[0].value}.png", "player0": "card-${cards[1].suit}_${cards[1].value}.png", "player1": "card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
 });
 
 app.get('/api/casino/blackjack/newCard', apiCheckAuth, function(req, res) {
@@ -1008,7 +1008,7 @@ app.get('/api/casino/blackjack/newCard', apiCheckAuth, function(req, res) {
   var cardValue = 0;
   cards.push(possibleCards[Math.floor(Math.random() * 51)])
   if (typeof(cards[0].value) !== "number") {cardValue = 10} else {cardValue = cards[0].value}
-  res.status(200).json(`{"card": "assets/card-${cards[0].suit}_${cards[0].value}.png", "cardValue": ${cardValue}}`);
+  res.status(200).json(`{"card": "card-${cards[0].suit}_${cards[0].value}.png", "cardValue": ${cardValue}}`);
 });
 
 app.get('/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard', apiCheckAuth, function(req, res) {
