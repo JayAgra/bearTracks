@@ -1152,7 +1152,6 @@ app.get('/api/events/:event/pitscoutedteams', apiCheckAuth, function(req, res) {
 });
 
 app.get('/api/notes/:event/:team/getNotes', checkAuth, function(req, res) {
-  db.run(`INSERT OR IGNORE INTO notes(team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet'`);
   const stmt = `SELECT * FROM notes WHERE event=? AND season=? AND team=?`;
   const values = [req.params.event, season, req.params.team];
   db.get(stmt, values, (err, dbQueryResult) => {
@@ -1169,6 +1168,17 @@ app.get('/api/notes/:event/:team/getNotes', checkAuth, function(req, res) {
     }
   });
 });
+
+app.get('/api/notes/:event/:team/createNote', checkAuth, function(req, res) {
+  db.run(`INSERT OR IGNORE INTO notes(team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet'`, (err) => {
+    if (err) {
+      res.status(500).send('500')
+    } else {
+      res.status(200).send('200')
+    }
+  });
+});
+
 
 app.post('/api/notes/:event/:team/updateNotes', apiCheckAuth, function(req, res) {
   let body = '';
