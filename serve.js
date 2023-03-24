@@ -921,8 +921,7 @@ app.get('/api/scoutByID/:discordID', apiCheckAuth, function(req, res) {
 });
 
 //slots API
-app.get('/api/casino/slots/slotSpin', apiCheckAuth, checkGamble, function(req, res) {
-  //if (checkGambleEligibility(String(req.user.id))) {
+app.get('/api/casino/slots/slotSpin', apiCheckAuth, function(req, res) {
     const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
     if (spin[0] == spin[1] == spin[2]) {
       let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
@@ -947,15 +946,11 @@ app.get('/api/casino/slots/slotSpin', apiCheckAuth, checkGamble, function(req, r
         }
       });
     }
-  /*} else if (!checkGambleEligibility(req.user.id)) {
-    res.status(403).send("not enough money bozo");
-  }*/
 });
 //end slots API
 
 //blackjack API
-app.get('/api/casino/blackjack/startingCards', apiCheckAuth, function(req, res) {
-  if (checkGambleEligibility(req.user.id)) {
+app.get('/api/casino/blackjack/startingCards', apiCheckAuth, checkGamble, function(req, res) {
     const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
     var cards = [];
     var cardValues = 0;
@@ -1000,9 +995,6 @@ app.get('/api/casino/blackjack/startingCards', apiCheckAuth, function(req, res) 
     });
 
     res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
-  } else if (!checkGambleEligibility(req.user.id)) {
-    res.status(403).send("not enough money bozo");
-  }
 });
 
 app.get('/api/casino/blackjack/newCard', apiCheckAuth, function(req, res) {
@@ -1057,7 +1049,6 @@ app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', apiCheckAuth
 //end blackjack API
 
 app.get('/api/casino/spinner/spinWheel', apiCheckAuth, checkGamble, function(req, res) {
- //if (checkGambleEligibility(req.user.id)) {
     //12 spins
     const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250]
 
@@ -1085,9 +1076,6 @@ app.get('/api/casino/spinner/spinWheel', apiCheckAuth, checkGamble, function(req
     });
 
     res.status(200).json(`{"spin": ${spin}}`);
-  /*} else {
-    res.status(403).send("not enough money bozo");
-  }*/
 });
 
 app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
