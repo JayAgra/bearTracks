@@ -74,7 +74,7 @@ app.use('/public', express.static('src/public'))
 //all cards by Lydia Honerkamp (https://github.com/1yd1a)
 app.use('/assets', express.static('src/assets', {
   setHeaders: function(res, path) {
-    res.set("X-Author", "Lydia Honerkamp");
+    res.set("X-Artist", "Lydia Honerkamp");
   }
 }))
 app.use(session({
