@@ -1160,7 +1160,7 @@ app.get('/api/notes/:event/:team/getNotes', checkAuth, function(req, res) {
       return;
     } else {
       if (typeof dbQueryResult == "undefined") {
-        res.status(500).send("fail")
+        res.status(403).setHeader('Content-type','text/plain').send(none)
         return;
       } else {
         res.status(200).setHeader('Content-type','text/plain').send(dbQueryResult.note)
