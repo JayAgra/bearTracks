@@ -85,6 +85,25 @@
 
             xhr.onreadystatechange = async () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log("200 ok")
+                    console.log(xhr.responseText)
+                    document.getElementById("viewNoteButton").innerHTML = "Rendering View...";
+                    document.getElementById("searchContainer").style.display = "none";
+                    document.getElementById("edit").style.display = "inherit";
+                    document.getElementById("viewNoteButton").innerHTML = "View";
+                    quill.setContents(JSON.parse(xhr.responseText))
+            } else if (xhr.status === 401) {
+                console.log("401 failure")
+                document.getElementById("viewNoteButton").innerHTML = "401 Unauthorized";
+                await waitMs(1000);
+                window.location.href = "/login";
+            } else if (xhr.status === 400) {
+                console.log("400 failure")
+                document.getElementById("viewNoteButton").innerHTML = "400 Bad Request";
+            } else if (xhr.status === 500) {
+                console.log("500 failure")
+                document.getElementById("viewNoteButton").innerHTML = "500 Internal Server Error";
+            } else if (xhr.status === 403 && xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.responseText == "none") {
                         const newxhr = new XMLHttpRequest();
                         newxhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/getNotes`, true);
@@ -111,26 +130,7 @@
                         }
 
                         xhr.send()
-                } else {
-                    console.log("200 ok")
-                    console.log(xhr.responseText)
-                    document.getElementById("viewNoteButton").innerHTML = "Rendering View...";
-                    document.getElementById("searchContainer").style.display = "none";
-                    document.getElementById("edit").style.display = "inherit";
-                    document.getElementById("viewNoteButton").innerHTML = "View";
-                    quill.setContents(JSON.parse(xhr.responseText))
                 }
-            } else if (xhr.status === 401) {
-                console.log("401 failure")
-                document.getElementById("viewNoteButton").innerHTML = "401 Unauthorized";
-                await waitMs(1000);
-                window.location.href = "/login";
-            } else if (xhr.status === 400) {
-                console.log("400 failure")
-                document.getElementById("viewNoteButton").innerHTML = "400 Bad Request";
-            } else if (xhr.status === 500) {
-                console.log("500 failure")
-                document.getElementById("viewNoteButton").innerHTML = "500 Internal Server Error";
             } else {
                 console.log("awaiting response")
                 document.getElementById("viewNoteButton").innerHTML = "Downloading Data...";
