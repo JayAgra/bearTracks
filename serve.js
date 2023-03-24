@@ -191,6 +191,23 @@ function apiCheckAuth(req, res, next) {
   res.status(401).json(`{"status": 401}`)
 }
 
+function checkGambleEligibility(userID) {
+  let pointStmt = `SELECT points FROM scouts WHERE discordID=? LIMIT 1`;
+  let pointValues = [userID];
+  db.get(pointStmt, pointValues, (err,  result) => {
+    if (err) {
+      res.status(500).send("got an error from transaction");
+      return false;
+    } else {
+      if (result <= -2000) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  });
+}
+
 //add scouts to database
 function addToDataBase(req, next) {
   const password = crypto.randomBytes(12).toString('hex')
@@ -902,79 +919,87 @@ app.get('/api/scoutByID/:discordID', apiCheckAuth, function(req, res) {
 
 //slots API
 app.get('/api/casino/slots/slotSpin', apiCheckAuth, function(req, res) {
-  const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
-  if (spin[0] == spin[1] == spin[2]) {
-    let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
-    let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      } else {
-          res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
-      }
-    });
+  if (checkGambleEligibility(req.user.id)) {
+    const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
+    if (spin[0] == spin[1] == spin[2]) {
+      let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
+      let pointValues = [req.user.id];
+      db.run(pointStmt, pointValues, (err) => {
+        if (err) {
+          res.status(500).send("got an error from transaction");
+          return;
+        } else {
+            res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
+        }
+      });
+    } else {
+      let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
+      let pointValues = [req.user.id];
+      db.run(pointStmt, pointValues, (err) => {
+        if (err) {
+          res.status(500).send("got an error from transaction");
+          return;
+        } else {
+            res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
+        }
+      });
+    }
   } else {
-    let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
-    let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      } else {
-          res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
-      }
-    });
+    res.status(403).send("not enough money bozo");
   }
 });
 //end slots API
 
 //blackjack API
 app.get('/api/casino/blackjack/startingCards', apiCheckAuth, function(req, res) {
-  const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
-  var cards = [];
-  var cardValues = 0;
-  var numOfAces = 0;
-  cards.push(possibleCards[Math.floor(Math.random() * 51)])
-  cards.push(possibleCards[Math.floor(Math.random() * 51)])
-  cards.push(possibleCards[Math.floor(Math.random() * 51)])
-  //prevent cards from being duplicated
-  if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-    while (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-      if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-        cards = [];
-        cards.push(possibleCards[Math.floor(Math.random() * 51)])
-        cards.push(possibleCards[Math.floor(Math.random() * 51)])
-        cards.push(possibleCards[Math.floor(Math.random() * 51)])
-      } else {
-        break;
+  if (checkGambleEligibility(req.user.id)) {
+    const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
+    var cards = [];
+    var cardValues = 0;
+    var numOfAces = 0;
+    cards.push(possibleCards[Math.floor(Math.random() * 51)])
+    cards.push(possibleCards[Math.floor(Math.random() * 51)])
+    cards.push(possibleCards[Math.floor(Math.random() * 51)])
+    //prevent cards from being duplicated
+    if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+      while (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+        if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+          cards = [];
+          cards.push(possibleCards[Math.floor(Math.random() * 51)])
+          cards.push(possibleCards[Math.floor(Math.random() * 51)])
+          cards.push(possibleCards[Math.floor(Math.random() * 51)])
+        } else {
+          break;
+        }
       }
     }
-  }
 
-  for (var i = 1; i < 3; i++) {
-    if (typeof(cards[i].value) !== "number") {
-      if (cards[i].value === "A") {
-        numOfAces = numOfAces + 1
+    for (var i = 1; i < 3; i++) {
+      if (typeof(cards[i].value) !== "number") {
+        if (cards[i].value === "A") {
+          numOfAces = numOfAces + 1
+        } else {
+          cardValues = cardValues + 10
+        }
       } else {
-        cardValues = cardValues + 10
+        cardValues = cardValues + cards[i].value
       }
-    } else {
-      cardValues = cardValues + cards[i].value
     }
+    function findDealerTotal() {if(typeof(cards[0].value) !== "number"){return 10;}else{return cards[0].value;}}
+
+    let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
+    let pointValues = [req.user.id];
+    db.run(pointStmt, pointValues, (err) => {
+      if (err) {
+        res.status(500).send("got an error from transaction");
+        return;
+      }
+    });
+
+    res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
+  } else {
+    res.status(403).send("not enough money bozo");
   }
-  function findDealerTotal() {if(typeof(cards[0].value) !== "number"){return 10;}else{return cards[0].value;}}
-
-  let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
-  let pointValues = [req.user.id];
-  db.run(pointStmt, pointValues, (err) => {
-    if (err) {
-      res.status(500).send("got an error from transaction");
-      return;
-    }
-  });
-
-  res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
 });
 
 app.get('/api/casino/blackjack/newCard', apiCheckAuth, function(req, res) {
@@ -1029,33 +1054,37 @@ app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', apiCheckAuth
 //end blackjack API
 
 app.get('/api/casino/spinner/spinWheel', apiCheckAuth, function(req, res) {
-  //12 spins
-  const spins = [10, 20, 50, -15, -25, -35,  -100, -50, 100, 250, -1000, 1250]
+ if (checkGambleEligibility(req.user.id)) {
+    //12 spins
+    const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250]
 
-  //weighting (you didnt think this was fair, did you??)
-  var spin = Math.floor(Math.random() * 12);
-  for (var i = 0; i < 2; i++) {
-    if (spin >= 8) {
-      spin = Math.floor(Math.random() * 12);
-      if (spin >= 9) {
-        spin = Math.floor(Math.random() * 12)
-        if (spin >= 10) {
+    //weighting (you didnt think this was fair, did you??)
+    var spin = Math.floor(Math.random() * 12);
+    for (var i = 0; i < 2; i++) {
+      if (spin >= 8) {
+        spin = Math.floor(Math.random() * 12);
+        if (spin >= 9) {
           spin = Math.floor(Math.random() * 12)
+          if (spin >= 10) {
+            spin = Math.floor(Math.random() * 12)
+          }
         }
       }
     }
+
+    let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+    let pointValues = [spins[spin], req.user.id];
+    db.run(pointStmt, pointValues, (err) => {
+      if (err) {
+        res.status(500).send("got an error from transaction");
+        return;
+      }
+    });
+
+    res.status(200).json(`{"spin": ${spin}}`);
+  } else {
+    res.status(403).send("not enough money bozo");
   }
-
-  let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
-  let pointValues = [spins[spin], req.user.id];
-  db.run(pointStmt, pointValues, (err) => {
-    if (err) {
-      res.status(500).send("got an error from transaction");
-      return;
-    }
-  });
-
-  res.status(200).json(`{"spin": ${spin}}`);
 });
 
 app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
