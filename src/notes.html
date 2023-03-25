@@ -80,7 +80,7 @@
 
             document.getElementById("viewNoteButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/createNote`, true);
+            xhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/getNotes`, true);
             xhr.withCredentials = true;
 
             xhr.onreadystatechange = async () => {
@@ -105,7 +105,7 @@
                 document.getElementById("viewNoteButton").innerHTML = "500 Internal Server Error";
                 if (xhr.responseText == "none") {
                         const newxhr = new XMLHttpRequest();
-                        newxhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/getNotes`, true);
+                        newxhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/createNote`, true);
                         newxhr.withCredentials = true;
 
                         newxhr.onreadystatechange = async () => {
@@ -133,7 +133,7 @@
             } else if (xhr.status === 403 && xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.responseText == "none") {
                         const newxhr = new XMLHttpRequest();
-                        newxhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/getNotes`, true);
+                        newxhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/createNote`, true);
                         newxhr.withCredentials = true;
 
                         newxhr.onreadystatechange = async () => {
