@@ -91,7 +91,8 @@ var limiter = RateLimit({
   windowMs: 10*60*1000, // 10 minutes
   max: 1000,
   standardHeaders: true,
-	legacyHeaders: false
+	legacyHeaders: false,
+  keyGenerator: (req, res) => { return req.connection.remoteAddress }
 });
 app.use(lusca({
   csrf: false,
@@ -1170,7 +1171,7 @@ app.get('/api/notes/:event/:team/getNotes', checkAuth, function(req, res) {
 });
 
 app.get('/api/notes/:event/:team/createNote', checkAuth, function(req, res) {
-  db.run(`INSERT OR IGNORE INTO notes(team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet'`, (err) => {
+  db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet'`, (err) => {
     if (err) {
       res.status(500).send('500')
     } else {
