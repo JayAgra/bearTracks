@@ -170,7 +170,7 @@ async function getNewCard() {
         ctx.globalCompositeOperation = 'source-over';
         var newCardForPlayer = new Image()
         newCardForPlayer.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
-        newCardForPlayer.src = window.playerCards[window.playerCards.length - 1];
+        newCardForPlayer.src =  window.cardsURL + window.playerCards[window.playerCards.length - 1];
         return APINewCard.card;
     } else if (xhr.status === 401) {
         console.log("401 unauth");
