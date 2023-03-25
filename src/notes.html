@@ -51,8 +51,8 @@
                 <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
             </fieldset>
         </div>
+        <div id="editor" style="display: none;"></div>
         <div id="edit" style="display: none;">
-            <div id="editor"></div>
             <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" id="saveNoteButton" onclick="saveNote()">Save</button><br>
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
         </div>
@@ -90,6 +90,7 @@
                     document.getElementById("viewNoteButton").innerHTML = "Rendering View...";
                     document.getElementById("searchContainer").style.display = "none";
                     document.getElementById("edit").style.display = "inherit";
+                    document.getElementById("editor").style.display = "inherit";
                     document.getElementById("viewNoteButton").innerHTML = "View";
                     quill.setContents(JSON.parse(xhr.responseText))
             } else if (xhr.status === 401) {
