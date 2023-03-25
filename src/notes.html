@@ -130,7 +130,7 @@
 
                         xhr.send()
                 }
-            } else if (xhr.status === 403 && xhr.readyState === XMLHttpRequest.DONE) {
+            } else if (xhr.status === 403) {
                 if (xhr.responseText == "none") {
                         const newxhr = new XMLHttpRequest();
                         newxhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/createNote`, true);
