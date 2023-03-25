@@ -1171,7 +1171,7 @@ app.get('/api/notes/:event/:team/getNotes', checkAuth, function(req, res) {
 });
 
 app.get('/api/notes/:event/:team/createNote', checkAuth, function(req, res) {
-  db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet'`, (err) => {
+  db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet')`, function(err) {
     if (err) {
       res.status(500).send('500')
     } else {
