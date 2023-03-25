@@ -63,10 +63,6 @@
         window.currentEvent = 0;
         window.currentTeam = 0;
 
-        var quill = new Quill('#editor', {
-            theme: 'snow'
-        });
-
         document.getElementById("editor").style.display = "none";
 
         const waitMs = ms => new Promise(res => setTimeout(res, ms));
@@ -87,6 +83,9 @@
 
             xhr.onreadystatechange = async () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    var quill = new Quill('#editor', {
+                        theme: 'snow'
+                    });
                     console.log("200 ok")
                     console.log(xhr.responseText)
                     document.getElementById("viewNoteButton").innerHTML = "Rendering View...";
