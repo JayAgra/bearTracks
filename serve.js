@@ -1,5 +1,5 @@
 //CONFIG
-const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl } = require('./config.json');
+const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID } = require('./config.json');
 
 //SETUP OAUTH
 const DiscordOauth2 = require("discord-oauth2");
@@ -142,7 +142,7 @@ function inTeamServer(json) {
   var isInTheServer = false;
   for (var index = 0; index < json.length; ++index) {
    var server = json[index];
-   if(server.id == teamServerID){
+   if(server.id == teamServerID && server.id == anotherServerIDx){
      isInTheServer = true;
      break;
    }
