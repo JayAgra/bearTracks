@@ -251,29 +251,29 @@ function weightScores(submissionID) {
       analysisResults.push(saModule.analyze(result.overall))
       console.log(analysisResults)
       
-      //MAXIMUM SCORE: 30
+      //MAXIMUM SCORE: 15
       //sent analysis
-      score = score + analysisResults[0]*7.5
-      score = score + analysisResults[1]*7.5
-      score = score + analysisResults[2]*15
+      score = score + analysisResults[0]*3.75
+      score = score + analysisResults[1]*3.75
+      score = score + analysisResults[2]*7.5
 
       //MAXIMUM 11
       //charging pts
       score = score + result.game5/2
       score = score + result.game10/2
 
-      //MAXIMUM 13
+      //MAXIMUM 26
       //auto pts
-      score = score + boolToNum(result.game1) * 3 //taxi
-      score = score + boolToNum(result.game2) * 3 //score btm
-      score = score + boolToNum(result.game3) * 4 //score mid
-      score = score + boolToNum(result.game4) * 6 //score top
+      score = score + boolToNum(result.game1) * 6 //taxi
+      score = score + boolToNum(result.game2) * 6 //score btm
+      score = score + boolToNum(result.game3) * 8 //score mid
+      score = score + boolToNum(result.game4) * 12 //score top
 
-      //MAXIMUM 8
+      //MAXIMUM 10
       //teleop pts
       score = score + boolToNum(result.game6) * 2 //score btm
-      score = score + boolToNum(result.game7) * 2 //score mid
-      score = score + boolToNum(result.game8) * 2 //score top
+      score = score + boolToNum(result.game7) * 3 //score mid
+      score = score + boolToNum(result.game8) * 3 //score top
       score = score + boolToNum(result.game9) * 2 //coop bonus
 
       //MAXIMUM 38
