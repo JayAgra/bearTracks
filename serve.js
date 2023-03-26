@@ -142,7 +142,7 @@ function inTeamServer(json) {
   var isInTheServer = false;
   for (var index = 0; index < json.length; ++index) {
    var server = json[index];
-   if(server.id == teamServerID && server.id == anotherServerIDx){
+   if(server.id == teamServerID && server.id == anotherServerID){
      isInTheServer = true;
      break;
    }
