@@ -477,11 +477,6 @@ app.get('/scouts', function(req, res) {
   res.sendFile('src/scouts.html', { root: __dirname });
 });
 
-app.get('/scoutProfile', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('src/scoutProfile.html', { root: __dirname });
-});
-
 app.get('/blackjack', checkAuth, function(req, res) {
   res.set('Cache-control', 'public, max-age=259200');
   res.sendFile('src/blackjack.html', { root: __dirname });
@@ -657,6 +652,28 @@ app.get('/browse', checkAuth, function(req, res) {
         });
       }
     }
+  } else if (req.query.discordID) {
+    const stmt = `SELECT * FROM main WHERE discordId=? AND season=? ORDER BY id DESC`;
+    const values = [discordID, season];
+    db.all(stmt, values, (err, dbQueryResult) => {
+      if (err) {
+        res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+        return;
+      } else {
+        if (typeof dbQueryResult == "undefined") {
+          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
+          return;
+        } else {
+          res.render('../src/browse.ejs', { 
+            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
+            resultsTeamNumber: `Scout ${req.query.discordID}`,
+            resultsEventCode: `2023`,
+            resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult)
+          })
+          return;
+        }
+      }
+    });
   } else {
   res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
   return;
@@ -942,7 +959,7 @@ app.get('/api/scouts', apiCheckAuth, function(req, res) {
       } else {
         var htmltable = ``;
         for (var i = 0; i < dbQueryResult.length; i++) {
-          htmltable = htmltable + `<tr><td><a href="/scoutProfile?discordID=${dbQueryResult[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i].username}#${dbQueryResult[i].discriminator}</a></td><td>${Math.round(dbQueryResult[i].score)}</td></tr>`;
+          htmltable = htmltable + `<tr><td><a href="/browse?discordID=${dbQueryResult[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i].username}#${dbQueryResult[i].discriminator}</a></td><td>${Math.round(dbQueryResult[i].score)}</td></tr>`;
         }
         res.status(200).setHeader('Content-type','text/plain').send(htmltable);
       }
