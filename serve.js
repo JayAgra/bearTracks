@@ -654,7 +654,7 @@ app.get('/browse', checkAuth, function(req, res) {
     }
   } else if (req.query.discordID) {
     const stmt = `SELECT * FROM main WHERE discordID=? AND season=? ORDER BY id DESC`;
-    const values = [req.querydiscordID, season];
+    const values = [req.query.discordID, season];
     db.all(stmt, values, (err, dbQueryResult) => {
       if (err) {
         res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
