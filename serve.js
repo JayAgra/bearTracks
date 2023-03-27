@@ -653,7 +653,7 @@ app.get('/browse', checkAuth, function(req, res) {
       }
     }
   } else if (req.query.discordID) {
-    const stmt = `SELECT * FROM main WHERE discordId=? AND season=? ORDER BY id DESC`;
+    const stmt = `SELECT * FROM main WHERE discordID=? AND season=? ORDER BY id DESC`;
     const values = [discordID, season];
     db.all(stmt, values, (err, dbQueryResult) => {
       if (err) {
