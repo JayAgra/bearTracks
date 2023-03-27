@@ -587,7 +587,7 @@ app.get('/detail', checkAuth, function(req, res) {
 });
 
 app.get('/browse', checkAuth, function(req, res) {
-  if (req.query.team && req.query.event) {
+  if (req.query.number && req.query.event) {
     if (req.query.number == "ALL" || req.query.number == "*" || req.query.number == "0000" || req.query.number == "0") {
       const stmt = `SELECT * FROM main WHERE event=? AND season=? ORDER BY team ASC`;
       const values = [req.query.event, season];
@@ -625,7 +625,7 @@ app.get('/browse', checkAuth, function(req, res) {
             } else {
               res.render('../src/browse.ejs', { 
                 root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-                resultsTeamNumber: `${req.query.team}`,
+                resultsTeamNumber: `Team ${req.query.number}`,
                 resultsEventCode: `${req.query.event}`,
                 resultsBody: seasonProcess.createHTMLTable(dbQueryResult)
               })
@@ -647,7 +647,7 @@ app.get('/browse', checkAuth, function(req, res) {
             } else {
               res.render('../src/browse.ejs', { 
                 root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-                resultsTeamNumber: `${req.query.team}`,
+                resultsTeamNumber: `Match ${req.query.number}`,
                 resultsEventCode: `${req.query.event}`,
                 resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult)
               })
