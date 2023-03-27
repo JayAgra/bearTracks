@@ -363,7 +363,7 @@ app.get('/', checkAuth, async function(req, res) {
       } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
         res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
         res.render('../src/index.ejs', { 
-          root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Manage Submissions<br></a>`
+          root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
         })
       } else {
         res.render('../src/index.ejs', { 
@@ -809,12 +809,14 @@ app.get('/pitimages', checkAuth, function(req, res) {
 });
 
 //api
-app.get('/api/matches/:season/:event/:level', apiCheckAuth, function(req, res) {
+app.get('/api/matches/:season/:event/:level/:all', apiCheckAuth, function(req, res) {
+  var teamNumParam = ""
+  if (req.params.all === "all") {teamNumParam =  "&start=&end=";} else {teamNumParam = `&teamNumber=${myteam}`}
   var dbody = new EventEmitter();
   var options = {
       'method': 'GET',
       'hostname': 'frc-api.firstinspires.org',
-      'path': `/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}&teamNumber=${myteam}`,
+      'path': `/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`,
       'headers': {
           'Authorization': 'Basic ' + frcapi
       },

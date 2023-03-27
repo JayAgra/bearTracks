@@ -39,7 +39,8 @@
                 <select name="event" id="eventCode">
                     <option value="CADA" selected>CADA - Sacramento Regional</option>
                     <option value="CASJ">CASJ - Silicon Valley Regional</option>
-                </select><br>   
+                </select><br><br>
+                <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
                 <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;" id="viewMatchButton" onclick="getMatches()">View</button><br>
                 <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
             </fieldset>
@@ -61,10 +62,12 @@
             window.location.href = "/";
         }
         async function getMatches() {
+            var allOrTeam = ""
+            if (document.getElementById('allmatch').checked) {allOrTeam = "all"} else {allOrTeam = "team"}
             eventCode = document.getElementById("eventCode").value
             document.getElementById("viewMatchButton").innerHTML = "Requesting Data...";
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/matches/2023/${eventCode}/qual`, true);
+            xhr.open("GET", `/api/matches/2023/${eventCode}/qual/${allOrTeam}`, true);
             xhr.withCredentials = true;
 
             xhr.onreadystatechange = async () => {
