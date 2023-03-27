@@ -633,7 +633,7 @@ app.get('/browse', checkAuth, function(req, res) {
             }
           }
         });
-      } else if (req.query.type === "event") {
+      } else if (req.query.type === "match") {
         const stmt = `SELECT * FROM main WHERE match=? AND event=? AND season=? ORDER BY id DESC`;
         const values = [req.query.number, req.query.event, season];
         db.all(stmt, values, (err, dbQueryResult) => {
