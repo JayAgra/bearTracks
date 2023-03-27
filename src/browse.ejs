@@ -62,8 +62,11 @@
             <h4 style="color: red; display: <%= errorDisplay %>"><%= errorMessage %></h4>
             <h4>Match Data</h4><br>
             <fieldset>
-                <label>Target Team Number: <br></label>
-                <input type="tel" name="team" required><br>
+                <select name="type">
+                    <option value="team" selected>Team </option>
+                    <option value="match">Match </option>
+                </select>
+                <input type="tel" name="number" required><br>
             <br><fieldset>
                 <label>Event Code: </label><br>
                 <select name="event">
