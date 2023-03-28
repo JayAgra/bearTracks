@@ -58,25 +58,20 @@
         <h2 class="gameflair1">Pre-Match</h2>
         <fieldset>
             <label>Event Code</label><br>
-            <select name="event">
+            <select name="event" id="eventCode">
                 <option value="CADA">CADA - Sacramento Regional</option>
                 <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
             </select>
         </fieldset>
 
-        <!--<fieldset>
-            <label>Your Name<br></label>
-            <input type="text" name="name" required>
-        </fieldset>-->
-
         <fieldset>
-            <label>Number of the Team you are Scouting<br></label>
-            <input type="tel" name="team" required>
+            <label>Team Number <span id="invalidTeamInput" style="color: red; display: none;">Not in comp!</span><br></label>
+            <input type="tel" name="team" id="validateTeamInput" required>
         </fieldset>
 
         <fieldset>
-            <label>Match Number <span id="invalidInput" style="color: red;"></span><br></label>
-            <input type="tel" name="match" id="validateInput" class="smallerInput" required>
+            <label>Match Number<br></label>
+            <input type="tel" name="match" class="smallerInput" required>
             <select name="level">
                 <option value="practice">Practice</option>
                 <option value="qualification" selected>Qual</option>
@@ -182,8 +177,8 @@
         </fieldset>
         <br>
         <p style="text-align:center">
-            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Submit</button><br>
-            <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem;; border-style: solid; border-color: #E90202; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button><br><br>
+            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" id="submitButton">Submit</button><br>
+            <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem; border-style: solid; border-color: #E90202; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button><br><br>
             <!--<small><button type="button" id="downloadFormButton" onclick="exportSubmissionJSON()" style="color: red; background-color: rgba(0,0,0,0); border: none;">Download Submission</button><a id="downloadFileLink" style="color: green; background-color: rgba(0,0,0,0); text-decoration: none; border: none; display: none;"></a></small><br></small>
             <small><button type="button" id="uploadFormButton" onclick="uploadSubmissionJSON()" style="color: red; background-color: rgba(0,0,0,0); border: none;">Upload Submission</button></small>-->
         </p>
@@ -191,7 +186,26 @@
     <input type="file" name="jsonScoutFile" accept=".scout" style="display: none;" id="jsonScoutFile" disabled="disabled">
     <br><br>
     <script>
-        if(window.innerHeight > window.innerWidth){
+        //data validation
+        var allTeams = [];
+
+        document.getElementById('eventCode').addEventListener('change', (event) => function(){
+            fetch(`/api/events/${document.getElementById('eventCode').value}/teams`, {
+                credentials: "include"
+            }).then((response) => allTeams = response.split(",")).catch();
+        });
+
+        document.getElementById('validateTeamInput').addEventListener('change', (event) => function(){
+            if (allTeams.includes(document.getElementById('validateTeamInput').value)) {
+                document.getElementById('invalidTeamInput').style.display = "none";
+                document.getElementById('submitButton').disabled = "false";
+            } else {
+                document.getElementById('invalidTeamInput').style.display = "inherit";
+                document.getElementById('submitButton').disabled = "true";
+            }
+        });
+        //end data validation
+        if (window.innerHeight > window.innerWidth) {
             document.getElementById('landscapeReminder').style.display = "inline";
         }
         window.addEventListener('resize', function(event){
@@ -243,7 +257,7 @@
             });
         }
         const inputItems = document.getElementsByTagName('input');
-        for(var i = 0; i < inputItems.length; i++) {
+        for (var i = 0; i < inputItems.length; i++) {
             inputItems[i].addEventListener('change', (event) => {resetExportButton()});
             inputItems[i].addEventListener('keydown', (event) => {resetExportButton()});
             inputItems[i].addEventListener('paste', (event) => {resetExportButton()});

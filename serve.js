@@ -1184,7 +1184,7 @@ app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
   });
 });
 
-app.get('/api/events/:event/allData', apiCheckAuth, function(req, res) {
+app.get('/api/events/:event/allTeamData', apiCheckAuth, function(req, res) {
   var dbody = new EventEmitter();
   var options = {
       'method': 'GET',
