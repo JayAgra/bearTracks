@@ -934,7 +934,7 @@ app.get('/api/teams/:season/:event', apiCheckAuth, function(req, res) {
           } else {
             var htmltable = ``;
             for (var i = 0; i < dbQueryResult.length; i++) {
-              htmltable = htmltable + `<tr><td>#${i + 1}</td><td><a href="/browse?number=${dbQueryResult[i]['team']}&type=team&event=${requestedEvent}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['team']}</a></td><td>${Math.round(dbQueryResult[i]['AVG(weight)'])}%</td><td><progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
+              htmltable = htmltable + `<tr><td>${i + 1}</td><td><a href="/browse?number=${dbQueryResult[i]['team']}&type=team&event=${requestedEvent}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['team']}</a></td><td>${Math.round(dbQueryResult[i]['AVG(weight)'])}%</td><td><progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
             }
             res.status(200).setHeader('Content-type','text/plain').send(htmltable);
           }
