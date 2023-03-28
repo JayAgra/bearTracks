@@ -1216,7 +1216,44 @@ app.get('/api/events/:event/allData', apiCheckAuth, function(req, res) {
   request.end();
   dbody.on('update', function() {
       if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-        res.status(200).json(data)
+        res.status(200).json(JSON.parse(data))
+      }
+  });
+});
+
+app.get('/api/events/current/allData', apiCheckAuth, function(req, res) {
+  var dbody = new EventEmitter();
+  var options = {
+      'method': 'GET',
+      'hostname': 'frc-api.firstinspires.org',
+      'path': `/v3.0/${season}/teams?eventCode=${currentComp}`,
+      'headers': {
+          'Authorization': 'Basic ' + frcapi
+      },
+      'maxRedirects': 20
+  };
+
+  var request = https.request(options, function(response) {
+      var chunks = [];
+
+      response.on("data", function(chunk) {
+          chunks.push(chunk);
+      });
+
+      response.on("end", function(chunk) {
+          var body = Buffer.concat(chunks);
+          data = body;
+          dbody.emit('update');
+      });
+
+      response.on("error", function(error) {
+          console.error(error);
+      });
+  });
+  request.end();
+  dbody.on('update', function() {
+      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
+        res.status(200).json(JSON.parse(data))
       }
   });
 });

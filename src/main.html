@@ -75,13 +75,13 @@
         </fieldset>
 
         <fieldset>
-            <label>Match Number<br></label>
-            <input type="tel" name="match" required class="smallerInput">
+            <label>Match Number <span id="invalidInput" style="color: red;"></span><br></label>
+            <input type="tel" name="match" id="validateInput" class="smallerInput" required>
             <select name="level">
                 <option value="practice">Practice</option>
                 <option value="qualification" selected>Qual</option>
-                <option value="quarterfinal">Quarterfinal</option>
-                <option value="semifinal">Semifinal</option>
+                <option value="upper">Upper Bracket</option>
+                <option value="lower">Lower Bracket</option>
             </select>
         </fieldset><br>
         <h2 class="gameflair1">Match Scouting</h2>
