@@ -76,10 +76,10 @@ function defaultEvent(fallback, interaction) {
     }
 }
 
-function newSubmission(formType, Id, scoutIP, scoutName) {
+function newSubmission(formType, Id, scoutIP) {
     //you need to set channel yourslef!
     const channel = client.channels.cache.get('400355158502014977');
-    channel.send(`New ${formType} submission, ID: ${Id}.\n${scoutName}:${scoutIP}`);
+    channel.send(`New ${formType} submission, ID: ${Id}.\n${scoutIP}`);
     return;
 }
 

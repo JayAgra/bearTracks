@@ -1,5 +1,5 @@
 //CONFIG
-const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID } = require('./config.json');
+const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID, currentComp } = require('./config.json');
 
 //SETUP OAUTH
 const DiscordOauth2 = require("discord-oauth2");
@@ -289,13 +289,13 @@ app.post('/submit', checkAuth, function(req, res) {
           var formscoresdj = 25;
         }
         let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        let values = [formData.event, '2023', formData.name, formData.team, formData.match, formData.level, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.game21, formData.game22, formData.game23, formData.game24, formData.game25, "dropped", formData.defend, formData.driving, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, 0, "0"];
+        let values = [formData.event, season, req.user.username, formData.team, formData.match, formData.level, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.game21, formData.game22, formData.game23, formData.game24, formData.game25, "dropped", formData.defend, formData.driving, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, 0, "0"];
         db.run(stmt, values, function(err) {
             if (err) {
               logErrors(err.message);
               res.end(err.message);
             }
-            discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
+            discordSendData.newSubmission("main", this.lastID, req.user.username);
             seasonProcess.weightScores(this.lastID)
         });
         let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
@@ -322,13 +322,13 @@ const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'im
 app.post('/submitPit', checkAuth, imageUploads, function(req, res) {
   let formData = req.body
   let stmt = `INSERT INTO pit (event, season, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  let values = [formData.event, '2023', formData.name, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, req.files.image1[0].filename, req.files.image2[0].filename, req.files.image3[0].filename, req.files.image4[0].filename, req.files.image5[0].filename];
+  let values = [formData.event, season, req.user.username, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, req.files.image1[0].filename, req.files.image2[0].filename, req.files.image3[0].filename, req.files.image4[0].filename, req.files.image5[0].filename];
   db.run(stmt, values, function(err) {
     if (err) {
       logErrors(err.message);
       res.end('pit form error! ' + err.message);
     }
-    discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
+    discordSendData.newSubmission("pit", this.lastID, req.user.username);
   });
   let pointStmt = `UPDATE scouts SET score = score + 35 WHERE discordID=?`;
   let pointValues = [req.user.id];
@@ -667,7 +667,7 @@ app.get('/browse', checkAuth, function(req, res) {
           res.render('../src/browse.ejs', { 
             root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `Scout ${req.query.discordID}`,
-            resultsEventCode: `2023`,
+            resultsEventCode: season,
             resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult)
           })
           return;
@@ -1147,7 +1147,7 @@ app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
   var options = {
       'method': 'GET',
       'hostname': 'frc-api.firstinspires.org',
-      'path': `/v3.0/2023/teams?eventCode=${req.params.event}`,
+      'path': `/v3.0/${season}/teams?eventCode=${req.params.event}`,
       'headers': {
           'Authorization': 'Basic ' + frcapi
       },
@@ -1180,6 +1180,43 @@ app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
           teams.push(parsedData.teams[i].teamNumber);
         }
         res.status(200).setHeader('Content-type','text/plain').send(teams.toString())
+      }
+  });
+});
+
+app.get('/api/events/:event/allData', apiCheckAuth, function(req, res) {
+  var dbody = new EventEmitter();
+  var options = {
+      'method': 'GET',
+      'hostname': 'frc-api.firstinspires.org',
+      'path': `/v3.0/${season}/teams?eventCode=${req.params.event}`,
+      'headers': {
+          'Authorization': 'Basic ' + frcapi
+      },
+      'maxRedirects': 20
+  };
+
+  var request = https.request(options, function(response) {
+      var chunks = [];
+
+      response.on("data", function(chunk) {
+          chunks.push(chunk);
+      });
+
+      response.on("end", function(chunk) {
+          var body = Buffer.concat(chunks);
+          data = body;
+          dbody.emit('update');
+      });
+
+      response.on("error", function(error) {
+          console.error(error);
+      });
+  });
+  request.end();
+  dbody.on('update', function() {
+      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
+        res.status(200).json(data)
       }
   });
 });
