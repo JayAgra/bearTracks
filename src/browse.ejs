@@ -34,6 +34,7 @@
             border-collapse:separate;
             border: solid var(--gameFlairColor) 1px;
             border-radius: 6px;
+            overflow: auto;
         }
 
         td, th {
@@ -87,8 +88,7 @@
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4>Match Data</h4><br>
-            <fieldset>
-            <fieldset style="overflow: scroll;">
+            <div style="all: unset; overflow-x: auto;">
                 <h3><%= resultsTeamNumber %> at <%= resultsEventCode %></h3>
                 <table>
                     <tr>
@@ -103,10 +103,9 @@
                     </tr>
                     <%- resultsBody %>
                   </table>
-            </fieldset>
+                </div>
             <!--buttons-->
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>&emsp;<button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem;; border-style: solid; border-color: #FFB600; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button>
-            </fieldset>
         <br><br>
         <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: #68C3E2;">here</a></small>
     </div>
