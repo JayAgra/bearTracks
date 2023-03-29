@@ -71,6 +71,8 @@ function teamData(season, team, event, interaction) {
     //game12 - game25 is INT (0)
     //formType is STRING the form that was submitted and is not entered into db
 
+    //game25 will be set to grid total
+
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         return interaction.reply({
@@ -106,8 +108,8 @@ function teamData(season, team, event, interaction) {
             value: `B/M/T ${valueToEmote(result.game6)}${valueToEmote(result.game7)}${valueToEmote(result.game8)}`,
             inline: true
           },{
-            name: 'Alliance COOPERTITION',
-            value: `${valueToEmote(result.game9)}`,
+            name: 'Grid Points',
+            value: `${valueToEmote(result.game25)}`,
             inline: true
           },{
             name: 'TELEOP Charging Points',
@@ -292,6 +294,7 @@ function weightScores(submissionID) {
       score = score + (gridwt/1.6875)
       db.run(`UPDATE main SET weight=${score.toFixed(2)} WHERE id=${submissionID}`, (err, result) => {if (err) {console.log("Error updating DB!")}})
       db.run(`UPDATE main SET analysis='${analysisResults.toString()}' WHERE id=${submissionID}`, (err, result) => {if (err) {console.log("Error updating DB!")}})
+      db.run(`UPDATE main SET game25='${gridwt}' WHERE id=${submissionID}`, (err, result) => {if (err) {console.log("Error updating DB!")}})
     } else {
       return "error!";
     }
@@ -305,7 +308,7 @@ function weightScores(submissionID) {
 function createHTMLTable(data) {
   var html = ``;
   for (var i = 0; i < data.length; i++) {
-    html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data[i].game1)}</td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
+    html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
   }
   return html;
 }
@@ -313,7 +316,7 @@ function createHTMLTable(data) {
 function createHTMLTableWithTeamNum(data) {
   var html = ``;
   for (var i = 0; i < data.length; i++) {
-    html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data[i].game1)}</td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
+    html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">Match ${data[i].match}</a></td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`
   }
   return html;
 }

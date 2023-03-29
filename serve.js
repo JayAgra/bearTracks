@@ -1332,6 +1332,43 @@ app.post('/api/notes/:event/:team/updateNotes', apiCheckAuth, function(req, res)
   });
 });
 
+app.get('/api/teams/teamdata/:team', apiCheckAuth, function(req, res) {
+  var dbody = new EventEmitter();
+  var options = {
+      'method': 'GET',
+      'hostname': 'frc-api.firstinspires.org',
+      'path': `/v3.0/${season}/teams?teamNumber=${req.params.team}`,
+      'headers': {
+          'Authorization': 'Basic ' + frcapi
+      },
+      'maxRedirects': 20
+  };
+
+  var request = https.request(options, function(response) {
+      var chunks = [];
+
+      response.on("data", function(chunk) {
+          chunks.push(chunk);
+      });
+
+      response.on("end", function(chunk) {
+          var body = Buffer.concat(chunks);
+          data = body;
+          dbody.emit('update');
+      });
+
+      response.on("error", function(error) {
+          console.error(error);
+      });
+  });
+  request.end();
+  dbody.on('update', function() {
+      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
+        res.status(200).json(JSON.parse(data))
+      }
+  });
+});
+
 //auth functions
 app.get('/', passport.authenticate('discord'));
 
