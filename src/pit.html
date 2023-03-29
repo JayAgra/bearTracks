@@ -29,7 +29,7 @@
                 <small><a href="topitscout" style="all: unset;">Teams to scout</a></small><br><br>
                 <fieldset>
                     <label>Event Code</label><br>
-                    <select name="event">
+                    <select name="event" id="eventCode">
                         <option value="CADA">CADA - Sacramento Regional</option>
                         <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
                     </select>
@@ -40,18 +40,18 @@
                 </fieldset>-->
 
                 <fieldset>
-                    <label>Number of the Team you are Scouting<br></label>
-                    <input type="tel" name="team" required>
+                    <label>Team Number <span id="invalidTeamInput" style="color: red; display: none;">Not in comp!</span><br></label>
+                    <input type="tel" name="team" id="validateTeamInput" required>
                 </fieldset>
 
                 <h2 class="gameflair1">Pit Scouting</h2>
-                <!--<h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4-->
+                <h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
 
-                <!--<fieldset>
+                <fieldset>
                     <label>Drive Type<br></label>
                     <select name="drivetype">
                         <option value="westcoast">Westcoast</option>
-                        <option value="swerve">Swerve (Like Ours)</option>
+                        <option value="swerve" selected>Swerve (Like Ours)</option>
                         <option value="other">Other (Explain in overall)</option>
                     </select>
                 </fieldset>
@@ -59,7 +59,7 @@
                     <label>Experience<br></label>
                     <input type="text" name="driveTeam" class="smallerInput"> Days of drive team work<br>
                     <input placeholder="0 or 1" type="text" name="attended" class="smallerInput"> Attended events
-                </fieldset>-->
+                </fieldset>
 
                 <input value="0" type="number" name="game1" hidden>
                 <input value="0" type="number" name="game2" hidden>
@@ -88,8 +88,8 @@
                 <input value="0" type="number" name="attended" hidden>
 
                 <fieldset>
-                    <!--<label>Overall assessment<br></label>-->
-                    <!--<textarea rows="4" cols="38" name="overall"></textarea>-->
+                    <label>Overall assessment<br></label>
+                    <textarea rows="4" cols="38" name="overall"></textarea>
                 </fieldset>
 
                 <fieldset>
@@ -115,6 +115,52 @@
             </form>
             <br><br>
             <script>
+            var allTeams = [];
+
+            async function getEventTeams() {
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", `/api/events/${document.getElementById('eventCode').value}/teams`, true);
+                xhr.withCredentials = true;
+
+                xhr.onreadystatechange = async () => {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log("200 ok")
+                    console.log(xhr.responseText)
+                    allTeams = (xhr.responseText).split(",")
+                } else if (xhr.status === 401) {
+                    console.log("401 failure")
+                    window.location.href = "/login";
+                } else if (xhr.status === 400) {
+                    console.log("400 failure")
+                    document.getElementById("viewNoteButton").innerHTML = "400 Bad Request";
+                } else if (xhr.status === 500) {
+                    console.log("500 failure")
+                } else if (xhr.status === 403) {
+                    console.log("403 failure")
+                } else {
+                    console.log("awaiting response")
+                }
+                }
+
+                xhr.send()
+            }
+
+            getEventTeams()
+
+            document.getElementById('eventCode').addEventListener('change', async function(){console.log(getEventTeams()); console.log(allTeams)});
+
+            document.getElementById('validateTeamInput').addEventListener('input', function(event){
+                console.log("event!")
+                if (allTeams.includes(document.getElementById('validateTeamInput').value)) {
+                    console.log("good boy")
+                    document.getElementById('invalidTeamInput').style.display = "none";
+                    document.getElementById('submitButton').disabled = "false";
+                } else {
+                    console.log("bad bad bad boy")
+                    document.getElementById('invalidTeamInput').style.display = "inherit";
+                    document.getElementById('submitButton').disabled = "true";
+                }
+            });
                 function goToHome() {
                     window.location.href = "/";
                 }

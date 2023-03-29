@@ -160,8 +160,8 @@
         <br>
         <h2 class="gameflair1">Post Game</h2>
         <fieldset>
-            <label>Estimate the cycle time of the robot</label><br>
-            <input type="tel" name="game11" required class="smallerInput"> seconds
+            <label>Estimate the cycle time of the robot <span id="tooLong" style="color: red; display: none;">4 digits or less!</span><br></label></label><br>
+            <input type="tel" name="game11" class="smallerInput" id="validateLength" required> seconds
         </fieldset>
         <fieldset>
             <label>Did the robot play defense? If so, what did they do, and did they get fouls?<br><br></label>
@@ -189,21 +189,64 @@
         //data validation
         var allTeams = [];
 
-        document.getElementById('eventCode').addEventListener('change', function(event){
-            fetch(`/api/events/${document.getElementById('eventCode').value}/teams`, {
-                credentials: "include"
-            }).then((response) => allTeams = response.split(",")).catch();
-        });
+        async function getEventTeams() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/api/events/${document.getElementById('eventCode').value}/teams`, true);
+            xhr.withCredentials = true;
 
-        document.getElementById('validateTeamInput').addEventListener('change', function(event){
+            xhr.onreadystatechange = async () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("200 ok")
+                console.log(xhr.responseText)
+                allTeams = (xhr.responseText).split(",")
+            } else if (xhr.status === 401) {
+                console.log("401 failure")
+                window.location.href = "/login";
+            } else if (xhr.status === 400) {
+                console.log("400 failure")
+                document.getElementById("viewNoteButton").innerHTML = "400 Bad Request";
+            } else if (xhr.status === 500) {
+                console.log("500 failure")
+            } else if (xhr.status === 403) {
+                console.log("403 failure")
+            } else {
+                console.log("awaiting response")
+            }
+            }
+
+            xhr.send()
+        }
+
+        getEventTeams()
+
+        document.getElementById('eventCode').addEventListener('change', async function(){console.log(getEventTeams()); console.log(allTeams)});
+
+        document.getElementById('validateTeamInput').addEventListener('input', function(event){
+            console.log("event!")
             if (allTeams.includes(document.getElementById('validateTeamInput').value)) {
+                console.log("good boy")
                 document.getElementById('invalidTeamInput').style.display = "none";
                 document.getElementById('submitButton').disabled = "false";
             } else {
+                console.log("bad bad bad boy")
                 document.getElementById('invalidTeamInput').style.display = "inherit";
                 document.getElementById('submitButton').disabled = "true";
             }
         });
+
+        document.getElementById('validateLength').addEventListener('input', function(event){
+            console.log("event!")
+            if ((document.getElementById('validateLength').value).length <= 4) {
+                console.log("good boy")
+                document.getElementById('tooLong').style.display = "none";
+                document.getElementById('submitButton').disabled = "false";
+            } else {
+                console.log("bad bad bad boy")
+                document.getElementById('tooLong').style.display = "inherit";
+                document.getElementById('submitButton').disabled = "true";
+            }
+        });
+
         //end data validation
         if (window.innerHeight > window.innerWidth) {
             document.getElementById('landscapeReminder').style.display = "inline";
@@ -256,26 +299,6 @@
                 }
             });
         }
-        /*
-        const inputItems = document.getElementsByTagName('input');
-        for (var i = 0; i < inputItems.length; i++) {
-            inputItems[i].addEventListener('change', (event) => {resetExportButton()});
-            inputItems[i].addEventListener('keydown', (event) => {resetExportButton()});
-            inputItems[i].addEventListener('paste', (event) => {resetExportButton()});
-        }
-        document.addEventListener('keydown', (event) => {resetExportButton()});
-        document.addEventListener('paste', (event) => {resetExportButton()});
-        function resetExportButton() {
-            const downloadFormButton = document.getElementById('downloadFormButton')
-            const downloadFileLink = document.getElementById('downloadFileLink')
-            downloadFileLink.innerHTML = "";
-            downloadFileLink.href = "";
-            downloadFileLink.download = "";
-            downloadFileLink.style.display = "none";
-            downloadFormButton.innerHTML = "Download Submission";
-            downloadFormButton.style.display = "inline";
-        }
-        */
     </script>
 </body>
 </html>
