@@ -975,7 +975,7 @@ app.get('/api/scouts', apiCheckAuth, function(req, res) {
 
 app.get('/api/scouts/:scout/profile', apiCheckAuth, function(req, res) {
   function isMe() {if (req.params.scout == "me") {return req.user.id} else {return req.params.scout}}
-  const stmt = `SELECT * FROM scouts WHERE discordID=? ORDER BY score DESC`;
+  const stmt = `SELECT * FROM scouts WHERE discordID=?`;
   const values = [isMe()];
   db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
@@ -985,7 +985,7 @@ app.get('/api/scouts/:scout/profile', apiCheckAuth, function(req, res) {
       if (typeof dbQueryResult == "undefined") {
         res.status(204).send("no query results");
       } else {
-        res.status(200).json.send(dbQueryResult);
+        res.status(200).json(JSON.parse(dbQueryResult));
       }
     }
   });
