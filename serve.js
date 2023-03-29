@@ -230,7 +230,7 @@ function addToDataBase(req, next) {
       }
     }
   });*/
-  db.run(`UPDATE scouts WHERE discorID=${req.user.id} SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}"`);
+  db.run(`UPDATE scouts WHERE discordID=${req.user.id} SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}"`);
   db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
   return next();
 }
