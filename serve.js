@@ -219,7 +219,7 @@ function checkGamble(req, res, next) {
 //add scouts to database
 function addToDataBase(req, next) {
   const password = crypto.randomBytes(12).toString('hex')
-  db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
+  /*db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
     if (err) {
       return;
     } else {
@@ -229,8 +229,9 @@ function addToDataBase(req, next) {
         //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
       }
     }
-  });
-  db.run(`INSERT OR REPLACE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
+  });*/
+  db.run(`UPDATE scouts SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}"`);
+  db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
   return next();
 }
 
