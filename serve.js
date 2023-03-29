@@ -230,7 +230,7 @@ function addToDataBase(req, next) {
       }
     }
   });*/
-  db.run(`UPDATE scouts SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}"`);
+  db.run(`UPDATE scouts WHERE discorID=${req.user.id} SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}"`);
   db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
   return next();
 }
@@ -501,6 +501,11 @@ app.get('/topitscout', checkAuth, function(req, res) {
 app.get('/notes', checkAuth, function(req, res) {
   res.set('Cache-control', 'public, max-age=259200');
   res.sendFile('src/notes.html', { root: __dirname });
+});
+
+app.get('/profile', checkAuth, function(req, res) {
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/profile.html', { root: __dirname });
 });
 
 //allow people to get denied :)
@@ -963,6 +968,24 @@ app.get('/api/scouts', apiCheckAuth, function(req, res) {
           htmltable = htmltable + `<tr><td><a href="/browse?discordID=${dbQueryResult[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i].username}#${dbQueryResult[i].discriminator}</a></td><td>${Math.round(dbQueryResult[i].score)}</td></tr>`;
         }
         res.status(200).setHeader('Content-type','text/plain').send(htmltable);
+      }
+    }
+  });
+});
+
+app.get('/api/scouts/:scout/profile', apiCheckAuth, function(req, res) {
+  function isMe() {if (req.params.scout == "me") {return req.user.id} else {return req.params.scout}}
+  const stmt = `SELECT * FROM scouts WHERE discordID=? ORDER BY score DESC`;
+  const values = [isMe()];
+  db.get(stmt, values, (err, dbQueryResult) => {
+    if (err) {
+      res.status(500).send("got an error from query");
+      return;
+    } else {
+      if (typeof dbQueryResult == "undefined") {
+        res.status(204).send("no query results");
+      } else {
+        res.status(200).json.send(dbQueryResult);
       }
     }
   });
