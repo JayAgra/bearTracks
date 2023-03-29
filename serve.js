@@ -231,7 +231,7 @@ function addToDataBase(req, next) {
     }
   });*/
   db.run(`UPDATE scouts SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}" WHERE discordID=${req.user.id}`);
-  db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
+  db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt, badges) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}", 0000000000)`);
   return next();
 }
 
@@ -975,7 +975,7 @@ app.get('/api/scouts', apiCheckAuth, function(req, res) {
 
 app.get('/api/scouts/:scout/profile', apiCheckAuth, function(req, res) {
   function isMe() {if (req.params.scout == "me") {return req.user.id} else {return req.params.scout}}
-  const stmt = `SELECT * FROM scouts WHERE discordID=?`;
+  const stmt = `SELECT discordID, score, discordProfile, username, discriminator, addedAt, badges FROM scouts WHERE discordID=?`;
   const values = [isMe()];
   db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
@@ -985,7 +985,7 @@ app.get('/api/scouts/:scout/profile', apiCheckAuth, function(req, res) {
       if (typeof dbQueryResult == "undefined") {
         res.status(204).send("no query results");
       } else {
-        res.status(200).json(JSON.parse(dbQueryResult));
+        res.status(200).json(dbQueryResult);
       }
     }
   });
