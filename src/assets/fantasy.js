@@ -1,5 +1,5 @@
-var cvs = document.getElementById("bjCanvas")
-var ctx = document.getElementById("bjCanvas").getContext("2d"); 
+var cvs = document.getElementById("frcCvs")
+var ctx = document.getElementById("frcCvs").getContext("2d"); 
 
 window.redScore = 0
 window.blueScore = 0
@@ -171,7 +171,7 @@ if (window.innerHeight > window.innerWidth) {
     } else if (cvs.mozRequestFullScreen) {
         cvs.mozRequestFullScreen();
     }*/
-    
+
     //Scale canvas
     cvs.style.width = window.innerWidth - ((window.innerWidth)%64) + "px"
     cvs.style.height = window.innerHeight - ((window.innerHeight)%64) + "px"
