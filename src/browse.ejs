@@ -36,19 +36,16 @@
             border-radius: 6px;
             overflow: auto;
         }
-
         td, th {
             border-left: solid var(--gameFlairColor) 1px;
             border-top: solid var(--inputColorSelected) 1px;
         }
-
         th {
             background-color: var(--transparent);
             color: var(--textColor);
             border-top: none;
             border-bottom: solid var(--gameFlairColor) 1px;
         }
-
         td:first-child, th:first-child {
             border-left: none;
         }
@@ -89,19 +86,19 @@
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4>Match Data</h4><br>
                 <h3><%= resultsTeamNumber %> at <%= resultsEventCode %></h3>
-                <div style="overflow-x: auto; width: 85vw; display: flex; align-items: center; flex-direction: column;">
-                <table>
-                    <tr>
-                      <th>Match Number</th>
-                      <th>Auto Score</th>
-                      <th>Auto Charge</th>
-                      <th>Teleop Score</th>
-                      <th>Teleop Charge</th>
-                      <th>Grid Points</th>
-                      <th>Cycle Time</th>
-                      <th>Match Performance Score</th>
-                    </tr>
-                    <%- resultsBody %>
+                <div style="overflow-x: auto; width: 95vw;">
+                    <table>
+                        <tr>
+                        <th>Match Number</th>
+                        <th>Auto Score</th>
+                        <th>Auto Charge</th>
+                        <th>Teleop Score</th>
+                        <th>Teleop Charge</th>
+                        <th>Grid Points</th>
+                        <th>Cycle Time</th>
+                        <th>Match Performance Score</th>
+                        </tr>
+                        <%- resultsBody %>
                   </table>
                 </div>
             <!--buttons-->
