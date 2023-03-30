@@ -530,7 +530,7 @@ app.get('/info', checkAuth, function(req, res) {
 app.get('/teamRoleInfo', checkAuth, function(req, res) {  
   getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {
     console.log(data.roles)
-  }).catch(error);
+  }).catch();
 });
 
 //tool to browse match scouting data
