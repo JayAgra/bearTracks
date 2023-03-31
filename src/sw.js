@@ -1,25 +1,29 @@
-var version = '2.0.0'
+var version = '2.2.0'
 var cacheName = `scouting-pwa-${version}`
 var filesToCache = [
-  '/appinstall.js',
-  '/float.min.css',
-  '/form.min.js',
-  '/fonts/Raleway-300.ttf',
-  '/fonts/Raleway-500.ttf',
-  '/settings',
-  '/matches',
-  '/scouts'
+  'appinstall.js',
+  'float.min.css',
+  'form.min.js',
+  'fonts/Raleway-300.ttf',
+  'fonts/Raleway-500.ttf',
+  'settings',
+  'matches',
+  'scouts'
 ];
 
-console.log('[SW] Executed')
 //Start the service worker and cache all
-self.addEventListener('install', function(e) {
+self.addEventListener("install", (e) => {
+    console.log("[W] Install");
     e.waitUntil(
-        caches.open(cacheName).then(function(cache) {
-            return cache.addAll(filesToCache);
-        })
+      (async () => {
+        const cache = await caches.open(cacheName);
+        console.log("[SW] Caching all: app shell and content");
+        await cache.addAll(filesToCache);
+      })()
     );
-});
+  });
+
+console.log('[SW] Executed')
 
 self.addEventListener('activate', (evt) => {
     evt.waitUntil(
