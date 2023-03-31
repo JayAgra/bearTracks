@@ -5,10 +5,27 @@ window.redScore = 0
 window.blueScore = 0
 
 var roundNearQtr = function(number) {
-    return Number((100*(Math.round(number * 4) / 4)).toFixed(2));
+    let qtr = Number((100*(Math.round(number * 4) / 4)).toFixed(2))
+    if (qtr > 100) {
+        return 100;
+    } else {
+        return qtr;
+    }
 };
 
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
+
+var assets = ["assets/red-0.png", "assets/red-25.png", "assets/red-50.png", "assets/red-75.png", "assets/red-100.png", "assets/red_disabled.png", "assets/red-d.png", "assets/blue-0.png", "assets/blue-25.png", "assets/blue-50.png", "assets/blue-75.png", "assets/blue-100.png", "assets/blue_disabled.png", "assets/blue-d.png", "assets/cube.png", "assets/cone.png", "assets/clear.png"]
+var imageobjects = [];
+
+async function loadGame() {
+    return assets.map(url => new Promise(resolve => {
+        const img = new Image();
+        img.onerror = e => reject(`${url} failed to load`);
+        img.onload = e => resolve(img);
+        img.src = url;
+    }));
+}
 
 function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, defends, charge) {
     this.color = color,
@@ -75,7 +92,6 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             }
             image.src = "assets/blue_disabled.png";
         }
-        this.clearGpInd()
     },
     this.drawDefended = function() {
         if (this.color === "red") {
@@ -84,14 +100,14 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctx.drawImage(this, cvs.width/1.25, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
             }
-            image.src = "assets/red_disabled.png";
+            image.src = "assets/red-d.png";
         } else {
             let robonum = this.number;
             var image = new Image()
             image.onload = function(){
                 ctx.drawImage(this, cvs.width/12, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
             }
-            image.src = "assets/blue_disabled.png";
+            image.src = "assets/blue-d.png";
         }
     },
     this.drawFail = function() {
@@ -145,57 +161,60 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.src = "assets/cone.png";
         }
     },
-    this.clearGpInd = async function() {
-        let robonum = this.number;
-        var image = new Image()
-        image.onload = function(){
-            ctx.drawImage(this, cvs.width/1.55, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
-            return Promise.resolve(waitMs(1));
-        }
-        image.src = "assets/clear.png";
-    }
     this.redrawState = function() {
-        if (this.disabled) {this.drawDisabled()} else if (this.defended) {this.drawDefended()} else {this.draw()}
+        if (this.disabled) {this.drawDisabled()} else if (this.defended) {this.drawDefended()} else {this.drawPcnt(roundNearQtr(((Date.now() / 1000 - this.startedWait)/this.cycle)))}
     }
 }
 
 async function drawTimer() {
-    ctx.fillStyle = "#121212";
-    ctx.fillRect((cvs.width/2.75), cvs.height/3, cvs.width/4, cvs.height/3)
     ctx.font = "40px mono";
     ctx.fillStyle = "#fff";
     ctx.textAlign = "center"; 
     ctx.fillText(120 - (Math.round(Date.now() / 1000) - window.gameStarted), (cvs.width/2) - cvs.width/32, cvs.height/2);
     ctx.fillText("Blue: " + window.blueScore + "      Red: " + window.redScore, (cvs.width/2) - cvs.width/32, (cvs.height/2) + cvs.height/8);
-    await waitMs(10)
-    if ((Math.round(Date.now() / 1000) - window.gameStarted) <= 120) {
-        drawTimer()
+}
+
+function okayToScore(color, level) {
+    if (color === "red") {
+        return (redGrid[level] < 9)
+    } else {
+        return (blueGrid[level] < 9)
+    }
+}
+
+function reportScore(color, level) {
+    if (color === "red") {
+        redGrid[level]++
+    } else {
+        blueGrid[level]++
     }
 }
 
 async function gameTick(robot) {
     if (!robot.disabled) {
-        robot.drawPcnt(roundNearQtr(((Date.now() / 1000 - robot.startedWait)/robot.cycle)))
         if (((Math.round(Date.now() / 1000) - robot.startedWait)/robot.cycle) >= 1) {
             robot.startedWait = Math.round(Date.now() / 1000);
             if (Math.random() < 80/100) {
-                if (robot.upper) {
+                if (robot.upper && okayToScore(robot.color, 2)) {
                     if (robot.color === "red") {window.redScore += 5} else {window.blueScore += 5}
-                } else if (robot.middle) {
+                    reportScore(robot.color, 2)
+                } else if (robot.middle && okayToScore(robot.color, 1)) {
                     if (robot.color === "red") {window.redScore += 3} else {window.blueScore += 3}
-                } else {
+                    reportScore(robot.color, 1)
+                } else if (okayToScore(robot.color, 0)) {
                     if (robot.color === "red") {window.redScore += 2} else {window.blueScore += 2}
+                    reportScore(robot.color, 0)
                 }
                 if (robot.cube && robot.cone) {
                     if (Math.random() < 50/100) {
-                        await robot.clearGpInd().then(robot.drawCube()).catch()
+                        robot.drawCube()
                     } else {
-                        await robot.clearGpInd().then(robot.drawCone()).catch()
+                        robot.drawCone()
                     }
                 } else if (robot.cube) {
-                    await robot.clearGpInd().then(robot.drawCube()).catch()
+                    robot.drawCube()
                 } else {
-                    await robot.clearGpInd().then(robot.drawCone()).catch()
+                    robot.drawCone()
                 }
             } else {
                 robot.drawFail()
@@ -206,10 +225,9 @@ async function gameTick(robot) {
         if (Math.random() < 0.1/100) {
             //small chance of disabling
             robot.disabled = true;
-            robot.drawDisabled()
         }
 
-        await waitMs(200 + Math.random()*800)
+        /*await waitMs(200 + Math.random()*800)
         if (((Math.round(Date.now() / 1000) - window.gameStarted) >= 100) && !((Math.round(Date.now() / 1000) - window.gameStarted) >= 120)) {
             console.log("endgame time idiot")
             if (Math.random() < robot.chargePcnt/100) {
@@ -227,17 +245,28 @@ async function gameTick(robot) {
         if ((Math.round(Date.now() / 1000) - window.gameStarted) >= 120) {
             robot.disabled = true;
             console.log("game done")
-        }
+        }*/
         return 0;
     }
 }
 
-function startGame() {
+var red1 = new Robot("red", 1, 766, 4, false, true, false, false, true, true, 0.75)
+var red2 = new Robot("red", 2, 1072, 10, true, true, false, true, true, false, 0.1)
+var red3 = new Robot("red", 3, 6619, 20, true, false, true, false, false, false, 0.99)
+
+var blue1 = new Robot("blue", 1, 2637, 10, true, true, false, false, true, true, 0.1)
+var blue2 = new Robot("blue", 2, 4159, 10, true, true, false, true, true, false, 0.5)
+var blue3 = new Robot("blue", 3, 6941, 20, false, true, false, false, false, false, 0)
+
+//bottom, middle, top
+var blueGrid = [0, 0, 0]
+var redGrid = [0, 0, 0]
+
+async function startGame() {
     if (window.innerHeight > window.innerWidth) {
         alert("play in landscape mode, ideally on a phone.")
     } else {
-        window.allCardValues = 0;
-        window.allCards = [];
+        imageobjects = await loadGame()
 
         /*if (cvs.requestFullScreen) {
             cvs.requestFullScreen();
@@ -265,20 +294,12 @@ function startGame() {
         ctx.globalCompositeOperation = 'destination-over';
         ctx.fillStyle = "#121212";
         ctx.fillRect(0, 0, cvs.width, cvs.height);
-        document.body.style.backgroundColor = "#000";
+        document.body.style.backgroundColor = "#121212";
         ctx.globalCompositeOperation = 'source-over';
 
         //Disable image smoothing
         ctx.imageSmoothingEnabled = false;
         ctx.webkitImageSmoothingEnabled = false;
-
-        var red1 = new Robot("red", 1, 766, 4, false, true, false, false, true, true, 0.75)
-        var red2 = new Robot("red", 2, 1072, 10, true, true, false, true, true, false, 0.1)
-        var red3 = new Robot("red", 3, 6619, 20, true, false, true, false, false, false, 0.99)
-
-        var blue1 = new Robot("blue", 1, 2637, 10, true, true, false, false, true, true, 0.1)
-        var blue2 = new Robot("blue", 2, 4159, 10, true, true, false, true, true, false, 0.5)
-        var blue3 = new Robot("blue", 3, 6941, 20, false, true, false, false, false, false, 0)
 
         red1.draw()
         red2.draw()
@@ -299,5 +320,39 @@ function startGame() {
         gameTick(blue3)
 
         drawTimer()
+
+        window.requestAnimationFrame(runGame)
     }
+}
+
+async function runGame() {
+
+    if ((Math.round(Date.now() / 1000) - window.gameStarted) <= 120) {
+
+        drawTimer()
+
+        gameTick(red1)
+        gameTick(red2)
+        gameTick(red3)
+
+        gameTick(blue1)
+        gameTick(blue2)
+        gameTick(blue3)
+
+        await waitMs(1000)
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = "#121212";
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+    red1.redrawState()
+    red2.redrawState()
+    red3.redrawState()
+
+    blue1.redrawState()
+    blue2.redrawState()
+    blue3.redrawState()
+
+    window.requestAnimationFrame(runGame)
 }
