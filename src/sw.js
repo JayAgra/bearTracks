@@ -1,4 +1,4 @@
-var version = '2.2.0'
+var version = '2.2.2'
 var cacheName = `scouting-pwa-${version}`
 var filesToCache = [
   'appinstall.js',
@@ -13,11 +13,11 @@ var filesToCache = [
 
 //Start the service worker and cache all
 self.addEventListener("install", (e) => {
-    console.log("[W] Install");
+    console.log("[SW] Install");
     e.waitUntil(
       (async () => {
         const cache = await caches.open(cacheName);
-        console.log("[SW] Caching all: app shell and content");
+        console.log("[SW] Caching all");
         await cache.addAll(filesToCache);
       })()
     );
