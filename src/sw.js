@@ -1,7 +1,6 @@
 var version = '2.0.0'
 var cacheName = `scouting-pwa-${version}`
 var filesToCache = [
-  '/',
   '/appinstall.js',
   '/float.min.css',
   '/form.min.js',
