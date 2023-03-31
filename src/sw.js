@@ -39,21 +39,11 @@ self.addEventListener('activate', (evt) => {
 });
 
 /* Serve cached content when on or offline */
-self.addEventListener("fetch", (e) => {
-    e.respondWith(
-      (async () => {
-        if (registration.active) {
-            const r = await caches.match(e.request);
-            console.log(`[SW] Fetching resource: ${e.request.url}`);
-            if (r) {
-            return r;
-            }
-            const response = await fetch(e.request);
-            const cache = await caches.open(cacheName);
-            console.log(`[SW] Caching new resource: ${e.request.url}`);
-            cache.put(e.request, response.clone());
-            return response;
-        }
-      })()
-    );
-  });
+self.addEventListener('fetch', function(event) {
+    event.respondWith(
+      fetch(event.request).catch(function(e) {
+        return caches.open(cacheName).then(function(cache) {
+          return cache.match(event.request, {'ignoreSearch': true}).then(response => response);
+        });
+    }));
+});
