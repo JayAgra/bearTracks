@@ -244,6 +244,10 @@ async function gameTick(robot) {
             robot.disabled = true;
         }
 
+        if (robot.defends && Math.random() < 25/100) {
+            //robot.disabled = true;
+        }
+
         /*await waitMs(200 + Math.random()*800)
         if (((Math.round(Date.now() / 1000) - window.gameStarted) >= 100) && !((Math.round(Date.now() / 1000) - window.gameStarted) >= 120)) {
             console.log("endgame time idiot")
