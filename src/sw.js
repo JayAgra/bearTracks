@@ -1,4 +1,4 @@
-var version = '3.2.0'
+var version = '3.2.1'
 var cacheName = `scouting-pwa-${version}`
 var filesToCache = [
   '/',
@@ -7,11 +7,11 @@ var filesToCache = [
   'form.min.js',
   'fonts/Raleway-300.ttf',
   'fonts/Raleway-500.ttf',
-  'settings',
-  'matches',
-  'scouts',
-  'teams',
-  'points'
+  '/settings',
+  '/matches',
+  '/scouts',
+  '/teams',
+  '/points'
 ];
 
 console.log('[SW] file executed')
@@ -42,8 +42,7 @@ self.addEventListener('fetch', function(event) {
   event.respondWith(
     fetch(event.request).catch(function(e) {
       return caches.open(cacheName).then(function(cache) {
-        return cache.match(event.request,
-                           {'ignoreSearch': true}).then(response => response);
+        return cache.match(event.request).then(response => response);
       });
   }));
 });
