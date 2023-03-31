@@ -12,4 +12,4 @@ rest.get(Routes.applicationCommands(clientId))
             console.log('deleted')
         }
         return Promise.all(promises);
-}).catch((error) => {console.log(error);});;
+}).catch((error) => {console.log(error);});
