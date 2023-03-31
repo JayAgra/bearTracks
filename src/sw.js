@@ -1,4 +1,4 @@
-var version = '2.2.2'
+var version = '3.2.0'
 var cacheName = `scouting-pwa-${version}`
 var filesToCache = [
   '/',
@@ -14,16 +14,15 @@ var filesToCache = [
   'points'
 ];
 
-//Start the service worker and cache all
+console.log('[SW] file executed')
+//cache
 self.addEventListener('install', function(e) {
-  e.waitUntil(
-      caches.open(cacheName).then(function(cache) {
-          return cache.addAll(filesToCache);
-      })
-  );
+    e.waitUntil(
+        caches.open(cacheName).then(function(cache) {
+            return cache.addAll(filesToCache);
+        })
+    );
 });
-
-console.log('[SW] Executed')
 
 self.addEventListener('activate', (evt) => {
   evt.waitUntil(
@@ -38,12 +37,13 @@ self.addEventListener('activate', (evt) => {
   self.clients.claim();
 });
 
-/* Serve cached content when on or offline */
+//serve offline
 self.addEventListener('fetch', function(event) {
-    event.respondWith(
-      fetch(event.request).catch(function(e) {
-        return caches.open(cacheName).then(function(cache) {
-          return cache.match(event.request, {'ignoreSearch': true}).then(response => response);
-        });
-    }));
+  event.respondWith(
+    fetch(event.request).catch(function(e) {
+      return caches.open(cacheName).then(function(cache) {
+        return cache.match(event.request,
+                           {'ignoreSearch': true}).then(response => response);
+      });
+  }));
 });

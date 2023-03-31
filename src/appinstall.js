@@ -1,19 +1,19 @@
-const registerServiceWorker = async () => {
-    if ("serviceWorker" in navigator) {
-        try {
-        const registration = await navigator.serviceWorker.register("/sw.js", {
-            scope: "/",
-        });
-        if (registration.installing) {
-            console.log("sw installing");
-        } else if (registration.waiting) {
-            console.log("sw installed");
-        } else if (registration.active) {
-            console.log("sw active");
-        }
-        } catch (error) {
-        console.error(`sw failed` + error);
-        }
+function registerSW() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then(registration => {
+            registration.onupdatefound = () => {
+                const installingWorker = registration.installing;
+                installingWorker.onstatechange = () => {
+                    if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            console.log("sw updated")
+                            setInterval(()=>window.location.reload(), 5000);
+                        } else {
+                            console.log("sw ready")
+                        }
+                    }
+                };
+            };
+        }).catch()
     }
-    };
-registerServiceWorker();
+}
