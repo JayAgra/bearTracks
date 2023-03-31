@@ -15,7 +15,7 @@ var roundNearQtr = function(number) {
 
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
 
-var assets = ["assets/red-0.png", "assets/red-25.png", "assets/red-50.png", "assets/red-75.png", "assets/red-100.png", "assets/red_disabled.png", "assets/red-d.png", "assets/blue-0.png", "assets/blue-25.png", "assets/blue-50.png", "assets/blue-75.png", "assets/blue-100.png", "assets/blue_disabled.png", "assets/blue-d.png", "assets/cube.png", "assets/cone.png", "assets/clear.png"]
+var assets = ["assets/red-0.png", "assets/red-25.png", "assets/red-50.png", "assets/red-75.png", "assets/red-100.png", "assets/red_disabled.png", "assets/red-d.png", "assets/blue-0.png", "assets/blue-25.png", "assets/blue-50.png", "assets/blue-75.png", "assets/blue-100.png", "assets/blue_disabled.png", "assets/blue-d.png", "assets/cube.png", "assets/cone.png", "assets/clear.png", "assets/charge.png"]
 var imageobjects = [];
 
 async function loadGame() {
@@ -161,6 +161,23 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.src = "assets/cone.png";
         }
     },
+    this.drawCharge = function() {
+        if (this.color === "red") {
+            let robonum = this.number;
+            var image = new Image()
+            image.onload = function(){
+                ctx.drawImage(this, cvs.width/1.55, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+            }
+            image.src = "assets/charge.png";
+        } else {
+            let robonum = this.number;
+            var image = new Image()
+            image.onload = function(){
+                ctx.drawImage(this, cvs.width/4, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+            }
+            image.src = "assets/charge.png";
+        }
+    },
     this.redrawState = function() {
         if (this.disabled) {this.drawDisabled()} else if (this.defended) {this.drawDefended()} else {this.drawPcnt(roundNearQtr(((Date.now() / 1000 - this.startedWait)/this.cycle)))}
     }
@@ -232,7 +249,7 @@ async function gameTick(robot) {
             console.log("endgame time idiot")
             if (Math.random() < robot.chargePcnt/100) {
                 robot.disabled = true;
-                robot.draw()
+                robot.drawCharge()
                 if (robot.color === "red") {window.redScore += 10} else {window.blueScore += 10}
             } else {
                 await waitMs(200 + Math.random()*800)
