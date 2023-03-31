@@ -1,6 +1,7 @@
 var version = '2.2.2'
 var cacheName = `scouting-pwa-${version}`
 var filesToCache = [
+  '/',
   'appinstall.js',
   'float.min.css',
   'form.min.js',
@@ -8,34 +9,33 @@ var filesToCache = [
   'fonts/Raleway-500.ttf',
   'settings',
   'matches',
-  'scouts'
+  'scouts',
+  'teams',
+  'points'
 ];
 
 //Start the service worker and cache all
-self.addEventListener("install", (e) => {
-    console.log("[SW] Install");
-    e.waitUntil(
-      (async () => {
-        const cache = await caches.open(cacheName);
-        console.log("[SW] Caching all");
-        await cache.addAll(filesToCache);
-      })()
-    );
-  });
+self.addEventListener('install', function(e) {
+  e.waitUntil(
+      caches.open(cacheName).then(function(cache) {
+          return cache.addAll(filesToCache);
+      })
+  );
+});
 
 console.log('[SW] Executed')
 
 self.addEventListener('activate', (evt) => {
-    evt.waitUntil(
-        caches.keys().then((keyList) => {
-            return Promise.all(keyList.map((key) => {
-                if (key !== cacheName) {
-                    return caches.delete(key);
-                }
-            }));
-        })
-    );
-    self.clients.claim();
+  evt.waitUntil(
+      caches.keys().then((keyList) => {
+          return Promise.all(keyList.map((key) => {
+              if (key !== cacheName) {
+                  return caches.delete(key);
+              }
+          }));
+      })
+  );
+  self.clients.claim();
 });
 
 /* Serve cached content when on or offline */
