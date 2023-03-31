@@ -358,38 +358,38 @@ app.get('/', checkAuth, async function(req, res) {
       res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
       if (oauthDataCookieSet[0][0] == "Pit Team" || oauthDataCookieSet[0][0] == "Drive Team") {
         res.render('../src/index.ejs', { 
-          root: __dirname, userName: req.user.username, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
+          root: __dirname, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
         })
       } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
         res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
         res.render('../src/index.ejs', { 
-          root: __dirname, userName: req.user.username, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
+          root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
         })
       } else {
         res.render('../src/index.ejs', { 
-          root: __dirname, userName: req.user.username, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
+          root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
         })
       }
     } else {
     var oauthData =  JSON.parse(req.cookies.role);
     if (oauthData[0][0] == "Pit Team" || oauthData[0][0] == "Drive Team") {
       res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
+        root: __dirname, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
       })
     } else if (oauthData[0][0] == "Lead Scout") {
       res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
       res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
+        root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
       })
     } else {
       res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
+        root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
       })
     }
     }
   } catch (err) {
     res.render('../src/index.ejs', { 
-      root: __dirname, userName: req.user.username, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<span></span>`
+      root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<span></span>`
     })
   }
 });
