@@ -1,5 +1,26 @@
-var cvs = document.getElementById("frcCvs")
-var ctx = document.getElementById("frcCvs").getContext("2d"); 
+var cvss = [];
+var ctxs = [];
+
+for (var i = 0; i < document.getElementById('canvasParent').children.length; i++) {
+    cvss.push(document.getElementById('canvasParent').children[i])
+    ctxs.push(cvss[i].getContext("2d")) 
+}
+
+//canvas order
+//layer 0 - background
+//layer 1 - timer
+//layer 2 - red1
+//layer 3 - red2
+//layer 4 - red3
+//layer 5 - blue1
+//layer 6 - blue2
+//layer 7 - blue3
+//layer 8 - red1 object
+//layer 9 - red2 object
+//layer 10 - red3 object
+//layer 11 - blue1 object
+//layer 12 - blue2 object
+//layer 13 - blue3 object
 
 window.redScore = 0
 window.blueScore = 0
@@ -15,8 +36,7 @@ var roundNearQtr = function(number) {
 
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
 
-var assets = ["assets/red-0.png", "assets/red-25.png", "assets/red-50.png", "assets/red-75.png", "assets/red-100.png", "assets/red_disabled.png", "assets/red-d.png", "assets/blue-0.png", "assets/blue-25.png", "assets/blue-50.png", "assets/blue-75.png", "assets/blue-100.png", "assets/blue_disabled.png", "assets/blue-d.png", "assets/cube.png", "assets/cone.png", "assets/clear.png", "assets/charge.png"]
-var imageobjects = [];
+const assets = ["assets/red-0.png", "assets/red-25.png", "assets/red-50.png", "assets/red-75.png", "assets/red-100.png", "assets/red_disabled.png", "assets/red-d.png", "assets/blue-0.png", "assets/blue-25.png", "assets/blue-50.png", "assets/blue-75.png", "assets/blue-100.png", "assets/blue_disabled.png", "assets/blue-d.png", "assets/cube.png", "assets/cone.png", "assets/clear.png", "assets/charge.png"]
 
 async function loadGame() {
     return assets.map(url => new Promise(resolve => {
@@ -39,141 +59,149 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.bottom = bottom,
     this.defends = defends,
     this.chargePcnt = charge,
+    this.canvasNumber = 0,
     this.defended = false,
     this.disabled = false,
     this.startedWait = Math.round(Date.now() / 1000),
-    this.draw = function() {
+    this.init = function() {
         if (this.color === "red") {
-            let robonum = this.number;
+            this.canvasNumber = 1 + this.number
+        } else {
+            this.canvasNumber = 4 + this.number
+        }
+    },
+    this.draw = function() {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
+        if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.25, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/red-0.png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/12, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/blue-0.png";
         }
     },
     this.drawPcnt = function(pcnt) {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
         if (this.color === "red") {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.25, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/red-" + pcnt + ".png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/12, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/blue-" + pcnt + ".png";
         }
     },
     this.drawDisabled = function() {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
         if (this.color === "red") {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.25, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/red_disabled.png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/12, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/blue_disabled.png";
         }
     },
     this.drawDefended = function() {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
         if (this.color === "red") {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.25, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/red-d.png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/12, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/blue-d.png";
         }
     },
     this.drawFail = function() {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
         if (this.color === "red") {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.25, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/red-fail.png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/12, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/blue-fail.png";
         }
     },
     this.drawCube = function() {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
         if (this.color === "red") {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.55, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.475, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
             image.src = "assets/cube.png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/4, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber].drawImage(this, cvss[0].width/4, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
             image.src = "assets/cube.png";
         }
     },
     this.drawCone = function() {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
         if (this.color === "red") {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.55, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/1.475, cvss[0].height + cvss[0].height/24 - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
             image.src = "assets/cone.png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/4, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/4, cvss[0].height + cvss[0].height/24 - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
             image.src = "assets/cone.png";
         }
     },
     this.drawCharge = function() {
+        let robonum = this.number;
+        let canvasNumber = this.canvasNumber;
         if (this.color === "red") {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/1.55, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/1.55, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/charge.png";
         } else {
-            let robonum = this.number;
             var image = new Image()
             image.onload = function(){
-                ctx.drawImage(this, cvs.width/4, cvs.height - (cvs.height/12)*(15 - (robonum*4)), cvs.height/6, cvs.height/6)
+                ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/4, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/charge.png";
         }
@@ -184,11 +212,12 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
 }
 
 async function drawTimer() {
-    ctx.font = "40px mono";
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "center"; 
-    ctx.fillText(120 - (Math.round(Date.now() / 1000) - window.gameStarted), (cvs.width/2) - cvs.width/32, cvs.height/2);
-    ctx.fillText("Blue: " + window.blueScore + "      Red: " + window.redScore, (cvs.width/2) - cvs.width/32, (cvs.height/2) + cvs.height/8);
+    ctxs[1].clearRect(0, 0, cvss[1].width, cvss[1].height);
+    ctxs[1].font = "40px mono";
+    ctxs[1].fillStyle = "#fff";
+    ctxs[1].textAlign = "center"; 
+    ctxs[1].fillText(120 - (Math.round(Date.now() / 1000) - window.gameStarted), (cvss[1].width/2) - cvss[1].width/32, cvss[1].height/2);
+    ctxs[1].fillText("Blue: " + window.blueScore + "      Red: " + window.redScore, (cvss[1].width/2) - cvss[1].width/32, (cvss[1].height/2) + cvss[1].height/8);
 }
 
 function okayToScore(color, level) {
@@ -207,9 +236,18 @@ function reportScore(color, level) {
     }
 }
 
+function animateMovement(canvas, context, robot, tox, toy) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(imgTag, x, y);
+    x += 4;
+    y += 4;
+    if (x < tox) requestAnimationFrame(animate)
+    if (y < toy) requestAnimationFrame(animate)
+} 
+
 async function gameTick(robot) {
     if (!robot.disabled) {
-        if (((Math.round(Date.now() / 1000) - robot.startedWait)/robot.cycle) >= 1) {
+        if (((Math.round(Date.now() / 1000) - robot.startedWait)/robot.cycle) > 1) {
             robot.startedWait = Math.round(Date.now() / 1000);
             if (Math.random() < 80/100) {
                 if (robot.upper && okayToScore(robot.color, 2)) {
@@ -287,7 +325,14 @@ async function startGame() {
     if (window.innerHeight > window.innerWidth) {
         alert("play in landscape mode, ideally on a phone.")
     } else {
-        imageobjects = await loadGame()
+        red1.init()
+        red2.init()
+        red3.init()
+
+        blue1.init()
+        blue2.init()
+        blue3.init()
+        await loadGame()
 
         /*if (cvs.requestFullScreen) {
             cvs.requestFullScreen();
@@ -298,13 +343,21 @@ async function startGame() {
         }*/
 
         //Scale canvas
-        cvs.style.width = window.innerWidth - ((window.innerWidth)%64) + "px"
-        cvs.style.height = window.innerHeight - ((window.innerHeight)%64) + "px"
-        cvs.width = (window.innerWidth - ((window.innerWidth)%64))
-        cvs.height = (window.innerHeight - ((window.innerHeight)%64))
+        cvss.forEach(element => {
+            element.style.width = window.innerWidth - ((window.innerWidth)%64) + "px"
+            element.style.height = window.innerHeight - ((window.innerHeight)%64) + "px"
+            element.width = (window.innerWidth - ((window.innerWidth)%64))
+            element.height = (window.innerHeight - ((window.innerHeight)%64))
+            element.style.display = "inherit";
+        });
+
+        ctxs.forEach(element => {
+            element.imageSmoothingEnabled = false;
+            element.webkitImageSmoothingEnabled = false;
+            element.globalCompositeOperation = 'source-over';
+        })
 
         //Hide all but canvas
-        cvs.style.display = "inline";
         document.body.style.overflow = "hidden";
         document.getElementById("title").style.display = "none";
         document.getElementById("playBtn").style.display = "none";
@@ -312,15 +365,11 @@ async function startGame() {
         try {document.getElementById("gameResult").remove()} catch(error){}
 
         //Clear canvas
-        ctx.globalCompositeOperation = 'destination-over';
-        ctx.fillStyle = "#121212";
-        ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctxs[0].globalCompositeOperation = 'destination-over';
+        ctxs[0].fillStyle = "#121212";
+        ctxs[0].fillRect(0, 0, cvss[0].width, cvss[0].height);
         document.body.style.backgroundColor = "#121212";
-        ctx.globalCompositeOperation = 'source-over';
-
-        //Disable image smoothing
-        ctx.imageSmoothingEnabled = false;
-        ctx.webkitImageSmoothingEnabled = false;
+        ctxs[0].globalCompositeOperation = 'source-over';
 
         red1.draw()
         red2.draw()
@@ -363,9 +412,9 @@ async function runGame() {
         await waitMs(1000)
     }
 
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = "#121212";
-    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    ctxs[0].globalCompositeOperation = 'source-over';
+    ctxs[0].fillStyle = "#121212";
+    ctxs[0].clearRect(0, 0, cvss[0].width, cvss[0].height);
 
     red1.redrawState()
     red2.redrawState()
