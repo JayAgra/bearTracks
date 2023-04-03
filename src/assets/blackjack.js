@@ -1,5 +1,5 @@
-var cvs = document.getElementById("bjCanvas")
-var ctx = document.getElementById("bjCanvas").getContext("2d"); 
+var cvs = document.getElementById("bjCanvas");
+var ctx = document.getElementById("bjCanvas").getContext("2d");
 window.allCardValues = 0;
 window.disableBtns = false;
 window.allCards = [];
@@ -7,10 +7,11 @@ window.playerCards = [];
 window.casinoSecToken = "";
 window.dealerTotal = 0;
 window.playerAces = 0;
-window.cardsURL = "assets/progcards/"
+window.cardsURL = "assets/progcards/";
 //var allCards = [];
 //helper function to get mouse positions
 function getMousePos(canvas, event) {
+    "use strict";
     var rect = canvas.getBoundingClientRect();
     return {
         x: (event.clientX - rect.left),
@@ -20,7 +21,8 @@ function getMousePos(canvas, event) {
 
 //helper function to check whether a point is inside a rectangle
 function isInside(pos, rect) {
-    return pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y
+    "use strict";
+    return (pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y)
 }
 
 async function getInitialDraw() {
@@ -58,7 +60,7 @@ async function checkForLoss(cardTotal, card) {
             newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
             newPlayerCard.src = window.cardsURL + card;
 
-            await waitMs(0750)
+            await waitMs(750)
 
             var audio = new Audio('assets/yummy.mp3');
             audio.play();
@@ -89,14 +91,14 @@ async function checkForLoss(cardTotal, card) {
                 console.log("awaiting response")
             }
             }
-            xhr.send() 
+            xhr.send();
         } else if (cardTotal > 21) {
             window.disableBtns = true;
             const newPlayerCard = new Image()
             newPlayerCard.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
             newPlayerCard.src = window.cardsURL + card;
 
-            await waitMs(0750)
+            await waitMs(750)
 
             document.body.style.backgroundColor = "#121212";
             document.getElementById("bjCanvas").style.display = "none"
@@ -209,7 +211,7 @@ if (window.innerHeight < window.innerWidth) {
     } else if (cvs.mozRequestFullScreen) {
         cvs.mozRequestFullScreen();
     }*/
-    
+
     //Scale canvas
     cvs.style.width = window.innerWidth - ((window.innerWidth)%64) + "px"
     cvs.style.height = window.innerHeight - ((window.innerHeight)%64) + "px"
@@ -291,7 +293,7 @@ if (window.innerHeight < window.innerWidth) {
     dealBtn.onload = function(){ctx.drawImage(this, dealButton.x, dealButton.y, dealButton.width, dealButton.height);}
     hitBtn.onload = function(){ctx.drawImage(this, hitButton.x, hitButton.y, hitButton.width, hitButton.height);}
     standBtn.onload = function(){ctx.drawImage(this, standButton.x, standButton.y, standButton.width, standButton.height);}
-    
+
     dealBtn.src = "assets/deal.png";
     hitBtn.src = "assets/hit.png";
     standBtn.src = "assets/stand.png";
@@ -393,7 +395,7 @@ if (window.innerHeight < window.innerWidth) {
                     }
                     }
 
-                    xhr.send()              
+                    xhr.send()
                     }
             } else if (isInside(getMousePos(cvs, evt), hitButton)) {
                 console.log('hit button');

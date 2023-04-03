@@ -1,4 +1,5 @@
 //CONFIG
+/*jslint es6*/
 const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID, currentComp, serverSecret } = require('./config.json');
 
 //SETUP OAUTH
@@ -7,9 +8,11 @@ const getOauthData = new DiscordOauth2;
 const passport = require('passport')
 const Strategy = require('passport-discord').Strategy;
 passport.serializeUser(function(user, done) {
+  "use strict";
   done(null, user);
 });
 passport.deserializeUser(function(obj, done) {
+  "use strict";
   done(null, obj);
 });
 const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
@@ -19,6 +22,7 @@ passport.use(new Strategy({
   callbackURL: redirectURI,
   scope: scopes
 }, function(accessToken, refreshToken, profile, done) {
+  "use strict";
   process.nextTick(function() {
     return done(null, profile);
   });
@@ -33,26 +37,24 @@ db.run( 'PRAGMA journal_mode = WAL;' );
 const fs = require('fs');
 const express = require('express');
 const session  = require('express-session');
-const lusca = require('lusca')
+const lusca = require('lusca');
 const https = require('https');
 const http = require('http');
 const cookieParser = require("cookie-parser");
 const crypto = require('crypto');
-const seasonProcess = require('./2023.js')
-var RateLimit = require('express-rate-limit');
-var EventEmitter = require("events").EventEmitter;
-const helmet = require('helmet')
-var sanitize = require("sanitize-filename");
+const seasonProcess = require('./2023.js');
+let RateLimit = require('express-rate-limit');
+let EventEmitter = require("events").EventEmitter;
+const helmet = require('helmet');
+let sanitize = require("sanitize-filename");
 const leadToken = crypto.randomBytes(48).toString('hex');
 const casinoToken = crypto.randomBytes(48).toString('hex');
-var app = express();
+let app = express();
 app.disable('x-powered-by');
 app.use(cookieParser());
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
-);
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
 
 const options = {
   key: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8'),
@@ -91,7 +93,7 @@ var limiter = RateLimit({
   windowMs: 10*60*1000, // 10 minutes
   max: 1000,
   standardHeaders: true,
-	legacyHeaders: false,
+  legacyHeaders: false,
   keyGenerator: (req, res) => { return req.connection.remoteAddress }
 });
 app.use(lusca({
@@ -156,13 +158,13 @@ function findTopRole(roles) {
   }
   if (roles.indexOf(drive) >= 0) {
     rolesOut.push(["Drive Team", "rgb(241, 196, 15)", "rgba(241, 196, 15, 0.1)"]);
-  } 
+  }
   if (roles.indexOf(pit) >= 0) {
     rolesOut.push(["Pit Team", "rgb(230, 126, 34)", "rgba(230, 126, 34, 0.1)"]);
-  } 
+  }
   if (roles.indexOf(scoutteama) >= 0) {
     rolesOut.push(["Scout Team A", "rgb(26, 188, 156)", "rgba(26, 188, 156, 0.1)"]);
-  } 
+  }
   if (roles.indexOf(scoutteamb) >= 0) {
     rolesOut.push(["Scout Team B", "rgb(52, 152, 219)", "rgba(52, 152, 219, 0.1)"]);
   }
@@ -303,7 +305,7 @@ app.post('/submit', checkAuth, function(req, res) {
               res.end(err.message);
             }
         });
-        res.sendFile('src/submitted.html', { 
+        res.sendFile('src/submitted.html', {
           root: __dirname
         })
       } else {
@@ -335,7 +337,7 @@ app.post('/submitPit', checkAuth, imageUploads, function(req, res) {
         res.end(err.message);
       }
   });
-  res.sendFile('src/submitted.html', { 
+  res.sendFile('src/submitted.html', {
     root: __dirname
   })
 });
@@ -346,45 +348,45 @@ app.get('/', checkAuth, async function(req, res) {
     if (!req.cookies.role) {
       //set cookie if not exists
       //I am setting a cookie because it takes a while to wait for role data from API
-      
+
       var oauthDataCookieSet =  await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}));
 
       //btoa and atob bad idea
       //Buffer.from(str, 'base64') and buf.toString('base64') instead
-      res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
+      res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true });
       if (oauthDataCookieSet[0][0] == "Pit Team" || oauthDataCookieSet[0][0] == "Drive Team") {
-        res.render('../src/index.ejs', { 
+        res.render('../src/index.ejs', {
           root: __dirname, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
         })
       } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
-        res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
-        res.render('../src/index.ejs', { 
+        res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true });
+        res.render('../src/index.ejs', {
           root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
         })
       } else {
-        res.render('../src/index.ejs', { 
+        res.render('../src/index.ejs', {
           root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
         })
       }
     } else {
     var oauthData =  JSON.parse(req.cookies.role);
     if (oauthData[0][0] == "Pit Team" || oauthData[0][0] == "Drive Team") {
-      res.render('../src/index.ejs', { 
+      res.render('../src/index.ejs', {
         root: __dirname, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
       })
     } else if (oauthData[0][0] == "Lead Scout") {
-      res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
-      res.render('../src/index.ejs', { 
+      res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true });
+      res.render('../src/index.ejs', {
         root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
       })
     } else {
-      res.render('../src/index.ejs', { 
+      res.render('../src/index.ejs', {
         root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
       })
     }
     }
   } catch (err) {
-    res.render('../src/index.ejs', { 
+    res.render('../src/index.ejs', {
       root: __dirname, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<span></span>`
     })
   }
@@ -392,14 +394,14 @@ app.get('/', checkAuth, async function(req, res) {
 
 //main scouting form
 app.get('/main', checkAuth, function(req, res) {
-  res.sendFile('src/main.html', { 
+  res.sendFile('src/main.html', {
     root: __dirname
   })
 });
 
 //pit form
 app.get('/pit', checkAuth, function(req, res) {
-  res.sendFile('src/pit.html', { 
+  res.sendFile('src/pit.html', {
     root: __dirname
   })
 });
@@ -512,7 +514,7 @@ app.get('/denied', function(req, res) {
   res.sendFile('src/denied.html', { root: __dirname })
   } catch (error) {
     res.write("Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error)
-  } 
+  }
 });
 
 //print out all info discord gives
@@ -525,7 +527,7 @@ app.get('/info', checkAuth, function(req, res) {
   res.json(req.user);
 });
 
-app.get('/teamRoleInfo', checkAuth, function(req, res) {  
+app.get('/teamRoleInfo', checkAuth, function(req, res) {
   getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {
     console.log(data.roles)
   }).catch();
@@ -545,7 +547,7 @@ app.get('/detail', checkAuth, function(req, res) {
           res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
           return;
         } else {
-          res.render('../src/detail.ejs', { 
+          res.render('../src/detail.ejs', {
             root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `${dbQueryResult.team}`,
             resultsMatchNumber: `${dbQueryResult.match}`,
@@ -568,7 +570,7 @@ app.get('/detail', checkAuth, function(req, res) {
           res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
           return;
         } else {
-          res.render('../src/detail.ejs', { 
+          res.render('../src/detail.ejs', {
             root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `${dbQueryResult.team}`,
             resultsMatchNumber: `${dbQueryResult.match}`,
@@ -599,7 +601,7 @@ app.get('/browse', checkAuth, function(req, res) {
             res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0, moredata: 0 })
             return;
           } else {
-            res.render('../src/browse.ejs', { 
+            res.render('../src/browse.ejs', {
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
               resultsTeamNumber: `ALL`,
               resultsEventCode: `${req.query.event}`,
@@ -622,7 +624,7 @@ app.get('/browse', checkAuth, function(req, res) {
               res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
               return;
             } else {
-              res.render('../src/browse.ejs', { 
+              res.render('../src/browse.ejs', {
                 root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
                 resultsTeamNumber: `Team ${req.query.number}`,
                 resultsEventCode: `${req.query.event}`,
@@ -644,7 +646,7 @@ app.get('/browse', checkAuth, function(req, res) {
               res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
               return;
             } else {
-              res.render('../src/browse.ejs', { 
+              res.render('../src/browse.ejs', {
                 root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
                 resultsTeamNumber: `Match ${req.query.number}`,
                 resultsEventCode: `${req.query.event}`,
@@ -668,7 +670,7 @@ app.get('/browse', checkAuth, function(req, res) {
           res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
           return;
         } else {
-          res.render('../src/browse.ejs', { 
+          res.render('../src/browse.ejs', {
             root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `Scout ${req.query.discordID}`,
             resultsEventCode: season,
@@ -683,7 +685,7 @@ app.get('/browse', checkAuth, function(req, res) {
   return;
   }
 });
- 
+
 app.get('/teams', checkAuth, function(req, res) {
   res.sendFile('src/teams.html', { root: __dirname });
 });
@@ -723,7 +725,7 @@ app.get('/manage', checkAuth, async function(req, res) {
             for (var i = 0; i < dbQueryResult.length; i++) {
               listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink(req.query.dbase)}?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${req.query.dbase}', ${dbQueryResult[i].id}, '${req.query.dbase}${dbQueryResult[i].id}')" style="color: red" id="${req.query.dbase}${dbQueryResult[i].id}">Delete</span></span></span></fieldset>`
             }
-            res.render('../src/manage.ejs', { 
+            res.render('../src/manage.ejs', {
               root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
               resultsBody: listHTML
             })
@@ -798,21 +800,21 @@ app.get('/pitimages', checkAuth, function(req, res) {
     const values = [req.query.team, req.query.event, season];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
-        res.render('../src/pitimg.ejs', { 
+        res.render('../src/pitimg.ejs', {
           root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
         })
         return;
       } else {
         if (typeof dbQueryResult == "undefined") {
-          res.render('../src/pitimg.ejs', { 
+          res.render('../src/pitimg.ejs', {
             root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
           })
           return;
         } else {
-          res.render('../src/pitimg.ejs', { 
-            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex", 
+          res.render('../src/pitimg.ejs', {
+            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
             resultsTeamNumber: `${dbQueryResult.team}`,
-            resultsEventCode: `${dbQueryResult.event}`, 
+            resultsEventCode: `${dbQueryResult.event}`,
             resultsBody: `<p>Drive Type: ${dbQueryResult.drivetype}</p><br><p>Pit Scouting Assesment: ${dbQueryResult.overall}</p><br><img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
           })
           return;
@@ -824,21 +826,21 @@ app.get('/pitimages', checkAuth, function(req, res) {
     const values = [req.query.id];
     db.get(stmt, values, (err, dbQueryResult) => {
       if (err) {
-        res.render('../src/pitimg.ejs', { 
+        res.render('../src/pitimg.ejs', {
           root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
         })
         return;
       } else {
         if (typeof dbQueryResult == "undefined") {
-          res.render('../src/pitimg.ejs', { 
+          res.render('../src/pitimg.ejs', {
             root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
           })
           return;
         } else {
-          res.render('../src/pitimg.ejs', { 
-            root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex", 
-            resultsTeamNumber: `${dbQueryResult.team}`, 
-            resultsEventCode: `${dbQueryResult.event}`, 
+          res.render('../src/pitimg.ejs', {
+            root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex",
+            resultsTeamNumber: `${dbQueryResult.team}`,
+            resultsEventCode: `${dbQueryResult.event}`,
             resultsBody: `<img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
           })
           return;
@@ -846,7 +848,7 @@ app.get('/pitimages', checkAuth, function(req, res) {
       }
     });
   } else {
-  res.render('../src/pitimg.ejs', { 
+  res.render('../src/pitimg.ejs', {
     root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
   })
   return;

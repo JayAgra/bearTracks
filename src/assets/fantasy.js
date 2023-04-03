@@ -2,8 +2,8 @@ var cvss = [];
 var ctxs = [];
 
 for (var i = 0; i < document.getElementById('canvasParent').children.length; i++) {
-    cvss.push(document.getElementById('canvasParent').children[i])
-    ctxs.push(cvss[i].getContext("2d")) 
+    cvss.push(document.getElementById('canvasParent').children[i]);
+    ctxs.push(cvss[i].getContext("2d"));
 }
 
 //canvas order
@@ -227,7 +227,7 @@ async function drawTimer() {
     ctxs[1].clearRect(0, 0, cvss[1].width, cvss[1].height);
     ctxs[1].font = "40px mono";
     ctxs[1].fillStyle = "#fff";
-    ctxs[1].textAlign = "center"; 
+    ctxs[1].textAlign = "center";
     ctxs[1].fillText(120 - (Math.round(Date.now() / 1000) - window.gameStarted), (cvss[1].width/2) - cvss[1].width/32, cvss[1].height/2);
     ctxs[1].fillText("Blue: " + window.blueScore + "      Red: " + window.redScore, (cvss[1].width/2) - cvss[1].width/32, (cvss[1].height/2) + cvss[1].height/8);
 }
