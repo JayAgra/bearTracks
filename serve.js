@@ -1,5 +1,5 @@
 //CONFIG
-const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID, currentComp } = require('./config.json');
+const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID, currentComp, serverSecret } = require('./config.json');
 
 //SETUP OAUTH
 const DiscordOauth2 = require("discord-oauth2");
@@ -78,7 +78,7 @@ app.use('/assets', express.static('src/assets', {
   }
 }))
 app.use(session({
-  secret: crypto.randomBytes(48).toString('hex'),
+  secret: serverSecret,
   resave: false,
   saveUninitialized: false,
   maxAge: 24 * 60 * 60 * 1000 * 365, // 183 days
@@ -120,10 +120,6 @@ const mulstorage = multer.diskStorage(
 const upload = multer( { storage: mulstorage } );
 
 //BASIC FUNCTIONS TO SHORTEN CODE
-function valueToEmote(value) {
-  if ( value == null || value == "false" ) { return "❌"; } else { return "✅"; }
-}
-
 function invalidJSON(str) {
   try { JSON.parse(str); return false } catch (error) { return true }
 }

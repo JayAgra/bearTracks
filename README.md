@@ -13,9 +13,6 @@
 - Layout of homepage different based on user's roles
 - "Easy" submission removal
 - Ability to download JSON of form data to upload later
-### To Add:
-- Discord pings before matches
-- Ability to allow a member of another team to access data temporarily
 ## Setup
 ### Hosting
 You will need a VPS to run this, I would suggest using DigitalOcean Droplets. Mine is configured using Ubuntu 20.10, and the app is designed to work with it. Hosting the app on a windows machine will cause many issues. A standard SSD is just fine, and and I would suggest a minimum of the 2GB RAM/1 CPU/50GB Disk/2TB Transfer plan.

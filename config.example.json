@@ -17,5 +17,6 @@
 	"teamServerID": "",
 	"anotherServerID": "",
 	"baseURL": "https://scout.example.com/",
-	"baseURLNoPcl": "scout.example.com"
+	"baseURLNoPcl": "scout.example.com",
+	"serverSecret" : "putsomethinghere"
 }
