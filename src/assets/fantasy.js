@@ -47,6 +47,8 @@ async function loadGame() {
     }));
 }
 
+
+//BEGIN MASSIVE ROBOT CONSTRUCTOR
 function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, defends, charge) {
     this.color = color,
     this.number = number,
@@ -60,6 +62,7 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.defends = defends,
     this.chargePcnt = charge,
     this.canvasNumber = 0,
+    this.xval = 0,
     this.defended = false,
     this.disabled = false,
     this.startedWait = Math.round(Date.now() / 1000),
@@ -73,6 +76,7 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.draw = function() {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
@@ -87,19 +91,20 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.src = "assets/blue-0.png";
         }
     },
-    this.drawPcnt = function(pcnt) {
+    this.drawPcnt = function(pcnt, xmod) {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
-                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
+                ctxs[canvasNumber].drawImage(this, (cvss[0].width/1.25) - xmod, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/red-" + pcnt + ".png";
         } else {
             var image = new Image()
             image.onload = function(){
-                ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
+                ctxs[canvasNumber].drawImage(this, (cvss[0].width/12) + xmod, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
             image.src = "assets/blue-" + pcnt + ".png";
         }
@@ -107,6 +112,7 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.drawDisabled = function() {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
@@ -124,6 +130,7 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.drawDefended = function() {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
@@ -141,6 +148,7 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.drawFail = function() {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
@@ -158,16 +166,17 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.drawCube = function() {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber + 6].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
-                ctxs[canvasNumber].drawImage(this, cvss[0].width/1.475, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
+                ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/1.475, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
             image.src = "assets/cube.png";
         } else {
             var image = new Image()
             image.onload = function(){
-                ctxs[canvasNumber].drawImage(this, cvss[0].width/4, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
+                ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/4, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
             image.src = "assets/cube.png";
         }
@@ -175,6 +184,7 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.drawCone = function() {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber + 6].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
@@ -192,6 +202,7 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
     this.drawCharge = function() {
         let robonum = this.number;
         let canvasNumber = this.canvasNumber;
+        ctxs[canvasNumber + 6].clearRect(0, 0, cvss[0].width, cvss[0].height)
         if (this.color === "red") {
             var image = new Image()
             image.onload = function(){
@@ -207,9 +218,10 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
         }
     },
     this.redrawState = function() {
-        if (this.disabled) {this.drawDisabled()} else if (this.defended) {this.drawDefended()} else {this.drawPcnt(roundNearQtr(((Date.now() / 1000 - this.startedWait)/this.cycle)))}
+        if (this.disabled) {this.drawDisabled()} else if (this.defended) {this.drawDefended()} else {this.drawPcnt(roundNearQtr(((Date.now() / 1000 - this.startedWait)/this.cycle)), 0)}
     }
 }
+//END MASSIVE ROBOT CONSTRUCTOR
 
 async function drawTimer() {
     ctxs[1].clearRect(0, 0, cvss[1].width, cvss[1].height);
@@ -235,15 +247,6 @@ function reportScore(color, level) {
         blueGrid[level]++
     }
 }
-
-function animateMovement(canvas, context, robot, tox, toy) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(imgTag, x, y);
-    x += 4;
-    y += 4;
-    if (x < tox) requestAnimationFrame(animate)
-    if (y < toy) requestAnimationFrame(animate)
-} 
 
 async function gameTick(robot) {
     if (!robot.disabled) {
