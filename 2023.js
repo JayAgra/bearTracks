@@ -1,3 +1,4 @@
+/*jslint es6*/
 const sqlite3 = require('sqlite3');
 const { EmbedBuilder } = require('discord.js');
 const { baseURL } = require('./config.json');
@@ -8,17 +9,18 @@ function toIcons(str) {
   var step2 = step1.replaceAll("1", "🟪");
   return step2.replaceAll("2", "🟨");
 }
+
 function fullGridString(str, sep) {
-  var strings = str.match(/.{1,9}/g)
+  var strings = str.match(/.{1,9}/g);
   var iconstrings = [];
-  iconstrings.push(toIcons(strings[0]))
-  iconstrings.push(toIcons(strings[1]))
-  iconstrings.push(toIcons(strings[2]))
+  iconstrings.push(toIcons(strings[0]));
+  iconstrings.push(toIcons(strings[1]));
+  iconstrings.push(toIcons(strings[2]));
   return iconstrings.join(sep);
 }
 
 function boolToNum(val) {
-  if (val) {return 1} else {return 0}
+  if (val) {return 1;} else {return 0;}
 }
 
 function valueToEmote(value) {
@@ -34,10 +36,10 @@ function teamData(season, team, event, interaction) {
     return interaction.reply({
       content: "We are not competing, so you must specify the event code!",
       ephemeral: true
-    })
+    });
   }
     //data:
-    
+
     //BASIC DATA
     //event is event code
     //name is scout name
@@ -66,7 +68,7 @@ function teamData(season, team, event, interaction) {
     //defend is STRING about robot defence
     //driving is STRING about the robot's driver
     //overall is STRING as overall thoughts about the team
-    
+
     //UNUSED VALUES
     //game12 - game25 is INT (0)
     //formType is STRING the form that was submitted and is not entered into db
@@ -78,16 +80,16 @@ function teamData(season, team, event, interaction) {
         return interaction.reply({
           content: "Error getting data (database open)!",
           ephemeral: true
-        })
+        });
       }
-    });    
+    });
     db.get(`SELECT * FROM main WHERE team=${team} AND event="${event}" AND season="${season}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
           console.log(err);
           return interaction.reply({
             content: "Error getting data (query stage)!",
             ephemeral: true
-          })
+          });
         } else {
           if (result) {
           const teamEmbed = new EmbedBuilder()
@@ -148,13 +150,13 @@ function teamData(season, team, event, interaction) {
       }
   });
 }
-  
+
 function pitData(season, team, event, interaction) {
   if (event == "NONE") {
     return interaction.reply({
       content: "We are not competing, so you must specify the event code!",
       ephemeral: true
-    })
+    });
   }
     //data:
 
@@ -162,7 +164,7 @@ function pitData(season, team, event, interaction) {
     //event is event code
     //name is scout name
     //team is scouted team
-    
+
     //PIT SCOUTING DATA
     //drivetype is STRING what drive type
     //driveTeam is INT how many **days** of drive team work on this robot
@@ -172,13 +174,13 @@ function pitData(season, team, event, interaction) {
     //UNUSED VALUES
     //game1 - game20 is INT (0)
     //formType is STRING the form that was submitted and is not entered into db
-    
+
     let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {
       if (err) {
         return interaction.reply({
           content: `Error getting data (database open)! ${err}`,
           ephemeral: true
-        })
+        });
       }
     });
     db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" AND season=${season} ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
@@ -187,7 +189,7 @@ function pitData(season, team, event, interaction) {
           return interaction.reply({
             content: `Error getting data (query stage)! ${err}`,
             ephemeral: true
-          })
+          });
         } else {
           if (pitresult) {
           const pitEmbed = new EmbedBuilder()
@@ -240,7 +242,7 @@ function weightScores(submissionID) {
       return interaction.reply({
         content: `Error getting data! ${err}`,
         ephemeral: true
-      })
+      });
     }
   });
   var analysisResults = [];
@@ -252,7 +254,7 @@ function weightScores(submissionID) {
       analysisResults.push(saModule.analyze(result.driving))
       analysisResults.push(saModule.analyze(result.overall))
       console.log(analysisResults)
-      
+
       //MAXIMUM SCORE: 15
       //sent analysis
       score = score + analysisResults[0]*3.75

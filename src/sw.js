@@ -1,5 +1,5 @@
-var version = '3.2.1'
-var cacheName = `scouting-pwa-${version}`
+var version = '3.2.1';
+var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
   '/',
   'appinstall.js',

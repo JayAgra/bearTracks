@@ -25,6 +25,14 @@ function isInside(pos, rect) {
     return (pos.x > rect.x && pos.x < rect.x+rect.width && pos.y < rect.y+rect.height && pos.y > rect.y)
 }
 
+function hideGame() {
+    document.body.style.backgroundColor = "#121212";
+    document.getElementById("bjCanvas").style.display = "none"
+    document.getElementById("title").style.display = "inline";
+    document.getElementById("playBtn").style.display = "inline";
+    document.getElementById("backBtn").style.display = "inline";
+}
+
 async function getInitialDraw() {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/casino/blackjack/startingCards`, true);
@@ -65,11 +73,7 @@ async function checkForLoss(cardTotal, card) {
             var audio = new Audio('assets/yummy.mp3');
             audio.play();
 
-            document.body.style.backgroundColor = "#121212";
-            document.getElementById("bjCanvas").style.display = "none"
-            document.getElementById("title").style.display = "inline";
-            document.getElementById("playBtn").style.display = "inline";
-            document.getElementById("backBtn").style.display = "inline";
+            hideGame()
             document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Blackjack!</h3>`)
             document.getElementById("playBtn").onclick = function(){window.location.reload();};
 
@@ -379,11 +383,7 @@ if (window.innerHeight < window.innerWidth) {
                     } else if (xhr.status === 403) {
                         if (xhr.readyState === XMLHttpRequest.DONE) {
                             console.log("403 access denied")
-                            document.body.style.backgroundColor = "#121212";
-                            document.getElementById("bjCanvas").style.display = "none"
-                            document.getElementById("title").style.display = "inline";
-                            document.getElementById("playBtn").style.display = "inline";
-                            document.getElementById("backBtn").style.display = "inline";
+                            hideGame()
                             document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">You have a balance of under -2000 points, you cannot gamble!</h3>`)
                             document.getElementById("playBtn").onclick = function(){window.location.reload();}
                             throw new Error('unable to gamble');
@@ -423,19 +423,11 @@ if (window.innerHeight < window.innerWidth) {
                         if (APINewCard.result === "win") {
                             var audio = new Audio('assets/yummy.mp3');
                             audio.play();
-                            document.body.style.backgroundColor = "#121212";
-                            document.getElementById("bjCanvas").style.display = "none"
-                            document.getElementById("title").style.display = "inline";
-                            document.getElementById("playBtn").style.display = "inline";
-                            document.getElementById("backBtn").style.display = "inline";
+                            hideGame()
                             document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Win!</h3>`)
                             document.getElementById("playBtn").onclick = function(){window.location.reload();};
                         } else if (APINewCard.result === "loss") {
-                            document.body.style.backgroundColor = "#121212";
-                            document.getElementById("bjCanvas").style.display = "none"
-                            document.getElementById("title").style.display = "inline";
-                            document.getElementById("playBtn").style.display = "inline";
-                            document.getElementById("backBtn").style.display = "inline";
+                            hideGame()
                             document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Loss!</h3>`)
                             document.getElementById("playBtn").onclick = function(){window.location.reload();};
                         }
