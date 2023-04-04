@@ -508,6 +508,11 @@ app.get('/fantasy', checkAuth, function(req, res) {
   res.sendFile('src/fantasy.html', { root: __dirname });
 });
 
+app.get('/awards', checkAuth, function(req, res) {
+  res.set('Cache-control', 'public, max-age=259200');
+  res.sendFile('src/awards.html', { root: __dirname });
+});
+
 //allow people to get denied :)
 app.get('/denied', function(req, res) {
   try {
