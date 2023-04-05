@@ -1,5 +1,6 @@
 //CONFIG
-/*jslint es6*/
+/*jslint node: true*/
+"use strict";
 const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID, currentComp, serverSecret } = require('./config.json');
 
 //SETUP OAUTH

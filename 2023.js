@@ -1,3 +1,4 @@
+/*jslint node: true*/
 "use strict";
 const sqlite3 = require("sqlite3");
 const { EmbedBuilder } = require("discord.js");

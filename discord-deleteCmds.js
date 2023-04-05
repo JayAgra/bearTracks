@@ -1,6 +1,8 @@
+/*jslint node: true*/
+"use strict";
 const { REST, Routes } = require('discord.js');
 const { clientId, token } = require('./config.json');
-    
+
 const rest = new REST({ version: '9' }).setToken(token);
 rest.get(Routes.applicationCommands(clientId))
     .then(data => {

@@ -1,11 +1,14 @@
+/*jslint node: true*/
+/*jslint es6*/
+"use strict";
 const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
 const sqlite3 = require('sqlite3');
-let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {console.log(err);});
 const seasonData = require("./2023.js");
 
 function logInfo(info) {
-    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + info)
+    console.log('\x1b[36m', '[DISCORD BOT]   ' ,'\x1b[0m' + '\x1b[32m', '  [INFO] ' ,'\x1b[0m' + info);
 }
 
 function logErrors(errortodisplay) {
@@ -32,8 +35,9 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
   partials: []
 });
-var EventEmitter = require("events").EventEmitter;
-var https = require('follow-redirects').https;
+
+let EventEmitter = require("events").EventEmitter;
+let https = require('follow-redirects').https;
 
 client.once(Events.ClientReady, () => {
     client.user.setActivity("the 766 Ws", { type: "WATCHING" });
@@ -48,9 +52,9 @@ const trollface = "<:tf:1061411458027618375>"; //trollface
 function invalidJSON(str) {
   try {
       JSON.parse(str);
-      return false
+      return false;
   } catch (error) {
-      return true
+      return true;
   }
 }
 
@@ -68,7 +72,7 @@ function defaultEvent(fallback, interaction) {
             return interaction.reply({
                 content: "We are not competing, you must specify an event code.",
                 ephemeral: true
-            })
+            });
         }
         return currentComp;
     } else {
@@ -84,7 +88,7 @@ function newSubmission(formType, Id, scoutIP) {
 }
 
 async function sendPasswordToUser(userID, password, email) {
-    client.users.send(userID, `A password has been set for your account to use with email login if you would like.\nThe password is for team ${myteam}'s scouting app.\n\nEmail: ` + "`" + email + "`" + `\nPassword: ` + "`" + password + "`")
+    client.users.send(userID, `A password has been set for your account to use with email login if you would like.\nThe password is for team ${myteam}'s scouting app.\n\nEmail: ` + "`" + email + "`" + `\nPassword: ` + "`" + password + "`");
 }
 
 client.on('interactionCreate', async interaction => {
@@ -779,7 +783,7 @@ client.on('interactionCreate', async interaction => {
                                 min = Math.ceil(min);
                                 max = Math.floor(max);
                                 return Math.floor(Math.random() * (max - min) + min);
-                              }                              
+                              }
                             var array = [];
                             const result = getRandomInt(0,16).toString(2).split('');
                             array.push(ifUndefinedZero(result[3]))
