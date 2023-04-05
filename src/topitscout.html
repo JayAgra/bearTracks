@@ -53,7 +53,7 @@
         <br><br>
     </div>
     <script>
-        const waitMs = ms => new Promise(res => setTimeout(res, ms));
+        const waitMs = ms => new Promise((res) => {setTimeout(res, ms)});
         function goToHome() {
             window.location.href = "/";
         }
@@ -72,9 +72,9 @@
                 console.log(xhr.responseText)
                 window.allTeams = xhr.responseText.split(",")
                 console.log(getDifference())
-                document.getElementById('eventLabel').style.display = "none"
-                document.getElementById('eventCode').insertAdjacentHTML("afterend", `<div id="unscouted"><br><span>To Scout: </span><br>${getDifference().join("<br>")}</div>`);
-                document.getElementById('eventCode').style.display = "none"
+                document.getElementById("eventLabel").style.display = "none"
+                document.getElementById("eventCode").insertAdjacentHTML("afterend", `<div id="unscouted"><br><span>To Scout: </span><br>${getDifference().join("<br>")}</div>`);
+                document.getElementById("eventCode").style.display = "none"
                 document.getElementById("viewTeamsButton").innerHTML = "Done!";
                 return 0;
             } else if (xhr.status === 401) {

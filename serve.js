@@ -4,8 +4,8 @@ const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, c
 
 //SETUP OAUTH
 const DiscordOauth2 = require("discord-oauth2");
-const getOauthData = new DiscordOauth2;
-const passport = require('passport')
+const getOauthData = new DiscordOauth2();
+const passport = require('passport');
 const Strategy = require('passport-discord').Strategy;
 passport.serializeUser(function(user, done) {
   "use strict";
@@ -30,7 +30,7 @@ passport.use(new Strategy({
 
 //SETUP DATABASE
 const sqlite3 = require('sqlite3');
-let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
+let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => function(){console.log(err);});
 db.run( 'PRAGMA journal_mode = WAL;' );
 
 //SETUP SERVER(S)

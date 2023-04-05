@@ -1,3 +1,4 @@
+"use strict";
 var version = '3.2.1';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
