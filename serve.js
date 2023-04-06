@@ -821,12 +821,17 @@ app.get('/pitimages', checkAuth, function(req, res) {
           })
           return;
         } else {
-          res.render('../src/pitimg.ejs', {
-            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
+          console.log(dbQueryResult)
+          res.render("../src/pitimg.ejs", {
+            root: __dirname,
+            errorDisplay: "none",
+            errorMessage: null,
+            displaySearch: "none",
+            displayResults: "flex",
             resultsTeamNumber: `${dbQueryResult.team}`,
             resultsEventCode: `${dbQueryResult.event}`,
-            resultsBody: `<p>Drive Type: ${dbQueryResult.drivetype}</p><br><p>Pit Scouting Assesment: ${dbQueryResult.overall}</p><br><img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
-          })
+            resultsBody: `<p>Scout: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}</p><p>Drive Type: ${dbQueryResult.drivetype}</p><p>Pit Scouting Assesment: ${dbQueryResult.overall}</p><br><img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`,
+          });
           return;
         }
       }
