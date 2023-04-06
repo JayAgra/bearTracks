@@ -4,32 +4,6 @@
 "use strict";
 const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID, currentComp, serverSecret } = require('./config.json');
 
-//SETUP OAUTH
-const DiscordOauth2 = require("discord-oauth2");
-const getOauthData = new DiscordOauth2();
-const passport = require('passport');
-const Strategy = require('passport-discord').Strategy;
-passport.serializeUser(function(user, done) {
-  "use strict";
-  done(null, user);
-});
-passport.deserializeUser(function(obj, done) {
-  "use strict";
-  done(null, obj);
-});
-const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
-passport.use(new Strategy({
-  clientID: clientId,
-  clientSecret: clientSec,
-  callbackURL: redirectURI,
-  scope: scopes
-}, function(accessToken, refreshToken, profile, done) {
-  "use strict";
-  process.nextTick(function() {
-    return done(null, profile);
-  });
-}));
-
 //SETUP DATABASE
 const sqlite3 = require('sqlite3');
 let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => function(){console.log(err);});
@@ -81,16 +55,17 @@ app.use('/assets', express.static('src/assets', {
     res.set("X-Artist", "Lydia Honerkamp");
   }
 }))
-app.use(session({
-  secret: serverSecret,
-  resave: false,
-  saveUninitialized: false,
-  maxAge: 24 * 60 * 60 * 1000 * 365, // 183 days
-  cookie : {
-    sameSite: 'lax',
-    secure: 'true'
-  }
-}));
+app.use(
+  session({
+    secret: serverSecret,
+    resave: false,
+    saveUninitialized: false,
+    maxAge: 31556952000, // 365 days
+    cookie: {
+      secure: "true"
+    },
+  })
+);
 var limiter = RateLimit({
   windowMs: 10*60*1000, // 10 minutes
   max: 1000,
@@ -98,15 +73,43 @@ var limiter = RateLimit({
   legacyHeaders: false,
   keyGenerator: (req, res) => { return req.connection.remoteAddress }
 });
-app.use(lusca({
-  csrf: false,
-  xframe: 'SAMEORIGIN',
-  hsts: {maxAge: 31557600000, includeSubDomains: true, preload: true},
-  xssProtection: true,
-  nosniff: true,
-  referrerPolicy: 'same-origin'
-}));
+app.use(
+  lusca({
+    csrf: false,
+    xframe: "SAMEORIGIN",
+    hsts: { maxAge: 31556952000, includeSubDomains: true, preload: true },
+    xssProtection: true,
+    nosniff: true,
+    referrerPolicy: "same-origin",
+  })
+);
 app.use(limiter);
+
+//SETUP OAUTH
+const DiscordOauth2 = require("discord-oauth2");
+const getOauthData = new DiscordOauth2();
+const passport = require('passport');
+const Strategy = require('passport-discord').Strategy;
+passport.serializeUser(function(user, done) {
+  "use strict";
+  done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+  "use strict";
+  done(null, obj);
+});
+const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
+passport.use(new Strategy({
+  clientID: clientId,
+  clientSecret: clientSec,
+  callbackURL: redirectURI,
+  scope: scopes
+}, function(accessToken, refreshToken, profile, done) {
+  "use strict";
+  process.nextTick(function() {
+    return done(null, profile);
+  });
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -886,8 +889,7 @@ app.get('/api/matches/:season/:event/:level/:all', apiCheckAuth, function(req, r
 
       response.on("end", function(chunk) {
           var body = Buffer.concat(chunks);
-          data = body;
-          dbody.emit('update');
+          dbody.emit("update", body);
       });
 
       response.on("error", function(error) {
@@ -895,9 +897,9 @@ app.get('/api/matches/:season/:event/:level/:all', apiCheckAuth, function(req, r
       });
   });
   request.end();
-  dbody.on('update', function() {
-      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-        const parsedData = JSON.parse(data);
+  dbody.on('update', function(body) {
+      if (invalidJSON(body)) {res.status(500).send('error! invalid data')} else {
+        const parsedData = JSON.parse(body);
         var matchesContent = "";
         const eventCode = req.params.event
         for (let i = 0; i < parsedData.Schedule.length; i++) {
@@ -1194,8 +1196,7 @@ app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
 
       response.on("end", function(chunk) {
           var body = Buffer.concat(chunks);
-          data = body;
-          dbody.emit('update');
+          dbody.emit("update", body);
       });
 
       response.on("error", function(error) {
@@ -1203,9 +1204,9 @@ app.get('/api/events/:event/teams', apiCheckAuth, function(req, res) {
       });
   });
   request.end();
-  dbody.on('update', function() {
-      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-        const parsedData = JSON.parse(data);
+  dbody.on('update', function(body) {
+      if (invalidJSON(body)) {res.status(500).send('error! invalid data')} else {
+        const parsedData = JSON.parse(body);
         var teams = [];
         for (var i = 0; i < parsedData.teams.length; i++) {
           teams.push(parsedData.teams[i].teamNumber);
@@ -1236,8 +1237,7 @@ app.get('/api/events/:event/allTeamData', apiCheckAuth, function(req, res) {
 
       response.on("end", function(chunk) {
           var body = Buffer.concat(chunks);
-          data = body;
-          dbody.emit('update');
+          dbody.emit("update", body);
       });
 
       response.on("error", function(error) {
@@ -1245,9 +1245,9 @@ app.get('/api/events/:event/allTeamData', apiCheckAuth, function(req, res) {
       });
   });
   request.end();
-  dbody.on('update', function() {
-      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-        res.status(200).json(JSON.parse(data))
+  dbody.on('update', function(body) {
+      if (invalidJSON(body)) {res.status(500).send('error! invalid data')} else {
+        res.status(200).json(JSON.parse(body));
       }
   });
 });
@@ -1273,8 +1273,7 @@ app.get('/api/events/current/allData', apiCheckAuth, function(req, res) {
 
       response.on("end", function(chunk) {
           var body = Buffer.concat(chunks);
-          data = body;
-          dbody.emit('update');
+          dbody.emit("update", body);
       });
 
       response.on("error", function(error) {
@@ -1282,9 +1281,9 @@ app.get('/api/events/current/allData', apiCheckAuth, function(req, res) {
       });
   });
   request.end();
-  dbody.on('update', function() {
-      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-        res.status(200).json(JSON.parse(data))
+  dbody.on('update', function(body) {
+      if (invalidJSON(body)) {res.status(500).send('error! invalid data')} else {
+        res.status(200).json(JSON.parse(body));
       }
   });
 });
@@ -1384,8 +1383,7 @@ app.get('/api/teams/teamdata/:team', apiCheckAuth, function(req, res) {
 
       response.on("end", function(chunk) {
           var body = Buffer.concat(chunks);
-          data = body;
-          dbody.emit('update');
+          dbody.emit("update", body);
       });
 
       response.on("error", function(error) {
@@ -1393,9 +1391,9 @@ app.get('/api/teams/teamdata/:team', apiCheckAuth, function(req, res) {
       });
   });
   request.end();
-  dbody.on('update', function() {
-      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-        res.status(200).json(JSON.parse(data))
+  dbody.on('update', function(body) {
+      if (invalidJSON(body)) {res.status(500).send('error! invalid data')} else {
+        res.status(200).json(JSON.parse(body));
       }
   });
 });

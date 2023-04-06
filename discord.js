@@ -138,8 +138,7 @@ client.on('interactionCreate', async interaction => {
 
           res.on("end", function(chunk) {
               var body = Buffer.concat(chunks);
-              data = body;
-              dbody.emit('update');
+              dbody.emit('update', body);
           });
 
           res.on("error", function(error) {
@@ -147,16 +146,16 @@ client.on('interactionCreate', async interaction => {
           });
       });
       req.end();
-      dbody.on('update', function() {
-          if (invalidJSON(data)) {
-              logErrors(data)
+      dbody.on('update', function(body) {
+          if (invalidJSON(body)) {
+              logErrors(body);
               interaction.reply({
                   content: 'invalid input, or i messed it up',
                   ephemeral: true
               });
               logErrors(`${opseason} - ${eventcode} - ${teamnum} - ${tlevel}`);
           } else {
-              const outputget = JSON.parse(data);
+              const outputget = JSON.parse(body);
               const matchEmbed = new EmbedBuilder()
                   .setColor(0x68C3E2)
                   .setTitle(`${outputget.Schedule[0].description}`)
@@ -431,8 +430,7 @@ client.on('interactionCreate', async interaction => {
 
           res.on("end", function(chunk) {
               var body = Buffer.concat(chunks);
-              data = body;
-              dbody.emit('update');
+              dbody.emit('update', body);
           });
 
           res.on("error", function(error) {
@@ -440,16 +438,16 @@ client.on('interactionCreate', async interaction => {
           });
       });
       req.end();
-      dbody.on('update', function() {
-          if (invalidJSON(data)) {
-              logErrors(data);
+      dbody.on('update', function(body) {
+          if (invalidJSON(body)) {
+              logErrors(body);
               interaction.reply({
                   content: `Invalid inputs, or the FRC API failed to respond`,
                   ephemeral: true
               });
               logErrors('potential error ' + opseason + eventcode)
           } else {
-              const outputget = JSON.parse(data);
+              const outputget = JSON.parse(body);
               const rankEmbed = new EmbedBuilder()
                   .setColor(0x68C3E2)
                   .setTitle(`${eventcode} team rankings`)
@@ -648,8 +646,7 @@ client.on('interactionCreate', async interaction => {
 
                           res.on("end", function(chunk) {
                               var teambody = Buffer.concat(teamchunks);
-                              teamdata = teambody;
-                              dbodyteam.emit('update');
+                              dbodyteam.emit('update', teambody);
                           });
 
                           res.on("error", function(error) {
@@ -657,15 +654,15 @@ client.on('interactionCreate', async interaction => {
                           });
                       });
                       req.end();
-                      dbodyteam.on('update', function() {
-                          if (invalidJSON(teamdata)) {
-                              logInfo(teamdata);
+                      dbodyteam.on('update', function(teambody) {
+                          if (invalidJSON(teambody)) {
+                              logInfo(teambody);
                               interaction.reply({
                                   content: 'invalid input, or i messed it up',
                                   ephemeral: true
                               });
                           } else {
-                              const outputgetteam = JSON.parse(teamdata);
+                              const outputgetteam = JSON.parse(teambody);
                               rankno = outputgetteam.Rankings[0].rank - 1;
                           }
                       });
