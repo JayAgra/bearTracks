@@ -225,26 +225,22 @@
         document.getElementById('validateTeamInput').addEventListener('input', function(event){
             console.log("event!")
             if (allTeams.includes(document.getElementById('validateTeamInput').value)) {
-                console.log("good boy")
                 document.getElementById('invalidTeamInput').style.display = "none";
-                document.getElementById('submitButton').disabled = "false";
+                document.getElementById('submitButton').removeAttribute("disabled");
             } else {
-                console.log("bad bad bad boy")
                 document.getElementById('invalidTeamInput').style.display = "inherit";
-                document.getElementById('submitButton').disabled = "true";
+                document.getElementById('submitButton').setAttribute("disabled", "disabled");
             }
         });
 
         document.getElementById('validateLength').addEventListener('input', function(event){
             console.log("event!")
             if ((document.getElementById('validateLength').value).length <= 4) {
-                console.log("good boy")
                 document.getElementById('tooLong').style.display = "none";
-                document.getElementById('submitButton').disabled = "false";
+                document.getElementById('submitButton').removeAttribute("disabled");
             } else {
-                console.log("bad bad bad boy")
                 document.getElementById('tooLong').style.display = "inherit";
-                document.getElementById('submitButton').disabled = "true";
+                document.getElementById('submitButton').setAttribute("disabled", "disabled");
             }
         });
 
