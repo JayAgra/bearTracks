@@ -1,4 +1,4 @@
-"use strict";
+/*"use strict";
 var version = '3.2.1';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
@@ -46,4 +46,4 @@ self.addEventListener('fetch', function(event) {
         return cache.match(event.request).then(response => response);
       });
   }));
-});
+});*/

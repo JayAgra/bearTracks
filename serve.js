@@ -1,5 +1,6 @@
 //CONFIG
 /*jslint node: true*/
+/*jslint es6*/
 "use strict";
 const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl, anotherServerID, currentComp, serverSecret } = require('./config.json');
 

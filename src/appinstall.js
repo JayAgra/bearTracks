@@ -1,4 +1,5 @@
 function registerSW() {
+    /*
     "use strict";
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("sw.js").then(registration => {
@@ -17,4 +18,5 @@ function registerSW() {
             };
         }).catch()
     }
+    */
 }
