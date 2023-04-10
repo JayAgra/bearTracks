@@ -74,8 +74,13 @@
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 console.log("200 ok")
                 console.log(xhr.responseText)
+                matchesJSON = JSON.parse(xhr.responseText)
                 document.getElementById("viewMatchButton").innerHTML = "Rendering View...";
-                document.getElementById("matchHeader").insertAdjacentHTML("afterend", xhr.responseText)
+                var matchesHtml = "";
+                for (let i = 0; i < matchesJSON.length; i++) {
+                    matchesHtml = matchesHtml + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #FF4000;"><a href="browse?number=${parsedData.Schedule[i].teams[0].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[1].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[2].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #00BFFF;"><a href="browse?number=${parsedData.Schedule[i].teams[3].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[4].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[5].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
+                }
+                document.getElementById("matchHeader").insertAdjacentHTML("afterend", matchesHtml)
                 document.getElementById("search").style.display = "none";
                 document.getElementById("results").style.display = "flex";
                 document.getElementById("viewMatchButton").innerHTML = "View";

@@ -905,12 +905,7 @@ app.get('/api/matches/:season/:event/:level/:all', apiCheckAuth, function(req, r
   dbody.on('update', function(body) {
       if (invalidJSON(body)) {res.status(500).send('error! invalid data')} else {
         const parsedData = JSON.parse(body);
-        var matchesContent = "";
-        const eventCode = req.params.event
-        for (let i = 0; i < parsedData.Schedule.length; i++) {
-          matchesContent = matchesContent + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #FF4000;"><a href="browse?number=${parsedData.Schedule[i].teams[0].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[1].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[2].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #00BFFF;"><a href="browse?number=${parsedData.Schedule[i].teams[3].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[4].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?number=${parsedData.Schedule[i].teams[5].teamNumber}&type=team&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
-        }
-        res.status(200).setHeader('Content-type','text/plain').send(matchesContent);
+        res.status(200).json(parsedData);
       }
   });
 });
