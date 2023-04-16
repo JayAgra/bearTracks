@@ -372,20 +372,7 @@ function forwardFRCAPIdata(url, req, res) {
 //before server creation
 logInfo("Preparing...");
 
-//some unfortunate safari bug leads to blank pages being served??
-app.all("*", function (req, res, next) {
-  let agent = req.headers["user-agent"];
-  if (
-    agent.indexOf("Safari") > -1 &&
-    agent.indexOf("Chrome") === -1 &&
-    agent.indexOf("OPR") === -1
-  ) {
-    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.header("Pragma", "no-cache");
-    res.header("Expires", 0);
-  }
-  return next();
-});
+app.disable("etag");
 
 //EXPRESSJS APP RESPONSES
 app.get("/login", function (req, res) {
