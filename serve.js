@@ -330,6 +330,45 @@ function addToDataBase(req, next) {
   return next();
 }
 
+//insert first forward 2022 pun
+function forwardFRCAPIdata(url, req, res) {
+  var dbody = new EventEmitter();
+  var options = {
+    method: "GET",
+    hostname: "frc-api.firstinspires.org",
+    path: url,
+    headers: {
+      Authorization: "Basic " + frcapi,
+    },
+    maxRedirects: 20,
+  };
+
+  var request = https.request(options, function (response) {
+    var chunks = [];
+
+    response.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+
+    response.on("end", function (chunk) {
+      var body = Buffer.concat(chunks);
+      dbody.emit("update", body);
+    });
+
+    response.on("error", function (error) {
+      console.error(error);
+    });
+  });
+  request.end();
+  dbody.on("update", function (body) {
+    if (invalidJSON(body)) {
+      res.status(500).send("error! invalid data");
+    } else {
+      res.status(200).json(JSON.parse(body));
+    }
+  });
+}
+
 //before server creation
 logInfo("Preparing...");
 
@@ -1371,54 +1410,15 @@ app.get("/pitimages", checkAuth, function (req, res) {
 });
 
 //api
-app.get(
-  "/api/matches/:season/:event/:level/:all",
-  apiCheckAuth,
-  function (req, res) {
+app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, function (req, res) {
     var teamNumParam = "";
     if (req.params.all === "all") {
       teamNumParam = "&start=&end=";
     } else {
       teamNumParam = `&teamNumber=${myteam}`;
     }
-    var dbody = new EventEmitter();
-    var options = {
-      method: "GET",
-      hostname: "frc-api.firstinspires.org",
-      path: `/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`,
-      headers: {
-        Authorization: "Basic " + frcapi,
-      },
-      maxRedirects: 20,
-    };
-
-    var request = https.request(options, function (response) {
-      var chunks = [];
-
-      response.on("data", function (chunk) {
-        chunks.push(chunk);
-      });
-
-      response.on("end", function (chunk) {
-        var body = Buffer.concat(chunks);
-        dbody.emit("update", body);
-      });
-
-      response.on("error", function (error) {
-        console.error(error);
-      });
-    });
-    request.end();
-    dbody.on("update", function (body) {
-      if (invalidJSON(body)) {
-        res.status(500).send("error! invalid data");
-      } else {
-        const parsedData = JSON.parse(body);
-        res.status(200).json(parsedData);
-      }
-    });
-  }
-);
+    forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res)
+});
 
 app.get("/api/data/:season/:event/:team", apiCheckAuth, function (req, res) {
   const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
@@ -1599,86 +1599,81 @@ app.get("/api/casino/slots/slotSpin", apiCheckAuth, function (req, res) {
 //end slots API
 
 //blackjack API
-app.get(
-  "/api/casino/blackjack/startingCards",
-  apiCheckAuth,
-  checkGamble,
-  function (req, res) {
-    const possibleCards = [
-        { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
-        { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
-        { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
-        { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
-      ];
-    var cards = [];
-    var cardValues = 0;
-    var numOfAces = 0;
-    cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-    cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-    cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-    //prevent cards from being duplicated
-    if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-      while (
+app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, function (req, res) {
+  const possibleCards = [
+      { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
+      { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
+      { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
+      { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
+    ];
+  var cards = [];
+  var cardValues = 0;
+  var numOfAces = 0;
+  cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+  cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+  cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+  //prevent cards from being duplicated
+  if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+    while (
+      cards[0] == cards[1] ||
+      cards[1] == cards[2] ||
+      cards[0] == cards[2]
+    ) {
+      if (
         cards[0] == cards[1] ||
         cards[1] == cards[2] ||
         cards[0] == cards[2]
       ) {
-        if (
-          cards[0] == cards[1] ||
-          cards[1] == cards[2] ||
-          cards[0] == cards[2]
-        ) {
-          cards = [];
-          cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-          cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-          cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-        } else {
-          break;
-        }
-      }
-    }
-
-    for (var i = 1; i < 3; i++) {
-      if (typeof cards[i].value !== "number") {
-        if (cards[i].value === "A") {
-          numOfAces = numOfAces + 1;
-        } else {
-          cardValues = cardValues + 10;
-        }
+        cards = [];
+        cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+        cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+        cards.push(possibleCards[Math.floor(Math.random() * 51)]);
       } else {
-        cardValues = cardValues + cards[i].value;
+        break;
       }
     }
-    function findDealerTotal() {
-      if (typeof cards[0].value !== "number") {
-        return 10;
-      } else {
-        return cards[0].value;
-      }
-    }
-
-    let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
-    let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      }
-    });
-
-    res
-      .status(200)
-      .json(
-        `{"dealt": "card-${cards[0].suit}_${
-          cards[0].value
-        }.png", "player0": "card-${cards[1].suit}_${
-          cards[1].value
-        }.png", "player1": "card-${cards[2].suit}_${
-          cards[2].value
-        }.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`
-      );
   }
-);
+
+  for (var i = 1; i < 3; i++) {
+    if (typeof cards[i].value !== "number") {
+      if (cards[i].value === "A") {
+        numOfAces = numOfAces + 1;
+      } else {
+        cardValues = cardValues + 10;
+      }
+    } else {
+      cardValues = cardValues + cards[i].value;
+    }
+  }
+  function findDealerTotal() {
+    if (typeof cards[0].value !== "number") {
+      return 10;
+    } else {
+      return cards[0].value;
+    }
+  }
+
+  let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
+  let pointValues = [req.user.id];
+  db.run(pointStmt, pointValues, (err) => {
+    if (err) {
+      res.status(500).send("got an error from transaction");
+      return;
+    }
+  });
+
+  res
+    .status(200)
+    .json(
+      `{"dealt": "card-${cards[0].suit}_${
+        cards[0].value
+      }.png", "player0": "card-${cards[1].suit}_${
+        cards[1].value
+      }.png", "player1": "card-${cards[2].suit}_${
+        cards[2].value
+      }.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`
+    );
+});
 
 app.get("/api/casino/blackjack/newCard", apiCheckAuth, function (req, res) {
   //shh, tell nobody that there are no aces here
@@ -1703,98 +1698,85 @@ app.get("/api/casino/blackjack/newCard", apiCheckAuth, function (req, res) {
     );
 });
 
-app.get(
-  "/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard",
-  apiCheckAuth,
-  function (req, res) {
-    if (req.params.casinoToken == casinoToken) {
-      const possibleCards = [
-        { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
-        { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
-        { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
-        { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
-      ];
-      if (
-        possibleCards[Math.floor(Math.random() * 51)].value +
-          Number(req.params.dealerCard) <
-        Number(req.params.playerTotal)
-      ) {
-        if (req.params.playerTotal < 21) {
-          let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
-          let pointValues = [req.user.id];
-          db.run(pointStmt, pointValues, (err) => {
-            if (err) {
-              res.status(500).send("got an error from transaction");
-              return;
-            }
-          });
-          res.status(200).json(`{"result": "win"}`);
-        } else {
-          res.send("you pig");
-        }
-      } else {
-        res.status(200).json(`{"result": "loss"}`);
-      }
-    } else {
-      res.send("you pig");
-    }
-  }
-);
-
-app.get(
-  "/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack",
-  apiCheckAuth,
-  function (req, res) {
-    if (req.params.cval == 21 && req.params.casinoToken == casinoToken) {
-      let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
-      let pointValues = [req.user.id];
-      db.run(pointStmt, pointValues, (err) => {
-        if (err) {
-          res.status(500).send("got an error from transaction");
-          return;
-        }
-      });
-    } else {
-      res.send("you pig");
-    }
-  }
-);
-//end blackjack API
-
-app.get(
-  "/api/casino/spinner/spinWheel",
-  apiCheckAuth,
-  checkGamble,
-  function (req, res) {
-    //12 spins
-    const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
-
-    //weighting (you didnt think this was fair, did you??)
-    var spin = Math.floor(Math.random() * 12);
-    for (var i = 0; i < 2; i++) {
-      if (spin >= 8) {
-        spin = Math.floor(Math.random() * 12);
-        if (spin >= 9) {
-          spin = Math.floor(Math.random() * 12);
-          if (spin >= 10) {
-            spin = Math.floor(Math.random() * 12);
+app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, function (req, res) {
+  if (req.params.casinoToken == casinoToken) {
+    const possibleCards = [
+      { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
+      { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
+      { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
+      { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
+    ];
+    if (
+      possibleCards[Math.floor(Math.random() * 51)].value +
+        Number(req.params.dealerCard) <
+      Number(req.params.playerTotal)
+    ) {
+      if (req.params.playerTotal < 21) {
+        let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
+        let pointValues = [req.user.id];
+        db.run(pointStmt, pointValues, (err) => {
+          if (err) {
+            res.status(500).send("got an error from transaction");
+            return;
           }
-        }
+        });
+        res.status(200).json(`{"result": "win"}`);
+      } else {
+        res.send("you pig");
       }
+    } else {
+      res.status(200).json(`{"result": "loss"}`);
     }
+  } else {
+    res.send("you pig");
+  }
+});
 
-    let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
-    let pointValues = [spins[spin], req.user.id];
+app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth, function (req, res) {
+  if (req.params.cval == 21 && req.params.casinoToken == casinoToken) {
+    let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
+    let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {
       if (err) {
         res.status(500).send("got an error from transaction");
         return;
       }
     });
-
-    res.status(200).json(`{"spin": ${spin}}`);
+  } else {
+    res.send("you pig");
   }
-);
+});
+//end blackjack API
+
+app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, function (req, res) {
+  //12 spins
+  const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
+
+  //weighting (you didnt think this was fair, did you??)
+  var spin = Math.floor(Math.random() * 12);
+  for (var i = 0; i < 2; i++) {
+    if (spin >= 8) {
+      spin = Math.floor(Math.random() * 12);
+      if (spin >= 9) {
+        spin = Math.floor(Math.random() * 12);
+        if (spin >= 10) {
+          spin = Math.floor(Math.random() * 12);
+        }
+      }
+    }
+  }
+
+  let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+  let pointValues = [spins[spin], req.user.id];
+  db.run(pointStmt, pointValues, (err) => {
+    if (err) {
+      res.status(500).send("got an error from transaction");
+      return;
+    }
+  });
+
+  res.status(200).json(`{"spin": ${spin}}`);
+});
 
 app.get("/api/events/:event/teams", apiCheckAuth, function (req, res) {
   var dbody = new EventEmitter();
@@ -1843,109 +1825,37 @@ app.get("/api/events/:event/teams", apiCheckAuth, function (req, res) {
 });
 
 app.get("/api/events/:event/allTeamData", apiCheckAuth, function (req, res) {
-  var dbody = new EventEmitter();
-  var options = {
-    method: "GET",
-    hostname: "frc-api.firstinspires.org",
-    path: `/v3.0/${season}/teams?eventCode=${req.params.event}`,
-    headers: {
-      Authorization: "Basic " + frcapi,
-    },
-    maxRedirects: 20,
-  };
-
-  var request = https.request(options, function (response) {
-    var chunks = [];
-
-    response.on("data", function (chunk) {
-      chunks.push(chunk);
-    });
-
-    response.on("end", function (chunk) {
-      var body = Buffer.concat(chunks);
-      dbody.emit("update", body);
-    });
-
-    response.on("error", function (error) {
-      console.error(error);
-    });
-  });
-  request.end();
-  dbody.on("update", function (body) {
-    if (invalidJSON(body)) {
-      res.status(500).send("error! invalid data");
-    } else {
-      res.status(200).json(JSON.parse(body));
-    }
-  });
+  forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${req.params.event}`, req, res);
 });
 
 app.get("/api/events/current/allData", apiCheckAuth, function (req, res) {
-  var dbody = new EventEmitter();
-  var options = {
-    method: "GET",
-    hostname: "frc-api.firstinspires.org",
-    path: `/v3.0/${season}/teams?eventCode=${currentComp}`,
-    headers: {
-      Authorization: "Basic " + frcapi,
-    },
-    maxRedirects: 20,
-  };
+  forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${currentComp}`, req, res);
+});
 
-  var request = https.request(options, function (response) {
-    var chunks = [];
-
-    response.on("data", function (chunk) {
-      chunks.push(chunk);
-    });
-
-    response.on("end", function (chunk) {
-      var body = Buffer.concat(chunks);
-      dbody.emit("update", body);
-    });
-
-    response.on("error", function (error) {
-      console.error(error);
-    });
-  });
-  request.end();
-  dbody.on("update", function (body) {
-    if (invalidJSON(body)) {
-      res.status(500).send("error! invalid data");
+app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, function (req, res) {
+  var teams = [];
+  const stmt = `SELECT * FROM pit WHERE event=? AND season=?`;
+  const values = [req.params.event, season];
+  db.all(stmt, values, (err, dbQueryResult) => {
+    if (err) {
+      res.status(500).send("error!");
+      return;
     } else {
-      res.status(200).json(JSON.parse(body));
+      if (typeof dbQueryResult == "undefined") {
+        res.status(500).send("fail");
+        return;
+      } else {
+        for (var i = 0; i < dbQueryResult.length; i++) {
+          teams.push(dbQueryResult[i].team);
+        }
+        res
+          .status(200)
+          .setHeader("Content-type", "text/plain")
+          .send(teams.toString());
+      }
     }
   });
 });
-
-app.get(
-  "/api/events/:event/pitscoutedteams",
-  apiCheckAuth,
-  function (req, res) {
-    var teams = [];
-    const stmt = `SELECT * FROM pit WHERE event=? AND season=?`;
-    const values = [req.params.event, season];
-    db.all(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.status(500).send("error!");
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.status(500).send("fail");
-          return;
-        } else {
-          for (var i = 0; i < dbQueryResult.length; i++) {
-            teams.push(dbQueryResult[i].team);
-          }
-          res
-            .status(200)
-            .setHeader("Content-type", "text/plain")
-            .send(teams.toString());
-        }
-      }
-    });
-  }
-);
 
 app.get("/api/notes/:event/:team/getNotes", checkAuth, function (req, res) {
   const stmt = `SELECT * FROM notes WHERE event=? AND season=? AND team=?`;
@@ -1969,8 +1879,7 @@ app.get("/api/notes/:event/:team/getNotes", checkAuth, function (req, res) {
 });
 
 app.get("/api/notes/:event/:team/createNote", checkAuth, function (req, res) {
-  db.run(
-    `INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet')`,
+  db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet')`,
     function (err) {
       if (err) {
         res.status(500).send("500");
@@ -1981,81 +1890,39 @@ app.get("/api/notes/:event/:team/createNote", checkAuth, function (req, res) {
   );
 });
 
-app.post(
-  "/api/notes/:event/:team/updateNotes",
-  apiCheckAuth,
-  function (req, res) {
-    let body = "";
+app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, function (req, res) {
+  let body = "";
 
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
 
-    req.on("end", () => {
-      let newNote = qs.parse(body);
-      var teams = [];
-      const stmt = `UPDATE notes SET note=? WHERE event=? AND season=? AND team=?`;
-      const values = [newNote.save, req.params.event, season, req.params.team];
-      db.run(stmt, values, (err) => {
-        if (err) {
-          res.status(500).send("error!");
-          return;
-        } else {
-          res.status(200).send("200");
-        }
-      });
+  req.on("end", () => {
+    let newNote = qs.parse(body);
+    var teams = [];
+    const stmt = `UPDATE notes SET note=? WHERE event=? AND season=? AND team=?`;
+    const values = [newNote.save, req.params.event, season, req.params.team];
+    db.run(stmt, values, (err) => {
+      if (err) {
+        res.status(500).send("error!");
+        return;
+      } else {
+        res.status(200).send("200");
+      }
     });
-  }
-);
+  });
+});
 
 app.get("/api/teams/teamdata/:team", apiCheckAuth, function (req, res) {
-  var dbody = new EventEmitter();
-  var options = {
-    method: "GET",
-    hostname: "frc-api.firstinspires.org",
-    path: `/v3.0/${season}/teams?teamNumber=${req.params.team}`,
-    headers: {
-      Authorization: "Basic " + frcapi,
-    },
-    maxRedirects: 20,
-  };
-
-  var request = https.request(options, function (response) {
-    var chunks = [];
-
-    response.on("data", function (chunk) {
-      chunks.push(chunk);
-    });
-
-    response.on("end", function (chunk) {
-      var body = Buffer.concat(chunks);
-      dbody.emit("update", body);
-    });
-
-    response.on("error", function (error) {
-      console.error(error);
-    });
-  });
-  request.end();
-  dbody.on("update", function (body) {
-    if (invalidJSON(body)) {
-      res.status(500).send("error! invalid data");
-    } else {
-      res.status(200).json(JSON.parse(body));
-    }
-  });
+  forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
 });
 
 //auth functions
 app.get("/", passport.authenticate("discord"));
 
-app.get(
-  "/callback",
-  passport.authenticate("discord", { failureRedirect: "/" }),
-  function (req, res) {
-    res.redirect("/");
-  }
-);
+app.get("/callback", passport.authenticate("discord", { failureRedirect: "/" }), function (req, res) {
+  res.redirect("/");
+});
 
 //not requiring auth for offline version, you cannot submit with this and submit url is secured anyway
 app.get("/offline.html", function (req, res) {
