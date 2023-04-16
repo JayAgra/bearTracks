@@ -18,7 +18,7 @@ const {
   baseURLNoPcl,
   anotherServerID,
   currentComp,
-  serverSecret,
+  serverSecret
 } = require("./config.json");
 
 //SETUP DATABASE
@@ -1929,7 +1929,7 @@ app.get("/offline.html", function (req, res) {
   res.sendFile("src/offline.html", { root: __dirname });
 });
 
-// deepcode ignore HttpToHttps: ignoring because it is used only to redirect requests to HTTPS, deepcode ignore OR: ignored because it is redirecting to HTTPS, deepcode ignore OR: <please specify a reason of ignoring this>
+
 if (certsizes.key <= 100 || certsizes.cert <= 100) {
   app.listen(80);
 } else {
