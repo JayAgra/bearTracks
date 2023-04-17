@@ -1,3 +1,4 @@
+/*jslint browser: true, es6*/
 var cvs = document.getElementById("bjCanvas");
 var ctx = document.getElementById("bjCanvas").getContext("2d");
 window.allCardValues = 0;
@@ -181,7 +182,7 @@ function startBlackjack(progdeck) {
 if (progdeck) {
     window.cardsURL = "assets/progcards/"
 } else {
-    window.cardsURL = "assets/"
+    window.cardsURL = "assets/stdcards/";
 }
 if (window.innerHeight < window.innerWidth) {
     alert("play in portrait mode, on a phone.")

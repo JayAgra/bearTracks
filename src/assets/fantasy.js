@@ -36,7 +36,7 @@ var roundNearQtr = function(number) {
 
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
 
-const assets = ["assets/red-0.png", "assets/red-25.png", "assets/red-50.png", "assets/red-75.png", "assets/red-100.png", "assets/red_disabled.png", "assets/red-d.png", "assets/blue-0.png", "assets/blue-25.png", "assets/blue-50.png", "assets/blue-75.png", "assets/blue-100.png", "assets/blue_disabled.png", "assets/blue-d.png", "assets/cube.png", "assets/cone.png", "assets/clear.png", "assets/charge.png"]
+const assets = ["assets/ffrc/red-0.png", "assets/ffrc/red-25.png", "assets/ffrc/red-50.png", "assets/ffrc/red-75.png", "assets/ffrc/red-100.png", "assets/ffrc/red_disabled.png", "assets/ffrc/red-d.png", "assets/ffrc/blue-0.png", "assets/ffrc/blue-25.png", "assets/ffrc/blue-50.png", "assets/ffrc/blue-75.png", "assets/ffrc/blue-100.png", "assets/ffrc/blue_disabled.png", "assets/ffrc/blue-d.png", "assets/ffrc/cube.png", "assets/ffrc/cone.png", "assets/ffrc/clear.png", "assets/ffrc/charge.png"]
 
 async function loadGame() {
     return assets.map(url => new Promise(resolve => {
@@ -82,13 +82,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/red-0.png";
+            image.src = "assets/ffrc/red-0.png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/blue-0.png";
+            image.src = "assets/ffrc/blue-0.png";
         }
     },
     this.drawPcnt = function(pcnt, xmod) {
@@ -100,13 +100,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, (cvss[0].width/1.25) - xmod, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/red-" + pcnt + ".png";
+            image.src = "assets/ffrc/red-" + pcnt + ".png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, (cvss[0].width/12) + xmod, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/blue-" + pcnt + ".png";
+            image.src = "assets/ffrc/blue-" + pcnt + ".png";
         }
     },
     this.drawDisabled = function() {
@@ -118,13 +118,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/red_disabled.png";
+            image.src = "assets/ffrc/red_disabled.png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/blue_disabled.png";
+            image.src = "assets/ffrc/blue_disabled.png";
         }
     },
     this.drawDefended = function() {
@@ -136,13 +136,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/red-d.png";
+            image.src = "assets/ffrc/red-d.png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/blue-d.png";
+            image.src = "assets/ffrc/blue-d.png";
         }
     },
     this.drawFail = function() {
@@ -154,13 +154,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/1.25, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/red-fail.png";
+            image.src = "assets/ffrc/red-fail.png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber].drawImage(this, cvss[0].width/12, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/blue-fail.png";
+            image.src = "assets/ffrc/blue-fail.png";
         }
     },
     this.drawCube = function() {
@@ -172,13 +172,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/1.475, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
-            image.src = "assets/cube.png";
+            image.src = "assets/ffrc/cube.png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/4, (cvss[0].height + cvss[0].height/24) - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
-            image.src = "assets/cube.png";
+            image.src = "assets/ffrc/cube.png";
         }
     },
     this.drawCone = function() {
@@ -190,13 +190,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/1.475, cvss[0].height + cvss[0].height/24 - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
-            image.src = "assets/cone.png";
+            image.src = "assets/ffrc/cone.png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/4, cvss[0].height + cvss[0].height/24 - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/12, cvss[0].height/12)
             }
-            image.src = "assets/cone.png";
+            image.src = "assets/ffrc/cone.png";
         }
     },
     this.drawCharge = function() {
@@ -208,13 +208,13 @@ function Robot(color, number, team, cycle, cone, cube, upper, middle, bottom, de
             image.onload = function(){
                 ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/1.55, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/charge.png";
+            image.src = "assets/ffrc/charge.png";
         } else {
             var image = new Image()
             image.onload = function(){
                 ctxs[canvasNumber + 6].drawImage(this, cvss[0].width/4, cvss[0].height - (cvss[0].height/12)*(15 - (robonum*4)), cvss[0].height/6, cvss[0].height/6)
             }
-            image.src = "assets/charge.png";
+            image.src = "assets/ffrc/charge.png";
         }
     },
     this.redrawState = function() {
