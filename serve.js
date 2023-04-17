@@ -1903,7 +1903,7 @@ app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, function (req, res
 app.get("/api/pit/:event/:team/teamData", apiCheckAuth, function (req, res) {
   const stmt = `SELECT * FROM pit WHERE event=? AND season=? AND team=? LIMIT 1`;
   const values = [req.params.event, season, req.params.team];
-  db.get(stmt, values, (err, dbQueryResult) => {
+  db.all(stmt, values, (err, dbQueryResult) => {
     if (err) {
       res.status(403).json(JSON.parse(`{"status": 403}`));
       return;
