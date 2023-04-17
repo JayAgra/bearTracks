@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*jslint es6*/
-var version = '4.0.2';
+var version = '4.0.3';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
     '/',
@@ -41,14 +41,14 @@ self.addEventListener("activate", (evt) => {
 });
 
 /* Serve cached content when offline */
-self.addEventListener("fetch", function (event) {
-  event.respondWith(
-    fetch(event.request).catch(function (e) {
-      return caches.open(cacheName).then(function (cache) {
-        return cache
-          .match(event.request, { ignoreSearch: true })
-          .then((response) => response);
-      });
-    })
-  );
+const cacheFirst = async (request) => {
+  const responseFromCache = await caches.match(request);
+  if (responseFromCache) {
+    return responseFromCache;
+  }
+  return fetch(request);
+};
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(cacheFirst(event.request));
 });
