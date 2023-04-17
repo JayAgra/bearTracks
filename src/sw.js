@@ -1,20 +1,19 @@
 /*jslint browser: true*/
 /*jslint es6*/
-var version = '4.0.1';
+var version = '4.0.2';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
-    '',
-    'appinstall.js',
-    'float.min.css',
-    'form.min.js',
-    'fonts/Raleway-300.ttf',
-    'fonts/Raleway-500.ttf',
-    'settings',
-    'matches',
-    'scouts',
-    'teams',
-    'points',
-    'main'
+    '/',
+    '/float.min.css',
+    '/form.min.js',
+    '/fonts/Raleway-300.ttf',
+    '/fonts/Raleway-500.ttf',
+    '/settings',
+    '/matches',
+    '/scouts',
+    '/teams',
+    '/points',
+    '/main'
 ];
 
 console.log("[SW] Executed");
