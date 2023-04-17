@@ -1295,113 +1295,6 @@ app.get("/matches", checkAuth, function (req, res) {
   res.sendFile("src/matches.html", { root: __dirname });
 });
 
-//serve the uploaded images
-/*app.get("/pitimages", checkAuth, function (req, res) {
-  if (req.query.team && req.query.event) {
-    const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
-    const values = [req.query.team, req.query.event, season];
-    db.get(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.render("../src/pitimg.ejs", {
-          root: __dirname,
-          errorDisplay: "block",
-          errorMessage: "Error: No results!",
-          displaySearch: "flex",
-          displayResults: "none",
-          resultsTeamNumber: 0,
-          resultsEventCode: 0,
-          resultsBody: 0,
-        });
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.render("../src/pitimg.ejs", {
-            root: __dirname,
-            errorDisplay: "block",
-            errorMessage: "Error: No results!",
-            displaySearch: "flex",
-            displayResults: "none",
-            resultsTeamNumber: 0,
-            resultsEventCode: 0,
-            resultsBody: 0,
-          });
-          return;
-        } else {
-          console.log(dbQueryResult);
-          res.render("../src/pitimg.ejs", {
-            root: __dirname,
-            errorDisplay: "none",
-            errorMessage: null,
-            displaySearch: "none",
-            displayResults: "flex",
-            resultsTeamNumber: `${dbQueryResult.team}`,
-            resultsEventCode: `${dbQueryResult.event}`,
-            resultsBody: `<p>Scout: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}</p><p>Drive Type: ${dbQueryResult.drivetype}</p><p>Pit Scouting Assesment: ${dbQueryResult.overall}</p><br><img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`,
-          });
-          return;
-        }
-      }
-    });
-  } else if (req.query.id) {
-    const stmt = `SELECT * FROM pit WHERE id=? ORDER BY id LIMIT 1`;
-    const values = [req.query.id];
-    db.get(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.render("../src/pitimg.ejs", {
-          root: __dirname,
-          errorDisplay: "block",
-          errorMessage: "Error: No results!",
-          displaySearch: "flex",
-          displayResults: "none",
-          resultsTeamNumber: 0,
-          resultsEventCode: 0,
-          resultsBody: 0,
-        });
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.render("../src/pitimg.ejs", {
-            root: __dirname,
-            errorDisplay: "block",
-            errorMessage: "Error: No results!",
-            displaySearch: "flex",
-            displayResults: "none",
-            resultsTeamNumber: 0,
-            resultsEventCode: 0,
-            resultsBody: 0,
-          });
-          return;
-        } else {
-          res.render("../src/pitimg.ejs", {
-            root: __dirname,
-            errorDisplay: "block",
-            errorMessage: "ID based query, buttons will not work!",
-            displaySearch: "none",
-            displayResults: "flex",
-            resultsTeamNumber: `${dbQueryResult.team}`,
-            resultsEventCode: `${dbQueryResult.event}`,
-            resultsBody: `<img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`,
-          });
-          return;
-        }
-      }
-    });
-  } else {
-    res.render("../src/pitimg.ejs", {
-      root: __dirname,
-      errorDisplay: "none",
-      errorMessage: null,
-      displaySearch: "flex",
-      displayResults: "none",
-      resultsTeamNumber: 0,
-      resultsEventCode: 0,
-      resultsBody: 0,
-    });
-    return;
-  }
-});
-*/
-
 //api
 app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, function (req, res) {
     var teamNumParam = "";
@@ -1416,11 +1309,11 @@ app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, function (req, 
 app.get("/api/data/:season/:event/:team", apiCheckAuth, function (req, res) {
   const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
   const values = [req.params.team, req.params.event, req.params.season];
-  db.get(stmt, values, (err, dbQueryResult) => {
+  db.all(stmt, values, (err, dbQueryResult) => {
     if (err) {
       res.status(500).send("got an error from query");
     } else {
-      res.status(200).json(JSON.parse(dbQueryResult));
+      res.status(200).json(dbQueryResult[0]);
     }
   });
 });
@@ -1428,11 +1321,11 @@ app.get("/api/data/:season/:event/:team", apiCheckAuth, function (req, res) {
 app.get("/api/pit/:season/:event/:team", apiCheckAuth, function (req, res) {
   const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
   const values = [req.params.team, req.params.event, req.params.season];
-  db.get(stmt, values, (err, dbQueryResult) => {
+  db.all(stmt, values, (err, dbQueryResult) => {
     if (err) {
       res.status(500).send("got an error from query");
     } else {
-      res.status(200).json(JSON.parse(dbQueryResult));
+      res.status(200).json(dbQueryResult[0]);
     }
   });
 });
@@ -1539,12 +1432,7 @@ app.get("/api/scoutByID/:discordID", apiCheckAuth, function (req, res) {
       if (typeof dbQueryResult == "undefined") {
         res.status(204).send("no query results");
       } else {
-        res
-          .status(200)
-          .setHeader("Content-type", "text/plain")
-          .send(
-            `<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512" crossorigin="anonymous"x></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`
-          );
+        res.status(200).setHeader("Content-type", "text/plain").send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512" crossorigin="anonymous"x></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
       }
     }
   });
@@ -1565,11 +1453,7 @@ app.get("/api/casino/slots/slotSpin", apiCheckAuth, function (req, res) {
         res.status(500).send("got an error from transaction");
         return;
       } else {
-        res
-          .status(200)
-          .json(
-            `{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`
-          );
+        res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
       }
     });
   } else {
@@ -1580,11 +1464,7 @@ app.get("/api/casino/slots/slotSpin", apiCheckAuth, function (req, res) {
         res.status(500).send("got an error from transaction");
         return;
       } else {
-        res
-          .status(200)
-          .json(
-            `{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`
-          );
+        res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
       }
     });
   }
@@ -1809,10 +1689,7 @@ app.get("/api/events/:event/teams", apiCheckAuth, function (req, res) {
       for (var i = 0; i < parsedData.teams.length; i++) {
         teams.push(parsedData.teams[i].teamNumber);
       }
-      res
-        .status(200)
-        .setHeader("Content-type", "text/plain")
-        .send(teams.toString());
+      res.status(200).setHeader("Content-type", "text/plain").send(teams.toString());
     }
   });
 });
