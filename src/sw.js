@@ -1,49 +1,55 @@
-"use strict";
-var version = '3.2.1';
+/*jslint browser: true*/
+/*jslint es6*/
+var version = '4.0.0';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
-  '/',
-  'appinstall.js',
-  'float.min.css',
-  'form.min.js',
-  'fonts/Raleway-300.ttf',
-  'fonts/Raleway-500.ttf',
-  '/settings',
-  '/matches',
-  '/scouts',
-  '/teams',
-  '/points'
+    '',
+    'appinstall.js',
+    'float.min.css',
+    'form.min.js',
+    'fonts/Raleway-300.ttf',
+    'fonts/Raleway-500.ttf',
+    'settings',
+    'matches',
+    'scouts',
+    'teams',
+    'points',
+    'main'
 ];
 
-console.log('[SW] file executed')
-//cache
-self.addEventListener('install', function(e) {
-    e.waitUntil(
-        caches.open(cacheName).then(function(cache) {
-            return cache.addAll(filesToCache);
-        })
-    );
+console.log("[SW] Executed");
+self.addEventListener("install", function (e) {
+  e.waitUntil(
+    caches.open(cacheName).then(function (cache) {
+      return cache.addAll(filesToCache);
+    })
+  );
 });
 
-self.addEventListener('activate', (evt) => {
+self.addEventListener("activate", (evt) => {
   evt.waitUntil(
-      caches.keys().then((keyList) => {
-          return Promise.all(keyList.map((key) => {
-              if (key !== cacheName) {
-                  return caches.delete(key);
-              }
-          }));
-      })
+    caches.keys().then((keyList) => {
+      return Promise.all(
+        keyList.map((key) => {
+          if (key !== cacheName) {
+            return caches.delete(key);
+          }
+        })
+      );
+    })
   );
   self.clients.claim();
 });
 
-//serve offline
-self.addEventListener('fetch', function(event) {
+/* Serve cached content when offline */
+self.addEventListener("fetch", function (event) {
   event.respondWith(
-    fetch(event.request).catch(function(e) {
-      return caches.open(cacheName).then(function(cache) {
-        return cache.match(event.request).then(response => response);
+    fetch(event.request).catch(function (e) {
+      return caches.open(cacheName).then(function (cache) {
+        return cache
+          .match(event.request, { ignoreSearch: true })
+          .then((response) => response);
       });
-  }));
+    })
+  );
 });

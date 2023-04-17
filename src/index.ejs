@@ -96,8 +96,11 @@
             100% { opacity: 0 }
         }
     </style>
-    <script src="appinstall.js"></script>
-    <script>registerSW()</script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
 </head>
 
 <body id="body" class="dark-mode">
