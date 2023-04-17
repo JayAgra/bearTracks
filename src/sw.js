@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*jslint es6*/
-var version = '4.0.0';
+var version = '4.0.1';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
     '',
