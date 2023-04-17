@@ -756,7 +756,7 @@ app.get("/profile", checkAuth, function (req, res) {
   res.sendFile("src/profile.html", { root: __dirname });
 });
 
-app.get("/pitimg", checkAuth, function (req, res) {
+app.get("/pitimages", checkAuth, function (req, res) {
   res.set("Cache-control", "public, max-age=259200");
   res.sendFile("src/pitimg.html", { root: __dirname });
 });
