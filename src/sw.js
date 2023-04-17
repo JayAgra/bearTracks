@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*jslint es6*/
-var version = '4.0.4';
+var version = '4.1.0';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
     '/',
@@ -28,19 +28,53 @@ self.addEventListener("install", (event) => {
   );
 });
 
+const enableNavigationPreload = async () => {
+  if (self.registration.navigationPreload) {
+    await self.registration.navigationPreload.enable();
+  }
+};
+
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.registration?.navigationPreload.enable());
+  event.waitUntil(enableNavigationPreload());
 });
 
-/* Serve cached content when offline */
-const cacheFirst = async (request) => {
+const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
   const responseFromCache = await caches.match(request);
   if (responseFromCache) {
     return responseFromCache;
   }
-  return fetch(request);
+
+  const preloadResponse = await preloadResponsePromise;
+  if (preloadResponse) {
+    console.info("using preload response", preloadResponse);
+    putInCache(request, preloadResponse.clone());
+    return preloadResponse;
+  }
+
+  try {
+    const responseFromNetwork = await fetch(request);
+
+    putInCache(request, responseFromNetwork.clone());
+    return responseFromNetwork;
+  } catch (error) {
+    const fallbackResponse = await caches.match(fallbackUrl);
+    if (fallbackResponse) {
+      return fallbackResponse;
+    }
+
+    return new Response("Network error happened", {
+      status: 408,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }
 };
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(cacheFirst(event.request));
+  event.respondWith(
+    cacheFirst({
+      request: event.request,
+      preloadResponsePromise: event.preloadResponse,
+      fallbackUrl: "/",
+    })
+  );
 });
