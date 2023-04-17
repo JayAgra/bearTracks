@@ -48,14 +48,8 @@
     <script>
         async function updateSW() {
             if(window.navigator && navigator.serviceWorker) {
-                const url = window.location.protocol + '//' + window.location.host + '/sw.js';
-                navigator.serviceWorker.getRegistration(url).then(function (sw) {
-                    if (sw) {
-                        sw.unregister().then(() => {
-                            navigator.serviceWorker.register('sw.js');
-                        }).catch((error) => {console.log(error);});
-                    }
-                }).catch((error) => {console.log(error);});
+                reg = await navigator.serviceWorker.ready;
+                reg.update();
             }
         }
         function getThemeCookieS() {

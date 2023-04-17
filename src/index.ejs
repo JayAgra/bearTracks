@@ -99,6 +99,8 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
+            reg = await navigator.serviceWorker.ready
+            reg.update()
         }
     </script>
 </head>
