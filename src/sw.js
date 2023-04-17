@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*jslint es6*/
-var version = '4.1.0';
+var version = '4.1.1';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
     '/',
@@ -17,25 +17,32 @@ var filesToCache = [
 ];
 
 console.log("[SW] Executed");
+
 const addResourcesToCache = async (resources) => {
   const cache = await caches.open(cacheName);
   await cache.addAll(resources);
 };
 
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
     addResourcesToCache(filesToCache)
   );
 });
 
-const enableNavigationPreload = async () => {
-  if (self.registration.navigationPreload) {
-    await self.registration.navigationPreload.enable();
-  }
+const deleteCache = async (key) => {
+  await caches.delete(key);
+};
+
+const deleteOldCaches = async () => {
+  const cacheKeepList = ["v2"];
+  const keyList = await caches.keys();
+  const cachesToDelete = keyList.filter((key) => !cacheKeepList.includes(key));
+  await Promise.all(cachesToDelete.map(deleteCache));
 };
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(enableNavigationPreload());
+  event.waitUntil(deleteOldCaches());
 });
 
 const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
