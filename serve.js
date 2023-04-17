@@ -1847,7 +1847,7 @@ app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, function (req, res) 
   });
 });
 
-app.get("/api/notes/:event/:team/getNotes", checkAuth, function (req, res) {
+app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, function (req, res) {
   const stmt = `SELECT * FROM notes WHERE event=? AND season=? AND team=?`;
   const values = [req.params.event, season, req.params.team];
   db.get(stmt, values, (err, dbQueryResult) => {
@@ -1865,7 +1865,7 @@ app.get("/api/notes/:event/:team/getNotes", checkAuth, function (req, res) {
   });
 });
 
-app.get("/api/notes/:event/:team/createNote", checkAuth, function (req, res) {
+app.get("/api/notes/:event/:team/createNote", apiCheckAuth, function (req, res) {
   db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet')`,
     function (err) {
       if (err) {
@@ -1900,7 +1900,7 @@ app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, function (req, res
   });
 });
 
-app.get("/api/pit/:event/:team/teamData", checkAuth, function (req, res) {
+app.get("/api/pit/:event/:team/teamData", apiCheckAuth, function (req, res) {
   const stmt = `SELECT * FROM pit WHERE event=? AND season=? AND team=? LIMIT 1`;
   const values = [req.params.event, season, req.params.team];
   db.get(stmt, values, (err, dbQueryResult) => {
