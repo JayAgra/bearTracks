@@ -92,7 +92,7 @@
             let eventcode = document.getElementById("eventInput").value
 
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/pit/${eventcode}/${teamnum}/teamData`, true);
+            xhr.open("GET", `/api/pit/2023/${eventcode}/${teamnum}`, true);
             xhr.withCredentials = true;
 
             xhr.onreadystatechange = async () => {

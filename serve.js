@@ -1900,25 +1900,6 @@ app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, function (req, res
   });
 });
 
-app.get("/api/pit/:event/:team/teamData", apiCheckAuth, function (req, res) {
-  const stmt = `SELECT * FROM pit WHERE event=? AND season=? AND team=? LIMIT 1`;
-  const values = [req.params.event, season, req.params.team];
-  db.all(stmt, values, (err, dbQueryResult) => {
-    if (err) {
-      res.status(403).json(JSON.parse(`{"status": 403}`));
-      return;
-    } else {
-      if (typeof dbQueryResult == "undefined") {
-        res.status(403).json(JSON.parse(`{"status": 403}`));
-        return;
-      } else {
-        console.log(dbQueryResult)
-        res.status(200).json(JSON.parse(dbQueryResult));
-      }
-    }
-  });
-});
-
 app.get("/api/teams/teamdata/:team", apiCheckAuth, function (req, res) {
   forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
 });
