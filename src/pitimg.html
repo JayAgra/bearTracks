@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Robot Images - 766 Scouting</title>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="language" content="English">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Scouting">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#121212" id="themeMeta">
+    <link rel="stylesheet" href="float.min.css" type="text/css">
+    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="apple-touch-startup-image" href="public/launch.png">
+    <script src="form.min.js"></script>
+    <style>
+        a,a:visited {
+            text-align: center;
+            text-decoration: none;
+            font-size: 6vh;
+            border-top: rgba(35,35,35,0);
+            border-left: rgba(35,35,35,0);
+            border-right: rgba(35,35,35,0);
+            border-bottom: #fff;
+            border-style: dotted;
+            border-width: 0.25vh;
+        }
+        a:hover,a:active {
+            color: #fff;
+        }
+        body {
+            text-align: center;
+        }
+        img {
+            width: 90vw;
+            height: 90vw;
+        }
+    </style>
+</head>
+<body id="body" class="dark-mode">
+    <script>themeHandle()</script>
+    <div class="container" style="display: flex;"> <!--flex is shown-->
+        <form>
+            <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
+            <h4 style="color: red; display: none">/h4>
+            <h4>Image Database</h4><br>
+            <!--search sect-->
+            <fieldset id="searchsect" style="display: block;">
+                <label>Target Team Number: <br></label>
+                <input type="tel" id="teamInput" required><br>
+                <input type="hidden" id="page" value="0">
+            <br><fieldset>
+                <label>Event Code: </label><br>
+                <select id="eventInput">
+                    <option value="CADA">CADA - Sacramento Regional</option>
+                    <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
+                </select>
+            </fieldset>
+            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" onclick="searchImg()" id="searchBtn">Search</button><br>
+            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            </fieldset>
+            <!--/search sect-->
+            <!--results sect-->
+            <fieldset id="resultsect" style="display: none;">
+            <fieldset>
+                <h3>Team Number: <span id="resultsTeamNumber"></span></h3>
+                <h5>Event: <span id="resultsEventCode"></span></h5>
+                <h5>Images: Front, Back, Side, Bottom, Other</h5>
+                <h5 style="text-align: left" id="resultsbody"></h5>
+            </fieldset>
+            <!--buttons-->
+            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            </fieldset>
+            <!--/results sect-->
+            <small style="text-align: center;">To see match scouting data, go <a href="browse" style="all: unset; color: #68C3E2;">here</a></small>
+        </form>
+        <br><br>
+    </div>
+    <script>
+        function removeURLParams() {
+            window.location.href = "/pitimages"
+        }
+        function goToHome() {
+            window.location.href = "/";
+        }
+        function searchImg() {
+            let teamnum = document.getElementById("teamInput").value
+            let eventcode = document.getElementById("eventInput").value
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/api/pit/${eventcode}/${teamnum}/teamData`, true);
+            xhr.withCredentials = true;
+
+            xhr.onreadystatechange = async () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                console.log("200 ok");
+                console.log(xhr.responseText);
+                const dbQueryResult = JSON.parse(xhr.responseText);
+                console.log(dbQueryResult);
+                document.getElementById("searchBtn").innerHTML = "Rendering...";
+                document.getElementById("resultsTeamNumber").innerText = dbQueryResult.team;
+                document.getElementById("resultsEventCode").innerText = dbQueryResult.event;
+                document.getElementById("resultsbody").innerHTML = `<p>Scout: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}</p><p>Drive Type: ${dbQueryResult.drivetype}</p><p>Pit Scouting Assesment: ${dbQueryResult.overall}</p><br><img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`;;
+                document.getElementById("searchsect").style.display = "none";
+                document.getElementById("resultsect").style.display = "block";
+            } else if (xhr.status === 401) {
+                console.log("401 failure")
+                document.getElementById("searchBtn").innerHTML = "401 Unauthorized";
+                await waitMs(1000);
+                window.location.href = "/login";
+            } else if (xhr.status === 400) {
+                console.log("400 failure")
+                document.getElementById("searchBtn").innerHTML = "400 Bad Request";
+            } else if (xhr.status === 500) {
+                console.log("500 failure")
+                document.getElementById("searchBtn").innerHTML = "500 Internal Server Error";
+            } else {
+                console.log("awaiting response")
+                document.getElementById("searchBtn").innerHTML = "Downloading Data...";
+            }
+            }
+
+            xhr.send()
+        }
+    </script>
+</body>
+</html>

@@ -283,8 +283,8 @@ function checkAuth(req, res, next) {
 function apiCheckAuth(req, res, next) {
   if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return next();
   if (req.isAuthenticated() && !inTeamServer(req.user.guilds))
-    return res.status(401).json(`{"status": 401}`);
-  res.status(401).json(`{"status": 401}`);
+    return res.status(401).json(JSON.parse(`{"status": 401}`));
+  res.status(401).json(JSON.parse(`{"status": 401}`));
 }
 
 function checkGamble(req, res, next) {
@@ -294,7 +294,7 @@ function checkGamble(req, res, next) {
     if (Number(result.score) > -2000) {
       return next();
     } else {
-      return res.status(403).json(`{"status": 403}`);
+      return res.status(403).json(JSON.parse(`{"status": 403}`));
     }
   });
 }
@@ -754,6 +754,11 @@ app.get("/notes", checkAuth, function (req, res) {
 app.get("/profile", checkAuth, function (req, res) {
   res.set("Cache-control", "public, max-age=259200");
   res.sendFile("src/profile.html", { root: __dirname });
+});
+
+app.get("/pitimg", checkAuth, function (req, res) {
+  res.set("Cache-control", "public, max-age=259200");
+  res.sendFile("src/pitimg.html", { root: __dirname });
 });
 
 app.get("/fantasy", checkAuth, function (req, res) {
@@ -1291,7 +1296,7 @@ app.get("/matches", checkAuth, function (req, res) {
 });
 
 //serve the uploaded images
-app.get("/pitimages", checkAuth, function (req, res) {
+/*app.get("/pitimages", checkAuth, function (req, res) {
   if (req.query.team && req.query.event) {
     const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
     const values = [req.query.team, req.query.event, season];
@@ -1395,6 +1400,7 @@ app.get("/pitimages", checkAuth, function (req, res) {
     return;
   }
 });
+*/
 
 //api
 app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, function (req, res) {
@@ -1835,10 +1841,7 @@ app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, function (req, res) 
         for (var i = 0; i < dbQueryResult.length; i++) {
           teams.push(dbQueryResult[i].team);
         }
-        res
-          .status(200)
-          .setHeader("Content-type", "text/plain")
-          .send(teams.toString());
+        res.status(200).setHeader("Content-type", "text/plain").send(teams.toString());
       }
     }
   });
@@ -1856,10 +1859,7 @@ app.get("/api/notes/:event/:team/getNotes", checkAuth, function (req, res) {
         res.status(403).setHeader("Content-type", "text/plain").send("none");
         return;
       } else {
-        res
-          .status(200)
-          .setHeader("Content-type", "text/plain")
-          .send(dbQueryResult.note);
+        res.status(200).setHeader("Content-type", "text/plain").send(dbQueryResult.note);
       }
     }
   });
@@ -1897,6 +1897,24 @@ app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, function (req, res
         res.status(200).send("200");
       }
     });
+  });
+});
+
+app.get("/api/pit/:event/:team/teamData", checkAuth, function (req, res) {
+  const stmt = `SELECT * FROM pit WHERE event=? AND season=? AND team=? LIMIT 1`;
+  const values = [req.params.event, season, req.params.team];
+  db.get(stmt, values, (err, dbQueryResult) => {
+    if (err) {
+      res.status(403).json(JSON.parse(`{"status": 403}`));
+      return;
+    } else {
+      if (typeof dbQueryResult == "undefined") {
+        res.status(403).json(JSON.parse(`{"status": 403}`));
+        return;
+      } else {
+        res.status(200).json(dbQueryResult);
+      }
+    }
   });
 });
 
