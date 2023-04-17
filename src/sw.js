@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*jslint es6*/
-var version = '4.0.3';
+var version = '4.0.4';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
     '/',
@@ -17,11 +17,14 @@ var filesToCache = [
 ];
 
 console.log("[SW] Executed");
-self.addEventListener("install", function (e) {
-  e.waitUntil(
-    caches.open(cacheName).then(function (cache) {
-      return cache.addAll(filesToCache);
-    })
+const addResourcesToCache = async (resources) => {
+  const cache = await caches.open(cacheName);
+  await cache.addAll(resources);
+};
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    addResourcesToCache(filesToCache)
   );
 });
 
