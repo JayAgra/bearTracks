@@ -3,17 +3,16 @@
 var version = '4.1.1';
 var cacheName = `scouting-pwa-${version}`;
 var filesToCache = [
-    '/',
-    '/float.min.css',
-    '/form.min.js',
-    '/fonts/Raleway-300.ttf',
-    '/fonts/Raleway-500.ttf',
-    '/settings',
-    '/matches',
-    '/scouts',
-    '/teams',
-    '/points',
-    '/main'
+    'float.min.css',
+    'form.min.js',
+    'fonts/Raleway-300.ttf',
+    'fonts/Raleway-500.ttf',
+    'settings',
+    'matches',
+    'scouts',
+    'teams',
+    'points',
+    'main'
 ];
 
 const addResourcesToCache = async (resources) => {
