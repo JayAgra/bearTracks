@@ -123,9 +123,9 @@
             } else if (xhr.status === 500) {
                 console.log("500 failure")
                 document.getElementById("searchBtn").innerHTML = "500 Internal Server Error";
-            } else if (xhr.status === 500) {
+            } else if (xhr.status === 404) {
                 console.log("404 not found")
-                document.getElementById("searchBtn").innerHTML = "404 Not Founs";
+                document.getElementById("searchBtn").innerHTML = "404 Not Found";
             } else {
                 console.log("awaiting response")
                 document.getElementById("searchBtn").innerHTML = "Downloading Data...";
