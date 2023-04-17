@@ -1912,6 +1912,7 @@ app.get("/api/pit/:event/:team/teamData", apiCheckAuth, function (req, res) {
         res.status(403).json(JSON.parse(`{"status": 403}`));
         return;
       } else {
+        console.log(dbQueryResult)
         res.status(200).json(JSON.parse(dbQueryResult));
       }
     }
