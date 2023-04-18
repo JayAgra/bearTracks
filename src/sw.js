@@ -1,11 +1,11 @@
-let version = "1.0.0";
-let cachename = `scouting-${version}`
+var version = "1.0.0";
+var cachename = "scouting-" + version;
 
-console.log("[SW] File Executed")
+console.log("[SW] File Executed");
 
 self.addEventListener("activate", (event) => {
     console.log("[SW] Activated");
-  event.waitUntil(self.registration?.navigationPreload.enable());
+    event.waitUntil(self.registration.navigationPreload.enable());
 });
 
 self.addEventListener("install", function (event) {
