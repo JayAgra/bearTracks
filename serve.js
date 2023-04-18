@@ -709,6 +709,11 @@ app.get("/sw.js", function (req, res) {
   res.sendFile("src/sw.js", { root: __dirname });
 });
 
+app.get("/caches.js", checkAuth, function (req, res) {
+  res.set("Cache-control", "public, max-age=259200");
+  res.sendFile("src/caches.js", { root: __dirname });
+});
+
 //serve resources
 app.get("/appinstall.js", function (req, res) {
   res.set("Cache-control", "public, max-age=7776000");
