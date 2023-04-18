@@ -1,5 +1,3 @@
-var caches = require("caches");
-
 console.log("[SW] File Executed");
 
 self.addEventListener("activate", (event) => {
