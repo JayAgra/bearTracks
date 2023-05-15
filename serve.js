@@ -1673,8 +1673,7 @@ app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, function (req, res) {
 app.get("/api/notes/:event/:team/createNote", apiCheckAuth, function (req, res) {
     const stmt = "INSERT INTO notes (team, season, event, note) VALUES(?, ?, ?, 'no note yet'"
     const values = [req.params.team, season, req.params.event];
-    db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet')`,
-        function (err) {
+    db.run(stmt, values, (err) => {
             if (err) {
                 res.status(500).send("500");
             } else {
