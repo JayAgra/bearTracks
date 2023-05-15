@@ -28,7 +28,7 @@ let db = new sqlite3.Database(
   sqlite3.OPEN_READWRITE,
   (err) =>
     function () {
-      console.log(err);
+        console.log(err);
     }
 );
 db.run("PRAGMA journal_mode = WAL;");
@@ -89,7 +89,7 @@ app.use(
   "/assets",
   express.static("src/assets", {
     setHeaders: function (res, path) {
-      res.set("X-Artist", "Lydia Honerkamp");
+        res.set("X-Artist", "Lydia Honerkamp");
     },
   })
 );
@@ -100,7 +100,7 @@ app.use(
     saveUninitialized: false,
     maxAge: 31556952000, // 365 days
     cookie: {
-      secure: "true",
+        secure: "true",
     },
   })
 );
@@ -148,16 +148,16 @@ const scopes = [
 passport.use(
   new Strategy(
     {
-      clientID: clientId,
-      clientSecret: clientSec,
-      callbackURL: redirectURI,
-      scope: scopes,
+        clientID: clientId,
+        clientSecret: clientSec,
+        callbackURL: redirectURI,
+        scope: scopes,
     },
     function (accessToken, refreshToken, profile, done) {
-      "use strict";
-      process.nextTick(function () {
-        return done(null, profile);
-      });
+        "use strict";
+        process.nextTick(function () {
+            return done(null, profile);
+        });
     }
   )
 );
@@ -171,8 +171,8 @@ const mulstorage = multer.diskStorage({
   destination: "./images/",
   filename: function (req, file, cb) {
     cb(
-      null,
-      crypto.randomBytes(12).toString("hex") + sanitize(file.originalname)
+        null,
+        crypto.randomBytes(12).toString("hex") + sanitize(file.originalname)
     );
   },
 });
@@ -215,8 +215,8 @@ function inTeamServer(json) {
   for (var index = 0; index < json.length; ++index) {
     var server = json[index];
     if (server.id == teamServerID || server.id == anotherServerID) {
-      isInTheServer = true;
-      break;
+        isInTheServer = true;
+        break;
     }
   }
   return isInTheServer;
@@ -232,9 +232,9 @@ function findTopRole(roles) {
   }
   if (roles.indexOf(drive) >= 0) {
     rolesOut.push([
-      "Drive Team",
-      "rgb(241, 196, 15)",
-      "rgba(241, 196, 15, 0.1)",
+        "Drive Team",
+        "rgb(241, 196, 15)",
+        "rgba(241, 196, 15, 0.1)",
     ]);
   }
   if (roles.indexOf(pit) >= 0) {
@@ -242,16 +242,16 @@ function findTopRole(roles) {
   }
   if (roles.indexOf(scoutteama) >= 0) {
     rolesOut.push([
-      "Scout Team A",
-      "rgb(26, 188, 156)",
-      "rgba(26, 188, 156, 0.1)",
+        "Scout Team A",
+        "rgb(26, 188, 156)",
+        "rgba(26, 188, 156, 0.1)",
     ]);
   }
   if (roles.indexOf(scoutteamb) >= 0) {
     rolesOut.push([
-      "Scout Team B",
-      "rgb(52, 152, 219)",
-      "rgba(52, 152, 219, 0.1)",
+        "Scout Team B",
+        "rgb(52, 152, 219)",
+        "rgba(52, 152, 219, 0.1)",
     ]);
   }
   rolesOut.push([
@@ -292,9 +292,9 @@ function checkGamble(req, res, next) {
   let pointValues = [req.user.id];
   db.get(pointStmt, pointValues, (err, result) => {
     if (Number(result.score) > -2000) {
-      return next();
+        return next();
     } else {
-      return res.status(403).json(JSON.parse(`{"status": 403}`));
+        return res.status(403).json(JSON.parse(`{"status": 403}`));
     }
   });
 }
@@ -303,7 +303,7 @@ function checkGamble(req, res, next) {
   let pointStmt = `SELECT score FROM scouts WHERE discordID=?`;
   let pointValues = [userID];
   db.get(pointStmt, pointValues, (err,  result) => {
-      return (Number(result.score) > (-2000));
+        return (Number(result.score) > (-2000));
   });
 }*/
 
@@ -312,13 +312,13 @@ function addToDataBase(req, next) {
   const password = crypto.randomBytes(12).toString("hex");
   /*db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
     if (err) {
-      return;
-    } else {
-      if (accountQueryResults) {
         return;
-      } else {
-        //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
-      }
+    } else {
+        if (accountQueryResults) {
+            return;
+        } else {
+            //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
+        }
     }
   });*/
   db.run(
@@ -338,7 +338,7 @@ function forwardFRCAPIdata(url, req, res) {
     hostname: "frc-api.firstinspires.org",
     path: url,
     headers: {
-      Authorization: "Basic " + frcapi,
+        Authorization: "Basic " + frcapi,
     },
     maxRedirects: 20,
   };
@@ -347,24 +347,24 @@ function forwardFRCAPIdata(url, req, res) {
     var chunks = [];
 
     response.on("data", function (chunk) {
-      chunks.push(chunk);
+        chunks.push(chunk);
     });
 
     response.on("end", function (chunk) {
-      var body = Buffer.concat(chunks);
-      dbody.emit("update", body);
+        var body = Buffer.concat(chunks);
+        dbody.emit("update", body);
     });
 
     response.on("error", function (error) {
-      console.error(error);
+        console.error(error);
     });
   });
   request.end();
   dbody.on("update", function (body) {
     if (invalidJSON(body)) {
-      res.status(500).send("error! invalid data");
+        res.status(500).send("error! invalid data");
     } else {
-      res.status(200).json(JSON.parse(body));
+        res.status(200).json(JSON.parse(body));
     }
   });
 }
@@ -432,53 +432,53 @@ app.post("/submit", checkAuth, function (req, res) {
   req.on("end", () => {
     let formData = qs.parse(body);
     if (formData.formType == "pit") {
-      res.end("WRONG FORM");
+        res.end("WRONG FORM");
     } else if (formData.formType == "main") {
-      var formscoresdj = 20;
-      if (formData.overall.length >= 70) {
-        var formscoresdj = 25;
-      }
-      let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      let values = [
-        formData.event,
-        season,
-        req.user.username,
-        formData.team,
-        formData.match,
-        formData.level,
-        formData.game1,formData.game2,formData.game3,formData.game4,formData.game5,formData.game6,formData.game7,formData.game8,formData.game9,formData.game10,formData.game11,formData.game12,formData.game13,formData.game14,formData.game15,formData.game16,formData.game17,formData.game18,formData.game19,formData.game20,formData.game21,formData.game22,formData.game23,formData.game24,formData.game25,
-        "dropped",
-        formData.defend,
-        formData.driving,
-        formData.overall,
-        req.user.id,
-        req.user.username,
-        req.user.discriminator,
-        req.user.avatar,
-        0,
-        "0",
-      ];
-      db.run(stmt, values, function (err) {
-        if (err) {
-          logErrors(err.message);
-          res.end(err.message);
+        var formscoresdj = 20;
+        if (formData.overall.length >= 70) {
+            var formscoresdj = 25;
         }
-        discordSendData.newSubmission("main", this.lastID, req.user.username);
-        seasonProcess.weightScores(this.lastID);
-      });
-      let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
-      let pointValues = [formscoresdj, req.user.id];
-      db.run(pointStmt, pointValues, function (err) {
-        if (err) {
-          logErrors(err.message);
-          res.end(err.message);
-        }
-      });
-      res.sendFile("src/submitted.html", {
-        root: __dirname,
-      });
+        let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        let values = [
+            formData.event,
+            season,
+            req.user.username,
+            formData.team,
+            formData.match,
+            formData.level,
+            formData.game1,formData.game2,formData.game3,formData.game4,formData.game5,formData.game6,formData.game7,formData.game8,formData.game9,formData.game10,formData.game11,formData.game12,formData.game13,formData.game14,formData.game15,formData.game16,formData.game17,formData.game18,formData.game19,formData.game20,formData.game21,formData.game22,formData.game23,formData.game24,formData.game25,
+            "dropped",
+            formData.defend,
+            formData.driving,
+            formData.overall,
+            req.user.id,
+            req.user.username,
+            req.user.discriminator,
+            req.user.avatar,
+            0,
+            "0",
+        ];
+        db.run(stmt, values, function (err) {
+            if (err) {
+              logErrors(err.message);
+              res.end(err.message);
+            }
+            discordSendData.newSubmission("main", this.lastID, req.user.username);
+            seasonProcess.weightScores(this.lastID);
+        });
+        let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+        let pointValues = [formscoresdj, req.user.id];
+        db.run(pointStmt, pointValues, function (err) {
+            if (err) {
+              logErrors(err.message);
+              res.end(err.message);
+            }
+        });
+        res.sendFile("src/submitted.html", {
+            root: __dirname,
+        });
     } else {
-      return res.status(500).send("unknown form type");
+        return res.status(500).send("unknown form type");
     }
   });
 });
@@ -518,8 +518,8 @@ app.post("/submitPit", checkAuth, imageUploads, function (req, res) {
   ];
   db.run(stmt, values, function (err) {
     if (err) {
-      logErrors(err.message);
-      res.end("pit form error! " + err.message);
+        logErrors(err.message);
+        res.end("pit form error! " + err.message);
     }
     discordSendData.newSubmission("pit", this.lastID, req.user.username);
   });
@@ -527,8 +527,8 @@ app.post("/submitPit", checkAuth, imageUploads, function (req, res) {
   let pointValues = [req.user.id];
   db.run(pointStmt, pointValues, function (err) {
     if (err) {
-      logErrors(err.message);
-      res.end(err.message);
+        logErrors(err.message);
+        res.end(err.message);
     }
   });
   res.sendFile("src/submitted.html", {
@@ -540,107 +540,107 @@ app.post("/submitPit", checkAuth, imageUploads, function (req, res) {
 app.get("/", checkAuth, async function (req, res) {
   try {
     if (!req.cookies.role) {
-      //set cookie if not exists
-      //I am setting a cookie because it takes a while to wait for role data from API
+        //set cookie if not exists
+        //I am setting a cookie because it takes a while to wait for role data from API
 
-      var oauthDataCookieSet = await Promise.resolve(
-        getOauthData
-          .getGuildMember(req.user.accessToken, teamServerID)
-          .then((data) => {
-            return findTopRole(data.roles);
-          })
-      );
+        var oauthDataCookieSet = await Promise.resolve(
+            getOauthData
+              .getGuildMember(req.user.accessToken, teamServerID)
+              .then((data) => {
+                  return findTopRole(data.roles);
+              })
+        );
 
-      //btoa and atob bad idea
-      //Buffer.from(str, 'base64') and buf.toString('base64') instead
-      res.cookie("role", JSON.stringify(oauthDataCookieSet), {
-        expire: 7200000 + Date.now(),
-        sameSite: "Lax",
-        secure: true,
-        httpOnly: true,
-      });
-      if (
-        oauthDataCookieSet[0][0] == "Pit Team" ||
-        oauthDataCookieSet[0][0] == "Drive Team"
-      ) {
-        res.render("../src/index.ejs", {
-          root: __dirname,
-          order1: "2",
-          order2: "0",
-          order3: "1",
-          order4: "3",
-          additionalURLs: "<span></span>",
+        //btoa and atob bad idea
+        //Buffer.from(str, 'base64') and buf.toString('base64') instead
+        res.cookie("role", JSON.stringify(oauthDataCookieSet), {
+            expire: 7200000 + Date.now(),
+            sameSite: "Lax",
+            secure: true,
+            httpOnly: true,
         });
-      } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
-        res.cookie("lead", leadToken, {
-          expire: 7200000 + Date.now(),
-          sameSite: "Lax",
-          secure: true,
-          httpOnly: true,
-        });
-        res.render("../src/index.ejs", {
-          root: __dirname,
-          order1: "0",
-          order2: "3",
-          order3: "2",
-          order4: "1",
-          additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`,
-        });
-      } else {
-        res.render("../src/index.ejs", {
-          root: __dirname,
-          order1: "0",
-          order2: "3",
-          order3: "2",
-          order4: "1",
-          additionalURLs: "<span></span>",
-        });
-      }
+        if (
+            oauthDataCookieSet[0][0] == "Pit Team" ||
+            oauthDataCookieSet[0][0] == "Drive Team"
+        ) {
+            res.render("../src/index.ejs", {
+              root: __dirname,
+              order1: "2",
+              order2: "0",
+              order3: "1",
+              order4: "3",
+              additionalURLs: "<span></span>",
+            });
+        } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
+            res.cookie("lead", leadToken, {
+              expire: 7200000 + Date.now(),
+              sameSite: "Lax",
+              secure: true,
+              httpOnly: true,
+            });
+            res.render("../src/index.ejs", {
+              root: __dirname,
+              order1: "0",
+              order2: "3",
+              order3: "2",
+              order4: "1",
+              additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`,
+            });
+        } else {
+            res.render("../src/index.ejs", {
+              root: __dirname,
+              order1: "0",
+              order2: "3",
+              order3: "2",
+              order4: "1",
+              additionalURLs: "<span></span>",
+            });
+        }
     } else {
-      var oauthData = JSON.parse(req.cookies.role);
-      if (oauthData[0][0] == "Pit Team" || oauthData[0][0] == "Drive Team") {
-        res.render("../src/index.ejs", {
-          root: __dirname,
-          order1: "2",
-          order2: "0",
-          order3: "1",
-          order4: "3",
-          additionalURLs: "<span></span>",
-        });
-      } else if (oauthData[0][0] == "Lead Scout") {
-        res.cookie("lead", leadToken, {
-          expire: 7200000 + Date.now(),
-          sameSite: "Lax",
-          secure: true,
-          httpOnly: true,
-        });
-        res.render("../src/index.ejs", {
-          root: __dirname,
-          order1: "0",
-          order2: "3",
-          order3: "2",
-          order4: "1",
-          additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`,
-        });
-      } else {
-        res.render("../src/index.ejs", {
-          root: __dirname,
-          order1: "0",
-          order2: "3",
-          order3: "2",
-          order4: "1",
-          additionalURLs: "<span></span>",
-        });
-      }
+        var oauthData = JSON.parse(req.cookies.role);
+        if (oauthData[0][0] == "Pit Team" || oauthData[0][0] == "Drive Team") {
+            res.render("../src/index.ejs", {
+              root: __dirname,
+              order1: "2",
+              order2: "0",
+              order3: "1",
+              order4: "3",
+              additionalURLs: "<span></span>",
+            });
+        } else if (oauthData[0][0] == "Lead Scout") {
+            res.cookie("lead", leadToken, {
+              expire: 7200000 + Date.now(),
+              sameSite: "Lax",
+              secure: true,
+              httpOnly: true,
+            });
+            res.render("../src/index.ejs", {
+              root: __dirname,
+              order1: "0",
+              order2: "3",
+              order3: "2",
+              order4: "1",
+              additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`,
+            });
+        } else {
+            res.render("../src/index.ejs", {
+              root: __dirname,
+              order1: "0",
+              order2: "3",
+              order3: "2",
+              order4: "1",
+              additionalURLs: "<span></span>",
+            });
+        }
     }
   } catch (err) {
     res.render("../src/index.ejs", {
-      root: __dirname,
-      order1: "0",
-      order2: "3",
-      order3: "2",
-      order4: "1",
-      additionalURLs: `<span></span>`,
+        root: __dirname,
+        order1: "0",
+        order2: "3",
+        order3: "2",
+        order4: "1",
+        additionalURLs: `<span></span>`,
     });
   }
 });
@@ -736,7 +736,7 @@ app.get("/spin", checkAuth, function (req, res) {
   res.sendFile("src/spin.html", { root: __dirname });
 });
 
-app.get("/points", function (req, res) {
+app.get("/points", checkAuth, function (req, res) {
   res.set("Cache-control", "public, max-age=7776000");
   res.sendFile("src/points.html", { root: __dirname });
 });
@@ -777,7 +777,7 @@ app.get("/denied", function (req, res) {
     res.sendFile("src/denied.html", { root: __dirname });
   } catch (error) {
     res.write(
-      "Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error
+        "Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error
     );
   }
 });
@@ -796,7 +796,7 @@ app.get("/teamRoleInfo", checkAuth, function (req, res) {
   getOauthData
     .getGuildMember(req.user.accessToken, teamServerID)
     .then((data) => {
-      console.log(data.roles);
+        console.log(data.roles);
     })
     .catch();
 });
@@ -807,77 +807,77 @@ app.get("/detail", checkAuth, function (req, res) {
     const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
     const values = [req.query.team, req.query.event, season, req.query.page];
     db.get(stmt, values, (err, dbQueryResult) => {
-      if (err || typeof dbQueryResult == "undefined") {
-        res.render("../src/detail.ejs", {
-          root: __dirname,
-          errorDisplay: "block",
-          errorMessage: "Error: No results!",
-          displaySearch: "flex",
-          displayResults: "none",
-          resultsTeamNumber: 0,
-          resultsMatchNumber: 0,
-          resultsEventCode: 0,
-          resultsBody: 0,
-        });
-        return;
-      } else {
-        res.render("../src/detail.ejs", {
-          root: __dirname,
-          errorDisplay: "none",
-          errorMessage: null,
-          displaySearch: "none",
-          displayResults: "flex",
-          resultsTeamNumber: `${dbQueryResult.team}`,
-          resultsMatchNumber: `${dbQueryResult.match}`,
-          resultsEventCode: `${dbQueryResult.event}`,
-          resultsBody: seasonProcess.createHTMLExport(dbQueryResult),
-        });
-        return;
-      }
+        if (err || typeof dbQueryResult == "undefined") {
+            res.render("../src/detail.ejs", {
+              root: __dirname,
+              errorDisplay: "block",
+              errorMessage: "Error: No results!",
+              displaySearch: "flex",
+              displayResults: "none",
+              resultsTeamNumber: 0,
+              resultsMatchNumber: 0,
+              resultsEventCode: 0,
+              resultsBody: 0,
+            });
+            return;
+        } else {
+            res.render("../src/detail.ejs", {
+              root: __dirname,
+              errorDisplay: "none",
+              errorMessage: null,
+              displaySearch: "none",
+              displayResults: "flex",
+              resultsTeamNumber: `${dbQueryResult.team}`,
+              resultsMatchNumber: `${dbQueryResult.match}`,
+              resultsEventCode: `${dbQueryResult.event}`,
+              resultsBody: seasonProcess.createHTMLExport(dbQueryResult),
+            });
+            return;
+        }
     });
   } else if (req.query.id) {
     const stmt = `SELECT * FROM main WHERE id=? LIMIT 1`;
     const values = [req.query.id];
     db.get(stmt, values, (err, dbQueryResult) => {
-      if (err || typeof dbQueryResult == "undefined") {
-        res.render("../src/detail.ejs", {
-          root: __dirname,
-          errorDisplay: "block",
-          errorMessage: "Error: No results!",
-          displaySearch: "flex",
-          displayResults: "none",
-          resultsTeamNumber: 0,
-          resultsMatchNumber: 0,
-          resultsEventCode: 0,
-          resultsBody: 0,
-        });
-        return;
-      } else {
-        res.render("../src/detail.ejs", {
-          root: __dirname,
-          errorDisplay: "block",
-          errorMessage: "ID based query, buttons will not work!",
-          displaySearch: "none",
-          displayResults: "flex",
-          resultsTeamNumber: `${dbQueryResult.team}`,
-          resultsMatchNumber: `${dbQueryResult.match}`,
-          resultsEventCode: `${dbQueryResult.event}`,
-          resultsBody: seasonProcess.createHTMLExport(dbQueryResult),
-        });
-        return;
-      }
+        if (err || typeof dbQueryResult == "undefined") {
+            res.render("../src/detail.ejs", {
+              root: __dirname,
+              errorDisplay: "block",
+              errorMessage: "Error: No results!",
+              displaySearch: "flex",
+              displayResults: "none",
+              resultsTeamNumber: 0,
+              resultsMatchNumber: 0,
+              resultsEventCode: 0,
+              resultsBody: 0,
+            });
+            return;
+        } else {
+            res.render("../src/detail.ejs", {
+              root: __dirname,
+              errorDisplay: "block",
+              errorMessage: "ID based query, buttons will not work!",
+              displaySearch: "none",
+              displayResults: "flex",
+              resultsTeamNumber: `${dbQueryResult.team}`,
+              resultsMatchNumber: `${dbQueryResult.match}`,
+              resultsEventCode: `${dbQueryResult.event}`,
+              resultsBody: seasonProcess.createHTMLExport(dbQueryResult),
+            });
+            return;
+        }
     });
   } else {
     res.render("../src/detail.ejs", {
-      root: __dirname,
-      errorDisplay: "none",
-      errorMessage: null,
-      displaySearch: "flex",
-      displayResults: "none",
-      resultsTeamNumber: 0,
-      resultsMatchNumber: 0,
-      resultsEventCode: 0,
-      resultsBody: 0,
+        root: __dirname,
+        errorDisplay: "none",
+        errorMessage: null,
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsMatchNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0,
     });
     return;
   }
@@ -886,162 +886,162 @@ app.get("/detail", checkAuth, function (req, res) {
 app.get("/browse", checkAuth, function (req, res) {
   if (req.query.number && req.query.event) {
     if (
-      req.query.number == "ALL" ||
-      req.query.number == "*" ||
-      req.query.number == "0000" ||
-      req.query.number == "0"
+        req.query.number == "ALL" ||
+        req.query.number == "*" ||
+        req.query.number == "0000" ||
+        req.query.number == "0"
     ) {
-      const stmt = `SELECT * FROM main WHERE event=? AND season=? ORDER BY team ASC`;
-      const values = [req.query.event, season];
-      db.all(stmt, values, (err, dbQueryResult) => {
-        if (err) {
-          res.render("../src/browse.ejs", {
-            root: __dirname,
-            errorDisplay: "block",
-            errorMessage: "Error: No results!",
-            displaySearch: "flex",
-            displayResults: "none",
-            resultsTeamNumber: 0,
-            resultsEventCode: 0,
-            resultsBody: 0,
-            moredata: 0,
-          });
-          return;
-        } else {
-          if (typeof dbQueryResult == "undefined") {
-            res.render("../src/browse.ejs", {
-              root: __dirname,
-              errorDisplay: "block",
-              errorMessage: "Error: No results!",
-              displaySearch: "flex",
-              displayResults: "none",
-              resultsTeamNumber: 0,
-              resultsEventCode: 0,
-              resultsBody: 0,
-              moredata: 0,
-            });
-            return;
-          } else {
-            res.render("../src/browse.ejs", {
-              root: __dirname,
-              errorDisplay: "none",
-              errorMessage: null,
-              displaySearch: "none",
-              displayResults: "flex",
-              resultsTeamNumber: `ALL`,
-              resultsEventCode: `${req.query.event}`,
-              resultsBody:
-                seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
-            });
-            return;
-          }
-        }
-      });
+        const stmt = `SELECT * FROM main WHERE event=? AND season=? ORDER BY team ASC`;
+        const values = [req.query.event, season];
+        db.all(stmt, values, (err, dbQueryResult) => {
+            if (err) {
+              res.render("../src/browse.ejs", {
+                  root: __dirname,
+                  errorDisplay: "block",
+                  errorMessage: "Error: No results!",
+                  displaySearch: "flex",
+                  displayResults: "none",
+                  resultsTeamNumber: 0,
+                  resultsEventCode: 0,
+                  resultsBody: 0,
+                  moredata: 0,
+              });
+              return;
+            } else {
+              if (typeof dbQueryResult == "undefined") {
+                  res.render("../src/browse.ejs", {
+                    root: __dirname,
+                    errorDisplay: "block",
+                    errorMessage: "Error: No results!",
+                    displaySearch: "flex",
+                    displayResults: "none",
+                    resultsTeamNumber: 0,
+                    resultsEventCode: 0,
+                    resultsBody: 0,
+                    moredata: 0,
+                  });
+                  return;
+              } else {
+                  res.render("../src/browse.ejs", {
+                    root: __dirname,
+                    errorDisplay: "none",
+                    errorMessage: null,
+                    displaySearch: "none",
+                    displayResults: "flex",
+                    resultsTeamNumber: `ALL`,
+                    resultsEventCode: `${req.query.event}`,
+                    resultsBody:
+                        seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
+                  });
+                  return;
+              }
+            }
+        });
     } else {
-      if (req.query.type === "team") {
-        const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC`;
-        const values = [req.query.number, req.query.event, season];
-        db.all(stmt, values, (err, dbQueryResult) => {
-          if (err || typeof dbQueryResult == "undefined") {
-            res.render("../src/browse.ejs", {
-              root: __dirname,
-              errorDisplay: "block",
-              errorMessage: "Error: No results!",
-              displaySearch: "flex",
-              displayResults: "none",
-              resultsTeamNumber: 0,
-              resultsEventCode: 0,
-              resultsBody: 0,
+        if (req.query.type === "team") {
+            const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC`;
+            const values = [req.query.number, req.query.event, season];
+            db.all(stmt, values, (err, dbQueryResult) => {
+              if (err || typeof dbQueryResult == "undefined") {
+                  res.render("../src/browse.ejs", {
+                    root: __dirname,
+                    errorDisplay: "block",
+                    errorMessage: "Error: No results!",
+                    displaySearch: "flex",
+                    displayResults: "none",
+                    resultsTeamNumber: 0,
+                    resultsEventCode: 0,
+                    resultsBody: 0,
+                  });
+                  return;
+              } else {
+                  res.render("../src/browse.ejs", {
+                    root: __dirname,
+                    errorDisplay: "none",
+                    errorMessage: null,
+                    displaySearch: "none",
+                    displayResults: "flex",
+                    resultsTeamNumber: `Team ${req.query.number}`,
+                    resultsEventCode: `${req.query.event}`,
+                    resultsBody: seasonProcess.createHTMLTable(dbQueryResult),
+                  });
+                  return;
+              }
             });
-            return;
-          } else {
-            res.render("../src/browse.ejs", {
-              root: __dirname,
-              errorDisplay: "none",
-              errorMessage: null,
-              displaySearch: "none",
-              displayResults: "flex",
-              resultsTeamNumber: `Team ${req.query.number}`,
-              resultsEventCode: `${req.query.event}`,
-              resultsBody: seasonProcess.createHTMLTable(dbQueryResult),
+        } else if (req.query.type === "match") {
+            const stmt = `SELECT * FROM main WHERE match=? AND event=? AND season=? ORDER BY id DESC`;
+            const values = [req.query.number, req.query.event, season];
+            db.all(stmt, values, (err, dbQueryResult) => {
+              if (err || typeof dbQueryResult == "undefined") {
+                  res.render("../src/browse.ejs", {
+                    root: __dirname,
+                    errorDisplay: "block",
+                    errorMessage: "Error: No results!",
+                    displaySearch: "flex",
+                    displayResults: "none",
+                    resultsTeamNumber: 0,
+                    resultsEventCode: 0,
+                    resultsBody: 0,
+                  });
+                  return;
+              } else {
+                  res.render("../src/browse.ejs", {
+                    root: __dirname,
+                    errorDisplay: "none",
+                    errorMessage: null,
+                    displaySearch: "none",
+                    displayResults: "flex",
+                    resultsTeamNumber: `Match ${req.query.number}`,
+                    resultsEventCode: `${req.query.event}`,
+                    resultsBody:
+                        seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
+                  });
+                  return;
+              }
             });
-            return;
-          }
-        });
-      } else if (req.query.type === "match") {
-        const stmt = `SELECT * FROM main WHERE match=? AND event=? AND season=? ORDER BY id DESC`;
-        const values = [req.query.number, req.query.event, season];
-        db.all(stmt, values, (err, dbQueryResult) => {
-          if (err || typeof dbQueryResult == "undefined") {
-            res.render("../src/browse.ejs", {
-              root: __dirname,
-              errorDisplay: "block",
-              errorMessage: "Error: No results!",
-              displaySearch: "flex",
-              displayResults: "none",
-              resultsTeamNumber: 0,
-              resultsEventCode: 0,
-              resultsBody: 0,
-            });
-            return;
-          } else {
-            res.render("../src/browse.ejs", {
-              root: __dirname,
-              errorDisplay: "none",
-              errorMessage: null,
-              displaySearch: "none",
-              displayResults: "flex",
-              resultsTeamNumber: `Match ${req.query.number}`,
-              resultsEventCode: `${req.query.event}`,
-              resultsBody:
-                seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
-            });
-            return;
-          }
-        });
-      }
+        }
     }
   } else if (req.query.discordID) {
     const stmt = `SELECT * FROM main WHERE discordID=? AND season=? ORDER BY id DESC`;
     const values = [req.query.discordID, season];
     db.all(stmt, values, (err, dbQueryResult) => {
-      if (err || typeof dbQueryResult == "undefined") {
-        res.render("../src/browse.ejs", {
-          root: __dirname,
-          errorDisplay: "block",
-          errorMessage: "Error: No results!",
-          displaySearch: "flex",
-          displayResults: "none",
-          resultsTeamNumber: 0,
-          resultsEventCode: 0,
-          resultsBody: 0,
-        });
-        return;
-      } else {
-        res.render("../src/browse.ejs", {
-          root: __dirname,
-          errorDisplay: "none",
-          errorMessage: null,
-          displaySearch: "none",
-          displayResults: "flex",
-          resultsTeamNumber: `Scout ${req.query.discordID}`,
-          resultsEventCode: season,
-          resultsBody:
-            seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
-        });
-        return;
-      }
+        if (err || typeof dbQueryResult == "undefined") {
+            res.render("../src/browse.ejs", {
+              root: __dirname,
+              errorDisplay: "block",
+              errorMessage: "Error: No results!",
+              displaySearch: "flex",
+              displayResults: "none",
+              resultsTeamNumber: 0,
+              resultsEventCode: 0,
+              resultsBody: 0,
+            });
+            return;
+        } else {
+            res.render("../src/browse.ejs", {
+              root: __dirname,
+              errorDisplay: "none",
+              errorMessage: null,
+              displaySearch: "none",
+              displayResults: "flex",
+              resultsTeamNumber: `Scout ${req.query.discordID}`,
+              resultsEventCode: season,
+              resultsBody:
+                  seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
+            });
+            return;
+        }
     });
   } else {
     res.render("../src/browse.ejs", {
-      root: __dirname,
-      errorDisplay: "none",
-      errorMessage: null,
-      displaySearch: "flex",
-      displayResults: "none",
-      resultsTeamNumber: 0,
-      resultsEventCode: 0,
-      resultsBody: 0,
+        root: __dirname,
+        errorDisplay: "none",
+        errorMessage: null,
+        displaySearch: "flex",
+        displayResults: "none",
+        resultsTeamNumber: 0,
+        resultsEventCode: 0,
+        resultsBody: 0,
     });
     return;
   }
@@ -1054,96 +1054,96 @@ app.get("/teams", checkAuth, function (req, res) {
 app.get("/manage", checkAuth, async function (req, res) {
   async function checkIfLeadScout() {
     if (req.cookies.lead) {
-      if (req.cookies.lead == leadToken) {
-        return true;
-      } else {
-        return false;
-      }
+        if (req.cookies.lead == leadToken) {
+            return true;
+        } else {
+            return false;
+        }
     } else {
-      return false;
+        return false;
     }
   }
   const isLeadScout = await checkIfLeadScout();
   if (isLeadScout) {
     if (req.query.dbase) {
-      function sanitizeDBName() {
-        if (req.query.dbase == "pit") {
-          return "pit";
-        } else {
-          return "main";
+        function sanitizeDBName() {
+            if (req.query.dbase == "pit") {
+              return "pit";
+            } else {
+              return "main";
+            }
         }
-      }
-      function mainOrPitLink(type) {
-        if (type == "pit") {
-          return "pitimages";
-        } else {
-          return "detail";
+        function mainOrPitLink(type) {
+            if (type == "pit") {
+              return "pitimages";
+            } else {
+              return "detail";
+            }
         }
-      }
-      const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
-      db.all(stmt, (err, dbQueryResult) => {
-        if (err) {
-          res.render("../src/manage.ejs", {
+        const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
+        db.all(stmt, (err, dbQueryResult) => {
+            if (err) {
+              res.render("../src/manage.ejs", {
+                  root: __dirname,
+                  errorDisplay: "block",
+                  errorMessage: "Error: Query Error!",
+                  displaySearch: "flex",
+                  displayResults: "none",
+                  resultsBody: 0,
+              });
+              return;
+            } else {
+              if (typeof dbQueryResult == "undefined") {
+                  res.render("../src/manage.ejs", {
+                    root: __dirname,
+                    errorDisplay: "block",
+                    errorMessage: "Error: Results Undefined!",
+                    displaySearch: "flex",
+                    displayResults: "none",
+                    resultsBody: 0,
+                  });
+                  return;
+              } else {
+                  var listHTML = "";
+                  for (var i = 0; i < dbQueryResult.length; i++) {
+                    listHTML =
+                        listHTML +
+                        `<fieldset style="background-color: "><span><span>ID:&emsp;${
+                            dbQueryResult[i].id
+                        }</span>&emsp;&emsp;<span><a href="/${mainOrPitLink(
+                            req.query.dbase
+                        )}?id=${
+                            dbQueryResult[i].id
+                        }" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${
+                            req.query.dbase
+                        }', ${dbQueryResult[i].id}, '${req.query.dbase}${
+                            dbQueryResult[i].id
+                        }')" style="color: red" id="${req.query.dbase}${
+                            dbQueryResult[i].id
+                        }">Delete</span></span></span></fieldset>`;
+                  }
+                  res.render("../src/manage.ejs", {
+                    root: __dirname,
+                    errorDisplay: "none",
+                    errorMessage: null,
+                    displaySearch: "none",
+                    displayResults: "flex",
+                    resultsBody: listHTML,
+                  });
+                  return;
+              }
+            }
+        });
+    } else {
+        res.render("../src/manage.ejs", {
             root: __dirname,
-            errorDisplay: "block",
-            errorMessage: "Error: Query Error!",
+            errorDisplay: "none",
+            errorMessage: null,
             displaySearch: "flex",
             displayResults: "none",
             resultsBody: 0,
-          });
-          return;
-        } else {
-          if (typeof dbQueryResult == "undefined") {
-            res.render("../src/manage.ejs", {
-              root: __dirname,
-              errorDisplay: "block",
-              errorMessage: "Error: Results Undefined!",
-              displaySearch: "flex",
-              displayResults: "none",
-              resultsBody: 0,
-            });
-            return;
-          } else {
-            var listHTML = "";
-            for (var i = 0; i < dbQueryResult.length; i++) {
-              listHTML =
-                listHTML +
-                `<fieldset style="background-color: "><span><span>ID:&emsp;${
-                  dbQueryResult[i].id
-                }</span>&emsp;&emsp;<span><a href="/${mainOrPitLink(
-                  req.query.dbase
-                )}?id=${
-                  dbQueryResult[i].id
-                }" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${
-                  req.query.dbase
-                }', ${dbQueryResult[i].id}, '${req.query.dbase}${
-                  dbQueryResult[i].id
-                }')" style="color: red" id="${req.query.dbase}${
-                  dbQueryResult[i].id
-                }">Delete</span></span></span></fieldset>`;
-            }
-            res.render("../src/manage.ejs", {
-              root: __dirname,
-              errorDisplay: "none",
-              errorMessage: null,
-              displaySearch: "none",
-              displayResults: "flex",
-              resultsBody: listHTML,
-            });
-            return;
-          }
-        }
-      });
-    } else {
-      res.render("../src/manage.ejs", {
-        root: __dirname,
-        errorDisplay: "none",
-        errorMessage: null,
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsBody: 0,
-      });
-      return;
+        });
+        return;
     }
   } else {
     res.status(401).send("Access Denied!");
@@ -1157,62 +1157,62 @@ app.post("/deleteSubmission", checkAuth, async function (req, res) {
   });
   req.on("end", async () => {
     function sanitizeDBName() {
-      if (reqData.db == "pit") {
-        return "pit";
-      } else {
-        return "main";
-      }
+        if (reqData.db == "pit") {
+            return "pit";
+        } else {
+            return "main";
+        }
     }
     let reqData = qs.parse(body);
     async function checkIfLeadScout() {
-      if (req.cookies.lead) {
-        if (req.cookies.lead == leadToken) {
-          return true;
+        if (req.cookies.lead) {
+            if (req.cookies.lead == leadToken) {
+              return true;
+            } else {
+              return false;
+            }
         } else {
-          return false;
+            return false;
         }
-      } else {
-        return false;
-      }
     }
     function selectDeductionAmount() {
-      if (reqData.db == "pit") {
-        return 35;
-      } else {
-        return 25;
-      }
+        if (reqData.db == "pit") {
+            return 35;
+        } else {
+            return 25;
+        }
     }
     const isLeadScout = await checkIfLeadScout();
     if (isLeadScout) {
-      if (reqData.submissionID && reqData.db) {
-        const stmt = `SELECT discordID FROM ${sanitizeDBName()} WHERE id=?`;
-        const values = [reqData.submissionID];
-        db.get(stmt, values, (err, result) => {
-          console.log(result);
-          const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${
-            result.discordID
-          }"`;
-          db.run(getUserIDstmt, (err) => {
-            if (err) {
-              console.log(err);
-              return;
-            }
-          });
-        });
-        const deleteStmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
-        const deleteValues = [reqData.submissionID];
-        db.run(deleteStmt, deleteValues, (err) => {
-          if (err) {
-            console.log(err);
-            return;
-          }
-        });
-        res.status(200).send("done!");
-      } else {
-        res.status(400).send("Bad Request!");
-      }
+        if (reqData.submissionID && reqData.db) {
+            const stmt = `SELECT discordID FROM ${sanitizeDBName()} WHERE id=?`;
+            const values = [reqData.submissionID];
+            db.get(stmt, values, (err, result) => {
+              console.log(result);
+              const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${
+                  result.discordID
+              }"`;
+              db.run(getUserIDstmt, (err) => {
+                  if (err) {
+                    console.log(err);
+                    return;
+                  }
+              });
+            });
+            const deleteStmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
+            const deleteValues = [reqData.submissionID];
+            db.run(deleteStmt, deleteValues, (err) => {
+              if (err) {
+                  console.log(err);
+                  return;
+              }
+            });
+            res.status(200).send("done!");
+        } else {
+            res.status(400).send("Bad Request!");
+        }
     } else {
-      res.status(401).send("Access Denied!");
+        res.status(401).send("Access Denied!");
     }
   });
 });
@@ -1227,9 +1227,9 @@ app.get("/matches", checkAuth, function (req, res) {
 app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, function (req, res) {
     var teamNumParam = "";
     if (req.params.all === "all") {
-      teamNumParam = "&start=&end=";
+        teamNumParam = "&start=&end=";
     } else {
-      teamNumParam = `&teamNumber=${myteam}`;
+        teamNumParam = `&teamNumber=${myteam}`;
     }
     forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res)
 });
@@ -1239,9 +1239,9 @@ app.get("/api/data/:season/:event/:team", apiCheckAuth, function (req, res) {
   const values = [req.params.team, req.params.event, req.params.season];
   db.all(stmt, values, (err, dbQueryResult) => {
     if (err) {
-      res.status(500).send("got an error from query");
+        res.status(500).send("got an error from query");
     } else {
-      res.status(200).json(dbQueryResult[0]);
+        res.status(200).json(dbQueryResult[0]);
     }
   });
 });
@@ -1251,9 +1251,9 @@ app.get("/api/pit/:season/:event/:team", apiCheckAuth, function (req, res) {
   const values = [req.params.team, req.params.event, req.params.season];
   db.all(stmt, values, (err, dbQueryResult) => {
     if (err) {
-      res.status(500).send("got an error from query");
+        res.status(500).send("got an error from query");
     } else {
-      res.status(200).json(dbQueryResult[0]);
+        res.status(200).json(dbQueryResult[0]);
     }
   });
 });
@@ -1264,33 +1264,33 @@ app.get("/api/teams/:season/:event", apiCheckAuth, function (req, res) {
     const requestedEvent = sanitize(req.params.event);
     const values = [requestedEvent, season];
     db.all(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.status(500).send("got an error from query");
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.status(204).send("no query results");
+        if (err) {
+            res.status(500).send("got an error from query");
+            return;
         } else {
-          var htmltable = ``;
-          for (var i = 0; i < dbQueryResult.length; i++) {
-            htmltable =
-              htmltable +
-              `<tr><td>${i + 1}</td><td><a href="/browse?number=${
-                dbQueryResult[i]["team"]
-              }&type=team&event=${requestedEvent}" style="all: unset; color: #2997FF; text-decoration: none;">${
-                dbQueryResult[i]["team"]
-              }</a></td><td>${Math.round(
-                dbQueryResult[i]["AVG(weight)"]
-              )}%</td><td><progress id="scoreWt" max="100" value="${
-                dbQueryResult[i]["AVG(weight)"]
-              }"></progress></td>`;
-          }
-          res
-            .status(200)
-            .setHeader("Content-type", "text/plain")
-            .send(htmltable);
+            if (typeof dbQueryResult == "undefined") {
+              res.status(204).send("no query results");
+            } else {
+              var htmltable = ``;
+              for (var i = 0; i < dbQueryResult.length; i++) {
+                  htmltable =
+                    htmltable +
+                    `<tr><td>${i + 1}</td><td><a href="/browse?number=${
+                        dbQueryResult[i]["team"]
+                    }&type=team&event=${requestedEvent}" style="all: unset; color: #2997FF; text-decoration: none;">${
+                        dbQueryResult[i]["team"]
+                    }</a></td><td>${Math.round(
+                        dbQueryResult[i]["AVG(weight)"]
+                    )}%</td><td><progress id="scoreWt" max="100" value="${
+                        dbQueryResult[i]["AVG(weight)"]
+                    }"></progress></td>`;
+              }
+              res
+                  .status(200)
+                  .setHeader("Content-type", "text/plain")
+                  .send(htmltable);
+            }
         }
-      }
     });
   } else {
     res.status(400).send("parameters not provided, or invalid!");
@@ -1301,26 +1301,26 @@ app.get("/api/scouts", apiCheckAuth, function (req, res) {
   const stmt = `SELECT * FROM scouts ORDER BY score DESC`;
   db.all(stmt, (err, dbQueryResult) => {
     if (err) {
-      res.status(500).send("got an error from query");
-      return;
+        res.status(500).send("got an error from query");
+        return;
     } else {
-      if (typeof dbQueryResult == "undefined") {
-        res.status(204).send("no query results");
-      } else {
-        var htmltable = ``;
-        for (var i = 0; i < dbQueryResult.length; i++) {
-          htmltable =
-            htmltable +
-            `<tr><td><a href="/browse?discordID=${
-              dbQueryResult[i].discordID
-            }" style="all: unset; color: #2997FF; text-decoration: none;">${
-              dbQueryResult[i].username
-            }#${dbQueryResult[i].discriminator}</a></td><td>${Math.round(
-              dbQueryResult[i].score
-            )}</td></tr>`;
+        if (typeof dbQueryResult == "undefined") {
+            res.status(204).send("no query results");
+        } else {
+            var htmltable = ``;
+            for (var i = 0; i < dbQueryResult.length; i++) {
+              htmltable =
+                  htmltable +
+                  `<tr><td><a href="/browse?discordID=${
+                    dbQueryResult[i].discordID
+                  }" style="all: unset; color: #2997FF; text-decoration: none;">${
+                    dbQueryResult[i].username
+                  }#${dbQueryResult[i].discriminator}</a></td><td>${Math.round(
+                    dbQueryResult[i].score
+                  )}</td></tr>`;
+            }
+            res.status(200).setHeader("Content-type", "text/plain").send(htmltable);
         }
-        res.status(200).setHeader("Content-type", "text/plain").send(htmltable);
-      }
     }
   });
 });
@@ -1328,23 +1328,23 @@ app.get("/api/scouts", apiCheckAuth, function (req, res) {
 app.get("/api/scouts/:scout/profile", apiCheckAuth, function (req, res) {
   function isMe() {
     if (req.params.scout == "me") {
-      return req.user.id;
+        return req.user.id;
     } else {
-      return req.params.scout;
+        return req.params.scout;
     }
   }
   const stmt = `SELECT discordID, score, discordProfile, username, discriminator, addedAt, badges FROM scouts WHERE discordID=?`;
   const values = [isMe()];
   db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
-      res.status(500).send("got an error from query");
-      return;
+        res.status(500).send("got an error from query");
+        return;
     } else {
-      if (typeof dbQueryResult == "undefined") {
-        res.status(204).send("no query results");
-      } else {
-        res.status(200).json(dbQueryResult);
-      }
+        if (typeof dbQueryResult == "undefined") {
+            res.status(204).send("no query results");
+        } else {
+            res.status(200).json(dbQueryResult);
+        }
     }
   });
 });
@@ -1354,14 +1354,14 @@ app.get("/api/scoutByID/:discordID", apiCheckAuth, function (req, res) {
   const values = [req.params.discordID];
   db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
-      res.status(500).send("got an error from query");
-      return;
+        res.status(500).send("got an error from query");
+        return;
     } else {
-      if (typeof dbQueryResult == "undefined") {
-        res.status(204).send("no query results");
-      } else {
-        res.status(200).setHeader("Content-type", "text/plain").send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512" crossorigin="anonymous"x></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
-      }
+        if (typeof dbQueryResult == "undefined") {
+            res.status(204).send("no query results");
+        } else {
+            res.status(200).setHeader("Content-type", "text/plain").send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512" crossorigin="anonymous"x></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
+        }
     }
   });
 });
@@ -1377,23 +1377,23 @@ app.get("/api/casino/slots/slotSpin", apiCheckAuth, function (req, res) {
     let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
     let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      } else {
-        res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
-      }
+        if (err) {
+            res.status(500).send("got an error from transaction");
+            return;
+        } else {
+            res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
+        }
     });
   } else {
     let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
     let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      } else {
-        res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
-      }
+        if (err) {
+            res.status(500).send("got an error from transaction");
+            return;
+        } else {
+            res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
+        }
     });
   }
 });
@@ -1402,10 +1402,10 @@ app.get("/api/casino/slots/slotSpin", apiCheckAuth, function (req, res) {
 //blackjack API
 app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, function (req, res) {
   const possibleCards = [
-      { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
-      { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
-      { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
-      { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
+        { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
+        { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
+        { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
+        { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
     ];
   var cards = [];
   var cardValues = 0;
@@ -1416,41 +1416,41 @@ app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, functi
   //prevent cards from being duplicated
   if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
     while (
-      cards[0] == cards[1] ||
-      cards[1] == cards[2] ||
-      cards[0] == cards[2]
-    ) {
-      if (
         cards[0] == cards[1] ||
         cards[1] == cards[2] ||
         cards[0] == cards[2]
-      ) {
-        cards = [];
-        cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-        cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-        cards.push(possibleCards[Math.floor(Math.random() * 51)]);
-      } else {
-        break;
-      }
+    ) {
+        if (
+            cards[0] == cards[1] ||
+            cards[1] == cards[2] ||
+            cards[0] == cards[2]
+        ) {
+            cards = [];
+            cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+            cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+            cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+        } else {
+            break;
+        }
     }
   }
 
   for (var i = 1; i < 3; i++) {
     if (typeof cards[i].value !== "number") {
-      if (cards[i].value === "A") {
-        numOfAces = numOfAces + 1;
-      } else {
-        cardValues = cardValues + 10;
-      }
+        if (cards[i].value === "A") {
+            numOfAces = numOfAces + 1;
+        } else {
+            cardValues = cardValues + 10;
+        }
     } else {
-      cardValues = cardValues + cards[i].value;
+        cardValues = cardValues + cards[i].value;
     }
   }
   function findDealerTotal() {
     if (typeof cards[0].value !== "number") {
-      return 10;
+        return 10;
     } else {
-      return cards[0].value;
+        return cards[0].value;
     }
   }
 
@@ -1458,21 +1458,21 @@ app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, functi
   let pointValues = [req.user.id];
   db.run(pointStmt, pointValues, (err) => {
     if (err) {
-      res.status(500).send("got an error from transaction");
-      return;
+        res.status(500).send("got an error from transaction");
+        return;
     }
   });
 
   res
     .status(200)
     .json(
-      `{"dealt": "card-${cards[0].suit}_${
-        cards[0].value
-      }.png", "player0": "card-${cards[1].suit}_${
-        cards[1].value
-      }.png", "player1": "card-${cards[2].suit}_${
-        cards[2].value
-      }.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`
+        `{"dealt": "card-${cards[0].suit}_${
+            cards[0].value
+        }.png", "player0": "card-${cards[1].suit}_${
+            cards[1].value
+        }.png", "player1": "card-${cards[2].suit}_${
+            cards[2].value
+        }.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`
     );
 });
 
@@ -1495,38 +1495,38 @@ app.get("/api/casino/blackjack/newCard", apiCheckAuth, function (req, res) {
   res
     .status(200)
     .json(
-      `{"card": "card-${cards[0].suit}_${cards[0].value}.png", "cardValue": ${cardValue}}`
+        `{"card": "card-${cards[0].suit}_${cards[0].value}.png", "cardValue": ${cardValue}}`
     );
 });
 
 app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, function (req, res) {
   if (req.params.casinoToken == casinoToken) {
     const possibleCards = [
-      { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
-      { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
-      { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
-      { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
+        { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
+        { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
+        { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
+        { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
     ];
     if (
-      possibleCards[Math.floor(Math.random() * 51)].value +
-        Number(req.params.dealerCard) <
-      Number(req.params.playerTotal)
+        possibleCards[Math.floor(Math.random() * 51)].value +
+            Number(req.params.dealerCard) <
+        Number(req.params.playerTotal)
     ) {
-      if (req.params.playerTotal < 21) {
-        let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
-        let pointValues = [req.user.id];
-        db.run(pointStmt, pointValues, (err) => {
-          if (err) {
-            res.status(500).send("got an error from transaction");
-            return;
-          }
-        });
-        res.status(200).json(`{"result": "win"}`);
-      } else {
-        res.send("you pig");
-      }
+        if (req.params.playerTotal < 21) {
+            let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
+            let pointValues = [req.user.id];
+            db.run(pointStmt, pointValues, (err) => {
+              if (err) {
+                  res.status(500).send("got an error from transaction");
+                  return;
+              }
+            });
+            res.status(200).json(`{"result": "win"}`);
+        } else {
+            res.send("you pig");
+        }
     } else {
-      res.status(200).json(`{"result": "loss"}`);
+        res.status(200).json(`{"result": "loss"}`);
     }
   } else {
     res.send("you pig");
@@ -1538,10 +1538,10 @@ app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth
     let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
     let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      }
+        if (err) {
+            res.status(500).send("got an error from transaction");
+            return;
+        }
     });
   } else {
     res.send("you pig");
@@ -1557,13 +1557,13 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, function (re
   var spin = Math.floor(Math.random() * 12);
   for (var i = 0; i < 2; i++) {
     if (spin >= 8) {
-      spin = Math.floor(Math.random() * 12);
-      if (spin >= 9) {
         spin = Math.floor(Math.random() * 12);
-        if (spin >= 10) {
-          spin = Math.floor(Math.random() * 12);
+        if (spin >= 9) {
+            spin = Math.floor(Math.random() * 12);
+            if (spin >= 10) {
+              spin = Math.floor(Math.random() * 12);
+            }
         }
-      }
     }
   }
 
@@ -1571,8 +1571,8 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, function (re
   let pointValues = [spins[spin], req.user.id];
   db.run(pointStmt, pointValues, (err) => {
     if (err) {
-      res.status(500).send("got an error from transaction");
-      return;
+        res.status(500).send("got an error from transaction");
+        return;
     }
   });
 
@@ -1586,7 +1586,7 @@ app.get("/api/events/:event/teams", apiCheckAuth, function (req, res) {
     hostname: "frc-api.firstinspires.org",
     path: `/v3.0/${season}/teams?eventCode=${req.params.event}`,
     headers: {
-      Authorization: "Basic " + frcapi,
+        Authorization: "Basic " + frcapi,
     },
     maxRedirects: 20,
   };
@@ -1595,29 +1595,29 @@ app.get("/api/events/:event/teams", apiCheckAuth, function (req, res) {
     var chunks = [];
 
     response.on("data", function (chunk) {
-      chunks.push(chunk);
+        chunks.push(chunk);
     });
 
     response.on("end", function (chunk) {
-      var body = Buffer.concat(chunks);
-      dbody.emit("update", body);
+        var body = Buffer.concat(chunks);
+        dbody.emit("update", body);
     });
 
     response.on("error", function (error) {
-      console.error(error);
+        console.error(error);
     });
   });
   request.end();
   dbody.on("update", function (body) {
     if (invalidJSON(body)) {
-      res.status(500).send("error! invalid data");
+        res.status(500).send("error! invalid data");
     } else {
-      const parsedData = JSON.parse(body);
-      var teams = [];
-      for (var i = 0; i < parsedData.teams.length; i++) {
-        teams.push(parsedData.teams[i].teamNumber);
-      }
-      res.status(200).setHeader("Content-type", "text/plain").send(teams.toString());
+        const parsedData = JSON.parse(body);
+        var teams = [];
+        for (var i = 0; i < parsedData.teams.length; i++) {
+            teams.push(parsedData.teams[i].teamNumber);
+        }
+        res.status(200).setHeader("Content-type", "text/plain").send(teams.toString());
     }
   });
 });
@@ -1636,18 +1636,18 @@ app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, function (req, res) 
   const values = [req.params.event, season];
   db.all(stmt, values, (err, dbQueryResult) => {
     if (err) {
-      res.status(500).send("error!");
-      return;
-    } else {
-      if (typeof dbQueryResult == "undefined") {
-        res.status(500).send("fail");
+        res.status(500).send("error!");
         return;
-      } else {
-        for (var i = 0; i < dbQueryResult.length; i++) {
-          teams.push(dbQueryResult[i].team);
+    } else {
+        if (typeof dbQueryResult == "undefined") {
+            res.status(500).send("fail");
+            return;
+        } else {
+            for (var i = 0; i < dbQueryResult.length; i++) {
+              teams.push(dbQueryResult[i].team);
+            }
+            res.status(200).setHeader("Content-type", "text/plain").send(teams.toString());
         }
-        res.status(200).setHeader("Content-type", "text/plain").send(teams.toString());
-      }
     }
   });
 });
@@ -1657,29 +1657,31 @@ app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, function (req, res) {
   const values = [req.params.event, season, req.params.team];
   db.get(stmt, values, (err, dbQueryResult) => {
     if (err) {
-      res.status(403).setHeader("Content-type", "text/plain").send("none");
-      return;
-    } else {
-      if (typeof dbQueryResult == "undefined") {
         res.status(403).setHeader("Content-type", "text/plain").send("none");
         return;
-      } else {
-        res.status(200).setHeader("Content-type", "text/plain").send(dbQueryResult.note);
-      }
+    } else {
+        if (typeof dbQueryResult == "undefined") {
+            res.status(403).setHeader("Content-type", "text/plain").send("none");
+            return;
+        } else {
+            res.status(200).setHeader("Content-type", "text/plain").send(dbQueryResult.note);
+        }
     }
   });
 });
 
 app.get("/api/notes/:event/:team/createNote", apiCheckAuth, function (req, res) {
-  db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet')`,
-    function (err) {
-      if (err) {
-        res.status(500).send("500");
-      } else {
-        res.status(200).send("200");
-      }
-    }
-  );
+    const stmt = "INSERT INTO notes (team, season, event, note) VALUES(?, ?, ?, 'no note yet'"
+    const values = [req.params.team, season, req.params.event];
+    db.run(`INSERT INTO notes (team, season, event, note) VALUES(${req.params.team}, ${season}, "${req.params.event}", 'no note yet')`,
+        function (err) {
+            if (err) {
+                res.status(500).send("500");
+            } else {
+                res.status(200).send("200");
+            }
+        }
+    );
 });
 
 app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, function (req, res) {
@@ -1695,12 +1697,12 @@ app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, function (req, res
     const stmt = `UPDATE notes SET note=? WHERE event=? AND season=? AND team=?`;
     const values = [newNote.save, req.params.event, season, req.params.team];
     db.run(stmt, values, (err) => {
-      if (err) {
-        res.status(500).send("error!");
-        return;
-      } else {
-        res.status(200).send("200");
-      }
+        if (err) {
+            res.status(500).send("error!");
+            return;
+        } else {
+            res.status(200).send("200");
+        }
     });
   });
 });

@@ -16,33 +16,34 @@
         }
         .flex {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             align-content: center;
+            justify-content: center;
         }
         .banner {
             background: #0f4bcb;
             color: #fff;
             display: inline-block;
-            height: 170px;
+            height: 340px;
             line-height: 1.2;
-            margin: 0 0 40px;
-            padding: 8px;
+            margin: 0 0 80px;
+            padding: 16px;
             position: relative;
             text-align: center;
             vertical-align: top;
             white-space: normal;
-            width: 140px;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,.1));
+            width: 280px;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,.1));
             box-sizing: border-box;
             font-family: Roboto,sans-serif;
-            font-size: 14px;
+            font-size: 28px;
         }
         .banner:after {
-            border-bottom: 70px solid #0f4bcb;
+            border-bottom: 140px solid #0f4bcb;
             border-color: #0f4bcb #0f4bcb transparent;
             border-style: solid;
-            border-width: 5px 70px 20px;
+            border-width: 10px 140px 40px;
             content: "";
             display: block;
             left: 0;
@@ -50,15 +51,15 @@
             top: 100%;
         }
         .bannerimg {
-            margin-bottom: 10px;
-            margin-top: 10px;
-            max-height: 45px;
-            width: 75px;
+            margin-bottom: 10px * 2;
+            margin-top: 10px * 2;
+            max-height: 45px * 2;
+            width: 75px * 2;
             border: 0;
         }
         .award-event, .award-event-long {
             display: table;
-            height: 50px;
+            height: 50px * 2;
             text-transform: uppercase;
             width: 100%;
         }
@@ -71,8 +72,8 @@
             text-transform: uppercase;
             font-style: italic;
             font-weight: bolder;
-            height: 35px;
-            margin: 3px 0;
+            height: 35px * 2;
+            margin: 3px * 2 0;
             width: 100%;
         }
     </style>
@@ -82,11 +83,22 @@
             <div class="banner">
                 <img src="assets/first.svg" class="bannerimg">
                 <div class="award-name-long">
-                    <span>FIRST does not like gambling</span>
+                    <span style="font-family: 'Comic Sans MS'; text-shadow: #000 2.55px 2.55px;">i tried<br>my best</span>
                 </div>
                 <br>
                 <div class="award-event">
-                    <span>2023 Sacramento Regional</span>
+                    <span style="font-family: 'Comic Sans MS';">2023 Davis Regional</span>
+                </div>
+            </div>
+            <span>&nbsp;&nbsp;</span>
+            <div class="banner">
+                <img src="assets/first.svg" class="bannerimg">
+                <div class="award-name-long">
+                    <span style="font-family: 'Comic Sans MS'; text-shadow: #000 2.55px 2.55px;">i tried<br>my best</span>
+                </div>
+                <br>
+                <div class="award-event">
+                    <span style="font-family: 'Comic Sans MS';">2023 Sacramento Regional</span>
                 </div>
             </div>
         </div>
