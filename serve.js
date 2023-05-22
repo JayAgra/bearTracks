@@ -97,7 +97,7 @@ app.use(
   session({
     secret: serverSecret,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     maxAge: 31556952000, // 365 days
     cookie: {
         secure: "true",
@@ -207,6 +207,15 @@ function logErrors(errortodisplay) {
     "\x1b[0m" + errortodisplay
   );
   console.log("╰─> " + Date.now);
+}
+
+function escapeHTML(htmlStr) {
+    return String(htmlStr)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 //check the JSON file to see if the user is in the team discord server
@@ -440,21 +449,45 @@ app.post("/submit", checkAuth, function (req, res) {
         }
         let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         let values = [
-            formData.event,
+            escapeHTML(formData.event),
             season,
-            req.user.username,
-            formData.team,
-            formData.match,
-            formData.level,
-            formData.game1,formData.game2,formData.game3,formData.game4,formData.game5,formData.game6,formData.game7,formData.game8,formData.game9,formData.game10,formData.game11,formData.game12,formData.game13,formData.game14,formData.game15,formData.game16,formData.game17,formData.game18,formData.game19,formData.game20,formData.game21,formData.game22,formData.game23,formData.game24,formData.game25,
+            escapeHTML(req.user.username),
+            escapeHTML(formData.team),
+            escapeHTML(formData.match),
+            escapeHTML(formData.level),
+            escapeHTML(formData.game1),
+            escapeHTML(formData.game2),
+            escapeHTML(formData.game3),
+            escapeHTML(formData.game4),
+            escapeHTML(formData.game5),
+            escapeHTML(formData.game6),
+            escapeHTML(formData.game7),
+            escapeHTML(formData.game8),
+            escapeHTML(formData.game9),
+            escapeHTML(formData.game10),
+            escapeHTML(formData.game11),
+            escapeHTML(formData.game12),
+            escapeHTML(formData.game13),
+            escapeHTML(formData.game14),
+            escapeHTML(formData.game15),
+            escapeHTML(formData.game16),
+            escapeHTML(formData.game17),
+            escapeHTML(formData.game18),
+            escapeHTML(formData.game19),
+            escapeHTML(formData.game20),
+            escapeHTML(formData.game21),
+            escapeHTML(formData.game22),
+            escapeHTML(formData.game23),
+            escapeHTML(formData.game24),
+            escapeHTML(formData.game25),
             "dropped",
-            formData.defend,
-            formData.driving,
-            formData.overall,
-            req.user.id,
-            req.user.username,
-            req.user.discriminator,
-            req.user.avatar,
+            escapeHTML(formData.defend),
+            escapeHTML(formData.driving),
+            escapeHTML(formData.overall),
+            escapeHTML(req.user.id),
+            escapeHTML(req.user.username),
+            escapeHTML(req.user.discriminator),
+            escapeHTML(req.user.avatar),
             0,
             "0",
         ];
@@ -495,26 +528,45 @@ app.post("/submitPit", checkAuth, imageUploads, function (req, res) {
   let formData = req.body;
   let stmt = `INSERT INTO pit (event, season, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   let values = [
-    formData.event,
-    season,
-    req.user.username,
-    formData.team,
-    formData.drivetype,
-    formData.game1,formData.game2,formData.game3,formData.game4,formData.game5,formData.game6,formData.game7,formData.game8,formData.game9,formData.game10,formData.game11,formData.game12,formData.game13,formData.game14,formData.game15,formData.game16,formData.game17,formData.game18,formData.game19,formData.game20,
-    formData.driveTeam,
-    formData.attended,
-    formData.confidence,
-    formData.bqual,
-    formData.overall,
-    req.user.id,
-    req.user.username,
-    req.user.discriminator,
-    req.user.avatar,
-    req.files.image1[0].filename,
-    req.files.image2[0].filename,
-    req.files.image3[0].filename,
-    req.files.image4[0].filename,
-    req.files.image5[0].filename,
+      escapeHTML(formData.event),
+      season,
+      escapeHTML(req.user.username),
+      escapeHTML(formData.team),
+      escapeHTML(formData.drivetype),
+      escapeHTML(formData.game1),
+      escapeHTML(formData.game2),
+      escapeHTML(formData.game3),
+      escapeHTML(formData.game4),
+      escapeHTML(formData.game5),
+      escapeHTML(formData.game6),
+      escapeHTML(formData.game7),
+      escapeHTML(formData.game8),
+      escapeHTML(formData.game9),
+      escapeHTML(formData.game10),
+      escapeHTML(formData.game11),
+      escapeHTML(formData.game12),
+      escapeHTML(formData.game13),
+      escapeHTML(formData.game14),
+      escapeHTML(formData.game15),
+      escapeHTML(formData.game16),
+      escapeHTML(formData.game17),
+      escapeHTML(formData.game18),
+      escapeHTML(formData.game19),
+      escapeHTML(formData.game20),
+      escapeHTML(formData.driveTeam),
+      escapeHTML(formData.attended),
+      escapeHTML(formData.confidence),
+      escapeHTML(formData.bqual),
+      escapeHTML(formData.overall),
+      escapeHTML(req.user.id),
+      escapeHTML(req.user.username),
+      escapeHTML(req.user.discriminator),
+      escapeHTML(req.user.avatar),
+      req.files.image1[0].filename,
+      req.files.image2[0].filename,
+      req.files.image3[0].filename,
+      req.files.image4[0].filename,
+      req.files.image5[0].filename,
   ];
   db.run(stmt, values, function (err) {
     if (err) {
