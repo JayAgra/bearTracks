@@ -1099,7 +1099,7 @@ app.get("/manage", checkAuth, async function (req, res) {
                   return;
               } else {
                   var listHTML = "";
-                  for (var i = 0; i < dbQueryResult.length; i++) {
+                  for (var i = dbQueryResult.length - 1; i >= 0; i--) {
                     listHTML =
                         listHTML +
                         `<fieldset style="background-color: "><span><span>ID:&emsp;${
