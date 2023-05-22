@@ -36,15 +36,6 @@ function boolToNum(val) {
   if (val) {return 1;} else {return 0;}
 }
 
-function escapeHTML(htmlStr) {
-    return String(htmlStr)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
-
 function valueToEmote(value) {
   if (value == null || value == "false") {
     return "❌";
@@ -232,7 +223,7 @@ function pitData(season, team, event, interaction) {
 }
 
 function createHTMLExport(dbQueryResult) {
-  return `Author: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${escapeHTML(dbQueryResult.defend)}<br>Driving: ${escapeHTML(dbQueryResult.driving)}<br>Overall: ${escapeHTML(dbQueryResult.overall)}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Performance Score: ${dbQueryResult.weight}%`;
+  return `Author: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>AUTO: <br>Taxi: ${valueToEmote(dbQueryResult.game1)}<br>Score B/M/T: ${valueToEmote(dbQueryResult.game2)}${valueToEmote(dbQueryResult.game3)}${valueToEmote(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${valueToEmote(dbQueryResult.game6)}${valueToEmote(dbQueryResult.game7)}${valueToEmote(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${valueToEmote(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Performance Score: ${dbQueryResult.weight}%`;
 }
 
 function weightScores(submissionID) {
