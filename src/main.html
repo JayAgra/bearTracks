@@ -52,7 +52,7 @@
     </style>
 </head>
 
-<body class="dark-mode" id="body">
+<body class="dark-mode">
     <script>themeHandle()</script>
     <form action="/submit" target="_self" method="POST" name="mainForm" id="mainFormHTML">
         <input type="text" value="main" name="formType" hidden>
@@ -245,11 +245,13 @@
                 document.getElementById('submitButton').setAttribute("disabled", "disabled");
             }
         });
-
         //end data validation
+
+        //grid orientation reminder
         if (window.innerHeight > window.innerWidth) {
             document.getElementById('landscapeReminder').style.display = "inline";
         }
+
         window.addEventListener('resize', function(event){
             if(window.innerHeight > window.innerWidth){
                 document.getElementById('landscapeReminder').style.display = "inline";
@@ -257,6 +259,9 @@
                 document.getElementById('landscapeReminder').style.display = "none";
             }
         });
+        //end grid orientation reminder
+
+        //grid script
         function getAllCells() {
             var cells = [];
             for(let j = 1; j < 4; j++) {
@@ -346,6 +351,7 @@
                 }
             });
         }
+        //end grid script
     </script>
 </body>
 </html>

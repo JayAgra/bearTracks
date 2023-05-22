@@ -12,16 +12,16 @@ function themeHandle() {
     let theme = getThemeCookie();
     switch (theme) {
         case "light":
-            document.getElementById("body").classList.replace("dark-mode", "light-mode");
+            document.body.classList.replace("dark-mode", "light-mode");
             document.getElementById("themeMeta").content = "#ffffff";
             break;
         case "dark":
         case undefined:
-            document.getElementById("body").classList.replace("light-mode", "dark-mode");
+            document.body.classList.replace("light-mode", "dark-mode");
             document.getElementById("themeMeta").content = "#121212";
             break;
         default:
-            document.getElementById("body").classList.replace("light-mode", "dark-mode");
+            document.body.classList.replace("light-mode", "dark-mode");
             document.getElementById("themeMeta").content = "#121212"
     }
 }
