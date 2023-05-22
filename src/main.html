@@ -28,20 +28,22 @@
             grid-template-columns: repeat(9, 1fr);
             grid-template-rows: repeat(3, 1fr);
             row-gap: 10px;
-            width:100%
+            width:100%;
         }
 
         .sg-c {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             aspect-ratio: 1/1;
             border-radius: 5px;
-            cursor: pointer;
             font-size: 2rem;
             margin: 2px;
             padding: 2px;
-            text-align: center;
             width:100%;
             background-color: #ddd;
-            color: #a216a2
+            text-align: center;
+            cursor: pointer;
         }
 
         .sg-c[data-coop=true] {
@@ -99,35 +101,35 @@
             <p><strong>Top of grid</strong></p>
             <div class="sg">
                 <!--Grid row 1-->
-                <div class="sg-c" data-coop="false" data-num="0" id="sgc_1_1" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="1" id="sgc_1_2" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="2" id="sgc_1_3" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="3" id="sgc_1_4" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="4" id="sgc_1_5" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="5" id="sgc_1_6" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="6" id="sgc_1_7" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="7" id="sgc_1_8" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="8" id="sgc_1_9" data-state="0"></div>
+                <div class="sg-c" data-coop="false" data-num="0" id="sgc_1_1" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="false" data-num="1" id="sgc_1_2" data-state="0" data-gp="cube"></div>
+                <div class="sg-c" data-coop="false" data-num="2" id="sgc_1_3" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="true" data-num="3" id="sgc_1_4" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="true" data-num="4" id="sgc_1_5" data-state="0" data-gp="cube"></div>
+                <div class="sg-c" data-coop="true" data-num="5" id="sgc_1_6" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="false" data-num="6" id="sgc_1_7" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="false" data-num="7" id="sgc_1_8" data-state="0" data-gp="cube"></div>
+                <div class="sg-c" data-coop="false" data-num="8" id="sgc_1_9" data-state="0" data-gp="cone"></div>
                 <!--Grid row 2-->
-                <div class="sg-c" data-coop="false" data-num="9" id="sgc_2_1" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="10" id="sgc_2_2" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="11" id="sgc_2_3" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="12" id="sgc_2_4" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="13" id="sgc_2_5" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="14" id="sgc_2_6" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="15" id="sgc_2_7" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="16" id="sgc_2_8" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="17" id="sgc_2_9" data-state="0"></div>
+                <div class="sg-c" data-coop="false" data-num="9" id="sgc_2_1" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="false" data-num="10" id="sgc_2_2" data-state="0" data-gp="cube"></div>
+                <div class="sg-c" data-coop="false" data-num="11" id="sgc_2_3" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="true" data-num="12" id="sgc_2_4" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="true" data-num="13" id="sgc_2_5" data-state="0" data-gp="cube"></div>
+                <div class="sg-c" data-coop="true" data-num="14" id="sgc_2_6" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="false" data-num="15" id="sgc_2_7" data-state="0" data-gp="cone"></div>
+                <div class="sg-c" data-coop="false" data-num="16" id="sgc_2_8" data-state="0" data-gp="cube"></div>
+                <div class="sg-c" data-coop="false" data-num="17" id="sgc_2_9" data-state="0" data-gp="cone"></div>
                 <!--Grid row 3-->
-                <div class="sg-c" data-coop="false" data-num="18" id="sgc_3_1" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="19" id="sgc_3_2" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="20" id="sgc_3_3" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="21" id="sgc_3_4" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="22" id="sgc_3_5" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="23" id="sgc_3_6" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="24" id="sgc_3_7" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="25" id="sgc_3_8" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="26" id="sgc_3_9" data-state="0"></div>
+                <div class="sg-c" data-coop="false" data-num="18" id="sgc_3_1" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="false" data-num="19" id="sgc_3_2" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="false" data-num="20" id="sgc_3_3" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="true" data-num="21" id="sgc_3_4" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="true" data-num="22" id="sgc_3_5" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="true" data-num="23" id="sgc_3_6" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="false" data-num="24" id="sgc_3_7" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="false" data-num="25" id="sgc_3_8" data-state="0" data-gp="h"></div>
+                <div class="sg-c" data-coop="false" data-num="26" id="sgc_3_9" data-state="0" data-gp="h"></div>
             </div>
             <p><strong>Bottom of grid</strong></p>
         </fieldset>
@@ -275,24 +277,72 @@
             document.getElementById('griddata').value = sgCellStatus.join('');
             console.log(document.getElementById('griddata').value);
         }
+        function setGray(that) {
+            that.innerText = "";
+            if (that.getAttribute("data-coop") == "true") {
+                that.style.background = "#bbb";
+            } else {
+                that.style.background = "#ddd";
+            }
+            that.setAttribute("data-state", "0")
+            processCellClick(that.getAttribute("data-num"), 0);
+        }
+        function setSingleCube(that) {
+            that.style.background = "#a216a2";
+            that.innerText = "";
+            that.setAttribute("data-state", "1")
+            processCellClick(that.getAttribute("data-num"), 1);
+        }
+        function setSingleCone(that) {
+            that.style.background = "#ff0";
+            that.innerText = "";
+            that.setAttribute("data-state", "2")
+            processCellClick(that.getAttribute("data-num"), 2);
+        }
+        function setDoubleCube(that) {
+            that.style.background = "#a216a2";
+            that.style.color = "#ff0";
+            that.innerText = "2";
+            that.setAttribute("data-state", "3")
+            processCellClick(that.getAttribute("data-num"), 3);
+        }
+        function setDoubleCone(that) {
+            that.style.background = "#ff0";
+            that.style.color = "#a216a2";
+            that.innerText = "2";
+            that.setAttribute("data-state", "5")
+            processCellClick(that.getAttribute("data-num"), 4);
+        }
         for (var i = 0; i < allCells.length; i += 1) {
             allCells[i].addEventListener('click', function (e) {
-                if (this.getAttribute("data-state") == "0") {
-                    this.style.background = "#a216a2";
-                    this.setAttribute("data-state", "1")
-                    processCellClick(this.getAttribute("data-num"), 1);
-                } else if (this.getAttribute("data-state") == "1") {
-                    this.style.background = "#ff0";
-                    this.setAttribute("data-state", "2")
-                    processCellClick(this.getAttribute("data-num"), 2);
-                } else if (this.getAttribute("data-state") == "2") {
-                    if (this.getAttribute("data-coop") == "true") {
-                        this.style.background = "#bbb";
+                if (this.getAttribute("data-gp") === "cube") {
+                    if (this.getAttribute("data-state") === "0") {
+                        setSingleCube(this);
+                    } else if (this.getAttribute("data-state") === "1") {
+                        setDoubleCube(this);
                     } else {
-                        this.style.background = "#ddd";
+                        setGray(this);
                     }
-                    this.setAttribute("data-state", "0")
-                    processCellClick(this.getAttribute("data-num"), 0);
+                } else if (this.getAttribute("data-gp") === "cone") {
+                    if (this.getAttribute("data-state") === "0") {
+                        setSingleCone(this);
+                    } else if (this.getAttribute("data-state") === "2") {
+                        setDoubleCone(this);
+                    } else {
+                        setGray(this);
+                    }
+                } else if (this.getAttribute("data-gp") === "h") {
+                    if (this.getAttribute("data-state") === "1") {
+                        setSingleCone(this);
+                    } else if (this.getAttribute("data-state") === "0") {
+                        setSingleCube(this);
+                    } else if (this.getAttribute("data-state") === "3") {
+                        setDoubleCone(this);
+                    } else if (this.getAttribute("data-state") === "2") {
+                        setDoubleCube(this);
+                    } else {
+                        setGray(this);
+                    }
                 }
             });
         }
