@@ -37,7 +37,6 @@ db.run("PRAGMA journal_mode = WAL;");
 const fs = require("fs");
 const express = require("express");
 const session = require("express-session");
-const { check } = require("express-validator");
 const lusca = require("lusca");
 const https = require("https");
 const http = require("http");
@@ -441,45 +440,21 @@ app.post("/submit", checkAuth, function (req, res) {
         }
         let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         let values = [
-            check(formData.event).escape(),
+            formData.event,
             season,
-            check(req.user.username).escape(),
-            check(formData.team).escape(),
-            check(formData.match).escape(),
-            check(formData.level).escape(),
-            check(formData.game1).escape(),
-            check(formData.game2).escape(),
-            check(formData.game3).escape(),
-            check(formData.game4).escape(),
-            check(formData.game5).escape(),
-            check(formData.game6).escape(),
-            check(formData.game7).escape(),
-            check(formData.game8).escape(),
-            check(formData.game9).escape(),
-            check(formData.game10).escape(),
-            check(formData.game11).escape(),
-            check(formData.game12).escape(),
-            check(formData.game13).escape(),
-            check(formData.game14).escape(),
-            check(formData.game15).escape(),
-            check(formData.game16).escape(),
-            check(formData.game17).escape(),
-            check(formData.game18).escape(),
-            check(formData.game19).escape(),
-            check(formData.game20).escape(),
-            check(formData.game21).escape(),
-            check(formData.game22).escape(),
-            check(formData.game23).escape(),
-            check(formData.game24).escape(),
-            check(formData.game25).escape(),
+            req.user.username,
+            formData.team,
+            formData.match,
+            formData.level,
+            formData.game1,formData.game2,formData.game3,formData.game4,formData.game5,formData.game6,formData.game7,formData.game8,formData.game9,formData.game10,formData.game11,formData.game12,formData.game13,formData.game14,formData.game15,formData.game16,formData.game17,formData.game18,formData.game19,formData.game20,formData.game21,formData.game22,formData.game23,formData.game24,formData.game25,
             "dropped",
-            check(formData.defend).escape(),
-            check(formData.driving).escape(),
-            check(formData.overall).escape(),
-            check(req.user.id).escape(),
-            check(req.user.username).escape(),
-            check(req.user.discriminator).escape(),
-            check(req.user.avatar).escape(),
+            formData.defend,
+            formData.driving,
+            formData.overall,
+            req.user.id,
+            req.user.username,
+            req.user.discriminator,
+            req.user.avatar,
             0,
             "0",
         ];
@@ -520,45 +495,26 @@ app.post("/submitPit", checkAuth, imageUploads, function (req, res) {
   let formData = req.body;
   let stmt = `INSERT INTO pit (event, season, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   let values = [
-      check(formData.event).escape(),
-      season,
-      check(req.user.username).escape(),
-      check(formData.team).escape(),
-      check(formData.drivetype).escape(),
-      check(formData.game1).escape(),
-      check(formData.game2).escape(),
-      check(formData.game3).escape(),
-      check(formData.game4).escape(),
-      check(formData.game5).escape(),
-      check(formData.game6).escape(),
-      check(formData.game7).escape(),
-      check(formData.game8).escape(),
-      check(formData.game9).escape(),
-      check(formData.game10).escape(),
-      check(formData.game11).escape(),
-      check(formData.game12).escape(),
-      check(formData.game13).escape(),
-      check(formData.game14).escape(),
-      check(formData.game15).escape(),
-      check(formData.game16).escape(),
-      check(formData.game17).escape(),
-      check(formData.game18).escape(),
-      check(formData.game19).escape(),
-      check(formData.game20).escape(),
-      check(formData.driveTeam).escape(),
-      check(formData.attended).escape(),
-      check(formData.confidence).escape(),
-      check(formData.bqual).escape(),
-      check(formData.overall).escape(),
-      check(req.user.id).escape(),
-      check(req.user.username).escape(),
-      check(req.user.discriminator).escape(),
-      check(req.user.avatar).escape(),
-      req.files.image1[0].filename,
-      req.files.image2[0].filename,
-      req.files.image3[0].filename,
-      req.files.image4[0].filename,
-      req.files.image5[0].filename,
+    formData.event,
+    season,
+    req.user.username,
+    formData.team,
+    formData.drivetype,
+    formData.game1,formData.game2,formData.game3,formData.game4,formData.game5,formData.game6,formData.game7,formData.game8,formData.game9,formData.game10,formData.game11,formData.game12,formData.game13,formData.game14,formData.game15,formData.game16,formData.game17,formData.game18,formData.game19,formData.game20,
+    formData.driveTeam,
+    formData.attended,
+    formData.confidence,
+    formData.bqual,
+    formData.overall,
+    req.user.id,
+    req.user.username,
+    req.user.discriminator,
+    req.user.avatar,
+    req.files.image1[0].filename,
+    req.files.image2[0].filename,
+    req.files.image3[0].filename,
+    req.files.image4[0].filename,
+    req.files.image5[0].filename,
   ];
   db.run(stmt, values, function (err) {
     if (err) {
@@ -1143,7 +1099,7 @@ app.get("/manage", checkAuth, async function (req, res) {
                   return;
               } else {
                   var listHTML = "";
-                  for (var i = dbQueryResult.length - 1; i >= 0; i--) {
+                  for (var i = 0; i < dbQueryResult.length; i++) {
                     listHTML =
                         listHTML +
                         `<fieldset style="background-color: "><span><span>ID:&emsp;${
