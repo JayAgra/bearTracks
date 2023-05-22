@@ -710,12 +710,6 @@ app.get("/sw.js", function (req, res) {
 });
 
 //serve resources
-app.get("/appinstall.js", function (req, res) {
-  res.set("Cache-control", "public, max-age=7776000");
-  res.sendFile("src/appinstall.js", { root: __dirname });
-});
-
-//serve resources
 app.get("/favicon.ico", function (req, res) {
   res.set("Cache-control", "public, max-age=259200");
   res.sendFile("src/favicon.ico", { root: __dirname });
