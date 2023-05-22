@@ -18,8 +18,9 @@ var db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
 function toIcons(str) {
   var step1 = str.replaceAll("0", "⬜");
   var step2 = step1.replaceAll("1", "🟪");
-  var step3 = step2.replaceAll("3", "❷");
-  return step3.replaceAll("4", "❷");
+  var step3 = step2.replaceAll("2", "🟨");
+  var step4 = step3.replaceAll("3", "❷");
+  return step4.replaceAll("4", "❷");
 }
 
 function fullGridString(str, sep) {
