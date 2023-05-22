@@ -267,7 +267,7 @@ function weightScores(submissionID) {
       var cubes = 0;
       var cones = 0;
       result.game12.split("").forEach(function(item, index, array) {
-        var fullgrid = array.includes("0");
+        var fullgrid = !array.includes("0");
         if (index <= 8 && item !== "0") {
             if (item === "3" || item === "4" && fullgrid) {
                 gridwt = gridwt + 3;
