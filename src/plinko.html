@@ -17,20 +17,18 @@
     <link rel="apple-touch-startup-image" href="public/launch.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.12.0/matter.js" crossorigin="anonymous"></script>
     <style>
-        html {
-            font-size: 16px;
-        }
         body {
             padding: 0;
             margin: 0;
             overflow: hidden;
+            display: unset !important;
+            align-items: unset !important;
+            justify-content: unset !important;
         }
-
         #canvas {
             width: 100vw;
             height: 100vh;
         }
-
         .score {
             display: flex;
             justify-content: center;
@@ -41,18 +39,15 @@
             transform: rotate(-90deg);
             font-size: calc(100vh * 0.0167 + 1px);
         }
-
         .sel {
             background-color: #a216a2;
             color: yellow;
         }
-
         .dummydiv {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-
         .gameover {
             width: 100vw;
             height: 100vh;
@@ -62,16 +57,17 @@
             align-items: center;
         }
     </style>
+    <script src="assets/plinko.js"></script>
 </head>
 <body>
     <div id="dummy" class="dummydiv">
         <h1 id="title" style="font-family: 'raleway-300'">766 Casino<br><span class="gametitle">plinko</span></h1>
         <button id="playBtn" type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="startGame()">Play</button><button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
     </div>
-    <div id="gameover" class="gameover" style="display: none;">
+    <div id="gameover" class="gameover" style="display: none !important;">
         <h1 style="text-align: center;">game over</h1>
         <h4 style="text-align: center;" id="pts"></h4>
         <small id="wait">points being added...</small>
+        <button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
     </div>
-    <script src="assets/plinko.js"></script>
 </body>

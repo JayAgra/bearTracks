@@ -1,8 +1,8 @@
 const waitMs = (ms) => new Promise((res) => setTimeout(res, ms));
 
-function creditPts(token, result) {
+function creditPts(token, amt) {
     const secondXHR = new XMLHttpRequest();
-    secondXHR.open("GET", `/api/casino/plinko/endGame/${token}/${result}`, true);
+    secondXHR.open("GET", `/api/casino/plinko/endGame/${token}/${amt}`, true);
     secondXHR.withCredentials = true;
 
     secondXHR.onreadystatechange = async () => {
@@ -24,44 +24,10 @@ function creditPts(token, result) {
     secondXHR.send()
 }
 
-async function startGame() {
-    //start game API request
-    //run await play() only if 200 retu\rned
-    //for testing, play() is here
-    document.getElementById("playBtn").innerHTML = "Requesting Data...";
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/casino/plinko/startGame`, true);
-    xhr.withCredentials = true;
-
-    xhr.onreadystatechange = async () => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            console.log("200 ok");
-            console.log(xhr.responseText);
-
-            creditPts(await JSON.parse(xhr.responseText).token, await play());
-        } else if (xhr.status === 401) {
-            console.log("401 failure")
-            document.getElementById("playBtn").innerHTML = "401 Unauthorized";
-            await waitMs(1000);
-            window.location.href = "/login";
-        } else if (xhr.status === 400) {
-            console.log("400 failure")
-            document.getElementById("playBtn").innerHTML = "400 Bad Request";
-        } else if (xhr.status === 500) {
-            console.log("500 failure")
-            document.getElementById("playBtn").innerHTML = "500 Internal Server Error";
-        } else {
-            console.log("awaiting response")
-            document.getElementById("playBtn").innerHTML = "Downloading Data...";
-        }
-    }
-
-    xhr.send()
-}
-
-async function play() {
-    document.getElementById("dummy").style.display = "none";
+function result() {
+return new Promise((resolve, reject) => {
+    var amount = 0;
+    document.getElementById("dummy").remove();
     //not a canvas element! its a DIV named canvas
     var gameView = document.createElement("div");
     gameView.setAttribute("id", "canvas");
@@ -70,16 +36,16 @@ async function play() {
     //modules from Matter.js
     const { Engine, Events, Render, World, Bodies, Body } = Matter;
 
-    var vpWidth = gameView.clientWidth;
-    var vpHeight = gameView.clientHeight;
+    var vpWidth = window.innerWidth;
+    var vpHeight = window.innerHeight;
 
     const engine = Engine.create();
     const render = Render.create({
         element: gameView,
-        engine,
+        engine: engine,
         options: {
-            vpWidth,
-            vpHeight,
+            width: vpWidth,
+            height: vpHeight,
             wireframes: false,
             background: "#000",
         },
@@ -250,6 +216,34 @@ async function play() {
         balls.push(newBall);
     }
 
+    //copied and pasted from stackoverflow
+    function shuffle(a) {
+        let j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+
+    //create DIVs with results
+    var names = shuffle(["0","2","3","5","10","20","75","0","2","3","5","0","2","3","5",])
+    .slice(0, 9)
+    .map((item, index) => {
+        const div = document.createElement("div");
+        div.classList.add("score");
+        div.style.left = leftOffset - scale * 1.525 + scale * index + "px";
+        div.style.top = 15.8 * scale + "px";
+        div.style.height = scale * 0.325 + "px";
+        div.style.width = 1.6 * scale + "px";
+        div.style.padding = scale / 4.5 + "px";
+        div.innerText = item;
+        gameView.append(div);
+        return div;
+    });
+
     //collision evt
     Events.on(engine, "collisionStart", function (event) {
         var pairs = event.pairs;
@@ -257,8 +251,10 @@ async function play() {
             let pairObj = pairs[i];
             if (pairObj.bodyA.isSensor) {
                 pickPointAmount(pairObj.bodyA.__data__);
+                resolve(names[pairObj.bodyA.__data__].innerText);
             } else if (pairObj.bodyB.isSensor) {
                 pickPointAmount(pairObj.bodyB.__data__);
+                resolve(names[pairObj.bodyB.__data__].innerText);
             }
         }
     });
@@ -275,100 +271,95 @@ async function play() {
     Engine.run(engine);
     Render.run(render);
 
-    //copied and pasted from stackoverflow
-    function shuffle(a) {
-        let j, x, i;
-        for (i = a.length - 1; i > 0; i--) {
-            j = Math.floor(Math.random() * (i + 1));
-            x = a[i];
-            a[i] = a[j];
-            a[j] = x;
-        }
-        return a;
-    }
-
-    //create DIVs with results
-    var names = shuffle([
-        "0",
-        "2",
-        "3",
-        "5",
-        "10",
-        "20",
-        "75",
-        "0",
-        "2",
-        "3",
-        "5",
-        "0",
-        "2",
-        "3",
-        "5",
-    ])
-        .slice(0, 9)
-        .map((item, index) => {
-            const div = document.createElement("div");
-            div.classList.add("score");
-            div.style.left = leftOffset - scale * 1.525 + scale * index + "px";
-            div.style.top = 15.8 * scale + "px";
-            div.style.height = scale * 0.325 + "px";
-            div.style.width = 1.6 * scale + "px";
-            div.style.padding = scale / 4.5 + "px";
-            div.innerText = item;
-            document.body.append(div);
-            return div;
-        });
-    
     var endgameRunning = false;
-    
+
     async function pickPointAmount(i) {
-        if (endgameRunning) {return;}
-        endgameRunning = true;
+        if (endgameRunning) {} else {
+            endgameRunning = true;
 
-        names[i].classList.add("sel");
-        const amount = Number(names[i].innerText);
-        console.log(amount);
+            names[i].classList.add("sel");
+            amount = Number(names[i].innerText);
+            console.log(amount);
 
-        //start API request here
+            //start API request here
 
-        //start falling animation setup
-        document.querySelectorAll(".score").forEach((e) => e.remove());
-        Body.setStatic(balls[0], true);
-        Body.setStatic(rightBounds, false);
-        Body.setStatic(leftBounds, false);
-        plinkoPegs.forEach((item) => {
-            Body.setMass(item, Math.random() * (item.width * item.height));
-            Body.setStatic(item, false);
-        });
-        bottom.forEach((item) => {
-            Body.setMass(item, Math.random() * (item.width * item.height));
-            Body.setStatic(item, false);
-        });
-        sensors.forEach((item) => {
-            Body.setMass(item, Math.random() * (item.width * item.height));
-            Body.setStatic(item, false);
-        });
-        Body.applyForce(
-            rightBounds,
-            { x: 0, y: 0 },
-            Matter.Vector.create(0, 0)
-        );
-        Body.applyForce(leftBounds, { x: 0, y: 0 }, Matter.Vector.create(0, 0));
-        //end setup
-        //wait for a bit
-        await waitMs(1500);
-        //have the ball start falling
-        Body.setStatic(balls[0], false);
-        //wait to stop game
-        await waitMs(1000);
-        Engine.clear(engine);
-        Render.stop(render);
-        
-        //end game screen
-        gameView.style.display = "none";
-        document.getElementById("pts").innerText = "you won " + amount + " points"
-        document.getElementById("gameover").style.display = "flex";
+            //start falling animation setup
+            document.querySelectorAll(".score").forEach((e) => e.remove());
+            Body.setStatic(balls[0], true);
+            Body.setStatic(rightBounds, false);
+            Body.setStatic(leftBounds, false);
+            plinkoPegs.forEach((item) => {
+                Body.setMass(item, Math.random() * (item.width * item.height));
+                Body.setStatic(item, false);
+            });
+            bottom.forEach((item) => {
+                Body.setMass(item, Math.random() * (item.width * item.height));
+                Body.setStatic(item, false);
+            });
+            sensors.forEach((item) => {
+                Body.setMass(item, Math.random() * (item.width * item.height));
+                Body.setStatic(item, false);
+            });
+            Body.applyForce(
+                rightBounds,
+                { x: 0, y: 0 },
+                Matter.Vector.create(0, 0)
+            );
+            Body.applyForce(leftBounds, { x: 0, y: 0 }, Matter.Vector.create(0, 0));
+            //end setup
+            //wait for a bit
+            await waitMs(1500);
+            //have the ball start falling
+            Body.setStatic(balls[0], false);
+            //wait to stop game
+            await waitMs(1000);
+            Engine.clear(engine);
+            Render.stop(render);
 
-        return amount;
+            //end game screen
+            gameView.style.display = "none";
+            document.getElementById("pts").innerText = "you won " + amount + " points"
+            document.getElementById("gameover").style.display = "flex";
+        }
     }
+});
+}
+
+function startGame() {
+    //start game API request
+    //run await play() only if 200 returned
+    //for testing, play() is here
+    document.getElementById("playBtn").innerHTML = "Requesting Data...";
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `/api/casino/plinko/startGame`, true);
+    xhr.withCredentials = true;
+
+    xhr.onreadystatechange = async () => {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            console.log("200 ok");
+            console.log(xhr.responseText);
+            let apitoken = JSON.parse(JSON.parse(xhr.responseText)).token;
+            result().then((result) => {
+                console.log(apitoken);
+                creditPts(apitoken, result);
+            }).catch((error) => {console.log(error)});
+        } else if (xhr.status === 401) {
+            console.log("401 failure")
+            document.getElementById("playBtn").innerHTML = "401 Unauthorized";
+            await waitMs(1000);
+            window.location.href = "/login";
+        } else if (xhr.status === 400) {
+            console.log("400 failure")
+            document.getElementById("playBtn").innerHTML = "400 Bad Request";
+        } else if (xhr.status === 500) {
+            console.log("500 failure")
+            document.getElementById("playBtn").innerHTML = "500 Internal Server Error";
+        } else {
+            console.log("awaiting response")
+            document.getElementById("playBtn").innerHTML = "Downloading Data...";
+        }
+    }
+
+    xhr.send()
 }
