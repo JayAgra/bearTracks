@@ -13,8 +13,7 @@ async function startGame() {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             console.log("200 ok");
             console.log(xhr.responseText);
-            const APIData = JSON.parse(xhr.responseText);
-            const token = APIData.token;
+            const token = await JSON.parse(xhr.responseText).token;
             const result = await play();
 
             const secondXHR = new XMLHttpRequest();

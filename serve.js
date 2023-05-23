@@ -1640,11 +1640,11 @@ app.get("/api/casino/plinko/startGame", apiCheckAuth, function (req, res) {
           return;
       }
   }); 
-  res.status(200).json(`{"token": "${crypto.createHash('md5').update(casinoToken + req.user.id).digest('base64')}"}`);
+  res.status(200).json(`{"token": "${crypto.createHash('sha1').update(casinoToken + req.user.id).digest('hex')}"}`);
 });
 
 app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, function (req, res) {
-    if (crypto.createHash('md5').update(casinoToken + req.user.id).digest('base64') == req.params.token) {
+    if (crypto.createHash('sha1').update(casinoToken + req.user.id).digest('hex') == req.params.token) {
         let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
         let pointValues = [req.params.pts, req.user.id];
         db.run(pointStmt, pointValues, (err) => {
