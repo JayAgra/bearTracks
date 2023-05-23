@@ -2,62 +2,60 @@ const waitMs = (ms) => new Promise((res) => setTimeout(res, ms));
 
 async function startGame() {
     //start game API request
-    //run await play() only if 200 returned
+    //run await play() only if 200 retu\rned
     //for testing, play() is here
-    async function getTeamRanks() {
-        document.getElementById("playBtn").innerHTML = "Requesting Data...";
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", `/api/casino/plinko/startGame`, true);
-        xhr.withCredentials = true;
+    document.getElementById("playBtn").innerHTML = "Requesting Data...";
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `/api/casino/plinko/startGame`, true);
+    xhr.withCredentials = true;
 
-        xhr.onreadystatechange = async () => {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log("200 ok");
-                console.log(xhr.responseText);
-                const APIData = JSON.parse(xhr.responseText);
-                const token = APIData.token;
-                const result = await play();
+    xhr.onreadystatechange = async () => {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            console.log("200 ok");
+            console.log(xhr.responseText);
+            const APIData = JSON.parse(xhr.responseText);
+            const token = APIData.token;
+            const result = await play();
 
-                const secondXHR = new XMLHttpRequest();
-                secondXHR.open("GET", `/api/casino/plinko/endGame/${token}/${result}`, true);
-                secondXHR.withCredentials = true;
+            const secondXHR = new XMLHttpRequest();
+            secondXHR.open("GET", `/api/casino/plinko/endGame/${token}/${result}`, true);
+            secondXHR.withCredentials = true;
 
-                secondXHR.onreadystatechange = async () => {
-                    if (secondXHR.readyState === XMLHttpRequest.DONE && secondXHR.status === 200) {
-                        console.log("200 ok");
-                        console.log(secondXHR.responseText);
-                        document.getElementById("wait").innerText = "points added!"
-                    } else if (secondXHR.status === 401) {
-                        console.log("401 failure")
-                        document.getElementById("wait").innerHTML = "401 Unauthorized";
-                        await waitMs(1000);
-                        window.location.href = "/login";
-                    } else if (secondXHR.status === 400) {
-                        console.log("400 failure")
-                        document.getElementById("wait").innerText = "cheating detected 🤨"
-                    }
+            secondXHR.onreadystatechange = async () => {
+                if (secondXHR.readyState === XMLHttpRequest.DONE && secondXHR.status === 200) {
+                    console.log("200 ok");
+                    console.log(secondXHR.responseText);
+                    document.getElementById("wait").innerText = "points added!"
+                } else if (secondXHR.status === 401) {
+                    console.log("401 failure")
+                    document.getElementById("wait").innerHTML = "401 Unauthorized";
+                    await waitMs(1000);
+                    window.location.href = "/login";
+                } else if (secondXHR.status === 400) {
+                    console.log("400 failure")
+                    document.getElementById("wait").innerText = "cheating detected 🤨"
                 }
-
-                xhr.send()
-            } else if (xhr.status === 401) {
-                console.log("401 failure")
-                document.getElementById("playBtn").innerHTML = "401 Unauthorized";
-                await waitMs(1000);
-                window.location.href = "/login";
-            } else if (xhr.status === 400) {
-                console.log("400 failure")
-                document.getElementById("playBtn").innerHTML = "400 Bad Request";
-            } else if (xhr.status === 500) {
-                console.log("500 failure")
-                document.getElementById("playBtn").innerHTML = "500 Internal Server Error";
-            } else {
-                console.log("awaiting response")
-                document.getElementById("playBtn").innerHTML = "Downloading Data...";
             }
-        }
 
-        xhr.send()
+            xhr.send()
+        } else if (xhr.status === 401) {
+            console.log("401 failure")
+            document.getElementById("playBtn").innerHTML = "401 Unauthorized";
+            await waitMs(1000);
+            window.location.href = "/login";
+        } else if (xhr.status === 400) {
+            console.log("400 failure")
+            document.getElementById("playBtn").innerHTML = "400 Bad Request";
+        } else if (xhr.status === 500) {
+            console.log("500 failure")
+            document.getElementById("playBtn").innerHTML = "500 Internal Server Error";
+        } else {
+            console.log("awaiting response")
+            document.getElementById("playBtn").innerHTML = "Downloading Data...";
+        }
     }
+
+    xhr.send()
 }
 
 async function play() {
