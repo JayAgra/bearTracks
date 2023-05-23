@@ -1640,7 +1640,7 @@ app.get("/api/casino/plinko/startGame", apiCheckAuth, function (req, res) {
           return;
       }
   }); 
-  res.status(200).json(`{"token": ${crypto.createHash('md5').update(casinoToken + req.user.id).digest('base64')}}`);
+  res.status(200).json(`{"token": "${crypto.createHash('md5').update(casinoToken + req.user.id).digest('base64')}"}`);
 });
 
 app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, function (req, res) {
