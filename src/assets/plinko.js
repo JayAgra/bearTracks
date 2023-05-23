@@ -1,10 +1,35 @@
 const waitMs = (ms) => new Promise((res) => setTimeout(res, ms));
 
+function creditPts(token, result) {
+    const secondXHR = new XMLHttpRequest();
+    secondXHR.open("GET", `/api/casino/plinko/endGame/${token}/${result}`, true);
+    secondXHR.withCredentials = true;
+
+    secondXHR.onreadystatechange = async () => {
+        if (secondXHR.readyState === XMLHttpRequest.DONE && secondXHR.status === 200) {
+            console.log("200 ok");
+            console.log(secondXHR.responseText);
+            document.getElementById("wait").innerText = "points added!"
+        } else if (secondXHR.status === 401) {
+            console.log("401 failure")
+            document.getElementById("wait").innerHTML = "401 Unauthorized";
+            await waitMs(1000);
+            window.location.href = "/login";
+        } else if (secondXHR.status === 400) {
+            console.log("400 failure")
+            document.getElementById("wait").innerText = "cheating detected 🤨"
+        }
+    }
+
+    secondXHR.send()
+}
+
 async function startGame() {
     //start game API request
     //run await play() only if 200 retu\rned
     //for testing, play() is here
     document.getElementById("playBtn").innerHTML = "Requesting Data...";
+
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/casino/plinko/startGame`, true);
     xhr.withCredentials = true;
@@ -13,30 +38,8 @@ async function startGame() {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             console.log("200 ok");
             console.log(xhr.responseText);
-            const token = await JSON.parse(xhr.responseText).token;
-            const result = await play();
 
-            const secondXHR = new XMLHttpRequest();
-            secondXHR.open("GET", `/api/casino/plinko/endGame/${token}/${result}`, true);
-            secondXHR.withCredentials = true;
-
-            secondXHR.onreadystatechange = async () => {
-                if (secondXHR.readyState === XMLHttpRequest.DONE && secondXHR.status === 200) {
-                    console.log("200 ok");
-                    console.log(secondXHR.responseText);
-                    document.getElementById("wait").innerText = "points added!"
-                } else if (secondXHR.status === 401) {
-                    console.log("401 failure")
-                    document.getElementById("wait").innerHTML = "401 Unauthorized";
-                    await waitMs(1000);
-                    window.location.href = "/login";
-                } else if (secondXHR.status === 400) {
-                    console.log("400 failure")
-                    document.getElementById("wait").innerText = "cheating detected 🤨"
-                }
-            }
-
-            secondXHR.send()
+            creditPts(await JSON.parse(xhr.responseText).token, await play());
         } else if (xhr.status === 401) {
             console.log("401 failure")
             document.getElementById("playBtn").innerHTML = "401 Unauthorized";

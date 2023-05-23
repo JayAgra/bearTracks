@@ -1653,7 +1653,7 @@ app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, function (req, r
                 return;
             }
         }); 
-        res.status(200);
+        res.status(200).send("done");
     } else {
         res.status(400).send("cheating")
     }
