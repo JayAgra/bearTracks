@@ -237,20 +237,20 @@ function result() {
 
         //create DIVs with results
         var names = shuffle([
-            "0",
-            "2",
-            "3",
             "5",
+            "5",
+            "10",
+            "10",
             "10",
             "20",
             "75",
             "0",
-            "2",
-            "3",
-            "5",
             "0",
-            "2",
-            "3",
+            "0",
+            "5",
+            "10",
+            "10",
+            "5",
             "5",
         ])
             .slice(0, 9)
@@ -306,8 +306,7 @@ function result() {
                 amount = Number(names[i].innerText);
                 console.log(amount);
 
-                //start API request here
-
+                await waitMs(750);
                 //start falling animation setup
                 document.querySelectorAll(".score").forEach((e) => e.remove());
                 Body.setStatic(balls[0], true);

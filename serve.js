@@ -1644,7 +1644,7 @@ app.get("/api/casino/plinko/startGame", apiCheckAuth, function (req, res) {
 });
 
 app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, function (req, res) {
-    if (crypto.createHash('sha1').update(casinoToken + req.user.id).digest('hex') == req.params.token) {
+    if (crypto.createHash('sha1').update(casinoToken + req.user.id).digest('hex') == req.params.token && req.params.pts <= 75) {
         let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
         let pointValues = [req.params.pts, req.user.id];
         db.run(pointStmt, pointValues, (err) => {
