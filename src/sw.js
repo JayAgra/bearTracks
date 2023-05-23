@@ -22,7 +22,7 @@ self.addEventListener("fetch", (event) => {
           const responseClone = response.clone();
           caches.open(url.searchParams.get("name")).then((cache) => {
             cache.put(event.request, responseClone);
-          });
+          }).catch((err) => console.log(err));
           return response;
         })
         .catch(function (reason) {

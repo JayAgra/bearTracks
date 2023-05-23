@@ -817,6 +817,11 @@ app.get("/awards", checkAuth, function (req, res) {
   res.sendFile("src/awards.html", { root: __dirname });
 });
 
+app.get("/plinko", checkAuth, function (req, res) {
+    res.set("Cache-control", "public, max-age=259200");
+    res.sendFile("src/plinko.html", { root: __dirname });
+});
+
 //allow people to get denied :)
 app.get("/denied", function (req, res) {
   try {
@@ -1624,6 +1629,36 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, function (re
 
   res.status(200).json(`{"spin": ${spin}}`);
 });
+
+//plinko API
+app.get("/api/casino/plinko/startGame", apiCheckAuth, function (req, res) {
+  let pointStmt = `UPDATE scouts SET score = score - 15 WHERE discordID=?`;
+  let pointValues = [req.user.id];
+  db.run(pointStmt, pointValues, (err) => {
+      if (err) {
+          res.status(500).send("got an error from transaction");
+          return;
+      }
+  }); 
+  res.status(200).json(`{"token": ${crypto.createHash('md5').update(casinoToken + req.user.id).digest('base64')}}`);
+});
+
+app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, function (req, res) {
+    if (crypto.createHash('md5').update(casinoToken + req.user.id).digest('base64') == req.params.token) {
+        let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+        let pointValues = [req.params.pts, req.user.id];
+        db.run(pointStmt, pointValues, (err) => {
+            if (err) {
+                res.status(500).send("got an error from transaction");
+                return;
+            }
+        }); 
+        res.status(200);
+    } else {
+        res.status(400).send("cheating")
+    }
+});
+//end plinko
 
 app.get("/api/events/:event/teams", apiCheckAuth, function (req, res) {
   var dbody = new EventEmitter();
