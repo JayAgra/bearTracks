@@ -37,7 +37,7 @@ async function startGame() {
                 }
             }
 
-            xhr.send()
+            secondXHR.send()
         } else if (xhr.status === 401) {
             console.log("401 failure")
             document.getElementById("playBtn").innerHTML = "401 Unauthorized";
