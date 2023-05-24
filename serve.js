@@ -1513,18 +1513,16 @@ app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, functi
         return;
     }
   });
-
-  res
-    .status(200)
-    .json(
-        `{"dealt": "card-${cards[0].suit}_${
-            cards[0].value
-        }.png", "player0": "card-${cards[1].suit}_${
-            cards[1].value
-        }.png", "player1": "card-${cards[2].suit}_${
-            cards[2].value
-        }.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`
-    );
+    db.get(stmt, values, (err, dbQueryResult) => {
+    if (err) {
+        res.status(500).send("got an error from query");
+        return;
+    } else {
+        res.status(200).json(
+            `{"dealt": "card-${cards[0].suit}_${cards[0].value}.png","player0": "card-${cards[1].suit}_${cards[1].value}.png","player1": "card-${cards[2].suit}_${cards[2].value}.png","playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()},"casinoToken": "${crypto.createHash('sha1').update(casinoToken + req.user.id + dbQueryResult.score).digest('hex')}","aces": ${numOfAces}}`
+        );
+    }
+    });
 });
 
 app.get("/api/casino/blackjack/newCard", apiCheckAuth, function (req, res) {
@@ -1551,52 +1549,75 @@ app.get("/api/casino/blackjack/newCard", apiCheckAuth, function (req, res) {
 });
 
 app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, function (req, res) {
-  if (req.params.casinoToken == casinoToken) {
-    const possibleCards = [
-        { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
-        { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
-        { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
-        { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
-    ];
-    if (
-        possibleCards[Math.floor(Math.random() * 51)].value +
-            Number(req.params.dealerCard) <
-        Number(req.params.playerTotal)
-    ) {
-        if (req.params.playerTotal < 21) {
-            let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
-            let pointValues = [req.user.id];
-            db.run(pointStmt, pointValues, (err) => {
-              if (err) {
-                  res.status(500).send("got an error from transaction");
-                  return;
-              }
-            });
-            res.status(200).json(`{"result": "win"}`);
+    let stmt = `SELECT score FROM scouts WHERE discordID=?`;
+    let values = [req.user.id];
+    db.get(stmt, values, (err, dbQueryResult) => {
+        if (err) {
+            res.status(500).send("got an error from query");
+            return;
         } else {
-            res.send("you pig");
+            if (crypto.createHash('sha1').update(casinoToken + req.user.id + dbQueryResult.score).digest('hex') == req.params.casinoToken) {
+                const possibleCards = [
+                    { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
+                    { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
+                    { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
+                    { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
+                ];
+                if (
+                    possibleCards[Math.floor(Math.random() * 51)].value +
+                        Number(req.params.dealerCard) <
+                    Number(req.params.playerTotal)
+                ) {
+                    if (req.params.playerTotal < 21) {
+                        let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
+                        let pointValues = [req.user.id];
+                        db.run(pointStmt, pointValues, (err) => {
+                        if (err) {
+                            res.status(500).send("got an error from transaction");
+                            return;
+                        }
+                        });
+                        res.status(200).json(`{"result": "win"}`);
+                    } else {
+                        res.send("you pig");
+                    }
+                } else {
+                    res.status(200).json(`{"result": "loss"}`);
+                }
+            } else {
+                res.send("cheating");
+            }
         }
-    } else {
-        res.status(200).json(`{"result": "loss"}`);
-    }
-  } else {
-    res.send("you pig");
-  }
+    });
 });
 
 app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth, function (req, res) {
-  if (req.params.cval == 21 && req.params.casinoToken == casinoToken) {
-    let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
-    let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
-        if (err) {
-            res.status(500).send("got an error from transaction");
-            return;
+    let stmt = `SELECT score FROM scouts WHERE discordID=?`;
+    let values = [req.user.id];
+    db.get(stmt, values, (err, dbQueryResult) => {
+    if (err) {
+        res.status(500).send("got an error from query");
+        return;
+    } else {
+        if (crypto.createHash('sha1').update(casinoToken + req.user.id + dbQueryResult.score).digest('hex') == req.params.casinoToken) {
+            if (req.params.cval == 21) {
+                let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
+                let pointValues = [req.user.id];
+                db.run(pointStmt, pointValues, (err) => {
+                    if (err) {
+                        res.status(500).send("got an error from transaction");
+                        return;
+                    }
+                });
+                res.status(200).send("done");
+            } else {
+                res.send("you pig");
+            }
+        } else {
+            res.status(400).send("cheating")
         }
-    });
-  } else {
-    res.send("you pig");
-  }
+    }
+});
 });
 //end blackjack API
 
@@ -1653,7 +1674,6 @@ app.get("/api/casino/plinko/startGame", apiCheckAuth, function (req, res) {
 });
 
 app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, function (req, res) {
-    var points = 0;
     let stmt = `SELECT score FROM scouts WHERE discordID=?`;
     let values = [req.user.id];
     db.get(stmt, values, (err, dbQueryResult) => {

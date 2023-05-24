@@ -308,7 +308,6 @@ function result() {
                 await waitMs(750);
                 //start falling animation setup
                 document.querySelectorAll(".score").forEach((e) => e.remove());
-                Body.setStatic(balls[0], true);
                 Body.setStatic(rightBounds, false);
                 Body.setStatic(leftBounds, false);
                 bottom.forEach((item) => {
@@ -325,16 +324,7 @@ function result() {
                     );
                     Body.setStatic(item, false);
                 });
-                Body.applyForce(
-                    rightBounds,
-                    { x: 0, y: 0 },
-                    Matter.Vector.create(0, 0)
-                );
-                Body.applyForce(
-                    leftBounds,
-                    { x: 0, y: 0 },
-                    Matter.Vector.create(0, 0)
-                );
+                Body.setStatic(balls[0], true);
                 await waitMs(500);
                 plinkoPegs.forEach((item) => {
                     Body.setMass(
