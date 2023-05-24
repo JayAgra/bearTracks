@@ -32,6 +32,7 @@ function creditPts(token, amt) {
 }
 
 function result() {
+    //much of this game code was copied and pasted as part of learning this engine
     return new Promise((resolve, reject) => {
         var amount = 0;
         document.getElementById("dummy").remove();
@@ -54,7 +55,7 @@ function result() {
                 width: vpWidth,
                 height: vpHeight,
                 wireframes: false,
-                background: "#000",
+                background: "#121212",
             },
         });
 
@@ -63,7 +64,7 @@ function result() {
         //left side offset
         const leftOffset = vpWidth / 2 - scale * 3.5;
         var plinkoPegs = [];
-        for (var row = -87; row < 13; row++) {
+        for (var row = -47; row < 13; row++) {
             //if row # is even, go with 7 pegs
             var cols = row % 2 ? 7 : 8;
             //if even, also need to offset
@@ -140,7 +141,7 @@ function result() {
         //rotate it 180 degrees (pi rad)
         Body.rotate(rightBounds, Math.PI);
 
-        const bottom = [
+        var bottom = [
             Bodies.rectangle(
                 vpWidth / 2,
                 16.2 * scale,
@@ -189,9 +190,9 @@ function result() {
             );
         }
 
-        const sensors = [];
+        var finishSensors = [];
         for (let i = 0; i < 9; i++) {
-            const sensor = Bodies.rectangle(
+            let newSensor = Bodies.rectangle(
                 leftOffset - scale / 2 + scale * i,
                 14.6 * scale,
                 scale * 0.8,
@@ -202,8 +203,8 @@ function result() {
                     render: { opacity: 0.0 },
                 }
             );
-            sensor.__data__ = i;
-            sensors.push(sensor);
+            newSensor.__data__ = i;
+            finishSensors.push(newSensor);
         }
 
         //support for many balls
@@ -236,49 +237,48 @@ function result() {
         }
 
         //create DIVs with results
-        var names = shuffle([
+        var pointValues = shuffle([
+            "0",
+            "5",
+            "5",
+            "5",
+            "5",
             "5",
             "5",
             "10",
             "10",
             "10",
+            "15",
+            "15",
             "20",
+            "50",
             "75",
-            "0",
-            "0",
-            "0",
-            "5",
-            "10",
-            "10",
-            "5",
-            "5",
         ])
-            .slice(0, 9)
-            .map((item, index) => {
-                const div = document.createElement("div");
-                div.classList.add("score");
-                div.style.left =
-                    leftOffset - scale * 1.525 + scale * index + "px";
-                div.style.top = 15.8 * scale + "px";
-                div.style.height = scale * 0.325 + "px";
-                div.style.width = 1.6 * scale + "px";
-                div.style.padding = scale / 4.5 + "px";
-                div.innerText = item;
-                gameView.append(div);
-                return div;
-            });
+        .slice(0, 9)
+        .map((item, index) => {
+            const div = document.createElement("div");
+            div.classList.add("score");
+            div.style.left = leftOffset - scale * 1.525 + scale * index + "px";
+            div.style.top = 15.8 * scale + "px";
+            div.style.height = scale * 0.325 + "px";
+            div.style.width = 1.6 * scale + "px";
+            div.style.padding = scale / 4.5 + "px";
+            div.innerText = item;
+            gameView.append(div);
+            return div;
+        });
 
         //collision evt
-        Events.on(engine, "collisionStart", function (event) {
-            var pairs = event.pairs;
-            for (var i = 0, j = pairs.length; i !== j; i++) {
-                let pairObj = pairs[i];
-                if (pairObj.bodyA.isSensor) {
-                    pickPointAmount(pairObj.bodyA.__data__);
-                    resolve(names[pairObj.bodyA.__data__].innerText);
-                } else if (pairObj.bodyB.isSensor) {
-                    pickPointAmount(pairObj.bodyB.__data__);
-                    resolve(names[pairObj.bodyB.__data__].innerText);
+        Events.on(engine, "collisionStart", (event) => {
+            var collisionPairs = event.pairs;
+            for (var i = 0, j = collisionPairs.length; i !== j; i++) {
+                let collisionPair = collisionPairs[i];
+                if (collisionPair.bodyA.isSensor) {
+                    pickPointAmount(collisionPair.bodyA.__data__);
+                    resolve(pointValues[collisionPair.bodyA.__data__].innerText);
+                } else if (collisionPair.bodyB.isSensor) {
+                    pickPointAmount(collisionPair.bodyB.__data__);
+                    resolve(pointValues[collisionPair.bodyB.__data__].innerText);
                 }
             }
         });
@@ -288,22 +288,21 @@ function result() {
             leftBounds,
             rightBounds,
             ...bottom,
-            ...sensors,
+            ...finishSensors,
             ...balls,
         ]);
 
-        Engine.run(engine);
+        Matter.Runner.run(engine);
         Render.run(render);
 
         var endgameRunning = false;
 
         async function pickPointAmount(i) {
-            if (endgameRunning) {
-            } else {
+            if (endgameRunning) {} else {
                 endgameRunning = true;
 
-                names[i].classList.add("sel");
-                amount = Number(names[i].innerText);
+                pointValues[i].classList.add("sel");
+                amount = Number(pointValues[i].innerText);
                 console.log(amount);
 
                 await waitMs(750);
@@ -312,13 +311,6 @@ function result() {
                 Body.setStatic(balls[0], true);
                 Body.setStatic(rightBounds, false);
                 Body.setStatic(leftBounds, false);
-                plinkoPegs.forEach((item) => {
-                    Body.setMass(
-                        item,
-                        Math.random() * (item.width * item.height)
-                    );
-                    Body.setStatic(item, false);
-                });
                 bottom.forEach((item) => {
                     Body.setMass(
                         item,
@@ -326,7 +318,7 @@ function result() {
                     );
                     Body.setStatic(item, false);
                 });
-                sensors.forEach((item) => {
+                finishSensors.forEach((item) => {
                     Body.setMass(
                         item,
                         Math.random() * (item.width * item.height)
@@ -343,6 +335,14 @@ function result() {
                     { x: 0, y: 0 },
                     Matter.Vector.create(0, 0)
                 );
+                await waitMs(500);
+                plinkoPegs.forEach((item) => {
+                    Body.setMass(
+                        item,
+                        Math.random() * (item.width * item.height)
+                    );
+                    Body.setStatic(item, false);
+                });
                 //end setup
                 //wait for a bit
                 await waitMs(1500);
@@ -355,8 +355,7 @@ function result() {
 
                 //end game screen
                 gameView.style.display = "none";
-                document.getElementById("pts").innerText =
-                    "you won " + amount + " points";
+                document.getElementById("pts").innerText = "you won " + amount + " points";
                 document.getElementById("gameover").style.display = "flex";
             }
         }

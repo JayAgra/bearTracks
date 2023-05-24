@@ -1632,31 +1632,50 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, function (re
 
 //plinko API
 app.get("/api/casino/plinko/startGame", apiCheckAuth, function (req, res) {
-  let pointStmt = `UPDATE scouts SET score = score - 15 WHERE discordID=?`;
-  let pointValues = [req.user.id];
-  db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-          res.status(500).send("got an error from transaction");
-          return;
-      }
-  }); 
-  res.status(200).json(`{"token": "${crypto.createHash('sha1').update(casinoToken + req.user.id).digest('hex')}"}`);
+    let pointStmt = `UPDATE scouts SET score = score - 15 WHERE discordID=?`;
+    let pointValues = [req.user.id];
+    db.run(pointStmt, pointValues, (err) => {
+        if (err) {
+            res.status(500).send("got an error from transaction");
+            return;
+        }
+    });
+    let stmt = `SELECT score FROM scouts WHERE discordID=?`;
+    let values = [req.user.id];
+    db.get(stmt, values, (err, dbQueryResult) => {
+        if (err) {
+            res.status(500).send("got an error from query");
+            return;
+        } else {
+            res.status(200).json(`{"token": "${crypto.createHash('sha1').update(casinoToken + req.user.id + dbQueryResult.score).digest('hex')}"}`);
+        }
+    });
 });
 
 app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, function (req, res) {
-    if (crypto.createHash('sha1').update(casinoToken + req.user.id).digest('hex') == req.params.token && req.params.pts <= 75) {
-        let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
-        let pointValues = [req.params.pts, req.user.id];
-        db.run(pointStmt, pointValues, (err) => {
-            if (err) {
-                res.status(500).send("got an error from transaction");
-                return;
-            }
-        }); 
-        res.status(200).send("done");
-    } else {
-        res.status(400).send("cheating")
-    }
+    var points = 0;
+    let stmt = `SELECT score FROM scouts WHERE discordID=?`;
+    let values = [req.user.id];
+    db.get(stmt, values, (err, dbQueryResult) => {
+        if (err) {
+            res.status(500).send("got an error from query");
+            return;
+        } else {
+        if (crypto.createHash('sha1').update(casinoToken + req.user.id + dbQueryResult.score).digest('hex') == req.params.token && req.params.pts <= 75) {
+            let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+            let pointValues = [req.params.pts, req.user.id];
+            db.run(pointStmt, pointValues, (err) => {
+                if (err) {
+                    res.status(500).send("got an error from transaction");
+                    return;
+                }
+            });
+            res.status(200).send("done");
+        } else {
+            res.status(400).send("cheating")
+        }
+        }
+    });
 });
 //end plinko
 
