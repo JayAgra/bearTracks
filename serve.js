@@ -54,14 +54,14 @@ app.use(
 );
 
 const options = {
-  key: fs.readFileSync(
-    `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
-    "utf8"
-  ),
-  cert: fs.readFileSync(
-    `/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`,
-    "utf8"
-  ),
+    key: fs.readFileSync(
+        `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
+        "utf8"
+    ),
+    cert: fs.readFileSync(
+        `/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`,
+        "utf8"
+    ),
 };
 
 const certsizes = {
@@ -310,33 +310,18 @@ function checkGamble(req, res, next) {
     });
 }
 
-/*function checkGambleEligibility(userID) {
-  let pointStmt = `SELECT score FROM scouts WHERE discordID=?`;
-  let pointValues = [userID];
-  db.get(pointStmt, pointValues, (err,  result) => {
-        return (Number(result.score) > (-2000));
-  });
-}*/
-
 //add scouts to database
 function addToDataBase(req, next) {
+    //creating a password for, uh, something i guess
     const password = crypto.randomBytes(12).toString("hex");
-    /*db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
-    if (err) {
-        return;
-    } else {
-        if (accountQueryResults) {
-            return;
-        } else {
-            //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
-        }
-    }
-    });*/
+    //update email, avatar, username, discrim, and times
     db.run(`UPDATE scouts SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}" WHERE discordID=${req.user.id}`);
+    //add to db if not in already
     db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt, badges) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}", 0000000000)`);
     return next();
 }
 
+//forwards FRC API data for some API endpoints
 //insert first forward 2022 pun
 function forwardFRCAPIdata(url, req, res) {
     var dbody = new EventEmitter();
@@ -380,9 +365,10 @@ function forwardFRCAPIdata(url, req, res) {
 //before server creation
 logInfo("Preparing...");
 
+//dont want etag on everything
 app.disable("etag");
 
-//EXPRESSJS APP RESPONSES
+//login url
 app.get("/login", (req, res) => {
     res.sendFile("src/login.html", { root: __dirname });
 });
@@ -395,6 +381,7 @@ app.get("/callback", passport.authenticate("discord", { failureRedirect: "/login
     res.redirect("/");
 });
 
+//clear cookies, used for debugging
 app.get("/clearCookies", (req, res) => {
     res.clearCookie("role");
     res.clearCookie("connect.sid");
@@ -402,6 +389,7 @@ app.get("/clearCookies", (req, res) => {
     res.redirect("/");
 });
 
+//settings page
 app.get("/settings", checkAuth, async (req, res) => {
     res.sendFile("src/settings.html", { root: __dirname });
 });
@@ -417,9 +405,10 @@ app.get("/logout", (req, res) => {
 });
 
 //use for lets encrypt verification
-app.get("/.well-known/acme-challenge/", (req, res) => {
+//no longer needed, use certbot from scouting.sh instead
+/*app.get("/.well-known/acme-challenge/", (req, res) => {
     res.send("");
-});
+});*/
 
 //get the main form submissions
 app.post("/submit", checkAuth, (req, res) => {
@@ -430,15 +419,24 @@ app.post("/submit", checkAuth, (req, res) => {
     });
 
     req.on("end", () => {
+        //server has all data!
+        //parse form
         let formData = qs.parse(body);
-        if (formData.formType == "pit") {
+        //well, this should never happen but if a pit form is sent to the main form, stop
+        if (formData.formType === "pit") {
             res.end("WRONG FORM");
-        } else if (formData.formType == "main") {
-            var formscoresdj = 20;
+        } else if (formData.formType === "main") {
+            //change score based on response length
+            var formscoresdj = 0;
             if (formData.overall.length >= 70) {
-                var formscoresdj = 25;
+                //logarithmic points
+                formscoresdj = Math.ceil(20 + 5 * (Math.log(formData.overall.length - 65) / Math.log(6)));
+            } else {
+                formscoresdj = 20;
             }
+            //db statement
             let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            //values (escaped!) from POST data
             let values = [
                 escapeHTML(formData.event),
                 season,
@@ -482,14 +480,18 @@ app.post("/submit", checkAuth, (req, res) => {
                 0,
                 "0",
             ];
+            //run the statement, add to the database
             db.run(stmt, values, (err) => {
                 if (err) {
                     logErrors(err.message);
                     res.end(err.message);
                 }
+                //announce new submisison to the discord
                 discordSendData.newSubmission("main", this.lastID, req.user.username);
+                //weight the team performance
                 seasonProcess.weightScores(this.lastID);
             });
+            //statement to credit points
             let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
             let pointValues = [formscoresdj, req.user.id];
             db.run(pointStmt, pointValues, (err) => {
@@ -498,10 +500,12 @@ app.post("/submit", checkAuth, (req, res) => {
                     res.end(err.message);
                 }
             });
+            //respond to the user with success page
             res.sendFile("src/submitted.html", {
                 root: __dirname,
             });
         } else {
+            //unknown form type
             return res.status(500).send("unknown form type");
         }
     });
@@ -516,8 +520,11 @@ const imageUploads = upload.fields([
     { name: "image5", maxCount: 1 },
 ]);
 app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
+    //get body of POST data
     let formData = req.body;
+    //db statement
     let stmt = `INSERT INTO pit (event, season, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    //escaped data from user added as values
     let values = [
         escapeHTML(formData.event),
         season,
@@ -559,6 +566,7 @@ app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
         req.files.image4[0].filename,
         req.files.image5[0].filename,
     ];
+    //run db statement
     db.run(stmt, values, (err) => {
         if (err) {
             logErrors(err.message);
@@ -566,6 +574,8 @@ app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
         }
         discordSendData.newSubmission("pit", this.lastID, req.user.username);
     });
+    //credit points to scout
+    //TODO: variable points on pit form
     let pointStmt = `UPDATE scouts SET score = score + 35 WHERE discordID=?`;
     let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {
@@ -574,6 +584,7 @@ app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
             res.end(err.message);
         }
     });
+    //send success message to user
     res.sendFile("src/submitted.html", {
         root: __dirname,
     });
@@ -581,6 +592,7 @@ app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
 
 //index.html, read the code
 app.get("/", checkAuth, async (req, res) => {
+    //change index.ejs based on the user's roles
     try {
         if (!req.cookies.role) {
             //set cookie if not exists
@@ -701,117 +713,121 @@ app.get("/pit", checkAuth, (req, res) => {
 });
 
 //webmanifest for PWAs
-//serve resources
 app.get("/app.webmanifest", (req, res) => {
     res.sendFile("./src/app.webmanifest", { root: __dirname });
     res.set("Cache-control", "public, max-age=7776000");
 });
 
-//serve resources
+//CSS (should be unused in favor of minified css)
 app.get("/float.css", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
     res.sendFile("./src/float.css", { root: __dirname });
 });
 
-//serve resources
+//minified css
 app.get("/float.min.css", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
     res.sendFile("./src/float.min.css", { root: __dirname });
 });
 
-//serve resources
+//font file
 app.get("/fonts/Raleway-300.ttf", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
     res.sendFile("./src/fonts/Raleway-300.ttf", { root: __dirname });
 });
 
-//serve resources
+//font file
 app.get("/fonts/Raleway-500.ttf", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
     res.sendFile("./src/fonts/Raleway-500.ttf", { root: __dirname });
 });
 
-//serve resources
+//JS for form (should be unused in favor of minified js)
 app.get("/form.js", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
     res.sendFile("./src/form.js", { root: __dirname });
 });
 
-//serve resources
+//minified JS for form
 app.get("/form.min.js", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
     res.sendFile("./src/form.min.js", { root: __dirname });
 });
 
 //service worker for PWA installs
-//serve resources
+//not using SW right now
 app.get("/sw.js", (req, res) => {
     res.set("Cache-control", "public, max-age=2592000");
     res.sendFile("src/sw.js", { root: __dirname });
 });
 
-//serve resources
+//favicon
 app.get("/favicon.ico", (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/favicon.ico", { root: __dirname });
 });
 
+//scout rank page
 app.get("/scouts", (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/scouts.html", { root: __dirname });
 });
 
+//play blackjack
 app.get("/blackjack", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/blackjack.html", { root: __dirname });
 });
 
+//spin wheel
 app.get("/spin", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/spin.html", { root: __dirname });
 });
 
+//list of gambling opportunities
 app.get("/points", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
     res.sendFile("src/points.html", { root: __dirname });
 });
 
+//teams left to pit scout (data with XHR request)
 app.get("/topitscout", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/topitscout.html", { root: __dirname });
 });
 
+//notes feature
 app.get("/notes", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/notes.html", { root: __dirname });
 });
 
+//per-scout profile
 app.get("/profile", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/profile.html", { root: __dirname });
 });
 
+//get images from pit scouting. images are located in scouting-app/images
 app.get("/pitimages", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/pitimg.html", { root: __dirname });
 });
 
-app.get("/fantasy", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
-    res.sendFile("src/fantasy.html", { root: __dirname });
-});
-
+//page with fake blue banners for future use
 app.get("/awards", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/awards.html", { root: __dirname });
 });
 
+//plinko game
 app.get("/plinko", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=259200");
     res.sendFile("src/plinko.html", { root: __dirname });
 });
 
-//get list of matches
+//match list
 app.get("/matches", checkAuth, (req, res) => {
     res.set("Cache-control", "public, max-age=2592000");
     res.sendFile("src/matches.html", { root: __dirname });
@@ -819,16 +835,15 @@ app.get("/matches", checkAuth, (req, res) => {
 
 //allow people to get denied :)
 app.get("/denied", (req, res) => {
-  try {
-    res.sendFile("src/denied.html", { root: __dirname });
-  } catch (error) {
-    res.write(
-        "Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error
-    );
-  }
+    try {
+        res.sendFile("src/denied.html", { root: __dirname });
+    } catch (error) {
+        //you got denied so hard that you were denied being denied
+        res.write("Access Denied!" + "\nCould not render 404 page!");
+    }
 });
 
-//print out all info discord gives
+//print out all info discord gives, for debugging
 app.get("/info", checkAuth, (req, res) => {
     console.log(req.user.id);
     console.log(req.user.username);
@@ -838,6 +853,7 @@ app.get("/info", checkAuth, (req, res) => {
     res.json(req.user);
 });
 
+//for debugging
 app.get("/teamRoleInfo", checkAuth, (req, res) => {
     getOauthData.getGuildMember(req.user.accessToken, teamServerID).then((data) => {
         console.log(data.roles);
@@ -989,26 +1005,26 @@ app.get("/browse", checkAuth, (req, res) => {
                 db.all(stmt, values, (err, dbQueryResult) => {
                     if (err || typeof dbQueryResult == "undefined") {
                         res.render("../src/browse.ejs", {
-                        root: __dirname,
-                        errorDisplay: "block",
-                        errorMessage: "Error: No results!",
-                        displaySearch: "flex",
-                        displayResults: "none",
-                        resultsTeamNumber: 0,
-                        resultsEventCode: 0,
-                        resultsBody: 0,
+                            root: __dirname,
+                            errorDisplay: "block",
+                            errorMessage: "Error: No results!",
+                            displaySearch: "flex",
+                            displayResults: "none",
+                            resultsTeamNumber: 0,
+                            resultsEventCode: 0,
+                            resultsBody: 0,
                         });
                         return;
                     } else {
                         res.render("../src/browse.ejs", {
-                        root: __dirname,
-                        errorDisplay: "none",
-                        errorMessage: null,
-                        displaySearch: "none",
-                        displayResults: "flex",
-                        resultsTeamNumber: `Team ${req.query.number}`,
-                        resultsEventCode: `${req.query.event}`,
-                        resultsBody: seasonProcess.createHTMLTable(dbQueryResult),
+                            root: __dirname,
+                            errorDisplay: "none",
+                            errorMessage: null,
+                            displaySearch: "none",
+                            displayResults: "flex",
+                            resultsTeamNumber: `Team ${req.query.number}`,
+                            resultsEventCode: `${req.query.event}`,
+                            resultsBody: seasonProcess.createHTMLTable(dbQueryResult),
                         });
                         return;
                     }
@@ -1019,27 +1035,26 @@ app.get("/browse", checkAuth, (req, res) => {
                 db.all(stmt, values, (err, dbQueryResult) => {
                     if (err || typeof dbQueryResult == "undefined") {
                         res.render("../src/browse.ejs", {
-                        root: __dirname,
-                        errorDisplay: "block",
-                        errorMessage: "Error: No results!",
-                        displaySearch: "flex",
-                        displayResults: "none",
-                        resultsTeamNumber: 0,
-                        resultsEventCode: 0,
-                        resultsBody: 0,
+                            root: __dirname,
+                            errorDisplay: "block",
+                            errorMessage: "Error: No results!",
+                            displaySearch: "flex",
+                            displayResults: "none",
+                            resultsTeamNumber: 0,
+                            resultsEventCode: 0,
+                            resultsBody: 0,
                         });
                         return;
                     } else {
                         res.render("../src/browse.ejs", {
-                        root: __dirname,
-                        errorDisplay: "none",
-                        errorMessage: null,
-                        displaySearch: "none",
-                        displayResults: "flex",
-                        resultsTeamNumber: `Match ${req.query.number}`,
-                        resultsEventCode: `${req.query.event}`,
-                        resultsBody:
-                            seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
+                            root: __dirname,
+                            errorDisplay: "none",
+                            errorMessage: null,
+                            displaySearch: "none",
+                            displayResults: "flex",
+                            resultsTeamNumber: `Match ${req.query.number}`,
+                            resultsEventCode: `${req.query.event}`,
+                            resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
                         });
                         return;
                     }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Robot Images - 766 Scouting</title>
     <meta charset="utf-8">
@@ -13,7 +14,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#121212" id="themeMeta">
     <link rel="stylesheet" href="float.min.css" type="text/css">
-    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="manifest" href="/app.webmanifest" />
     <link rel="apple-touch-startup-image" href="public/launch.png">
     <script src="form.min.js"></script>
     <style>
@@ -40,42 +41,47 @@
         }
     </style>
 </head>
+
 <body class="dark-mode">
-    <script>themeHandle()</script>
-    <div class="container" style="display: flex;"> <!--flex is shown-->
+    <script>
+        themeHandle()
+    </script>
+    <div class="container" style="display: flex;">
+        <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4 style="color: red; display: none">/h4>
-            <h4>Image Database</h4><br>
-            <!--search sect-->
-            <fieldset id="searchsect" style="display: block;">
-                <label>Target Team Number: <br></label>
-                <input type="tel" id="teamInput" required><br>
-                <input type="hidden" id="page" value="0">
-            <br><fieldset>
-                <label>Event Code: </label><br>
-                <select id="eventInput">
+                <h4>Image Database</h4><br>
+                <!--search sect-->
+                <fieldset id="searchsect" style="display: block;">
+                    <label>Target Team Number: <br></label>
+                    <input type="tel" id="teamInput" required><br>
+                    <input type="hidden" id="page" value="0">
+                    <br>
+                    <fieldset>
+                        <label>Event Code: </label><br>
+                        <select id="eventInput">
                     <option value="CADA">CADA - Sacramento Regional</option>
                     <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
                 </select>
-            </fieldset>
-            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" onclick="searchImg()" id="searchBtn">Search</button><br>
-            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-            </fieldset>
-            <!--/search sect-->
-            <!--results sect-->
-            <fieldset id="resultsect" style="display: none;">
-            <fieldset>
-                <h3>Team Number: <span id="resultsTeamNumber"></span></h3>
-                <h5>Event: <span id="resultsEventCode"></span></h5>
-                <h5>Images: Front, Back, Side, Bottom, Other</h5>
-                <h5 style="text-align: left" id="resultsbody"></h5>
-            </fieldset>
-            <!--buttons-->
-            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-            </fieldset>
-            <!--/results sect-->
-            <small style="text-align: center;">To see match scouting data, go <a href="browse" style="all: unset; color: #68C3E2;">here</a></small>
+                    </fieldset>
+                    <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" onclick="searchImg()" id="searchBtn">Search</button><br>
+                    <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+                </fieldset>
+                <!--/search sect-->
+                <!--results sect-->
+                <fieldset id="resultsect" style="display: none;">
+                    <fieldset>
+                        <h3>Team Number: <span id="resultsTeamNumber"></span></h3>
+                        <h5>Event: <span id="resultsEventCode"></span></h5>
+                        <h5>Images: Front, Back, Side, Bottom, Other</h5>
+                        <h5 style="text-align: left" id="resultsbody"></h5>
+                    </fieldset>
+                    <!--buttons-->
+                    <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+                </fieldset>
+                <!--/results sect-->
+                <small style="text-align: center;">To see match scouting data, go <a href="browse" style="all: unset; color: #68C3E2;">here</a></small>
         </form>
         <br><br>
     </div>
@@ -136,4 +142,5 @@
         }
     </script>
 </body>
+
 </html>

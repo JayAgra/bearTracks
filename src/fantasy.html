@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Fantasy FRC - 766 Scouting</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
@@ -9,7 +10,7 @@
     <link rel="apple-touch-startup-image" href="public/launch.png">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Scouting">
-    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="manifest" href="/app.webmanifest" />
     <link rel="stylesheet" href="float.min.css" type="text/css">
     <meta name="mobile-web-app-capable" content="yes">
     <script src="form.min.js"></script>
@@ -39,7 +40,9 @@
 </head>
 
 <body class="dark-mode">
-    <script>themeHandle()</script>
+    <script>
+        themeHandle()
+    </script>
     <div id="canvasParent">
         <canvas id="frcCvs_0" width="128" height="128" style="display: none; position: absolute;"></canvas>
         <canvas id="frcCvs_1" width="128" height="128" style="display: none; position: absolute;"></canvas>
@@ -56,7 +59,7 @@
         <canvas id="frcCvs_12" width="128" height="128" style="display: none; position: absolute;"></canvas>
         <canvas id="frcCvs_12" width="128" height="128" style="display: none; position: absolute;"></canvas>
     </div>
-    <div class="container" style="display: flex;"> 
+    <div class="container" style="display: flex;">
         <div>
             <h1 id="title" style="font-family: 'raleway-300'">766 "scouting"<br><span class="gametitle">fantasy frc</span></h1>
             <button id="playBtn" type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="startGame()">Play</button><br><button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
@@ -64,4 +67,5 @@
     </div>
     <script src="assets/fantasy.js"></script>
 </body>
+
 </html>

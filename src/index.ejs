@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>CHARGED UP Scouting - 766 Scouting</title>
     <meta charset="utf-8">
@@ -13,7 +14,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#121212" id="themeMeta">
     <link rel="stylesheet" href="float.min.css" type="text/css">
-    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="manifest" href="/app.webmanifest" />
     <link rel="apple-touch-startup-image" href="public/launch.png">
     <link rel="apple-touch-startup-image" media="screen and (device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="public/10.2__iPad_landscape.png">
     <link rel="apple-touch-startup-image" media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="public/9.7__iPad_Pro__7.9__iPad_mini__9.7__iPad_Air__9.7__iPad_portrait.png">
@@ -104,11 +105,12 @@
 </head>
 
 <body class="dark-mode">
-    <script>themeHandle()</script>
+    <script>
+        themeHandle()
+    </script>
     <div class="container">
         <div class="offlineAlert" id="offlineAlert" style="display: none">
-            <span class="closeAlert" onclick="this.parentElement.classList.add('fadeout');">&times;</span> 
-            You are offline
+            <span class="closeAlert" onclick="this.parentElement.classList.add('fadeout');">&times;</span> You are offline
         </div>
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
@@ -118,9 +120,9 @@
                 <a href="matches" class="gameflair1" style="order: <%- order3 %>; margin-bottom: 5%;">Match List<br></a>
                 <a href="pit" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Pit Scouting<br></a>
                 <%- additionalURLs %>
-                <small style="order: 5"><a href="scouts" style="all: unset; margin-bottom: 5%;">Top Scouts</a></small>
-                <small style="order: 6"><a href="points" style="all: unset; margin-bottom: 5%;">Points</a></small>
-                <small style="order: 7"><a href="settings" style="all: unset; margin-bottom: 5%;">Settings</a></small>
+                    <small style="order: 5"><a href="scouts" style="all: unset; margin-bottom: 5%;">Top Scouts</a></small>
+                    <small style="order: 6"><a href="points" style="all: unset; margin-bottom: 5%;">Points</a></small>
+                    <small style="order: 7"><a href="settings" style="all: unset; margin-bottom: 5%;">Settings</a></small>
             </div>
         </form>
     </div>
@@ -146,4 +148,5 @@
         }
     </script>
 </body>
+
 </html>

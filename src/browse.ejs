@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Browse Data - 766 Scouting</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
@@ -8,7 +9,7 @@
     <link rel="apple-touch-startup-image" href="public/launch.png">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Scouting">
-    <link rel="manifest" href="/app.webmanifest"/>
+    <link rel="manifest" href="/app.webmanifest" />
     <link rel="stylesheet" href="float.min.css" type="text/css">
     <meta name="mobile-web-app-capable" content="yes">
     <script src="form.min.js"></script>
@@ -53,11 +54,16 @@
 </head>
 
 <body class="dark-mode">
-    <script>themeHandle()</script>
-    <div class="container" id="search" style="display: <%= displaySearch %>;"> <!--flex is shown-->
+    <script>
+        themeHandle()
+    </script>
+    <div class="container" id="search" style="display: <%= displaySearch %>;">
+        <!--flex is shown-->
         <form>
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h4 style="color: red; display: <%= errorDisplay %>"><%= errorMessage %></h4>
+            <h4 style="color: red; display: <%= errorDisplay %>">
+                <%= errorMessage %>
+            </h4>
             <h4>Match Data</h4>
             <fieldset>
                 <select name="type">
@@ -65,15 +71,16 @@
                     <option value="match">Match </option>
                 </select>
                 <input type="tel" name="number" required>
-            <br><fieldset><br>
-                <label>Event Code: </label><br>
-                <select name="event">
+                <br>
+                <fieldset><br>
+                    <label>Event Code: </label><br>
+                    <select name="event">
                     <option value="CADA">CADA - Sacramento Regional</option>
                     <option value="CASJ" selected>CASJ - Silicon Valley Regional</option>
                 </select>
-            </fieldset>
-            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;">Search</button><br>
-            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+                </fieldset>
+                <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;">Search</button><br>
+                <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
             </fieldset>
             <small style="text-align: center;">To see all teams ranked by weighted score <a href="teams" style="all: unset; color: #68C3E2;">here</a></small><br>
             <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: #68C3E2;">here</a></small><br>
@@ -81,14 +88,18 @@
         </form>
         <br><br>
     </div>
-    <div class="container" id="results" style="display: <%= displayResults %>;"> <!--flex is shown-->
+    <div class="container" id="results" style="display: <%= displayResults %>;">
+        <!--flex is shown-->
         <div class="dummy">
             <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
             <h4>Match Data</h4><br>
-                <h3><%= resultsTeamNumber %> at <%= resultsEventCode %></h3>
-                <div style="overflow-x: auto; width: 95vw;">
-                    <table>
-                        <tr>
+            <h3>
+                <%= resultsTeamNumber %> at
+                    <%= resultsEventCode %>
+            </h3>
+            <div style="overflow-x: auto; width: 95vw;">
+                <table>
+                    <tr>
                         <th>Match Number</th>
                         <th>Auto Score</th>
                         <th>Auto Charge</th>
@@ -97,15 +108,15 @@
                         <th>Grid Points</th>
                         <th>Cycle Time</th>
                         <th>Match Performance Score</th>
-                        </tr>
-                        <%- resultsBody %>
-                  </table>
-                </div>
+                    </tr>
+                    <%- resultsBody %>
+                </table>
+            </div>
             <!--buttons-->
             <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>&emsp;<button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-        <br><br>
-        <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: #68C3E2;">here</a></small>
-    </div>
+            <br><br>
+            <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: #68C3E2;">here</a></small>
+        </div>
     </div>
     <script>
         function removeURLParams() {
@@ -116,4 +127,5 @@
         }
     </script>
 </body>
+
 </html>
