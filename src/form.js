@@ -22,12 +22,10 @@ function themeHandle() {
             break;
         case "dark":
         case undefined:
-            document.body.classList.replace("light-mode", "dark-mode");
-            document.getElementById("themeMeta").content = "#121212";
-            break;
         default:
             document.body.classList.replace("light-mode", "dark-mode");
             document.getElementById("themeMeta").content = "#121212";
+            break;
     }
 }
 
@@ -35,6 +33,7 @@ function goToHome() {
     window.location.href = "/";
 }
 
+/*
 function exportSubmissionJSON() {
     const downloadFormButton = document.getElementById("downloadFormButton");
     const downloadFileLink = document.getElementById("downloadFileLink");
@@ -58,3 +57,4 @@ function exportSubmissionJSON() {
     downloadFileLink.href = downloadURL;
     downloadFileLink.innerHTML = "Ready! Click again to download";
 }
+*/
