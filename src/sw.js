@@ -3,7 +3,6 @@ console.log("[SW] File Executed");
 const urlsToCache = [
     "/form.min.js",
     "/float.min.css",
-    "/css/fonts/whatever-v8.woff",
     "/assets/blackjack.js",
     "/assets/spin.css",
     "/assets/deal.png",
