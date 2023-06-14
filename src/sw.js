@@ -1,3 +1,4 @@
+/*
 console.log("[SW] File Executed");
 
 const urlsToCache = [
@@ -45,3 +46,5 @@ self.addEventListener("fetch", (event) => {
         })
     );
 });
+*/
+console.log("sw nuked");
