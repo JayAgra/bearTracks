@@ -1,23 +1,19 @@
 /*jslint node: true*/
 /*jslint es6*/
 "use strict";
-const sqlite3 = require("sqlite3");
 const {
     EmbedBuilder
 } = require("discord.js");
+
 const {
     baseURL
 } = require("./config.json");
+
 const saModule = require("./sentiment-analysis.js");
 
-var db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-        return interaction.reply({
-            content: "Error getting data (database open)!",
-            ephemeral: true
-        });
-    }
-});
+import { Database } from "bun:sqlite";
+let db = new Database("data.db");
+db.run("PRAGMA journal_mode = WAL;");
 
 function toIcons(str) {
     var step1 = str.replaceAll("0", "⬜");

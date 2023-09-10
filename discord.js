@@ -3,8 +3,9 @@
 "use strict";
 const { Client, EmbedBuilder, GatewayIntentBits, Events, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const fs = require('fs');
-const sqlite3 = require('sqlite3');
-let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {console.log(err);});
+import { Database } from "bun:sqlite";
+let db = new Database("data.db");
+db.run("PRAGMA journal_mode = WAL;");
 const seasonData = require("./2023.js");
 
 function logInfo(info) {

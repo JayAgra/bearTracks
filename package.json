@@ -18,7 +18,6 @@
     "passport-discord": "^0.1.4",
     "ping": "^0.4.2",
     "sanitize-filename": "^1.6.3",
-    "sqlite3": "^5.1.4",
     "systeminformation": "^5.17.12",
     "vader-sentiment": "^1.1.3"
   },
