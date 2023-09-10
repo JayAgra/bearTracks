@@ -23,8 +23,10 @@ const {
 } = require("./config.json");
 
 // SETUP DATABASE
-import { Database } from "bun:sqlite";
-let db = new Database("data.db");
+const sqlite3 = require("sqlite3");
+let db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
+    console.log(err);
+});
 db.run("PRAGMA journal_mode = WAL;");
 
 // SETUP SERVER(S)
