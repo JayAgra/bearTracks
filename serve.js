@@ -342,7 +342,7 @@ app.get("/logout", (req, res) => {
 
 // get the main form submissions
 app.post("/submit", checkAuth, (req, res) => {
-    require("./routes/submit.js").submitForm(req, res, db, __dirname);
+    require("./routes/submit.js").submitForm(req, res, db, __dirname, season);
 });
 
 // use this thing to do the pit form image thing
@@ -355,7 +355,7 @@ const imageUploads = upload.fields([
 ]);
 
 app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
-    require("./routes/submitPit.js").submitPit(req, res, db, __dirname);
+    require("./routes/submitPit.js").submitPit(req, res, db, __dirname, season);
 });
 
 // index.html, read the code

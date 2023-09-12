@@ -1,4 +1,4 @@
-function submitPit(req, res, db, dirname) {
+function submitPit(req, res, db, dirname, season) {
     // get body of POST data
     let formData = req.body;
     // db statement
@@ -51,7 +51,11 @@ function submitPit(req, res, db, dirname) {
             console.error(err.message);
             res.end("pit form error! " + err.message);
         }
-        require("../discord.js").newSubmission("pit", this.lastID, req.user.username);
+        require("../discord.js").newSubmission(
+            "pit",
+            this.lastID,
+            req.user.username
+        );
     });
     // credit points to scout
     // TODO: variable points on pit form

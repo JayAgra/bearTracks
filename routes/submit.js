@@ -1,3 +1,5 @@
+const qs = require("querystring");
+
 function escapeHTML(htmlStr) {
     return String(htmlStr)
         .replace(/&/g, "&amp;")
@@ -7,7 +9,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitForm(req, res, db, dirname) {
+function submitForm(req, res, db, dirname, season) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -26,7 +28,12 @@ function submitForm(req, res, db, dirname) {
             var formscoresdj = 0;
             if (formData.overall.length >= 70) {
                 // logarithmic points
-                formscoresdj = Math.ceil(20 + 5 * (Math.log(formData.overall.length - 65) / Math.log(6)));
+                formscoresdj = Math.ceil(
+                    20 +
+                        5 *
+                            (Math.log(formData.overall.length - 65) /
+                                Math.log(6))
+                );
             } else {
                 formscoresdj = 20;
             }
@@ -83,7 +90,11 @@ function submitForm(req, res, db, dirname) {
                     res.end(err.message);
                 }
                 // announce new submisison to the discord
-                require("../discord.js").newSubmission("main", this.lastID, req.user.username);
+                require("../discord.js").newSubmission(
+                    "main",
+                    this.lastID,
+                    req.user.username
+                );
                 // weight the team performance
                 require(`../${season}.js`).weightScores(this.lastID);
             });
