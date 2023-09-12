@@ -1,4 +1,14 @@
 const EventEmitter = require("events").EventEmitter;
+const https = require("https");
+
+function invalidJSON(str) {
+    try {
+        JSON.parse(str);
+        return false;
+    } catch (error) {
+        return true;
+    }
+}
 
 function teams(req, res, frcapi, season) {
     var dbody = new EventEmitter();
