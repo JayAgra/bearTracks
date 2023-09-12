@@ -585,10 +585,10 @@ const possibleCards = [
     { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
 ];
 
-// blackjack websocket
-app.ws('/api/casino/blackjack/blackjackSocket', function(ws, req) {
-    require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, db);
-});
+// // blackjack websocket
+// app.ws('/api/casino/blackjack/blackjackSocket', function(ws, req) {
+//     require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, db);
+// });
 
 app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, (req, res) => {
     require("./routes/api/casino/blackjack/startingCards.js").startingCards(req, res, db, possibleCards, casinoToken);
