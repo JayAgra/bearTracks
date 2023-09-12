@@ -1,3 +1,5 @@
+const EventEmitter = require("events").EventEmitter;
+
 function teams(req, res, frcapi) {
     var dbody = new EventEmitter();
     var options = {
