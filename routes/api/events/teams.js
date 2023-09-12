@@ -1,6 +1,6 @@
 const EventEmitter = require("events").EventEmitter;
 
-function teams(req, res, frcapi) {
+function teams(req, res, frcapi, season) {
     var dbody = new EventEmitter();
     var options = {
         method: "GET",

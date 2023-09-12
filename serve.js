@@ -621,7 +621,7 @@ app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, (req, res) => {
 // end plinko
 
 app.get("/api/events/:event/teams", apiCheckAuth, (req, res) => {
-    require("./routes/api/events/teams.js").teams(req, res, frcapi);
+    require("./routes/api/events/teams.js").teams(req, res, frcapi, season);
 });
 
 app.get("/api/events/:event/allTeamData", apiCheckAuth, (req, res) => {
