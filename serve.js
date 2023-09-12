@@ -24,7 +24,7 @@ const {
 
 // SETUP DATABASE
 const sqlite3 = require("sqlite3");
-let db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
@@ -38,20 +38,20 @@ const https = require("https");
 const http = require("http");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
-const seasonProcess = require("./2023.js");
-let RateLimit = require("express-rate-limit");
-let EventEmitter = require("events").EventEmitter;
+const seasonProcess = require(`./${season}.js`);
+const RateLimit = require("express-rate-limit");
+const EventEmitter = require("events").EventEmitter;
 const helmet = require("helmet");
-let sanitize = require("sanitize-filename");
+const sanitize = require("sanitize-filename");
 const leadToken = crypto.randomBytes(48).toString("hex");
 const casinoToken = crypto.randomBytes(48).toString("hex");
-let app = express();
+const app = express();
 app.disable("x-powered-by");
 app.use(cookieParser());
 app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
+    helmet({
+        contentSecurityPolicy: false,
+    })
 );
 
 const options = {
@@ -71,9 +71,11 @@ const certsizes = {
 };
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
+var server;
 if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
-    https.createServer(options, app).listen(443);
+    server = https.createServer(options, app).listen(443);
 }
+var expressWs = require("express-ws")(app, server);
 const ejs = require("ejs");
 app.set("view engine", "html");
 app.engine("html", ejs.renderFile);
@@ -600,11 +602,9 @@ app.get("/", checkAuth, async (req, res) => {
             // I am setting a cookie because it takes a while to wait for role data from API
 
             var oauthDataCookieSet = await Promise.resolve(
-                getOauthData
-                    .getGuildMember(req.user.accessToken, teamServerID)
-                    .then((data) => {
-                        return findTopRole(data.roles);
-                    })
+                getOauthData.getGuildMember(req.user.accessToken, teamServerID).then((data) => {
+                    return findTopRole(data.roles);
+                })
             );
 
             // btoa and atob bad idea
@@ -615,10 +615,7 @@ app.get("/", checkAuth, async (req, res) => {
                 secure: true,
                 httpOnly: true,
             });
-            if (
-                oauthDataCookieSet[0][0] == "Pit Team" ||
-                oauthDataCookieSet[0][0] == "Drive Team"
-            ) {
+            if (oauthDataCookieSet[0][0] == "Pit Team" || oauthDataCookieSet[0][0] == "Drive Team") {
                 res.render("../src/index.ejs", {
                     root: __dirname,
                     order1: "2",
@@ -629,7 +626,8 @@ app.get("/", checkAuth, async (req, res) => {
                 });
             } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
                 res.cookie("lead", leadToken, {
-                    expire: 7200000 + Date.now(),
+                    // 1 hour
+                    expire: 3600000 + Date.now(),
                     sameSite: "Lax",
                     secure: true,
                     httpOnly: true,
@@ -755,13 +753,6 @@ app.get("/form.min.js", (req, res) => {
     res.sendFile("./src/form.min.js", { root: __dirname });
 });
 
-// service worker for PWA installs
-// not using SW right now
-app.get("/sw.js", (req, res) => {
-    res.set("Cache-control", "public, max-age=2592000");
-    res.sendFile("src/sw.js", { root: __dirname });
-});
-
 // favicon
 app.get("/favicon.ico", (req, res) => { 
     res.set("Cache-control", "public, max-age=259200");
@@ -866,37 +857,37 @@ app.get("/teamRoleInfo", checkAuth, (req, res) => {
 // tool to browse match scouting data
 app.get("/detail", checkAuth, (req, res) => {
     if (req.query.team && req.query.event && req.query.page) {
-    const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
-    const values = [req.query.team, req.query.event, season, req.query.page];
-    db.get(stmt, values, (err, dbQueryResult) => {
-        if (err || typeof dbQueryResult == "undefined") {
-            res.render("../src/detail.ejs", {
-                root: __dirname,
-                errorDisplay: "block",
-                errorMessage: "Error: No results!",
-                displaySearch: "flex",
-                displayResults: "none",
-                resultsTeamNumber: 0,
-                resultsMatchNumber: 0,
-                resultsEventCode: 0,
-                resultsBody: 0,
-            });
-            return;
-        } else {
-            res.render("../src/detail.ejs", {
-                root: __dirname,
-                errorDisplay: "none",
-                errorMessage: null,
-                displaySearch: "none",
-                displayResults: "flex",
-                resultsTeamNumber: `${dbQueryResult.team}`,
-                resultsMatchNumber: `${dbQueryResult.match}`,
-                resultsEventCode: `${dbQueryResult.event}`,
-                resultsBody: seasonProcess.createHTMLExport(dbQueryResult),
-            });
-            return;
-        }
-    });
+        const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
+        const values = [req.query.team, req.query.event, season, req.query.page];
+        db.get(stmt, values, (err, dbQueryResult) => {
+            if (err || typeof dbQueryResult == "undefined") {
+                res.render("../src/detail.ejs", {
+                    root: __dirname,
+                    errorDisplay: "block",
+                    errorMessage: "Error: No results!",
+                    displaySearch: "flex",
+                    displayResults: "none",
+                    resultsTeamNumber: 0,
+                    resultsMatchNumber: 0,
+                    resultsEventCode: 0,
+                    resultsBody: 0,
+                });
+                return;
+            } else {
+                res.render("../src/detail.ejs", {
+                    root: __dirname,
+                    errorDisplay: "none",
+                    errorMessage: null,
+                    displaySearch: "none",
+                    displayResults: "flex",
+                    resultsTeamNumber: `${dbQueryResult.team}`,
+                    resultsMatchNumber: `${dbQueryResult.match}`,
+                    resultsEventCode: `${dbQueryResult.event}`,
+                    resultsBody: seasonProcess.createHTMLExport(dbQueryResult),
+                });
+                return;
+            }
+        });
     } else if (req.query.id) {
         const stmt = `SELECT * FROM main WHERE id=? LIMIT 1`;
         const values = [req.query.id];
@@ -947,12 +938,7 @@ app.get("/detail", checkAuth, (req, res) => {
 
 app.get("/browse", checkAuth, (req, res) => {
     if (req.query.number && req.query.event) {
-        if (
-            req.query.number == "ALL" ||
-            req.query.number == "*" ||
-            req.query.number == "0000" ||
-            req.query.number == "0"
-        ) {
+        if (req.query.number == "ALL" || req.query.number == "*" || req.query.number == "0000" || req.query.number == "0") {
             const stmt = `SELECT * FROM main WHERE event=? AND season=? ORDER BY team ASC`;
             const values = [req.query.event, season];
             db.all(stmt, values, (err, dbQueryResult) => {
@@ -972,28 +958,27 @@ app.get("/browse", checkAuth, (req, res) => {
                 } else {
                     if (typeof dbQueryResult == "undefined") {
                         res.render("../src/browse.ejs", {
-                        root: __dirname,
-                        errorDisplay: "block",
-                        errorMessage: "Error: No results!",
-                        displaySearch: "flex",
-                        displayResults: "none",
-                        resultsTeamNumber: 0,
-                        resultsEventCode: 0,
-                        resultsBody: 0,
-                        moredata: 0,
+                            root: __dirname,
+                            errorDisplay: "block",
+                            errorMessage: "Error: No results!",
+                            displaySearch: "flex",
+                            displayResults: "none",
+                            resultsTeamNumber: 0,
+                            resultsEventCode: 0,
+                            resultsBody: 0,
+                            moredata: 0,
                         });
                         return;
                     } else {
                         res.render("../src/browse.ejs", {
-                        root: __dirname,
-                        errorDisplay: "none",
-                        errorMessage: null,
-                        displaySearch: "none",
-                        displayResults: "flex",
-                        resultsTeamNumber: `ALL`,
-                        resultsEventCode: `${req.query.event}`,
-                        resultsBody:
-                            seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
+                            root: __dirname,
+                            errorDisplay: "none",
+                            errorMessage: null,
+                            displaySearch: "none",
+                            displayResults: "flex",
+                            resultsTeamNumber: `ALL`,
+                            resultsEventCode: `${req.query.event}`,
+                            resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
                         });
                         return;
                     }
@@ -1087,24 +1072,23 @@ app.get("/browse", checkAuth, (req, res) => {
                     displayResults: "flex",
                     resultsTeamNumber: `Scout ${req.query.discordID}`,
                     resultsEventCode: season,
-                    resultsBody:
-                        seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
+                    resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
                 });
                 return;
             }
         });
     } else {
-    res.render("../src/browse.ejs", {
-        root: __dirname,
-        errorDisplay: "none",
-        errorMessage: null,
-        displaySearch: "flex",
-        displayResults: "none",
-        resultsTeamNumber: 0,
-        resultsEventCode: 0,
-        resultsBody: 0,
-    });
-    return;
+        res.render("../src/browse.ejs", {
+            root: __dirname,
+            errorDisplay: "none",
+            errorMessage: null,
+            displaySearch: "flex",
+            displayResults: "none",
+            resultsTeamNumber: 0,
+            resultsEventCode: 0,
+            resultsBody: 0,
+        });
+        return;
     }
 });
 
@@ -1158,12 +1142,12 @@ app.get("/manage", checkAuth, async (req, res) => {
                 } else {
                     if (typeof dbQueryResult == "undefined") {
                         res.render("../src/manage.ejs", {
-                        root: __dirname,
-                        errorDisplay: "block",
-                        errorMessage: "Error: Results Undefined!",
-                        displaySearch: "flex",
-                        displayResults: "none",
-                        resultsBody: 0,
+                            root: __dirname,
+                            errorDisplay: "block",
+                            errorMessage: "Error: Results Undefined!",
+                            displaySearch: "flex",
+                            displayResults: "none",
+                            resultsBody: 0,
                         });
                         return;
                     } else {
@@ -1186,12 +1170,12 @@ app.get("/manage", checkAuth, async (req, res) => {
                             }">Delete</span></span></span></fieldset>`;
                         }
                         res.render("../src/manage.ejs", {
-                        root: __dirname,
-                        errorDisplay: "none",
-                        errorMessage: null,
-                        displaySearch: "none",
-                        displayResults: "flex",
-                        resultsBody: listHTML,
+                            root: __dirname,
+                            errorDisplay: "none",
+                            errorMessage: null,
+                            displaySearch: "none",
+                            displayResults: "flex",
+                            resultsBody: listHTML,
                         });
                         return;
                     }
@@ -1222,11 +1206,7 @@ app.post("/deleteSubmission", checkAuth, async (req, res) => {
 
     req.on("end", async () => {
         function sanitizeDBName() {
-            if (reqData.db == "pit") {
-                return "pit";
-            } else {
-                return "main";
-            }
+            return ((reqData.db == "pit") ? "pit" : "main");
         }
 
         let reqData = qs.parse(body);
@@ -1242,29 +1222,19 @@ app.post("/deleteSubmission", checkAuth, async (req, res) => {
                 return false;
             }
         }
-        
-        function selectDeductionAmount() {
-            if (reqData.db == "pit") {
-                return 35;
-            } else {
-                return 25;
-            }
-        }
 
         const isLeadScout = await checkIfLeadScout();
+
         if (isLeadScout) {
             if (reqData.submissionID && reqData.db) {
                 const stmt = `SELECT discordID FROM ${sanitizeDBName()} WHERE id=?`;
                 const values = [reqData.submissionID];
                 db.get(stmt, values, (err, result) => {
-                    console.log(result);
-                    const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${
-                        result.discordID
-                    }"`;
+                    const getUserIDstmt = `UPDATE scouts SET score = score - ${((reqData.db == "pit") ? 35 : 25)} WHERE discordID="${result.discordID}"`;
                     db.run(getUserIDstmt, (err) => {
                         if (err) {
-                        console.log(err);
-                        return;
+                            console.log(err);
+                            return;
                         }
                     });
                 });
@@ -1287,6 +1257,11 @@ app.post("/deleteSubmission", checkAuth, async (req, res) => {
 });
 
 // api
+
+app.get("/api/whoami", apiCheckAuth, (req, res) => {
+    res.send(req.user.id);
+});
+
 app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, (req, res) => {
     var teamNumParam = "";
     if (req.params.all === "all") {
@@ -1348,10 +1323,7 @@ app.get("/api/teams/:season/:event", apiCheckAuth, (req, res) => {
                             dbQueryResult[i]["AVG(weight)"]
                         }"></progress></td>`;
                     }
-                    res
-                        .status(200)
-                        .setHeader("Content-type", "text/plain")
-                        .send(htmltable);
+                    res.status(200).setHeader("Content-type", "text/plain").send(htmltable);
                 }
             }
         });
@@ -1463,6 +1435,47 @@ app.get("/api/casino/slots/slotSpin", apiCheckAuth, (req, res) => {
 // end slots API
 
 // blackjack API
+// blackjack cards
+const possibleCards = [
+    { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
+    { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
+    { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
+    { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
+];
+// blackjack websocket
+app.ws('/api/casino/blackjack/blackjackSocket', function(ws, req) {
+    var cards = [];
+    // 0x10 - send user id
+    ws.send(0x10);
+    ws.on("message", (message) => {
+        if (Number(message.split("$")[0]) === 0x11) {
+            // 0x12 - recd user id, checking gamble
+            // for debug i guess
+            ws.send(0x12);
+            let okToGamble = db.get("SELECT score FROM scouts WHERE discordID=?", [message.toString()], (err, result) => {
+                return result.score > -2000;
+            });
+
+            if (!okToGamble) {
+                // 0xE1 - not allowed to gamble
+                ws.send(0xE1);
+                ws.close();
+            }
+            // 0x13 - user ok to gamble
+            ws.send(0x13);
+        } else if (message === 0x31) {
+            // 0x31 - ready to play, send cards
+            
+            cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+            cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+            cards.push(possibleCards[Math.floor(Math.random() * 51)]);
+
+            // 0x32 - sending cards
+            ws.send(0x32 + "%%%" + `{"dealt": "card-${cards[0].suit}_${cards[0].value}.png","player0": "card-${cards[1].suit}_${cards[1].value}.png","player1": "card-${cards[2].suit}_${cards[2].value}.png"`);
+        }
+    });
+});
+
 app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, (req, res) => {
     const possibleCards = [
         { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
@@ -1478,16 +1491,8 @@ app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, (req, 
     cards.push(possibleCards[Math.floor(Math.random() * 51)]);
     // prevent cards from being duplicated
     if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-        while (
-            cards[0] == cards[1] ||
-            cards[1] == cards[2] ||
-            cards[0] == cards[2]
-        ) {
-            if (
-                cards[0] == cards[1] ||
-                cards[1] == cards[2] ||
-                cards[0] == cards[2]
-            ) {
+        while (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
+            if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
                 cards = [];
                 cards.push(possibleCards[Math.floor(Math.random() * 51)]);
                 cards.push(possibleCards[Math.floor(Math.random() * 51)]);
@@ -1509,6 +1514,7 @@ app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, (req, 
             cardValues = cardValues + cards[i].value;
         }
     }
+
     function findDealerTotal() {
         if (typeof cards[0].value !== "number") {
             return 10;
@@ -1540,7 +1546,7 @@ app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, (req, 
 });
 
 app.get("/api/casino/blackjack/newCard", apiCheckAuth, (req, res) => {
-    // shh, tell nobody that there are no aces here
+    // no aces!!
     const possibleCards = [
         { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
         { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
@@ -1575,19 +1581,15 @@ app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", api
                     { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
                     { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
                 ];
-                if (
-                    possibleCards[Math.floor(Math.random() * 51)].value +
-                    Number(req.params.dealerCard) <
-                    Number(req.params.playerTotal)
-                ) {
+                if (possibleCards[Math.floor(Math.random() * 51)].value + Number(req.params.dealerCard) < Number(req.params.playerTotal)) {
                     if (req.params.playerTotal < 21) {
                         let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
                         let pointValues = [req.user.id];
                         db.run(pointStmt, pointValues, (err) => {
-                        if (err) {
-                            res.status(500).send("got an error from transaction");
-                            return;
-                        }
+                            if (err) {
+                                res.status(500).send("got an error from transaction");
+                                return;
+                            }
                         });
                         res.status(200).json(`{"result": "win"}`);
                     } else {
@@ -1805,7 +1807,7 @@ app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, (req, res) => {
 });
 
 app.get("/api/notes/:event/:team/createNote", apiCheckAuth, (req, res) => {
-    const stmt = "INSERT INTO notes (team, season, event, note) VALUES(?, ?, ?, 'no note yet'"
+    const stmt = "INSERT INTO notes (team, season, event, note) VALUES(?, ?, ?, 'no note yet')"
     const values = [req.params.team, season, req.params.event];
     db.run(stmt, values, (err) => {
         if (err) {

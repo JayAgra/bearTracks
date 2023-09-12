@@ -24,7 +24,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "bun discord.js & bun serve.js"
+    "start": "node discord.js & node serve.js"
   },
   "keywords": [],
   "author": "JayAgra",

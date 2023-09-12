@@ -1,13 +1,51 @@
 /*jslint browser: true, es6*/
+
+var myUserID = 0;
+
+const whoamiXHR = new XMLHttpRequest();
+whoamiXHR.open("GET", `/api/whoami`, true);
+whoamiXHR.withCredentials = true;
+
+whoamiXHR.onreadystatechange = async () => {
+    if (whoamiXHR.readyState === XMLHttpRequest.DONE && whoamiXHR.status === 200) {
+        console.log("200 good");
+        myUserID = whoamiXHR.responseText;
+    } else if (whoamiXHR.status === 401) {
+        console.log("401 failure");
+        window.location.href = "/login";
+    } else if (whoamiXHR.status === 400) {
+        console.log("400 failure");
+    } else if (whoamiXHR.status === 500) {
+        console.log("500 failure");
+    } else {
+        console.log("awaiting response");
+    }
+};
+whoamiXHR.send();
+
+while (myUserID === 0) {}
+
+const blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
+
+blackjackSocket.onmessage = (event) => {
+    console.log(event.data);
+    if (event.data === 0x10) {
+        blackjackSocket.send(0x11 + "$" + myUserID);
+    } else if (event.data === 0x13) {
+        alert("you are ok to gamble");
+    } else if (event.data === 0xE1) {
+        alert("you are too poor to gamble 💀");
+    } else if (Number(event.data.split("%%%")[0]) === 0x32) {
+        console.log(JSON.parse(event.data.split("%%%")[1]));
+    } else if (event.data === 0xff) {
+        blackjackSocket.close();
+    }
+};
+
 var cvs = document.getElementById("bjCanvas");
 var ctx = document.getElementById("bjCanvas").getContext("2d");
-window.allCardValues = 0;
 window.disableBtns = false;
-window.allCards = [];
-window.playerCards = [];
 window.casinoSecToken = "";
-window.dealerTotal = 0;
-window.playerAces = 0;
 window.cardsURL = "assets/progcards/";
 //var allCards = [];
 //helper function to get mouse positions
@@ -36,172 +74,13 @@ function hideGame() {
 
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
 
-async function checkForLoss(cardTotal, card) {
-    if (card) {
-        if (cardTotal === 21) {
-            window.disableBtns = true;
-            const newPlayerCard = new Image()
-            newPlayerCard.onload = function() {
-                ctx.drawImage(this, (cvs.width / 8) + (cvs.width / 8) * (window.playerCards.length - 1), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2)
-            }
-            newPlayerCard.src = window.cardsURL + card;
-
-            await waitMs(750)
-
-            var audio = new Audio('assets/yummy.mp3');
-            audio.play();
-
-            hideGame()
-            document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Blackjack!</h3>`)
-            document.getElementById("playBtn").onclick = function() {
-                window.location.reload();
-            };
-            document.getElementById("playProgBtn").onclick = function() {
-                window.location.reload();
-            };
-
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/casino/blackjack/${cardTotal}/${window.casinoSecToken}/wonViaBlackjack`, true);
-            xhr.withCredentials = true;
-
-            xhr.onreadystatechange = async() => {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    console.log("200 good")
-                } else if (xhr.status === 401) {
-                    console.log("401 failure");
-                    window.location.href = "/login";
-                } else if (xhr.status === 400) {
-                    console.log("400 failure")
-                } else if (xhr.status === 500) {
-                    console.log("500 failure")
-                } else {
-                    console.log("awaiting response")
-                }
-            }
-            xhr.send();
-        } else if (cardTotal > 21) {
-            window.disableBtns = true;
-            const newPlayerCard = new Image()
-            newPlayerCard.onload = function() {
-                ctx.drawImage(this, (cvs.width / 8) + (cvs.width / 8) * (window.playerCards.length - 1), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2)
-            }
-            newPlayerCard.src = window.cardsURL + card;
-
-            await waitMs(750)
-
-            document.body.style.backgroundColor = "#121212";
-            document.getElementById("bjCanvas").style.display = "none"
-            document.getElementById("title").style.display = "inline";
-            document.getElementById("playBtn").style.display = "inline";
-            document.getElementById("backBtn").style.display = "inline";
-            document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Bust!</h3>`)
-            document.getElementById("playBtn").onclick = function() {
-                window.location.reload();
-            };
-            document.getElementById("playProgBtn").onclick = function() {
-                window.location.reload();
-            };
-        } else {
-            const newPlayerCard = new Image()
-            newPlayerCard.onload = function() {
-                ctx.drawImage(this, (cvs.width / 8) + (cvs.width / 8) * (window.playerCards.length - 1), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2)
-            }
-            newPlayerCard.src = window.cardsURL + card;
-        }
-    } else {
-        if (cardTotal === 21) {
-            var audio = new Audio('assets/yummy.mp3');
-            audio.play();
-
-            document.body.style.backgroundColor = "#121212";
-            document.getElementById("bjCanvas").style.display = "none"
-            document.getElementById("title").style.display = "inline";
-            document.getElementById("playBtn").style.display = "inline";
-            document.getElementById("backBtn").style.display = "inline";
-            document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Blackjack!</h3>`)
-            document.getElementById("playBtn").onclick = function() {
-                window.location.reload();
-            };
-            document.getElementById("playProgBtn").onclick = function() {
-                window.location.reload();
-            };
-
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/casino/blackjack/${cardTotal}/${window.casinoSecToken}/wonViaBlackjack`, true);
-            xhr.withCredentials = true;
-
-            xhr.onreadystatechange = async() => {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    console.log("200 good")
-                } else if (xhr.status === 401) {
-                    console.log("401 failure");
-                    window.location.href = "/login";
-                } else if (xhr.status === 400) {
-                    console.log("400 failure")
-                } else if (xhr.status === 500) {
-                    console.log("500 failure")
-                } else {
-                    console.log("awaiting response")
-                }
-            }
-            xhr.send()
-        } else {
-            return;
-        }
-    }
-}
-
-async function getNewCard() {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/casino/blackjack/newCard`, true);
-    xhr.withCredentials = true;
-
-    xhr.onreadystatechange = async() => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            const APINewCard = await JSON.parse(JSON.parse(xhr.responseText))
-
-            console.log(APINewCard)
-            console.log(APINewCard.card)
-            window.allCards.push(APINewCard.card)
-            window.playerCards.push(APINewCard.card)
-
-            if (window.playerAces === 1) {
-                if ((window.allCardValues + APINewCard.cardValue) === 10) {
-                    await checkForLoss(21, APINewCard.card)
-                } else {
-                    await checkForLoss(window.allCardValues + APINewCard.cardValue + 1, APINewCard.card)
-                }
-            }
-
-            await checkForLoss(window.allCardValues + APINewCard.cardValue, APINewCard.card)
-
-            window.allCardValues = window.allCardValues + APINewCard.cardValue;
-
-            return APINewCard.card;
-        } else if (xhr.status === 401) {
-            console.log("401 unauth");
-            window.location.href = "/login";
-            return "401";
-        } else if (xhr.status === 400) {
-            console.log("400 failure")
-            return "400";
-        } else if (xhr.status === 500) {
-            console.log("500 failure")
-            return "500";
-        } else {
-            console.log("awaiting response")
-        }
-    }
-
-    xhr.send()
-}
-
 function startBlackjack(progdeck) {
     if (progdeck) {
         window.cardsURL = "assets/progcards/"
     } else {
         window.cardsURL = "assets/stdcards/";
     }
+
     if (window.innerHeight < window.innerWidth) {
         alert("play in portrait mode, on a phone.")
     } else {
@@ -310,179 +189,6 @@ function startBlackjack(progdeck) {
         hitBtn.src = "assets/hit.png";
         standBtn.src = "assets/stand.png";
 
-        //gameVars
-        var dealt = false;
-        window.playerCards = [`${window.cardsURL}card_back.png`, `${window.cardsURL}card_back.png`];
-        var drawnCards = [`${window.cardsURL}card_back.png`, `${window.cardsURL}card_back.png`];
-        cvs.addEventListener('click', async function(evt) {
-            var mousePos = getMousePos(cvs, evt);
-            console.log("click!!")
-            if (window.disableBtns) {
-                console.log("buttons are disabled")
-            } else {
-                if (isInside(getMousePos(cvs, evt), dealButton)) {
-                    console.log('deal button')
-                    if (dealt) {
-                        console.log("Already dealt");
-                    } else {
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("GET", `/api/casino/blackjack/startingCards`, true);
-                        xhr.withCredentials = true;
-
-                        xhr.onreadystatechange = async() => {
-                            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                                console.log("200 ok");
-
-                                ctx.globalCompositeOperation = 'destination-over';
-                                ctx.fillStyle = "#4c8232";
-                                ctx.fillRect(0, 0, cvs.width, cvs.height);
-
-                                const APIFirstCards = JSON.parse(JSON.parse(xhr.responseText));
-                                console.log(APIFirstCards);
-
-                                ctx.globalCompositeOperation = 'source-over';
-                                window.playerCards = [window.cardsURL + APIFirstCards.player0, window.cardsURL + APIFirstCards.player1];
-                                drawnCards = [window.cardsURL + APIFirstCards.dealt, `${window.cardsURL}card_back.png`];
-                                window.allCards.push(window.cardsURL + APIFirstCards.player0, window.cardsURL + APIFirstCards.player1, window.cardsURL + APIFirstCards.dealt);
-
-                                const firstDrawnCard = new Image();
-                                firstDrawnCard.onload = function() {
-                                    ctx.drawImage(cardBack, (cvs.width / 8), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2);
-                                    ctx.drawImage(this, (cvs.width / 8) + (cvs.width / 8), 0, cvs.width / 2, cvs.width / 2);
-                                    const firstPlayerCard = new Image();
-                                    firstPlayerCard.onload = function() {
-                                        ctx.drawImage(this, (cvs.width / 8), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2);
-                                    }
-                                    firstPlayerCard.src = window.cardsURL + APIFirstCards.player1;
-                                    const secondPlayerCard = new Image();
-                                    secondPlayerCard.onload = function() {
-                                        ctx.drawImage(this, (cvs.width / 8) + (cvs.width / 8), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2);
-                                    }
-                                    secondPlayerCard.src = window.cardsURL + APIFirstCards.player0;
-                                }
-                                firstDrawnCard.src = window.cardsURL + APIFirstCards.dealt;
-
-                                ctx.drawImage(hitBtn, hitButton.x, hitButton.y, hitButton.width, hitButton.height);
-                                ctx.drawImage(standBtn, standButton.x, standButton.y, standButton.width, standButton.height);
-
-                                //ctx.drawImage(dealerHandCard, (cvs.width/26), 0, cvs.width/2, cvs.width/2)
-                                //ctx.drawImage(playerCard, (cvs.width/20), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);
-
-                                window.allCardValues = Number(APIFirstCards.playerTotal);
-                                window.playerAces = APIFirstCards.aces;
-                                window.casinoSecToken = APIFirstCards.casinoToken
-                                window.dealerTotal = APIFirstCards.dealerTotal
-
-                                //value aces as 11 if total is less than or equal to 10
-                                if (APIFirstCards.aces > 0) {
-                                    if (APIFirstCards.aces === 1 && APIFirstCards.playerTotal === 10) {
-                                        window.playerTotal = 21;
-                                        checkForLoss(21)
-                                    };
-                                    if (window.playerAces === 2) {
-                                        window.allCardValues = window.allCardValues + 12;
-                                        window.playerAces = 0;
-                                    };
-                                }
-
-                                console.log(APIFirstCards.playerTotal)
-                                console.log(APIFirstCards.aces)
-
-                                dealt = true;
-                            } else if (xhr.status === 401) {
-                                console.log("401 unauth");
-                                window.location.href = "/login";
-                            } else if (xhr.status === 400) {
-                                console.log("400 failure")
-                            } else if (xhr.status === 403) {
-                                if (xhr.readyState === XMLHttpRequest.DONE) {
-                                    console.log("403 access denied")
-                                    hideGame()
-                                    document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">You have a balance of under -2000 points, you cannot gamble!</h3>`)
-                                    document.getElementById("playBtn").onclick = function() {
-                                        window.location.reload();
-                                    }
-                                    document.getElementById("playProgBtn").onclick = function() {
-                                        window.location.reload();
-                                    };
-                                    throw new Error('unable to gamble');
-                                }
-                            } else if (xhr.status === 500) {
-                                console.log("500 failure")
-                            } else {
-                                console.log("awaiting response")
-                            }
-                        }
-
-                        xhr.send()
-                    }
-                } else if (isInside(getMousePos(cvs, evt), hitButton)) {
-                    console.log('hit button');
-                    if (dealt) {
-                        await getNewCard().then(card => async function() {
-                            /*
-                                                    ctx.globalCompositeOperation = 'source-over';
-                                                    var newCardForPlayer = new Image()
-                                                    newCardForPlayer.onload = function(){ctx.drawImage(this, (cvs.width/8) + (cvs.width/8)*(window.playerCards.length - 1), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2)}
-                                                    newCardForPlayer.src = window.playerCards[window.playerCards.length - 1];
-                                                */
-                        }).catch()
-                    } else {
-                        console.log("not yet dealt")
-                    }
-                } else if (isInside(getMousePos(cvs, evt), standButton)) {
-                    console.log('stand button');
-                    if (dealt) {
-                        window.disableBtns = true;
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("GET", `/api/casino/blackjack/stand/${window.casinoSecToken}/${window.allCardValues}/${window.dealerTotal}`, true);
-                        xhr.withCredentials = true;
-
-                        xhr.onreadystatechange = async() => {
-                            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                                const APINewCard = await JSON.parse(JSON.parse(xhr.responseText))
-                                if (APINewCard.result === "win") {
-                                    var audio = new Audio('assets/yummy.mp3');
-                                    audio.play();
-                                    hideGame()
-                                    document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Win!</h3>`)
-                                    document.getElementById("playBtn").onclick = function() {
-                                        window.location.reload();
-                                    };
-                                    document.getElementById("playProgBtn").onclick = function() {
-                                        window.location.reload();
-                                    };
-                                } else if (APINewCard.result === "loss") {
-                                    hideGame()
-                                    document.getElementById("bjCanvas").insertAdjacentHTML("afterend", `<h3 id="gameResult" style="font-family: 'raleway-300'" style="color: var(--gameFlairColor)">Loss!</h3>`)
-                                    document.getElementById("playBtn").onclick = function() {
-                                        window.location.reload();
-                                    };
-                                    document.getElementById("playProgBtn").onclick = function() {
-                                        window.location.reload();
-                                    };
-                                }
-                            } else if (xhr.status === 401) {
-                                console.log("401 unauth");
-                                window.location.href = "/login";
-                                return "401";
-                            } else if (xhr.status === 400) {
-                                console.log("400 failure")
-                                return "400";
-                            } else if (xhr.status === 500) {
-                                console.log("500 failure")
-                                return "500";
-                            } else {
-                                console.log("awaiting response")
-                            }
-                        }
-
-                        xhr.send()
-                    } else {
-                        console.log("not yet dealt")
-                    }
-                }
-            }
-        }, false);
+        blackjackSocket.send(0x30);
     }
 }
