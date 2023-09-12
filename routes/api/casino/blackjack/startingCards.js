@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+
 function startingCards(req, res, db, possibleCards, casinoToken) {
     var cards = [];
     var cardValues = 0;
