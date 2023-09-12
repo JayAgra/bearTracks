@@ -14,7 +14,7 @@ function mainOrPitLink(type) {
     }
 }
 
-async function checkIfLeadScout() {
+async function checkIfLeadScout(leadToken) {
     if (req.cookies.lead) {
         if (req.cookies.lead == leadToken) {
             return true;
@@ -26,8 +26,8 @@ async function checkIfLeadScout() {
     }
 }
 
-async function manage(req, res, db, dirname) {
-    const isLeadScout = await checkIfLeadScout();
+async function manage(req, res, db, dirname, leadToken) {
+    const isLeadScout = await checkIfLeadScout(leadToken);
     if (isLeadScout) {
         if (req.query.dbase) {
             const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;

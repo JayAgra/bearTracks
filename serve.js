@@ -75,7 +75,6 @@ var server;
 if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
     server = https.createServer(options, app).listen(443);
 }
-var expressWs = require("express-ws")(app, server);
 const ejs = require("ejs");
 app.set("view engine", "html");
 app.engine("html", ejs.renderFile);
@@ -524,7 +523,7 @@ app.get("/teams", checkAuth, (req, res) => {
 });
 
 app.get("/manage", checkAuth, async (req, res) => {
-    require("./routes/manage.js").manage(req, res, db, __dirname);
+    require("./routes/manage.js").manage(req, res, db, __dirname, leadToken);
 });
 
 app.post("/deleteSubmission", checkAuth, async (req, res) => {

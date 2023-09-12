@@ -1,6 +1,15 @@
 const DiscordOauth2 = require("discord-oauth2");
 const getOauthData = new DiscordOauth2();
 
+const {
+    scoutteama,
+    scoutteamb,
+    leadscout,
+    drive,
+    pit,
+    teamServerID
+} = require("../config.json");
+
 function findTopRole(roles) {
     var rolesOut = [];
     if (roles.indexOf(leadscout) >= 0) {
