@@ -361,7 +361,7 @@ app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
 
 // index.html, read the code
 app.get("/", checkAuth, async (req, res) => {
-    require("./routes/index.js").submitPit(req, res, db, __dirname);
+    require("./routes/index.js").index(req, res, db, __dirname);
 });
 
 // main scouting form
