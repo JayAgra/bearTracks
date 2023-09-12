@@ -1,4 +1,4 @@
-function pitscoutedteams(req, res, db) {
+function pitscoutedteams(req, res, db, season) {
     var teams = [];
     const stmt = `SELECT * FROM pit WHERE event=? AND season=?`;
     const values = [req.params.event, season];

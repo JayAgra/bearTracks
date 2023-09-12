@@ -180,15 +180,6 @@ function invalidJSON(str) {
     }
 }
 
-function escapeHTML(htmlStr) {
-    return String(htmlStr)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
-
 // check the JSON file to see if the user is in the team discord server
 function inTeamServer(json) {
     var isInTheServer = false;
@@ -200,10 +191,6 @@ function inTeamServer(json) {
         }
     }
     return isInTheServer;
-}
-
-function checkIfLead(roles) {
-    return (roles.indexOf(leadscout) >= 0)
 }
 
 // check the authentication and server membership
@@ -633,7 +620,7 @@ app.get("/api/events/current/allData", apiCheckAuth, (req, res) => {
 });
 
 app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, (req, res) => {
-    require("./routes/api/events/pitscoutedteams.js").teams(req, res, db);
+    require("./routes/api/events/pitscoutedteams.js").teams(req, res, db, season);
 });
 
 app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, (req, res) => {

@@ -10,6 +10,7 @@ function invalidJSON(str) {
     }
 }
 
+
 function teams(req, res, frcapi, season) {
     var dbody = new EventEmitter();
     var options = {
