@@ -85,7 +85,7 @@ function submitForm(req, res, db, dirname) {
                 // announce new submisison to the discord
                 require("../discord.js").newSubmission("main", this.lastID, req.user.username);
                 // weight the team performance
-                seasonProcess.weightScores(this.lastID);
+                require(`../${season}.js`).weightScores(this.lastID);
             });
             // statement to credit points
             let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;

@@ -40,7 +40,7 @@ function browse(req, res, db, dirname, season) {
                             displayResults: "flex",
                             resultsTeamNumber: `ALL`,
                             resultsEventCode: `${req.query.event}`,
-                            resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult),
+                            resultsBody: require(`../${season}.js`).createHTMLTableWithTeamNum(dbQueryResult),
                         });
                         return;
                     }

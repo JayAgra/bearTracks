@@ -38,7 +38,6 @@ const https = require("https");
 const http = require("http");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
-const seasonProcess = require(`./${season}.js`);
 const RateLimit = require("express-rate-limit");
 const EventEmitter = require("events").EventEmitter;
 const helmet = require("helmet");
