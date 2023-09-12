@@ -1,5 +1,6 @@
-function createNote(req, res, db) {
-    const stmt = "INSERT INTO notes (team, season, event, note) VALUES(?, ?, ?, 'no note yet')"
+function createNote(req, res, db, season) {
+    const stmt =
+        "INSERT INTO notes (team, season, event, note) VALUES(?, ?, ?, 'no note yet')";
     const values = [req.params.team, season, req.params.event];
     db.run(stmt, values, (err) => {
         if (err) {

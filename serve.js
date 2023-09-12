@@ -554,7 +554,7 @@ app.get("/api/pit/:season/:event/:team", apiCheckAuth, (req, res) => {
 });
 
 app.get("/api/teams/:season/:event", apiCheckAuth, (req, res) => {
-    require("./routes/api/teams.js").teams(req, res, db);
+    require("./routes/api/teams.js").teams(req, res, db, season);
 });
 
 app.get("/api/scouts", apiCheckAuth, (req, res) => {
@@ -637,15 +637,15 @@ app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, (req, res) => {
 });
 
 app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, (req, res) => {
-    require("./routes/api/notes/getNotes.js").getNotes(req, res, db);
+    require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
 });
 
 app.get("/api/notes/:event/:team/createNote", apiCheckAuth, (req, res) => {
-    require("./routes/api/notes/createNote.js").createNote(req, res, db);
+    require("./routes/api/notes/createNote.js").createNote(req, res, db, season);
 });
 
 app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, (req, res) => {
-    require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db);
+    require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
 });
 
 app.get("/api/teams/teamdata/:team", apiCheckAuth, (req, res) => {

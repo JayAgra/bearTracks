@@ -1,4 +1,4 @@
-function getNotes(req, res, db) {
+function getNotes(req, res, db, season) {
     const stmt = `SELECT * FROM notes WHERE event=? AND season=? AND team=?`;
     const values = [req.params.event, season, req.params.team];
     db.get(stmt, values, (err, dbQueryResult) => {

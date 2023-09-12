@@ -1,4 +1,4 @@
-function updateNotes(req, res, db) {
+function updateNotes(req, res, db, season) {
     let body = "";
 
     req.on("data", (chunk) => {

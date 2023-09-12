@@ -1,6 +1,6 @@
 const sanitize = require("sanitize-filename");
 
-function teams(req, res, db) {
+function teams(req, res, db, season) {
     if (req.params.event) {
         const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? AND season=? GROUP BY team ORDER BY AVG(weight) DESC`;
         const requestedEvent = sanitize(req.params.event);
