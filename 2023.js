@@ -356,20 +356,52 @@ function createHTMLTable(data) {
         "cycle": 0,
         "perf_score": 0
     };
+    var max = {
+        "auto_charge": Number.MIN_SAFE_INTEGER,
+        "teleop_charge": Number.MIN_SAFE_INTEGER,
+        "grid": Number.MIN_SAFE_INTEGER,
+        "cycle": Number.MIN_SAFE_INTEGER,
+        "perf_score": Number.MIN_SAFE_INTEGER
+    };
+    var min = {
+        "auto_charge": Number.MAX_SAFE_INTEGER,
+        "teleop_charge": Number.MAX_SAFE_INTEGER,
+        "grid": Number.MAX_SAFE_INTEGER,
+        "cycle": Number.MAX_SAFE_INTEGER,
+        "perf_score": Number.MAX_SAFE_INTEGER
+    }; 
+
     for (var i = 0; i < data.length; i++) {
         html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
-        avg.auto_charge += data[i].game5;
-        avg.teleop_charge += data[i].game10;
-        avg.grid += data[i].game25;
-        avg.cycle += data[i].game11;
-        avg.perf_score += data[i].weight;
+        
+        avg.auto_charge += Number(data[i].game5);
+        avg.teleop_charge += Number(data[i].game10);
+        avg.grid += Number(data[i].game25);
+        avg.cycle += Number(data[i].game11);
+        avg.perf_score += Number(data[i].weight);
+
+        if (max.auto_charge < data[i].game5) max.auto_charge = Number(data[i].game5);
+        if (max.teleop_charge < data[i].game10) max.teleop_charge = Number(data[i].game10);
+        if (max.grid < data[i].game25) max.grid = Number(data[i].game25);
+        if (max.cycle < data[i].game11) max.cycle = Number(data[i].game11);
+        if (max.perf_score < data[i].weight) max.perf_score = Number(data[i].weight);
+
+        if (min.auto_charge > data[i].game5) min.auto_charge = Number(data[i].game5);
+        if (min.teleop_charge > data[i].game10) min.teleop_charge = Number(data[i].game10);
+        if (min.grid > data[i].game25) min.grid = Number(data[i].game25);
+        if (min.cycle > data[i].game11) min.cycle = Number(data[i].game11);
+        if (min.perf_score > data[i].weight) min.perf_score = Number(data[i].weight);
     }
+
     avg.auto_charge /= data.length;
     avg.teleop_charge /= data.length;
     avg.grid /= data.length;
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
+
+    console.log(avg);
+
+    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td><td></td><td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td><td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td><td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td><td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score})</td></tr>`;
     return html;
 }
 
@@ -382,19 +414,22 @@ function createHTMLTableWithTeamNum(data) {
         "cycle": 0,
         "perf_score": 0
     };
+
     for (var i = 0; i < data.length; i++) {
         html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
-        avg.auto_charge += data[i].game5;
-        avg.teleop_charge += data[i].game10;
-        avg.grid += data[i].game25;
-        avg.cycle += data[i].game11;
-        avg.perf_score += data[i].weight;
+        avg.auto_charge += Number(data[i].game5);
+        avg.teleop_charge += Number(data[i].game10);
+        avg.grid += Number(data[i].game25);
+        avg.cycle += Number(data[i].game11);
+        avg.perf_score += Number(data[i].weight);
     }
+
     avg.auto_charge /= data.length;
     avg.teleop_charge /= data.length;
     avg.grid /= data.length;
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
+
     html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
     return html;
 }
