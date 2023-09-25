@@ -59,42 +59,42 @@ function teamData(season, team, event, interaction) {
             ephemeral: true
         });
     }
-    //data:
+    // data:
 
-    //BASIC DATA
-    //event is event code
-    //name is scout name
-    //team is scouted team
-    //match is match number
-    //level is the level of the match
+    // BASIC DATA
+    // event is event code
+    // name is scout name
+    // team is scouted team
+    // match is match number
+    // level is the level of the match
 
-    //AUTON
-    //game1 is BOOL taxi (3pts)
-    //game2 is BOOL bottom row score (3pts)
-    //game3 is BOOL middle row score (4pts)
-    //game4 is BOOL top row score (6pts)
-    //game5 is INT 0/8/12 no dock or engage/dock no engage/dock and engage
+    // AUTON
+    // game1 is BOOL taxi (3pts)
+    // game2 is BOOL bottom row score (3pts)
+    // game3 is BOOL middle row score (4pts)
+    // game4 is BOOL top row score (6pts)
+    // game5 is INT 0/8/12 no dock or engage/dock no engage/dock and engage
 
 
     //TELEOP
-    //game 6 is BOOL bottom row score
-    //game 7 is BOOL middle row score
-    //game 8 is BOOL top row score
-    //game 9 is BOOL coop bonus (alliance)
-    //game 10 is INT 0/2/6/10
+    // game 6 is BOOL bottom row score
+    // game 7 is BOOL middle row score
+    // game 8 is BOOL top row score
+    // game 9 is BOOL coop bonus (alliance)
+    // game 10 is INT 0/2/6/10
 
-    //AFTER MATCH
-    //game11 is INT est cycle time
-    //teleop is STRING thoughts about teleop phase
-    //defend is STRING about robot defence
-    //driving is STRING about the robot's driver
-    //overall is STRING as overall thoughts about the team
+    // AFTER MATCH
+    // game11 is INT est cycle time
+    // teleop is STRING thoughts about teleop phase
+    // defend is STRING about robot defence
+    // driving is STRING about the robot's driver
+    // overall is STRING as overall thoughts about the team
 
-    //UNUSED VALUES
-    //game12 - game25 is INT (0)
-    //formType is STRING the form that was submitted and is not entered into db
+    // UNUSED VALUES
+    // game12 - game25 is INT (0)
+    // formType is STRING the form that was submitted and is not entered into db
 
-    //game25 will be set to grid total
+    // game25 will be set to grid total
 
     db.get(`SELECT * FROM main WHERE team=${team} AND event="${event}" AND season="${season}" ORDER BY id DESC LIMIT 1`, (err, result) => {
         if (err) {
@@ -173,22 +173,22 @@ function pitData(season, team, event, interaction) {
             ephemeral: true
         });
     }
-    //data:
+    // data:
 
-    //BASIC DATA
-    //event is event code
-    //name is scout name
-    //team is scouted team
+    // BASIC DATA
+    // event is event code
+    // name is scout name
+    // team is scouted team
 
-    //PIT SCOUTING DATA
-    //drivetype is STRING what drive type
-    //driveTeam is INT how many **days** of drive team work on this robot
-    //attended is INT how many other events has team attended
-    //overall is STRING overall thoughts
+    // PIT SCOUTING DATA
+    // drivetype is STRING what drive type
+    // driveTeam is INT how many **days** of drive team work on this robot
+    // attended is INT how many other events has team attended
+    // overall is STRING overall thoughts
 
-    //UNUSED VALUES
-    //game1 - game20 is INT (0)
-    //formType is STRING the form that was submitted and is not entered into db
+    // UNUSED VALUES
+    // game1 - game20 is INT (0)
+    // formType is STRING the form that was submitted and is not entered into db
 
     db.get(`SELECT * FROM pit WHERE team=${team} AND event="${event}" AND season=${season} ORDER BY id DESC LIMIT 1`, (err, pitresult) => {
         if (err) {
@@ -256,33 +256,33 @@ function weightScores(submissionID) {
             analysisResults.push(saModule.analyze(result.overall));
             console.log(analysisResults);
 
-            //MAXIMUM SCORE: 15
-            //sent analysis
+            // MAXIMUM SCORE: 15
+            // sent analysis
             score = score + analysisResults[0] * 3.75;
             score = score + analysisResults[1] * 3.75;
             score = score + analysisResults[2] * 7.5;
 
-            //MAXIMUM 11
-            //charging pts
+            // MAXIMUM 11
+            // charging pts
             score = score + result.game5 / 2;
             score = score + result.game10 / 2;
 
-            //MAXIMUM 26
-            //auto pts
+            // MAXIMUM 26
+            // auto pts
             score = score + boolToNum(result.game1) * 6; //taxi
             score = score + boolToNum(result.game2) * 6; //score btm
             score = score + boolToNum(result.game3) * 8; //score mid
             score = score + boolToNum(result.game4) * 12; //score top
 
-            //MAXIMUM 10
-            //teleop pts
+            // MAXIMUM 10
+            // teleop pts
             score = score + boolToNum(result.game6) * 2; //score btm
             score = score + boolToNum(result.game7) * 3; //score mid
             score = score + boolToNum(result.game8) * 3; //score top
             score = score + boolToNum(result.game9) * 2; //coop bonus
 
-            //MAXIMUM 38
-            //grid items
+            // MAXIMUM 38
+            // grid items
             var cubes = 0;
             var cones = 0;
             result.game12.split("").forEach(function(item, index, array) {
@@ -314,7 +314,7 @@ function weightScores(submissionID) {
                     cones += 2
                 }
             });
-            //assume reasonable max is 65
+            // assume reasonable max is 65
             score = score + (gridwt / 1.6875);
             db.run(`UPDATE main SET weight=${score.toFixed(2)} WHERE id=${submissionID}`, (err, result) => {
                 if (err) {
@@ -349,17 +349,53 @@ function weightScores(submissionID) {
 
 function createHTMLTable(data) {
     var html = ``;
+    var avg = {
+        "auto_charge": 0,
+        "teleop_charge": 0,
+        "grid": 0,
+        "cycle": 0,
+        "perf_score": 0
+    };
     for (var i = 0; i < data.length; i++) {
         html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        avg.auto_charge += data[i].game5;
+        avg.teleop_charge += data[i].game10;
+        avg.grid += data[i].game25;
+        avg.cycle += data[i].game11;
+        avg.perf_score += data[i].weight;
     }
+    avg.auto_charge /= data.length;
+    avg.teleop_charge /= data.length;
+    avg.grid /= data.length;
+    avg.cycle /= data.length;
+    avg.perf_score /= data.length;
+    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
     return html;
 }
 
 function createHTMLTableWithTeamNum(data) {
     var html = ``;
+    var avg = {
+        "auto_charge": 0,
+        "teleop_charge": 0,
+        "grid": 0,
+        "cycle": 0,
+        "perf_score": 0
+    };
     for (var i = 0; i < data.length; i++) {
         html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${valueToEmote(data[i].game2)}${valueToEmote(data[i].game3)}${valueToEmote(data[i].game4)}</td><td>${data[i].game5}</td><td>${valueToEmote(data[i].game6)}${valueToEmote(data[i].game7)}${valueToEmote(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        avg.auto_charge += data[i].game5;
+        avg.teleop_charge += data[i].game10;
+        avg.grid += data[i].game25;
+        avg.cycle += data[i].game11;
+        avg.perf_score += data[i].weight;
     }
+    avg.auto_charge /= data.length;
+    avg.teleop_charge /= data.length;
+    avg.grid /= data.length;
+    avg.cycle /= data.length;
+    avg.perf_score /= data.length;
+    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
     return html;
 }
 
