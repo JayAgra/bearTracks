@@ -36,15 +36,6 @@ async function index(req, res, dirname, leadToken) {
                 root: dirname,
             });
         } else {
-            // i have the wrong cooky!
-            if (req.cookies.lead !== leadToken) {
-                res.cookie("isLead", "false", {
-                    expire: 7200000 + Date.now(),
-                    sameSite: "Lax",
-                    secure: true,
-                    httpOnly: false,
-                });
-            }
             // send index.html
             res.sendFile("src/index.html", {
                 root: dirname,
