@@ -297,9 +297,9 @@ app.get("/callback", passport.authenticate("discord", { failureRedirect: "/login
 
 // clear cookies, used for debugging
 app.get("/clearCookies", (req, res) => {
-    res.clearCookie("role");
     res.clearCookie("connect.sid");
     res.clearCookie("lead");
+    res.clearCookie("isLead");
     res.redirect("/");
 });
 
