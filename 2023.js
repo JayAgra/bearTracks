@@ -103,8 +103,7 @@ function createHTMLExport(dbQueryResult) {
 
 function weightScores(submissionID) {
     var analysisResults = [];
-    var score = 1;
-    var gridwt = 0;
+    var score = 0;
     db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
         if (result && !err) {
             //teleop, defend, driving, overall
@@ -142,23 +141,24 @@ function weightScores(submissionID) {
             // grid items
             var cubes = 0;
             var cones = 0;
+            var gridWt = 0;
             result.game12.split("").forEach(function(item, index, array) {
-                var fullgrid = !array.includes("0");
+                const fullGrid = !array.includes("0");
                 if (index <= 8 && item !== "0") {
-                    if (item === "3" || item === "4" && fullgrid) {
-                        gridwt = gridwt + 3;
+                    if (item === "3" || item === "4" && fullGrid) {
+                        gridWt += 3;
                     }
-                    gridwt = gridwt + 5;
+                    gridWt += 5;
                 } else if (index <= 17 && item !== "0") {
-                    if (item === "3" || (item === "4" && fullgrid)) {
-                        gridwt = gridwt + 3;
+                    if (item === "3" || (item === "4" && fullGrid)) {
+                        gridWt += 3;
                     }
-                    gridwt = gridwt + 3;
+                    gridWt = gridWt + 3;
                 } else if (index <= 26 && item !== "0") {
-                    if (item === "3" || (item === "4" && fullgrid)) {
-                        gridwt = gridwt + 3;
+                    if (item === "3" || (item === "4" && fullGrid)) {
+                        gridWt += 3;
                     }
-                    gridwt = gridwt + 2;
+                    gridWt += 2;
                 }
                 if (item === "1") {
                     cubes++
@@ -172,28 +172,28 @@ function weightScores(submissionID) {
                 }
             });
             // assume reasonable max is 65
-            score = score + (gridwt / 1.6875);
+            score = score + (gridWt / 1.6875);
             db.run(`UPDATE main SET weight=${score.toFixed(2)} WHERE id=${submissionID}`, (err, result) => {
                 if (err) {
                     console.log("Error updating DB!");
                 }
             });
-            db.run(`UPDATE main SET analysis='${analysisResults.toString()}' WHERE id=${submissionID}`, (err) => {
+            db.run(`UPDATE main SET analysis="${analysisResults.toString()}" WHERE id=${submissionID}`, (err) => {
                 if (err) {
                     console.log("Error updating DB!");
                 }
             });
-            db.run(`UPDATE main SET game23='${cubes}' WHERE id=${submissionID}`, (err, result) => {
+            db.run(`UPDATE main SET game23=${cubes} WHERE id=${submissionID}`, (err, result) => {
                 if (err) {
                     console.log("Error updating DB!");
                 }
             });
-            db.run(`UPDATE main SET game24='${cones}' WHERE id=${submissionID}`, (err, result) => {
+            db.run(`UPDATE main SET game24=${cones} WHERE id=${submissionID}`, (err, result) => {
                 if (err) {
                     console.log("Error updating DB!");
                 }
             });
-            db.run(`UPDATE main SET game25='${gridwt}' WHERE id=${submissionID}`, (err, result) => {
+            db.run(`UPDATE main SET game25=${gridWt} WHERE id=${submissionID}`, (err, result) => {
                 if (err) {
                     console.log("Error updating DB!");
                 }
@@ -255,8 +255,6 @@ function createHTMLTable(data) {
     avg.grid /= data.length;
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
-
-    console.log(avg);
 
     html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td><td></td><td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td><td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td><td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td><td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score})</td></tr>`;
     return html;
