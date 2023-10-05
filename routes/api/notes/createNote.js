@@ -1,4 +1,4 @@
-function createNote(req, res, db, season) {
+async function createNote(req, res, db, season) {
     const stmt =
         "INSERT INTO notes (team, season, event, note) VALUES(?, ?, ?, 'no note yet')";
     const values = [req.params.team, season, req.params.event];

@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-function wonViaBlackjack(req, res, db, casinoToken) {
+async function wonViaBlackjack(req, res, db, casinoToken) {
     let stmt = `SELECT score FROM scouts WHERE discordID=?`;
     let values = [req.user.id];
     db.get(stmt, values, (err, dbQueryResult) => {

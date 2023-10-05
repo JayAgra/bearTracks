@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-function stand(req, res, db, possibleCards, casinoToken) {
+async function stand(req, res, db, possibleCards, casinoToken) {
     let stmt = `SELECT score FROM scouts WHERE discordID=?`;
     let values = [req.user.id];
     db.get(stmt, values, (err, dbQueryResult) => {

@@ -1,4 +1,4 @@
-function detail(req, res, db, dirname, season) {
+async function detail(req, res, db, dirname, season) {
     if (req.query.team && req.query.event && req.query.page) {
         const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
         const values = [

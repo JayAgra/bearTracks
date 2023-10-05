@@ -1,4 +1,4 @@
-function browse(req, res, db, dirname, season) {
+async function browse(req, res, db, dirname, season) {
     if (req.query.number && req.query.event) {
         if (req.query.number == "ALL" || req.query.number == "*" || req.query.number == "0000" || req.query.number == "0") {
             const stmt = `SELECT * FROM main WHERE event=? AND season=? ORDER BY team ASC`;

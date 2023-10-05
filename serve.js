@@ -212,7 +212,7 @@ function apiCheckAuth(req, res, next) {
     res.status(401).json(JSON.parse(`{"status": 401}`));
 }
 
-function checkGamble(req, res, next) {
+async function checkGamble(req, res, next) {
     let pointStmt = `SELECT score FROM scouts WHERE discordID=?`;
     let pointValues = [req.user.id];
     db.get(pointStmt, pointValues, (err, result) => {
@@ -225,7 +225,7 @@ function checkGamble(req, res, next) {
 }
 
 // add scouts to database
-function addToDataBase(req, next) {
+async function addToDataBase(req, next) {
     // creating a password for, uh, something i guess
     const password = crypto.randomBytes(12).toString("hex");
     // update email, avatar, username, discrim, and times
@@ -237,7 +237,7 @@ function addToDataBase(req, next) {
 
 // forwards FRC API data for some API endpoints
 // insert first forward 2022 pun
-function forwardFRCAPIdata(url, req, res) {
+async function forwardFRCAPIdata(url, req, res) {
     var dbody = new EventEmitter();
     var options = {
         method: "GET",
@@ -325,7 +325,7 @@ app.get("/logout", (req, res) => {
 });*/
 
 // get the main form submissions
-app.post("/submit", checkAuth, (req, res) => {
+app.post("/submit", checkAuth, async (req, res) => {
     require("./routes/submit.js").submitForm(req, res, db, __dirname, season);
 });
 
@@ -338,17 +338,17 @@ const imageUploads = upload.fields([
     { name: "image5", maxCount: 1 },
 ]);
 
-app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
+app.post("/submitPit", checkAuth, imageUploads, async (req, res) => {
     require("./routes/submitPit.js").submitPit(req, res, db, __dirname, season);
 });
 
 // index.html, read the code
 app.get("/", checkAuth, async (req, res) => {
-    require("./routes/index.js").index(req, res, db, __dirname, leadToken);
+    require("./routes/index.js").index(req, res, __dirname, leadToken);
 });
 
 // main scouting form
-app.get("/main", checkAuth, async  (req, res) => {
+app.get("/main", checkAuth, (req, res) => {
     res.sendFile("src/main.html", { root: __dirname });
     res.set("Cache-control", "public, max-age=7776000");
 });
@@ -493,11 +493,11 @@ app.get("/teamRoleInfo", checkAuth, (req, res) => {
 });*/
 
 // tool to browse match scouting data
-app.get("/detail", checkAuth, (req, res) => {
+app.get("/detail", checkAuth, async (req, res) => {
     require("./routes/detail.js").detail(req, res, db, __dirname, season);
 });
 
-app.get("/browse", checkAuth, (req, res) => {
+app.get("/browse", checkAuth, async (req, res) => {
     require("./routes/browse.js").browse(req, res, db, __dirname, season);
 });
 
@@ -519,7 +519,7 @@ app.get("/api/whoami", apiCheckAuth, (req, res) => {
     res.send(req.user.id);
 });
 
-app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, (req, res) => {
+app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req, res) => {
     if (req.params.event !== "WOOD") {
         var teamNumParam = "";
         if (req.params.all === "all") {
@@ -533,32 +533,32 @@ app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, (req, res) => {
     }
 });
 
-app.get("/api/data/:season/:event/:team", apiCheckAuth, (req, res) => {
+app.get("/api/data/:season/:event/:team", apiCheckAuth, async (req, res) => {
     require("./routes/api/data.js").data(req, res, db);
 });
 
-app.get("/api/pit/:season/:event/:team", apiCheckAuth, (req, res) => {
+app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
     require("./routes/api/pit.js").pit(req, res, db);
 });
 
-app.get("/api/teams/:season/:event", apiCheckAuth, (req, res) => {
+app.get("/api/teams/:season/:event", apiCheckAuth, async (req, res) => {
     require("./routes/api/teams.js").teams(req, res, db, season);
 });
 
-app.get("/api/scouts", apiCheckAuth, (req, res) => {
+app.get("/api/scouts", apiCheckAuth, async (req, res) => {
     require("./routes/api/scouts.js").scouts(req, res, db);
 });
 
-app.get("/api/scouts/:scout/profile", apiCheckAuth, (req, res) => {
+app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req, res) => {
     require("./routes/api/scouts/profile.js").profile(req, res, db);
 });
 
-app.get("/api/scoutByID/:discordID", apiCheckAuth, (req, res) => {
+app.get("/api/scoutByID/:discordID", apiCheckAuth, async (req, res) => {
     require("./routes/api/scoutByID.js").scoutByID(req, res, db);
 });
 
 // slots API
-app.get("/api/casino/slots/slotSpin", apiCheckAuth, (req, res) => {
+app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
     require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db);
 });
 // end slots API
@@ -577,66 +577,66 @@ const possibleCards = [
 //     require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, db);
 // });
 
-app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, (req, res) => {
+app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/blackjack/startingCards.js").startingCards(req, res, db, possibleCards, casinoToken);
 });
 
-app.get("/api/casino/blackjack/newCard", apiCheckAuth, (req, res) => {
+app.get("/api/casino/blackjack/newCard", apiCheckAuth, async (req, res) => {
     require("./routes/api/casino/blackjack/newCard.js").newCard(req, res);
 });
 
-app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, (req, res) => {
+app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, async (req, res) => {
     require("./routes/api/casino/blackjack/stand.js").stand(req, res, db, possibleCards, casinoToken);
 });
 
-app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth, (req, res) => {
+app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth, async (req, res) => {
     require("./routes/api/casino/blackjack/wonViaBlackjack.js").wonViaBlackjack(req, res, db, casinoToken);
 });
 // end blackjack API
 
-app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, (req, res) => {
+app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db);
 });
 
 // plinko API
-app.get("/api/casino/plinko/startGame", apiCheckAuth, (req, res) => {
+app.get("/api/casino/plinko/startGame", apiCheckAuth, async (req, res) => {
     require("./routes/api/casino/plinko/startGame.js").startGame(req, res, db, casinoToken);
 });
 
-app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, (req, res) => {
+app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, async (req, res) => {
     require("./routes/api/casino/plinko/endGame.js").endGame(req, res, db, casinoToken);
 });
 // end plinko
 
-app.get("/api/events/:event/teams", apiCheckAuth, (req, res) => {
+app.get("/api/events/:event/teams", apiCheckAuth, async (req, res) => {
     require("./routes/api/events/teams.js").teams(req, res, frcapi, season);
 });
 
-app.get("/api/events/:event/allTeamData", apiCheckAuth, (req, res) => {
+app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req, res) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${req.params.event}`, req, res);
 });
 
-app.get("/api/events/current/allData", apiCheckAuth, (req, res) => {
+app.get("/api/events/current/allData", apiCheckAuth, async (req, res) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${currentComp}`, req, res);
 });
 
-app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, (req, res) => {
+app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
     require("./routes/api/events/pitscoutedteams.js").teams(req, res, db, season);
 });
 
-app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, (req, res) => {
+app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req, res) => {
     require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
 });
 
-app.get("/api/notes/:event/:team/createNote", apiCheckAuth, (req, res) => {
+app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req, res) => {
     require("./routes/api/notes/createNote.js").createNote(req, res, db, season);
 });
 
-app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, (req, res) => {
+app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req, res) => {
     require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
 });
 
-app.get("/api/teams/teamdata/:team", apiCheckAuth, (req, res) => {
+app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req, res) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
 });
 

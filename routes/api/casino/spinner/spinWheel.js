@@ -1,4 +1,4 @@
-function spinWheel(req, res, db) {
+async function spinWheel(req, res, db) {
     // 12 spins
     const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
 

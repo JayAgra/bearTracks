@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-function startGame(req, res, db, casinoToken) {
+async function startGame(req, res, db, casinoToken) {
     let pointStmt = `UPDATE scouts SET score = score - 15 WHERE discordID=?`;
     let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {

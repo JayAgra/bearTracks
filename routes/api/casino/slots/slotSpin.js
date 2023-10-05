@@ -1,4 +1,4 @@
-function slotSpin(req, res, db) {
+async function slotSpin(req, res, db) {
     const spin = [
         Math.floor(Math.random() * 7 + 1),
         Math.floor(Math.random() * 7 + 1),

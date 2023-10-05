@@ -6,7 +6,7 @@ function isMe(req) {
     }
 }
 
-function profile(req, res, db) {
+async function profile(req, res, db) {
     const stmt = `SELECT discordID, score, discordProfile, username, discriminator, addedAt, badges FROM scouts WHERE discordID=?`;
     const values = [isMe(req)];
     db.get(stmt, values, (err, dbQueryResult) => {

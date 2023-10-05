@@ -11,7 +11,7 @@ function invalidJSON(str) {
 }
 
 
-function teams(req, res, frcapi, season) {
+async function teams(req, res, frcapi, season) {
     if (req.params.event !== "WOOD") {
         var dbody = new EventEmitter();
         var options = {
