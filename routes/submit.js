@@ -1,4 +1,5 @@
 const qs = require("querystring");
+const { season } = require("../config.json");
 
 function escapeHTML(htmlStr) {
     return String(htmlStr)

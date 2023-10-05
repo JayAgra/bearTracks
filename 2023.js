@@ -142,32 +142,32 @@ function weightScores(submissionID) {
             var cubes = 0;
             var cones = 0;
             var gridWt = 0;
-            result.game12.split("").forEach(function(item, index, array) {
-                const fullGrid = !array.includes("0");
-                if (index <= 8 && item !== "0") {
-                    if (item === "3" || item === "4" && fullGrid) {
+            const fullGrid = !result.game12.split("").includes("0");
+            result.game12.split("").forEach(function(item, index) {
+                if (index <= 8 && item != "0") {
+                    if (item == "3" || item == "4" && fullGrid) {
                         gridWt += 3;
                     }
                     gridWt += 5;
-                } else if (index <= 17 && item !== "0") {
-                    if (item === "3" || (item === "4" && fullGrid)) {
+                } else if (index <= 17 && item != "0") {
+                    if (item == "3" || (item == "4" && fullGrid)) {
                         gridWt += 3;
                     }
                     gridWt = gridWt + 3;
-                } else if (index <= 26 && item !== "0") {
-                    if (item === "3" || (item === "4" && fullGrid)) {
+                } else if (index <= 26 && item != "0") {
+                    if (item == "3" || (item == "4" && fullGrid)) {
                         gridWt += 3;
                     }
                     gridWt += 2;
                 }
-                if (item === "1") {
+                if (item == "1") {
                     cubes++
-                } else if (item === "3") {
+                } else if (item == "3") {
                     cubes += 2
                 }
-                if (item === "2") {
+                if (item == "2") {
                     cones++
-                } else if (item === "3") {
+                } else if (item == "3") {
                     cones += 2
                 }
             });
