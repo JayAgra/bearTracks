@@ -72,6 +72,8 @@ if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
 const ejs = require("ejs");
 app.set("view engine", "html");
 app.engine("html", ejs.renderFile);
+app.use("/js", express.static("src/js"));
+app.use("/css", express.static("src/css"));
 app.use("/images", express.static("images"));
 app.use("/public", express.static("src/public"));
 // all cards by Lydia Honerkamp (https://github.com/1yd1a)
