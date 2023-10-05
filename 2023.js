@@ -213,20 +213,14 @@ function createHTMLTable(data) {
         "cycle": 0,
         "perf_score": 0
     };
-    var max = {
-        "auto_charge": Number.MIN_SAFE_INTEGER,
-        "teleop_charge": Number.MIN_SAFE_INTEGER,
-        "grid": Number.MIN_SAFE_INTEGER,
-        "cycle": Number.MIN_SAFE_INTEGER,
-        "perf_score": Number.MIN_SAFE_INTEGER
-    };
+    var max = structuredClone(avg);
     var min = {
         "auto_charge": Number.MAX_SAFE_INTEGER,
         "teleop_charge": Number.MAX_SAFE_INTEGER,
         "grid": Number.MAX_SAFE_INTEGER,
         "cycle": Number.MAX_SAFE_INTEGER,
         "perf_score": Number.MAX_SAFE_INTEGER
-    }; 
+    };
 
     for (var i = 0; i < data.length; i++) {
         html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
@@ -255,6 +249,12 @@ function createHTMLTable(data) {
     avg.grid /= data.length;
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
+
+    if (min.auto_charge === Number.MAX_SAFE_INTEGER) min.auto_charge = "und";
+    if (min.teleop_charge === Number.MAX_SAFE_INTEGER) min.teleop_charge = "und";
+    if (min.grid === Number.MAX_SAFE_INTEGER) min.grid = "und";
+    if (min.cycle === Number.MAX_SAFE_INTEGER) min.cycle = "und";
+    if (min.perf_score === Number.MAX_SAFE_INTEGER) min.perf_score = "und";
 
     html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td><td></td><td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td><td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td><td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td><td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score})</td></tr>`;
     return html;
