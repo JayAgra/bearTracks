@@ -523,13 +523,17 @@ app.get("/api/whoami", apiCheckAuth, (req, res) => {
 });
 
 app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, (req, res) => {
-    var teamNumParam = "";
-    if (req.params.all === "all") {
-        teamNumParam = "&start=&end=";
+    if (req.params.event !== "WOOD") {
+        var teamNumParam = "";
+        if (req.params.all === "all") {
+            teamNumParam = "&start=&end=";
+        } else {
+            teamNumParam = `&teamNumber=${myteam}`;
+        }
+        forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res)
     } else {
-        teamNumParam = `&teamNumber=${myteam}`;
+        forwardFRCAPIdata(`/v3.0/2023/schedule/CADA?tournamentLevel=qualification`, req, res)
     }
-    forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res)
 });
 
 app.get("/api/data/:season/:event/:team", apiCheckAuth, (req, res) => {
