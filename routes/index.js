@@ -55,12 +55,21 @@ function findTopRole(roles) {
     return rolesOut;
 }
 
-async function index(req, res, db, dirname) {
+async function index(req, res, db, dirname, leadToken) {
     // change index.ejs based on the user's roles
     try {
         if (!req.cookies.role) {
             // set cookie if not exists
             // I am setting a cookie because it takes a while to wait for role data from API
+
+            if (oauthDataCookieSet[0][0] === "Lead Scout") {
+                res.cookie("lead", leadToken, {
+                    expire: 7200000 + Date.now(),
+                    sameSite: "Lax",
+                    secure: true,
+                    httpOnly: true,
+                });
+            }
 
             var oauthDataCookieSet = await Promise.resolve(
                 getOauthData
@@ -118,6 +127,16 @@ async function index(req, res, db, dirname) {
             }
         } else {
             var oauthData = JSON.parse(req.cookies.role);
+
+            if (oauthData[0][0] === "Lead Scout") {
+                res.cookie("lead", leadToken, {
+                    expire: 7200000 + Date.now(),
+                    sameSite: "Lax",
+                    secure: true,
+                    httpOnly: true,
+                });
+            }
+
             if (
                 oauthData[0][0] == "Pit Team" ||
                 oauthData[0][0] == "Drive Team"

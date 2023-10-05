@@ -344,11 +344,11 @@ app.post("/submitPit", checkAuth, imageUploads, (req, res) => {
 
 // index.html, read the code
 app.get("/", checkAuth, async (req, res) => {
-    require("./routes/index.js").index(req, res, db, __dirname);
+    require("./routes/index.js").index(req, res, db, __dirname, leadToken);
 });
 
 // main scouting form
-app.get("/main", checkAuth, (req, res) => {
+app.get("/main", checkAuth, async  (req, res) => {
     res.sendFile("src/main.html", { root: __dirname });
     res.set("Cache-control", "public, max-age=7776000");
 });
