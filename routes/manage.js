@@ -1,4 +1,4 @@
-function sanitizeDBName() {
+function sanitizeDBName(req) {
     if (req.query.dbase == "pit") {
         return "pit";
     } else {
@@ -30,7 +30,7 @@ async function manage(req, res, db, dirname, leadToken) {
     const isLeadScout = await checkIfLeadScout(leadToken, req);
     if (isLeadScout) {
         if (req.query.dbase) {
-            const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
+            const stmt = `SELECT id FROM ${sanitizeDBName(req)} ORDER BY id ASC`;
             db.all(stmt, (err, dbQueryResult) => {
                 if (err) {
                     res.render("../src/manage.ejs", {
