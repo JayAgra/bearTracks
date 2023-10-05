@@ -1,0 +1,1 @@
+table{border-collapse:separate;border:solid var(--gameFlairColor) 1px;border-radius:6px}td,th{border-left:solid var(--gameFlairColor) 1px;border-top:solid var(--inputColorSelected) 1px}th{background-color:var(--transparent);color:var(--textColor);border-top:none;border-bottom:solid var(--gameFlairColor) 1px}td:first-child,th:first-child{border-left:none}

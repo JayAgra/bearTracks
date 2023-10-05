@@ -13,51 +13,11 @@
     <meta name="apple-mobile-web-app-title" content="Scouting">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="stylesheet" href="float.min.css" type="text/css">
+    <link rel="stylesheet" href="css/float.min.css" type="text/css">
+    <link rel="stylesheet" href="css/plinko.min.css" type="text/css">
     <link rel="manifest" href="/app.webmanifest" />
     <link rel="apple-touch-startup-image" href="public/launch.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js" crossorigin="anonymous" integrity="sha256-vfaOKX1sTshbjdaTuHgdmdsAkEScmjummUju3gjJJ1o="></script>
-    <style>
-        body {
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-            display: unset !important;
-            align-items: unset !important;
-            justify-content: unset !important;
-        }
-        #canvas {
-            width: 100vw;
-            height: 100vh;
-        }
-        .score {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            background-color: #121212;
-            color: #fff;
-            transform: rotate(-90deg);
-            font-size: calc(100vh * 0.0167 + 1px);
-        }
-        .sel {
-            background-color: #a216a2;
-            color: yellow;
-        }
-        .dummydiv {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .gameover {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
     <script src="assets/plinko.js"></script>
 </head>
 

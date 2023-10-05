@@ -51,11 +51,6 @@ function submitPit(req, res, db, dirname, season) {
             console.error(err.message);
             res.end("pit form error! " + err.message);
         }
-        require("../discord.js").newSubmission(
-            "pit",
-            this.lastID,
-            req.user.username
-        );
     });
     // credit points to scout
     // TODO: variable points on pit form

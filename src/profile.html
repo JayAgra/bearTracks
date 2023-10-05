@@ -1,132 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Profile - 766 Scouting</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <meta charset="UTF-8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="apple-touch-startup-image" href="public/launch.png">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scouting">
-    <link rel="manifest" href="/app.webmanifest" />
-    <link rel="stylesheet" href="float.min.css" type="text/css">
-    <meta name="mobile-web-app-capable" content="yes">
-    <script src="form.min.js"></script>
-    <style>
-        a,a:visited {
-            text-align: center;
-            text-decoration: none;
-            font-size: 6vh;
-            border-top: rgba(35,35,35,0);
-            border-left: rgba(35,35,35,0);
-            border-right: rgba(35,35,35,0);
-            border-bottom: #fff;
-            border-style: dotted;
-            border-width: 0.25vh;
-        }
-        a:hover,a:active {
-            color: #fff;
-        }
-        body {
-            text-align: center;
-        }
-        table {
-            border-collapse:separate;
-            border: solid var(--gameFlairColor) 1px;
-            border-radius: 6px;
-        }
-
-        td, th {
-            border-left: solid var(--gameFlairColor) 1px;
-            border-top: solid var(--inputColorSelected) 1px;
-        }
-
-        th {
-            background-color: var(--transparent);
-            color: var(--textColor);
-            border-top: none;
-            border-bottom: solid var(--gameFlairColor) 1px;
-        }
-
-        td:first-child, th:first-child {
-            border-left: none;
-        }
-    </style>
-</head>
-
-<body class="dark-mode" onload="getTeamRanks()">
-    <script>
-        themeHandle()
-    </script>
-    <div class="container" id="search" style="display: flex;">
-        <!--flex is shown-->
-        <form>
-            <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h4>Scout Ranks</h4><br>
-            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-        </form>
-        <br><br>
-    </div>
-    <div class="container" id="results" style="display: none;">
-        <!--flex is shown-->
-        <div class="dummy">
-            <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <fieldset>
-                <fieldset>
-                    <h3 id="eventCodeDisplay"></h3>
-                    <table>
-                        <tr id="preInsert">
-                            <th>Scout Name</th>
-                            <th>Score</th>
-                        </tr>
-                    </table>
-                </fieldset>
-                <!--buttons-->
-                <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" id="viewScoutsButton" onclick="window.location.reload()">Reload</button><br>
+    <head>
+        <title>Profile - 766 Scouting</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="apple-touch-startup-image" href="public/launch.png">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Scouting">
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
+        <link rel="stylesheet" href="css/table.min.css" type="text/css">
+        <meta name="mobile-web-app-capable" content="yes">
+        <script src="js/form.min.js"></script>
+    </head>
+    <body class="dark-mode" onload="getTeamRanks()">
+        <script>themeHandle()</script>
+        <div class="container" id="search" style="display: flex;">
+            <!--flex is shown-->
+            <form>
+                <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
+                <h4>Scout Ranks</h4><br>
                 <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-            </fieldset>
+            </form>
             <br><br>
         </div>
-    </div>
-    <script>
-        const waitMs = ms => new Promise(res => setTimeout(res, ms));
-        function goToHome() {
-            window.location.href = "/";
-        }
-        async function getTeamRanks() {
-            document.getElementById("viewScoutsButton").innerHTML = "Requesting Data...";
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/scouts/me/profile`, true);
-            xhr.withCredentials = true;
-
-            xhr.onreadystatechange = async () => {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log("200 ok");
-                console.log(xhr.responseText);
-                const APIData = JSON.parse(xhr.responseText);
-                console.log(APIData);
-            } else if (xhr.status === 401) {
-                console.log("401 failure")
-                document.getElementById("viewScoutsButton").innerHTML = "401 Unauthorized";
-                await waitMs(1000);
-                window.location.href = "/login";
-            } else if (xhr.status === 400) {
-                console.log("400 failure")
-                document.getElementById("viewScoutsButton").innerHTML = "400 Bad Request";
-            } else if (xhr.status === 500) {
-                console.log("500 failure")
-                document.getElementById("viewScoutsButton").innerHTML = "500 Internal Server Error";
-            } else {
-                console.log("awaiting response")
-                document.getElementById("viewScoutsButton").innerHTML = "Downloading Data...";
-            }
-            }
-
-            xhr.send()
-        }
-    </script>
-</body>
-
+        <div class="container" id="results" style="display: none;">
+            <!--flex is shown-->
+            <div class="dummy">
+                <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
+                <fieldset>
+                    <fieldset>
+                        <h3 id="eventCodeDisplay"></h3>
+                        <table>
+                            <tr id="preInsert">
+                                <th>Scout Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </table>
+                    </fieldset>
+                    <!--buttons-->
+                    <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" id="viewScoutsButton" onclick="window.location.reload()">Reload</button><br>
+                    <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+                </fieldset>
+                <br><br>
+            </div>
+        </div>
+        <script src="js/scout_profile_client.min.js" type="text/javascript"></script>
+    </body>
 </html>

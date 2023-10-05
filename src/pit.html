@@ -13,10 +13,10 @@
     <meta name="apple-mobile-web-app-title" content="Scouting">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="stylesheet" href="float.min.css" type="text/css">
+    <link rel="stylesheet" href="css/float.min.css" type="text/css">
     <link rel="manifest" href="/app.webmanifest" />
     <link rel="apple-touch-startup-image" href="public/launch.png">
-    <script src="form.min.js"></script>
+    <script src="js/form.min.js"></script>
 </head>
 
 <body class="dark-mode">
@@ -37,19 +37,12 @@
                     <option value="WOOD" selected>WOOD - CalGames</option>
                 </select>
         </fieldset>
-        <!--<fieldset>
-                <label>Your Name<br></label>
-                <input type="text" name="name" required>
-            </fieldset>-->
-
         <fieldset>
             <label>Team Number <span id="invalidTeamInput" style="color: red; display: none;">Not in comp!</span><br></label>
             <input type="tel" name="team" id="validateTeamInput" required>
         </fieldset>
-
         <h2 class="gameflair1">Pit Scouting</h2>
         <h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
-
         <fieldset>
             <label>Drive Type<br></label>
             <select name="drivetype">
@@ -63,7 +56,6 @@
             <input type="text" name="driveTeam" class="smallerInput"> Days of drive team work<br>
             <input placeholder="0 or 1" type="text" name="attended" class="smallerInput"> Attended events
         </fieldset>
-
         <input value="0" type="number" name="game1" hidden>
         <input value="0" type="number" name="game2" hidden>
         <input value="0" type="number" name="game3" hidden>
@@ -84,12 +76,10 @@
         <input value="0" type="number" name="game18" hidden>
         <input value="0" type="number" name="game19" hidden>
         <input value="0" type="number" name="game20" hidden>
-
         <fieldset>
             <label>Overall assessment<br></label>
             <textarea rows="4" cols="38" name="overall"></textarea>
         </fieldset>
-
         <fieldset>
             <label>Images of ROBOT</label><br>
             <label>Image 1 - <strong>FRONT</strong></label>
@@ -103,66 +93,14 @@
             <label>Image 5 - <strong>SOMETHING ELSE</strong></label>
             <input type="file" name="image5" accept="image/png, image/jpeg" required>
         </fieldset>
-
         <br>
-
         <p style="text-align:center">
             <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;">Submit</button><br>
             <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem; border-style: solid; border-color: #E90202; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
         </p>
     </form>
     <br><br>
-    <script>
-        var allTeams = [];
-
-        async function getEventTeams() {
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/api/events/${document.getElementById('eventCode').value}/teams`, true);
-            xhr.withCredentials = true;
-
-            xhr.onreadystatechange = async () => {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log("200 ok")
-                console.log(xhr.responseText)
-                allTeams = (xhr.responseText).split(",")
-            } else if (xhr.status === 401) {
-                console.log("401 failure")
-                window.location.href = "/login";
-            } else if (xhr.status === 400) {
-                console.log("400 failure")
-                document.getElementById("viewNoteButton").innerHTML = "400 Bad Request";
-            } else if (xhr.status === 500) {
-                console.log("500 failure")
-            } else if (xhr.status === 403) {
-                console.log("403 failure")
-            } else {
-                console.log("awaiting response")
-            }
-            }
-
-            xhr.send()
-        }
-
-        getEventTeams()
-
-        document.getElementById('eventCode').addEventListener('change', async function(){console.log(getEventTeams()); console.log(allTeams)});
-
-        document.getElementById('validateTeamInput').addEventListener('input', function(event){
-            console.log("event!")
-            if (allTeams.includes(document.getElementById('validateTeamInput').value)) {
-                console.log("good boy")
-                document.getElementById('invalidTeamInput').style.display = "none";
-                document.getElementById('submitButton').disabled = "false";
-            } else {
-                console.log("bad bad bad boy")
-                document.getElementById('invalidTeamInput').style.display = "inherit";
-                document.getElementById('submitButton').disabled = "true";
-            }
-        });
-            function goToHome() {
-                window.location.href = "/";
-            }
-    </script>
+    <script src="js/pitscouting_client.min.js" type="text/javascript"></script>
 </body>
 
 </html>

@@ -89,12 +89,6 @@ function submitForm(req, res, db, dirname, season) {
                     console.error(err.message);
                     res.end(err.message);
                 }
-                // announce new submisison to the discord
-                require("../discord.js").newSubmission(
-                    "main",
-                    this.lastID,
-                    req.user.username
-                );
                 // weight the team performance
                 require(`../${season}.js`).weightScores(this.lastID);
             });

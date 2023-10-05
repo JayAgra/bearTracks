@@ -5,22 +5,19 @@
 - Easy updating for new seasons
 - Easy install and setup
 - Discord Oauth2
-- Discord data retrieval for all data and upcoming matches
 - Robot image upload and retrieval
 - Database can be re-used for all seasons
 - User ID linked to every submission
-- PWA support on iOS
 - Layout of homepage different based on user's roles
 - "Easy" submission removal
-- Ability to download JSON of form data to upload later
 ## Setup
 ### Hosting
 You will need a VPS to run this, I would suggest using DigitalOcean Droplets. Mine is configured using Ubuntu 20.10, and the app is designed to work with it. Hosting the app on a windows machine will cause many issues. A standard SSD is just fine, and and I would suggest a minimum of the 2GB RAM/1 CPU/50GB Disk/2TB Transfer plan.
 ### Discord App
 1. **Create app** Visit http://discord.com/developers/applications to create an app. Name it whatever you would like, and keep the token, client secret, and app ID for use in the config file.<br>
 2. **Add Oauth2 redirect URI** Add the redirect URI you would like to use to Discord, if this step is skipped oauth will NOT work!<br>
-3. **Add Discord bot to server** Use the URL `https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=526469360720&scope=bot%20applications.commands`, and replace `CLIENT_ID` with your application ID<br>
-4. AFTER CONFIG - Deploy commands by running the `discord-deployCmds.js`
+<!--3. **Add Discord bot to server** Use the URL `https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=526469360720&scope=bot%20applications.commands`, and replace `CLIENT_ID` with your application ID<br>-->
+<!--4. AFTER CONFIG - Deploy commands by running the `discord-deployCmds.js`-->
 ### config.json
 ```
 {

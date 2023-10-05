@@ -13,7 +13,6 @@ if [ "$1" ]; then
     elif [ "$1" = "setup-pm2" ]; then
         sudo npm install pm2 -g
         pm2 start serve.js
-        pm2 start discord.js
         pm2 save
         pm2 startup
     elif [ "$1" = "install" ]; then
