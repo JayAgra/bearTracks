@@ -506,11 +506,15 @@ app.get("/teams", checkAuth, (req, res) => {
 });
 
 app.get("/manage", checkAuth, async (req, res) => {
-    require("./routes/manage.js").manage(req, res, db, __dirname, leadToken);
+    res.sendFile("src/manage.html", { root: __dirname });
 });
 
-app.post("/deleteSubmission", checkAuth, async (req, res) => {
-    require("./routes/deleteSubmission.js").deleteSubmission(req, res, db);
+app.get("/api/manage/:database/list", checkAuth, async (req, res) => {
+    require("./routes/api/manage/list.js").listSubmissions(req, res, db, leadToken);
+});
+
+app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res) => {
+    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, leadToken);
 });
 
 // api

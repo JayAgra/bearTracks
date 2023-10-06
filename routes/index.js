@@ -31,6 +31,13 @@ async function index(req, res, dirname, leadToken) {
                     secure: true,
                     httpOnly: false,
                 });
+            } else {
+                res.cookie("isLead", "false", {
+                    expire: 7200000 + Date.now(),
+                    sameSite: "Lax",
+                    secure: true,
+                    httpOnly: false,
+                });
             }
             res.sendFile("src/index.html", {
                 root: dirname,
