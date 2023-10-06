@@ -36,10 +36,10 @@ function boolToNum(val) {
 }
 
 function emojiValue(value) {
-    if (!value || value === null || value == "false") {
-        return "❌";
-    } else {
+    if (value == "true") {
         return "✅";
+    } else {
+        return "❌";
     }
 }
 
@@ -101,7 +101,7 @@ function createHTMLExport(dbQueryResult) {
     return `Author: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>AUTO: <br>Taxi: ${emojiValue(dbQueryResult.game1)}<br>Score B/M/T: ${emojiValue(dbQueryResult.game2)}${emojiValue(dbQueryResult.game3)}${emojiValue(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${emojiValue(dbQueryResult.game6)}${emojiValue(dbQueryResult.game7)}${emojiValue(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${emojiValue(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Performance Score: ${dbQueryResult.weight}%`;
 }
 
-function weightScores(submissionID) {
+async function weightScores(submissionID) {
     db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
         if (result && !err) {
             var analysisResults = [];
