@@ -5,7 +5,7 @@ async function wonViaBlackjack(req, res, db, casinoToken) {
     let values = [req.user.id];
     db.get(stmt, values, (err, dbQueryResult) => {
         if (err) {
-            res.status(500).send(0x1f41);
+            res.status(500).send("" + 0x1f41);
             return;
         } else {
             if (
@@ -19,16 +19,16 @@ async function wonViaBlackjack(req, res, db, casinoToken) {
                     let pointValues = [req.user.id];
                     db.run(pointStmt, pointValues, (err) => {
                         if (err) {
-                            res.status(500).send(0x1f42);
+                            res.status(500).send("" + 0x1f42);
                             return;
                         }
                     });
-                    res.status(200).send(0xc80);
+                    res.status(200).send("" + 0xc80);
                 } else {
-                    res.send(0x1901);
+                    res.send("" + 0x1901);
                 }
             } else {
-                res.status(400).send(0x1901);
+                res.status(400).send("" + 0x1901);
             }
         }
     });

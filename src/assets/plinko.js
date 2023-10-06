@@ -366,8 +366,6 @@ function startGame() {
             let apitoken = JSON.parse(JSON.parse(xhr.responseText)).token;
             result().then((result) => {creditPts(apitoken, result);}).catch((error) => {console.error(error);});
         } else if (xhr.status === 401) {
-            document.getElementById("playBtn").innerHTML = "unauthorized";
-            await waitMs(1000);
             window.location.href = "/login";
         } else if (xhr.status === 403 && xhr.responseText == 0x1933) {
             document.getElementById("playBtn").innerHTML = "not enough money";

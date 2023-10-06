@@ -49,7 +49,7 @@ function submitPit(req, res, db, dirname, season) {
     db.run(stmt, values, (err) => {
         if (err) {
             console.error(err);
-            res.status(500).send(0x1f42);
+            res.status(500).send("" + 0x1f42);
         }
     });
     // credit points to scout
@@ -59,7 +59,7 @@ function submitPit(req, res, db, dirname, season) {
     db.run(pointStmt, pointValues, (err) => {
         if (err) {
             console.error(err);
-            res.status(500).send(0x1f42);
+            res.status(500).send("" + 0x1f42);
         }
     });
     // send success message to user

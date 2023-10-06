@@ -9,7 +9,7 @@ async function slotSpin(req, res, db) {
         let pointValues = [req.user.id];
         db.run(pointStmt, pointValues, (err) => {
             if (err) {
-                res.status(500).send(0x1f42);
+                res.status(500).send("" + 0x1f42);
                 return;
             } else {
                 res.status(200).json(
@@ -22,7 +22,7 @@ async function slotSpin(req, res, db) {
         let pointValues = [req.user.id];
         db.run(pointStmt, pointValues, (err) => {
             if (err) {
-                res.status(500).send(0x1f42);
+                res.status(500).send("" + 0x1f42);
                 return;
             } else {
                 res.status(200).json(

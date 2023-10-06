@@ -209,9 +209,9 @@ function apiCheckAuth(req, res, next) {
         return next();
     }
     if (isAuth && !teamServer) {
-        return res.status(403).send(0x1932);
+        return res.status(403).send("" + 0x1932);
     }
-    res.status(401).json(0x1911);
+    res.status(401).send("" + 0x1911);
 }
 
 async function checkGamble(req, res, next) {
@@ -221,7 +221,7 @@ async function checkGamble(req, res, next) {
         if (Number(result.score) > -2000) {
             return next();
         } else {
-            return res.status(403).send(0x1933);
+            return res.status(403).send("" + 0x1933);
         }
     });
 }
@@ -271,7 +271,7 @@ async function forwardFRCAPIdata(url, req, res) {
 
     dbody.on("update", (body) => {
         if (invalidJSON(body)) {
-            res.status(500).send(0x1f61);
+            res.status(500).send("" + 0x1f61);
         } else {
             res.status(200).json(JSON.parse(body));
         }
@@ -627,7 +627,7 @@ app.get("/api/events/current/allData", apiCheckAuth, async (req, res) => {
 });
 
 app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
-    require("./routes/api/events/pitscoutedteams.js").teams(req, res, db, season);
+    require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, season);
 });
 
 app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req, res) => {

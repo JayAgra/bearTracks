@@ -8,14 +8,14 @@ async function listSubmissions(req, res, db, leadToken) {
         db.all(stmt, (err, result) => {
             if (err) {
                 console.log(err);
-                res.status(500).send(0x1f41);
+                res.status(500).send("" + 0x1f41);
                 return;
             } else {
                 res.json(result);
             }
         });
     } else {
-        res.status(403).send(0x1931);
+        res.status(403).send("" + 0x1931);
     }
 }
 

@@ -4,7 +4,7 @@ async function pitscoutedteams(req, res, db, season) {
     const values = [req.params.event, season];
     db.all(stmt, values, (err, dbQueryResult) => {
         if (err) {
-            res.status(500).send(0x1f41);
+            res.status(500).send("" + 0x1f41);
             return;
         } else {
             if (typeof dbQueryResult == "undefined") {

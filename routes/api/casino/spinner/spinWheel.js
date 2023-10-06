@@ -20,7 +20,7 @@ async function spinWheel(req, res, db) {
     let pointValues = [spins[spin], req.user.id];
     db.run(pointStmt, pointValues, (err) => {
         if (err) {
-            res.status(500).send(0x1f42);
+            res.status(500).send("" + 0x1f42);
             return;
         }
     });

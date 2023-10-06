@@ -2,7 +2,7 @@ function scouts(req, res, db) {
     const stmt = `SELECT * FROM scouts ORDER BY score DESC`;
     db.all(stmt, (err, dbQueryResult) => {
         if (err) {
-            res.status(500).send(0x1f41);
+            res.status(500).send("" + 0x1f41);
             return;
         } else {
             var htmltable = ``;
