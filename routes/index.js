@@ -19,21 +19,21 @@ async function index(req, res, dirname, leadToken) {
             if (await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then((data) => {return isLeadScout(data.roles);}))) {
                 // if yes, send the cookie and load page as lead scout
                 res.cookie("lead", leadToken, {
-                    expire: 7200000 + Date.now(),
+                    expire: 1800000 + Date.now(),
                     sameSite: "Lax",
                     secure: true,
                     httpOnly: true,
                 });
                 // send this one too, visible to client js
                 res.cookie("isLead", "true", {
-                    expire: 7200000 + Date.now(),
+                    expire: 72000000 + Date.now(),
                     sameSite: "Lax",
                     secure: true,
                     httpOnly: false,
                 });
             } else {
                 res.cookie("isLead", "false", {
-                    expire: 7200000 + Date.now(),
+                    expire: 72000000 + Date.now(),
                     sameSite: "Lax",
                     secure: true,
                     httpOnly: false,
@@ -47,21 +47,21 @@ async function index(req, res, dirname, leadToken) {
                 if (await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then((data) => {return isLeadScout(data.roles);}))) {
                     // if yes, send the cookie and load page as lead scout
                     res.cookie("lead", leadToken, {
-                        expire: 7200000 + Date.now(),
+                        expire: 1800000 + Date.now(),
                         sameSite: "Lax",
                         secure: true,
                         httpOnly: true,
                     });
                     // send this one too, visible to client js
                     res.cookie("isLead", "true", {
-                        expire: 7200000 + Date.now(),
+                        expire: 72000000 + Date.now(),
                         sameSite: "Lax",
                         secure: true,
                         httpOnly: false,
                     });
                 } else {
                     res.cookie("isLead", "false", {
-                        expire: 7200000 + Date.now(),
+                        expire: 72000000 + Date.now(),
                         sameSite: "Lax",
                         secure: true,
                         httpOnly: false,
