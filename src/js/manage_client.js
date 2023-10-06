@@ -25,8 +25,10 @@ async function getData() {
         });
 
         if (response.status === 403) {
-            console.log("failure")
-            document.getElementById("viewData").innerHTML = "403 access denied";
+            document.getElementById("viewData").innerHTML = "access denied";
+        }
+
+        if (response.status === 401) {
             window.location.href = "/login";
         }
 
@@ -40,7 +42,7 @@ async function getData() {
         document.getElementById("results").style.display = "flex";       
     } catch (error) {
         console.log("failure")
-        document.getElementById("viewData").innerHTML = "500 internal server error";
+        document.getElementById("viewData").innerHTML = "internal server error";
         console.error(error);
     }
 }
@@ -56,13 +58,12 @@ async function deleteSubmission(database, submission, linkID) {
             console.log(xhr.responseText);
             document.getElementById(linkID).innerHTML = "deleted!";
         } else if (xhr.status === 403) {
-            console.log("failure")
-            document.getElementById(linkID).innerHTML = "403 access denied";
+            document.getElementById(linkID).innerHTML = "access denied";
+        } else if (xhr.status === 401) {
+            window.location.href = "/login";
         } else if (xhr.status === 500) {
-            console.log("failure")
             document.getElementById(linkID).innerHTML = "500 bad request";
         } else {
-            console.log("awaiting response")
             document.getElementById(linkID).innerHTML = "deleting...";
         }
     }

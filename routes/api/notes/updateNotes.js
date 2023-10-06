@@ -12,10 +12,10 @@ async function updateNotes(req, res, db, season) {
         const values = [newNote.save, req.params.event, season, req.params.team];
         db.run(stmt, values, (err) => {
             if (err) {
-                res.status(500).send("error!");
+                res.status(500).send(0x1f41);
                 return;
             } else {
-                res.status(200).send("200");
+                res.status(200).send(0xc82);
             }
         });
     });

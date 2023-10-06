@@ -45,7 +45,7 @@ async function teams(req, res, frcapi, season) {
 
         dbody.on("update", (body) => {
             if (invalidJSON(body)) {
-                res.status(500).send("error! invalid data");
+                res.status(502).send(0x1f61);
             } else {
                 const parsedData = JSON.parse(body);
                 var teams = [];

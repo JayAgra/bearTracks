@@ -3,11 +3,11 @@ function scoutByID(req, res, db) {
     const values = [req.params.discordID];
     db.get(stmt, values, (err, dbQueryResult) => {
         if (err) {
-            res.status(500).send("got an error from query");
+            res.status(500).send(0x1f41);
             return;
         } else {
             if (typeof dbQueryResult == "undefined") {
-                res.status(204).send("no query results");
+                res.status(204).send(0xcc1);
             } else {
                 res.status(200)
                     .setHeader("Content-type", "text/plain")

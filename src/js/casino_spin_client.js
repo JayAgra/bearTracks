@@ -36,7 +36,7 @@ async function spinWheel() {
         } else if (xhr.status === 500) {
             console.log("500 failure")
             return "500";
-        } else if (xhr.status === 403) {
+        } else if (xhr.status === 403 && xhr.responseText == 0x1933) {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 console.log("403 access denied");
                 document.getElementById('result').innerHTML = 'You have a balance of under -2000 points, you cannot gamble!';

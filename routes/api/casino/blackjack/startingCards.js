@@ -45,7 +45,7 @@ async function startingCards(req, res, db, possibleCards, casinoToken) {
     let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {
         if (err) {
-            res.status(500).send("got an error from transaction");
+            res.status(500).send(0x1f42);
             return;
         }
     });
@@ -53,7 +53,7 @@ async function startingCards(req, res, db, possibleCards, casinoToken) {
     let values = [req.user.id];
     db.get(stmt, values, (err, dbQueryResult) => {
         if (err) {
-            res.status(500).send("got an error from query");
+            res.status(500).send(0x1f41);
             return;
         } else {
             res.status(200).json(

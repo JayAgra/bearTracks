@@ -22,7 +22,7 @@ function submitForm(req, res, db, dirname, season) {
         let formData = qs.parse(body);
         // well, this should never happen but if a pit form is sent to the main form, stop
         if (formData.formType === "pit") {
-            res.end("WRONG FORM");
+            res.status(400).send(0x1903);
         } else if (formData.formType === "main") {
             // change score based on response length
             var formscoresdj = 0;
@@ -81,8 +81,8 @@ function submitForm(req, res, db, dirname, season) {
             // run the statement, add to the database
             db.run(stmt, values, function(err) {
                 if (err) {
-                    console.error(err.message);
-                    res.end(err.message);
+                    console.error(err);
+                    res.status(500).send(0x1f42);
                 }
                 require(`./${season}.js`).weightScores(this.lastID, db);
             });
@@ -91,8 +91,8 @@ function submitForm(req, res, db, dirname, season) {
             let pointValues = [formscoresdj, req.user.id];
             db.run(pointStmt, pointValues, (err) => {
                 if (err) {
-                    console.error(err.message);
-                    res.end(err.message);
+                    console.error(err);
+                    res.status(500).send(0x1f42);
                 }
             });
             // respond to the user with success page
@@ -101,7 +101,7 @@ function submitForm(req, res, db, dirname, season) {
             });
         } else {
             // unknown form type
-            res.status(500).send("unknown form type");
+            res.status(400).send(0x1902);
         }
     });
 }

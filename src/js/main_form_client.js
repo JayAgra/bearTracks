@@ -7,23 +7,19 @@ async function getEventTeams() {
     xhr.withCredentials = true;
 
     xhr.onreadystatechange = async () => {
-    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        console.log("200 ok")
-        console.log(xhr.responseText)
-        allTeams = (xhr.responseText).split(",")
-    } else if (xhr.status === 401) {
-        console.log("401 failure")
-        window.location.href = "/login";
-    } else if (xhr.status === 400) {
-        console.log("400 failure")
-        document.getElementById("viewNoteButton").innerHTML = "400 Bad Request";
-    } else if (xhr.status === 500) {
-        console.log("500 failure")
-    } else if (xhr.status === 403) {
-        console.log("403 failure")
-    } else {
-        console.log("awaiting response")
-    }
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            allTeams = (xhr.responseText).split(",");
+        } else if (xhr.status === 401) {
+            window.location.href = "/login";
+        } else if (xhr.status === 400) {
+            document.getElementById("viewNoteButton").innerHTML = "bad request";
+        } else if (xhr.status === 500) {
+            document.getElementById("viewNoteButton").innerHTML = "internal server error";
+        } else if (xhr.status === 403) {
+            document.getElementById("viewNoteButton").innerHTML = "access denied";
+        } else {
+            console.log("awaiting response")
+        }
     }
 
     xhr.send()

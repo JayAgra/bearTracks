@@ -203,13 +203,15 @@ function checkAuth(req, res, next) {
 
 // check the authentication and server membership
 function apiCheckAuth(req, res, next) {
-    if (req.isAuthenticated() && inTeamServer(req.user.guilds)) {
+    let teamServer = inTeamServer(req.user.guilds);
+    let isAuth = req.isAuthenticated();
+    if (isAuth && teamServer) {
         return next();
     }
-    if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) {
-        return res.status(401).json(JSON.parse(`{"status": 401}`));
+    if (isAuth && !teamServer) {
+        return res.status(403).send(0x1932);
     }
-    res.status(401).json(JSON.parse(`{"status": 401}`));
+    res.status(401).json(0x1911);
 }
 
 async function checkGamble(req, res, next) {
@@ -219,7 +221,7 @@ async function checkGamble(req, res, next) {
         if (Number(result.score) > -2000) {
             return next();
         } else {
-            return res.status(403).json(JSON.parse(`{"status": 403}`));
+            return res.status(403).send(0x1933);
         }
     });
 }
@@ -269,7 +271,7 @@ async function forwardFRCAPIdata(url, req, res) {
 
     dbody.on("update", (body) => {
         if (invalidJSON(body)) {
-            res.status(500).send("error! invalid data");
+            res.status(500).send(0x1f61);
         } else {
             res.status(200).json(JSON.parse(body));
         }

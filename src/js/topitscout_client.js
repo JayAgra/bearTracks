@@ -13,8 +13,6 @@ function getAllTeams() {
 
     xhr.onreadystatechange = async () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            console.log("200 ok")
-            console.log(xhr.responseText)
             window.allTeams = xhr.responseText.split(",")
             console.log(getDifference())
             document.getElementById("eventLabel").style.display = "none"
@@ -22,20 +20,14 @@ function getAllTeams() {
             document.getElementById("eventCode").style.display = "none"
             document.getElementById("viewTeamsButton").innerHTML = "Done!";
             return 0;
-        } else if (xhr.status === 401) {
-            console.log("401 failure")
-            document.getElementById("viewTeamsButton").innerHTML = "401 Unauthorized";
-            await waitMs(1000);
+        } else if (xhr.status === 401 || xhr.status === 403) {
             window.location.href = "/login";
         } else if (xhr.status === 400) {
-            console.log("400 failure")
-            document.getElementById("viewTeamsButton").innerHTML = "400 Bad Request";
+            document.getElementById("viewTeamsButton").innerHTML = "bad request";
         } else if (xhr.status === 500) {
-            console.log("500 failure")
-            document.getElementById("viewTeamsButton").innerHTML = "500 Internal Server Error";
+            document.getElementById("viewTeamsButton").innerHTML = "internal server error";
         } else {
-            console.log("awaiting response")
-            document.getElementById("viewTeamsButton").innerHTML = "Downloading Data...";
+            document.getElementById("viewTeamsButton").innerHTML = "downloading data...";
         }
     }
 
@@ -51,25 +43,17 @@ function getScoutedTeams() {
 
     xhr.onreadystatechange = async () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            console.log("200 ok")
-            console.log(xhr.responseText)
             window.scoutedTeams = xhr.responseText.split(",")
             getAllTeams()
             return 0;
-        } else if (xhr.status === 401) {
-            console.log("401 failure")
-            document.getElementById("viewTeamsButton").innerHTML = "401 Unauthorized";
-            await waitMs(1000);
+        } else if (xhr.status === 401 || xhr.status == 403) {
             window.location.href = "/login";
         } else if (xhr.status === 400) {
-            console.log("400 failure")
-            document.getElementById("viewTeamsButton").innerHTML = "400 Bad Request";
+            document.getElementById("viewTeamsButton").innerHTML = "bad request";
         } else if (xhr.status === 500) {
-            console.log("500 failure")
-            document.getElementById("viewTeamsButton").innerHTML = "500 Internal Server Error";
+            document.getElementById("viewTeamsButton").innerHTML = "internal server error";
         } else {
-            console.log("awaiting response")
-            document.getElementById("viewTeamsButton").innerHTML = "Downloading Data...";
+            document.getElementById("viewTeamsButton").innerHTML = "downloading data...";
         }
     }
 

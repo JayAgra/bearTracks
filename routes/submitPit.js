@@ -48,8 +48,8 @@ function submitPit(req, res, db, dirname, season) {
     // run db statement
     db.run(stmt, values, (err) => {
         if (err) {
-            console.error(err.message);
-            res.end("pit form error! " + err.message);
+            console.error(err);
+            res.status(500).send(0x1f42);
         }
     });
     // credit points to scout
@@ -58,8 +58,8 @@ function submitPit(req, res, db, dirname, season) {
     let pointValues = [req.user.id];
     db.run(pointStmt, pointValues, (err) => {
         if (err) {
-            console.error(err.message);
-            res.end(err.message);
+            console.error(err);
+            res.status(500).send(0x1f42);
         }
     });
     // send success message to user

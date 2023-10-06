@@ -10,10 +10,7 @@ function creditPts(token, amt) {
     secondXHR.withCredentials = true;
 
     secondXHR.onreadystatechange = async () => {
-        if (
-            secondXHR.readyState === XMLHttpRequest.DONE &&
-            secondXHR.status === 200
-        ) {
+        if (secondXHR.readyState === XMLHttpRequest.DONE && secondXHR.status === 200) {
             console.log("200 ok");
             console.log(secondXHR.responseText);
             document.getElementById("wait").innerText = "points added!";
@@ -367,30 +364,20 @@ function startGame() {
             console.log("200 ok");
             console.log(xhr.responseText);
             let apitoken = JSON.parse(JSON.parse(xhr.responseText)).token;
-            result()
-                .then((result) => {
-                    console.log(apitoken);
-                    creditPts(apitoken, result);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            result().then((result) => {creditPts(apitoken, result);}).catch((error) => {console.error(error);});
         } else if (xhr.status === 401) {
-            console.log("401 failure");
-            document.getElementById("playBtn").innerHTML = "401 Unauthorized";
+            document.getElementById("playBtn").innerHTML = "unauthorized";
             await waitMs(1000);
             window.location.href = "/login";
+        } else if (xhr.status === 403 && xhr.responseText == 0x1933) {
+            document.getElementById("playBtn").innerHTML = "not enough money";
+            throw new Error("too poor to gamble");
         } else if (xhr.status === 400) {
-            console.log("400 failure");
-            document.getElementById("playBtn").innerHTML = "400 Bad Request";
+            document.getElementById("playBtn").innerHTML = "bad request";
         } else if (xhr.status === 500) {
-            console.log("500 failure");
-            document.getElementById("playBtn").innerHTML =
-                "500 Internal Server Error";
+            document.getElementById("playBtn").innerHTML = "internal server error";
         } else {
-            console.log("awaiting response");
-            document.getElementById("playBtn").innerHTML =
-                "Downloading Data...";
+            document.getElementById("playBtn").innerHTML = "loading...";
         }
     };
 
