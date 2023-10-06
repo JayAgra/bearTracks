@@ -203,12 +203,10 @@ function checkAuth(req, res, next) {
 
 // check the authentication and server membership
 function apiCheckAuth(req, res, next) {
-    let teamServer = inTeamServer(req.user.guilds);
-    let isAuth = req.isAuthenticated();
-    if (isAuth && teamServer) {
+    if (req.isAuthenticated() && inTeamServer(req.user.guilds)) {
         return next();
     }
-    if (isAuth && !teamServer) {
+    if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) {
         return res.status(403).send("" + 0x1932);
     }
     res.status(401).send("" + 0x1911);
