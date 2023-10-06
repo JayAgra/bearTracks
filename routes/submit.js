@@ -16,7 +16,7 @@ function submitForm(req, res, db, dirname, season) {
         body += chunk.toString();
     });
 
-    req.on("end", () => {
+    req.on("end", async () => {
         // server has all data!
         // parse form
         let formData = qs.parse(body);
@@ -79,7 +79,7 @@ function submitForm(req, res, db, dirname, season) {
                 "0",
             ];
             // run the statement, add to the database
-            db.run(stmt, values, (err) => {
+            db.run(stmt, values, function(err) {
                 if (err) {
                     console.error(err.message);
                     res.end(err.message);
