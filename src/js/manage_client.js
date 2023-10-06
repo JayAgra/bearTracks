@@ -14,40 +14,38 @@ function mainOrPitLink() {
     }
 } 
 
-function getData() {
-    document.getElementById("viewData").innerHTML = "Preparing Request...";
+async function getData() {
+    document.getElementById("viewData").innerHTML = "requesting...";
+    var response, listRes;
+    try {
+        response = await fetch(`/api/manage/${document.getElementById("db").value}/list`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/manage/${document.getElementById("db").value}/list`, true);
-    xhr.withCredentials = true;
-
-    xhr.onreadystatechange = async () => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            console.log("got list");
-            document.getElementById("viewData").innerHTML = "generating list...";
-            const listRes = await JSON.parse(xhr.responseText);
-            var listHTML = "";
-            for (var i = listRes.length - 1; i >= 0; i--) {
-                listHTML = listHTML + `<fieldset><span><span>ID:&emsp;${listRes[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink()}?id=${listRes[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${document.getElementById("db").value}', ${listRes[i].id}, '${document.getElementById("db").value}${listRes[i].id}')" style="color: red" id="${document.getElementById("db").value}${listRes[i].id}">Delete</span></span></span></fieldset>`;
-            }
-            document.getElementById("resultsInsert").insertAdjacentHTML("afterbegin", listHTML);
-            document.getElementById("search").style.display = "none";
-            document.getElementById("results").style.display = "flex";
-        } else if (xhr.status === 403) {
+        if (response.status === 403) {
             console.log("failure")
             document.getElementById("viewData").innerHTML = "403 access denied";
-        } else if (xhr.status === 500) {
-            console.log("failure")
-            document.getElementById("viewData").innerHTML = "500 internal server error";
-        } else {
-            console.log("awaiting response")
-            document.getElementById("viewData").innerHTML = "downloading list...";
+            window.location.href = "/login";
         }
+
+        listRes = await response.json();
+        var listHTML = "";
+        for (var i = listRes.length - 1; i >= 0; i--) {
+            listHTML = listHTML + `<fieldset><span><span>ID:&emsp;${listRes[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink()}?id=${listRes[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${document.getElementById("db").value}', ${listRes[i].id}, '${document.getElementById("db").value}${listRes[i].id}')" style="color: red" id="${document.getElementById("db").value}${listRes[i].id}">Delete</span></span></span></fieldset>`;
+        }
+        document.getElementById("resultsInsert").insertAdjacentHTML("afterbegin", listHTML);
+        document.getElementById("search").style.display = "none";
+        document.getElementById("results").style.display = "flex";       
+    } catch (error) {
+        console.log("failure")
+        document.getElementById("viewData").innerHTML = "500 internal server error";
+        console.error(error);
     }
-    xhr.send();
 }
 
-function deleteSubmission(database, submission, linkID) {
+async function deleteSubmission(database, submission, linkID) {
     document.getElementById(linkID).innerHTML = "Preparing Request...";
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/manage/${database}/${submission}/delete`, true);
