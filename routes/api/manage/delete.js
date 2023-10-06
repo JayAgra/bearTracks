@@ -1,7 +1,7 @@
 const DiscordOauth2 = require("discord-oauth2");
 const getOauthData = new DiscordOauth2();
 
-const { leadscout, teamServerID } = require("../config.json");
+const { leadscout, teamServerID } = require("../../../config.json");
 const isLeadScout = (roles) => {return roles.indexOf(leadscout) >= 0};
 
 function getSafeDbName(input) {

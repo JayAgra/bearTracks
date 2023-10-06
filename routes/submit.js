@@ -1,5 +1,5 @@
 const qs = require("querystring");
-const { season } = require("../config.json");
+const { currentSeason } = require("../config.json");
 
 function escapeHTML(htmlStr) {
     return String(htmlStr)
@@ -91,7 +91,7 @@ function submitForm(req, res, db, dirname, season) {
                     res.end(err.message);
                 }
                 // weight the team performance
-                require(`../${season}.js`).weightScores(this.lastID);
+                require(`../${currentSeason}.js`).weightScores(this.lastID);
             });
             // statement to credit points
             let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
