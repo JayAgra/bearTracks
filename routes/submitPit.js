@@ -1,3 +1,12 @@
+function escapeHTML(htmlStr) {
+    return String(htmlStr)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 function submitPit(req, res, db, dirname, season) {
     // get body of POST data
     let formData = req.body;
