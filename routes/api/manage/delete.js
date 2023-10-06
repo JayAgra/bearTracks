@@ -4,12 +4,15 @@ const getOauthData = new DiscordOauth2();
 const { leadscout, teamServerID } = require("../config.json");
 const isLeadScout = (roles) => {return roles.indexOf(leadscout) >= 0};
 
+function getSafeDbName(input) {
+    return input === "pit" ? "pit" : "main";
+}
 
 async function deleteSubmission(req, res, db, leadToken) {
     if (req.cookies.lead === leadToken) {
         if (await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then((data) => {return isLeadScout(data.roles)}))) {
-            const stmt = `SELECT discordID FROM ? WHERE id=?`;
-            const values = [req.params.database, req.submissionId];
+            const stmt = `SELECT discordID FROM ${getSafeDbName(req.params.database)} WHERE id=?`;
+            const values = [req.submissionId];
             db.get(stmt, values, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -26,7 +29,7 @@ async function deleteSubmission(req, res, db, leadToken) {
                     }
                 });
             });
-            const deleteStmt = `DELETE FROM ? WHERE id=?`;
+            const deleteStmt = `DELETE FROM ${getSafeDbName(req.params.database)} WHERE id=?`;
             db.run(deleteStmt, values, (err) => {
                 if (err) {
                     console.log(err);

@@ -15,7 +15,7 @@ function mainOrPitLink() {
 } 
 
 function getData() {
-    document.getElementById(linkID).innerHTML = "Preparing Request...";
+    document.getElementById("viewData").innerHTML = "Preparing Request...";
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/manage/${document.getElementById("db").value}/list`, true);
@@ -44,7 +44,7 @@ function getData() {
             document.getElementById("viewData").innerHTML = "downloading list...";
         }
     }
-    xhr.send('db=' + database + '&submissionID=' + submission);
+    xhr.send();
 }
 
 function deleteSubmission(database, submission, linkID) {
