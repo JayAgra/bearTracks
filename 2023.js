@@ -36,7 +36,7 @@ function boolToNum(val) {
 }
 
 function emojiValue(value) {
-    if (value == null || value == "false") {
+    if (!value || value === null || value == "false") {
         return "❌";
     } else {
         return "✅";
@@ -102,10 +102,10 @@ function createHTMLExport(dbQueryResult) {
 }
 
 function weightScores(submissionID) {
-    var analysisResults = [];
-    var score = 0;
     db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
         if (result && !err) {
+            var analysisResults = [];
+            var score = 0;
             //teleop, defend, driving, overall
             analysisResults.push(saModule.analyze(result.defend));
             analysisResults.push(saModule.analyze(result.driving));

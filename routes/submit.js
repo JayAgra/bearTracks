@@ -84,7 +84,7 @@ async function submitForm(req, res, db, dirname, season) {
                     console.error(err.message);
                     res.end(err.message);
                 }
-                return this.lastID;
+                require("../2023.js").weightScores(this.lastID);
             });
             // statement to credit points
             let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
