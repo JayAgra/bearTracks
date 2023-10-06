@@ -1,5 +1,4 @@
 const qs = require("querystring");
-const { currentSeason } = require("../config.json");
 
 function escapeHTML(htmlStr) {
     return String(htmlStr)
@@ -10,7 +9,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitForm(req, res, db, dirname, season) {
+async function submitForm(req, res, db, dirname, season) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -29,12 +28,7 @@ function submitForm(req, res, db, dirname, season) {
             var formscoresdj = 0;
             if (formData.overall.length >= 70) {
                 // logarithmic points
-                formscoresdj = Math.ceil(
-                    20 +
-                        5 *
-                            (Math.log(formData.overall.length - 65) /
-                                Math.log(6))
-                );
+                formscoresdj = Math.ceil(20 + 5 * (Math.log(formData.overall.length - 65) / Math.log(6)));
             } else {
                 formscoresdj = 20;
             }
@@ -90,8 +84,7 @@ function submitForm(req, res, db, dirname, season) {
                     console.error(err.message);
                     res.end(err.message);
                 }
-                // weight the team performance
-                require(`../${currentSeason}.js`).weightScores(this.lastID);
+                return this.lastID;
             });
             // statement to credit points
             let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
@@ -108,7 +101,7 @@ function submitForm(req, res, db, dirname, season) {
             });
         } else {
             // unknown form type
-            return res.status(500).send("unknown form type");
+            res.status(500).send("unknown form type");
         }
     });
 }
