@@ -12,8 +12,8 @@ async function deleteSubmission(req, res, db, leadToken) {
     if (req.cookies.lead === leadToken) {
         if (await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then((data) => {return isLeadScout(data.roles)}))) {
             const stmt = `SELECT discordID FROM ${getSafeDbName(req.params.database)} WHERE id=?`;
-            const values = [req.submissionId];
-            db.get(stmt, values, (err, result) => {
+            const values = [req.params.submissionId];
+            await db.get(stmt, values, (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(500).send("transaction error");
@@ -39,7 +39,7 @@ async function deleteSubmission(req, res, db, leadToken) {
             });
             res.status(200).send("deleted");
         } else {
-            res.status(403).send("403 forbidden");    
+            res.status(403).send("403 forbidden");
         }
     } else {
         res.status(403).send("403 forbidden");
