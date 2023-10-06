@@ -591,11 +591,11 @@ app.get("/api/casino/blackjack/newCard", apiCheckAuth, async (req, res) => {
     require("./routes/api/casino/blackjack/newCard.js").newCard(req, res);
 });
 
-app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, async (req, res) => {
+app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/blackjack/stand.js").stand(req, res, db, possibleCards, casinoToken);
 });
 
-app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth, async (req, res) => {
+app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/blackjack/wonViaBlackjack.js").wonViaBlackjack(req, res, db, casinoToken);
 });
 // end blackjack API
@@ -605,11 +605,11 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, 
 });
 
 // plinko API
-app.get("/api/casino/plinko/startGame", apiCheckAuth, async (req, res) => {
+app.get("/api/casino/plinko/startGame", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/plinko/startGame.js").startGame(req, res, db, casinoToken);
 });
 
-app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, async (req, res) => {
+app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/plinko/endGame.js").endGame(req, res, db, casinoToken);
 });
 // end plinko
