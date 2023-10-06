@@ -21,16 +21,16 @@ function getData() {
     xhr.open("GET", `/api/manage/${document.getElementById("db").value}/list`, true);
     xhr.withCredentials = true;
 
-    xhr.onreadystatechange = () => {
+    xhr.onreadystatechange = async () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             console.log("got list");
             document.getElementById("viewData").innerHTML = "generating list...";
-            const dbQueryResult = JSON.parse(xhr.responseText);
+            const listRes = await JSON.parse(xhr.responseText);
             var listHTML = "";
-            for (var i = dbQueryResult.length - 1; i >= 0; i--) {
-                listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink()}?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${document.getElementById("db").value}', ${dbQueryResult[i].id}, '${document.getElementById("db").value}${dbQueryResult[i].id}')" style="color: red" id="${document.getElementById("db").value}${dbQueryResult[i].id}">Delete</span></span></span></fieldset>`;
+            for (var i = listRes.length - 1; i >= 0; i--) {
+                listHTML = listHTML + `<fieldset><span><span>ID:&emsp;${listRes[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink()}?id=${listRes[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${document.getElementById("db").value}', ${listRes[i].id}, '${document.getElementById("db").value}${listRes[i].id}')" style="color: red" id="${document.getElementById("db").value}${listRes[i].id}">Delete</span></span></span></fieldset>`;
             }
-            document.getElementById("results").insertAdjacentHTML("afterbegin", listHTML);
+            document.getElementById("resultsInsert").insertAdjacentHTML("afterbegin", listHTML);
             document.getElementById("search").style.display = "none";
             document.getElementById("results").style.display = "flex";
         } else if (xhr.status === 403) {
