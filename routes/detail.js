@@ -31,7 +31,7 @@ async function detail(req, res, db, dirname, season) {
                     resultsTeamNumber: `${dbQueryResult.team}`,
                     resultsMatchNumber: `${dbQueryResult.match}`,
                     resultsEventCode: `${dbQueryResult.event}`,
-                    resultsBody: require(`../${season}.js`).createHTMLExport(dbQueryResult),
+                    resultsBody: require(`./${season}.js`).createHTMLExport(dbQueryResult),
                 });
                 return;
             }
@@ -63,7 +63,7 @@ async function detail(req, res, db, dirname, season) {
                     resultsTeamNumber: `${dbQueryResult.team}`,
                     resultsMatchNumber: `${dbQueryResult.match}`,
                     resultsEventCode: `${dbQueryResult.event}`,
-                    resultsBody: require(`../${season}.js`).createHTMLExport(dbQueryResult),
+                    resultsBody: require(`./${season}.js`).createHTMLExport(dbQueryResult),
                 });
                 return;
             }
