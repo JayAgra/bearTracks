@@ -9,7 +9,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-async function submitForm(req, res, db, dirname, season) {
+function submitForm(req, res, db, dirname, season) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -84,7 +84,7 @@ async function submitForm(req, res, db, dirname, season) {
                     console.error(err.message);
                     res.end(err.message);
                 }
-                await require("../2023.js").weightScores(this.lastID);
+                require(`./${season}.js`).weightScores(this.lastID, db);
             });
             // statement to credit points
             let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;

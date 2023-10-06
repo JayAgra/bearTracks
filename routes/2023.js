@@ -1,14 +1,7 @@
 /*jslint node: true*/
 /*jslint es6*/
 "use strict";
-const sqlite3 = require("sqlite3");
 const saModule = require("./sentiment-analysis.js");
-
-var db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-        console.error("could not open database");
-    }
-});
 
 function toIcons(str) {
     var step1 = str.replaceAll("0", "⬜");
@@ -101,7 +94,7 @@ function createHTMLExport(dbQueryResult) {
     return `Author: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>AUTO: <br>Taxi: ${emojiValue(dbQueryResult.game1)}<br>Score B/M/T: ${emojiValue(dbQueryResult.game2)}${emojiValue(dbQueryResult.game3)}${emojiValue(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${emojiValue(dbQueryResult.game6)}${emojiValue(dbQueryResult.game7)}${emojiValue(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${emojiValue(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Performance Score: ${dbQueryResult.weight}%`;
 }
 
-async function weightScores(submissionID) {
+function weightScores(submissionID, db) {
     db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
         if (result && !err) {
             var analysisResults = [];
@@ -199,7 +192,6 @@ async function weightScores(submissionID) {
                 }
             });
         } else {
-            return "error!";
         }
     });
 }

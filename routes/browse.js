@@ -40,7 +40,7 @@ async function browse(req, res, db, dirname, season) {
                             displayResults: "flex",
                             resultsTeamNumber: `ALL`,
                             resultsEventCode: `${req.query.event}`,
-                            resultsBody: require(`../${season}.js`).createHTMLTableWithTeamNum(dbQueryResult),
+                            resultsBody: require(`./${season}.js`).createHTMLTableWithTeamNum(dbQueryResult),
                         });
                         return;
                     }
@@ -72,7 +72,7 @@ async function browse(req, res, db, dirname, season) {
                             displayResults: "flex",
                             resultsTeamNumber: `Team ${req.query.number}`,
                             resultsEventCode: `${req.query.event}`,
-                            resultsBody: require(`../${season}.js`).createHTMLTable(dbQueryResult),
+                            resultsBody: require(`./${season}.js`).createHTMLTable(dbQueryResult),
                         });
                         return;
                     }
@@ -102,7 +102,7 @@ async function browse(req, res, db, dirname, season) {
                             displayResults: "flex",
                             resultsTeamNumber: `Match ${req.query.number}`,
                             resultsEventCode: `${req.query.event}`,
-                            resultsBody: require(`../${season}.js`).createHTMLTableWithTeamNum(dbQueryResult),
+                            resultsBody: require(`./${season}.js`).createHTMLTableWithTeamNum(dbQueryResult),
                         });
                         return;
                     }
@@ -134,7 +134,7 @@ async function browse(req, res, db, dirname, season) {
                     displayResults: "flex",
                     resultsTeamNumber: `Scout ${req.query.discordID}`,
                     resultsEventCode: season,
-                    resultsBody: require(`../${season}.js`).createHTMLTableWithTeamNum(dbQueryResult),
+                    resultsBody: require(`./${season}.js`).createHTMLTableWithTeamNum(dbQueryResult),
                 });
                 return;
             }

@@ -326,10 +326,7 @@ app.get("/logout", (req, res) => {
 
 // get the main form submissions
 app.post("/submit", checkAuth, async (req, res) => {
-    const currentID = await require("./routes/submit.js").submitForm(req, res, db, __dirname, season);
-    if (typeof currentID === "number") {
-        require("./2023.js").weightScores(currentID);
-    }
+    require("./routes/submit.js").submitForm(req, res, db, __dirname, season);
 });
 
 // use this thing to do the pit form image thing
