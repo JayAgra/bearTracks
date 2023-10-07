@@ -533,7 +533,8 @@ app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req, res
         }
         forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res)
     } else {
-        forwardFRCAPIdata(`/v3.0/2023/schedule/CADA?tournamentLevel=qualification`, req, res)
+        res.header("Content-Type", "application/json");
+        res.sendFile("src/js/WOOD.json");
     }
 });
 
