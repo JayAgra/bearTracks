@@ -100,15 +100,6 @@ function emojiValue(value) {
 // UNUSED VALUES
 // game1 - game20 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
-
-function setIfHigher(property, value) {
-    if (property < value) property = value;
-}
-
-function setIfLower(property, value) {
-    if (property > value) property = value;
-}
-
 function createHTMLExport(dbQueryResult) {
     return `<b>Author:</b> ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>` +
             `<b>AUTO: <br>Taxi: </b>${emojiValue(dbQueryResult.game1)}<br>` +
@@ -297,28 +288,28 @@ function createHTMLTable(data) {
         "midCone": 0,
         "highCube": 0,
         "highCone": 0,
-        // "low": 0,
-        // "mid": 0,
-        // "high": 0
     };
-    var max = structuredClone(avg);
+    var max = {
+        "auto_charge": 0,
+        "teleop_charge": 0,
+        "grid": 0,
+        "cycle": 0,
+        "perf_score": 0
+    };
     var min = {
         "auto_charge": Number.MAX_SAFE_INTEGER,
         "teleop_charge": Number.MAX_SAFE_INTEGER,
         "grid": Number.MAX_SAFE_INTEGER,
         "cycle": Number.MAX_SAFE_INTEGER,
-        "perf_score": Number.MAX_SAFE_INTEGER,
-        "lowCube": Number.MAX_SAFE_INTEGER,
-        "lowCone": Number.MAX_SAFE_INTEGER,
-        "midCube": Number.MAX_SAFE_INTEGER,
-        "midCone": Number.MAX_SAFE_INTEGER,
-        "highCube": Number.MAX_SAFE_INTEGER,
-        "highCone": Number.MAX_SAFE_INTEGER,
-        // "low": Number.MAX_SAFE_INTEGER,
-        // "mid": Number.MAX_SAFE_INTEGER,
-        // "high": Number.MAX_SAFE_INTEGER
+        "perf_score": Number.MAX_SAFE_INTEGER
     };
-
+    function setIfHigher(property, value) {
+        if (max[property] < value) max[property] = value;
+    }
+    
+    function setIfLower(property, value) {
+        if (min[property] > value) min[property] = value;
+    }
     for (var i = 0; i < data.length; i++) {
         html += ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td>` + // match link
                 `<td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td>` + // auto score
@@ -343,23 +334,21 @@ function createHTMLTable(data) {
         avg.midCone += Number(data[i].game15);
         avg.highCube += Number(data[i].game16);
         avg.highCone += Number(data[i].game17);
-        // avg.low += Number(data[i].game18);
-        // avg.mid += Number(data[i].game19);
-        // avg.high += Number(data[i].game20);
-        // avg.cubes += Number(data[i].game23);
-        // avg.cones += Number(data[i].game24);
+        avg.low += Number(data[i].game18);
+        avg.mid += Number(data[i].game19);
+        avg.high += Number(data[i].game20);
 
-        setIfHigher(max.auto_charge, data[i].game5);
-        setIfHigher(max.teleop_charge, data[i].game10);
-        setIfHigher(max.grid, data[i].game25);
-        setIfHigher(max.cycle, data[i].game11);
-        setIfHigher(max.perf_score, data[i].weight);
+        setIfHigher("auto_charge", data[i].game5);
+        setIfHigher("teleop_charge", data[i].game10);
+        setIfHigher("grid", data[i].game25);
+        setIfHigher("cycle", data[i].game11);
+        setIfHigher("perf_score", data[i].weight);
 
-        setIfLower(min.auto_charge, data[i].game5);
-        setIfLower(min.teleop_charge, data[i].game10);
-        setIfLower(min.grid, data[i].game25);
-        setIfLower(min.cycle, data[i].game11);
-        setIfLower(min.perf_score, data[i].weight);
+        setIfLower("auto_charge", data[i].game5);
+        setIfLower("teleop_charge", data[i].game10);
+        setIfLower("grid", data[i].game25);
+        setIfLower("cycle", data[i].game11);
+        setIfLower("perf_score", data[i].weight);
     }
 
     for (let key in avg) {
@@ -370,17 +359,17 @@ function createHTMLTable(data) {
         if (min[key] === Number.MAX_SAFE_INTEGER) min[key] = "und";        
     }
 
-    html += ` <tr><td>avg</td>` + // match link
+    html += `<tr style="font-weight: bold"><td>avg</td>` + // match link
             `<td></td>` + // auto score
             `<td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td>` + // auto charge
             `<td></td>` + // teleop score
-            `<td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge}</td>` + // teleop charge
-            `<td>${Math.round(avg.grid)} (${min.grid} - ${max.grid}</td>` + // grid points
+            `<td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td>` + // teleop charge
+            `<td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td>` + // grid points
             `<td>${Math.round(avg.lowCube)}</td><td>${Math.round(avg.midCube)}</td><td>${Math.round(avg.highCube)}</td>` + // cubes
             `<td>${Math.round(avg.lowCone)}</td><td>${Math.round(avg.midCone)}</td><td>${Math.round(avg.highCone)}</td>` + // cones
             `<td>${Math.round(avg.low)}</td><td>${Math.round(avg.mid)}</td><td>${Math.round(avg.high)}</td>` + // total
             `<td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td>` + // cycle time
-            `<td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score}</td></tr>`; // standard mps
+            `<td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score})</td></tr>`; // standard mps
     return html;
 }
 
