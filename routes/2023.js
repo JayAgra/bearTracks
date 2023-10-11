@@ -362,11 +362,11 @@ function createHTMLTable(data) {
         setIfLower(min.perf_score, data[i].weight);
     }
 
-    for (let key in average) {
+    for (let key in avg) {
         avg[key] /= data.length;
     }
 
-    for (let key in minimum) {
+    for (let key in min) {
         if (min[key] === Number.MAX_SAFE_INTEGER) min[key] = "und";        
     }
 
@@ -395,7 +395,7 @@ function createHTMLTableWithTeamNum(data) {
     };
 
     for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
@@ -409,7 +409,7 @@ function createHTMLTableWithTeamNum(data) {
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
 
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
+    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
     return html;
 }
 
