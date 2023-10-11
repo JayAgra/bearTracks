@@ -101,6 +101,14 @@ function emojiValue(value) {
 // game1 - game20 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
 
+function setIfHigher(property, value) {
+    if (property < value) property = value;
+}
+
+function setIfLower(property, value) {
+    if (property > value) property = value;
+}
+
 function createHTMLExport(dbQueryResult) {
     return `<b>Author:</b> ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>` +
             `<b>AUTO: <br>Taxi: </b>${emojiValue(dbQueryResult.game1)}<br>` +
@@ -282,7 +290,16 @@ function createHTMLTable(data) {
         "teleop_charge": 0,
         "grid": 0,
         "cycle": 0,
-        "perf_score": 0
+        "perf_score": 0,
+        "lowCube": 0,
+        "lowCone": 0,
+        "midCube": 0,
+        "midCone": 0,
+        "highCube": 0,
+        "highCone": 0,
+        "low": 0,
+        "mid": 0,
+        "high": 0
     };
     var max = structuredClone(avg);
     var min = {
@@ -290,44 +307,80 @@ function createHTMLTable(data) {
         "teleop_charge": Number.MAX_SAFE_INTEGER,
         "grid": Number.MAX_SAFE_INTEGER,
         "cycle": Number.MAX_SAFE_INTEGER,
-        "perf_score": Number.MAX_SAFE_INTEGER
+        "perf_score": Number.MAX_SAFE_INTEGER,
+        "lowCube": Number.MAX_SAFE_INTEGER,
+        "lowCone": Number.MAX_SAFE_INTEGER,
+        "midCube": Number.MAX_SAFE_INTEGER,
+        "midCone": Number.MAX_SAFE_INTEGER,
+        "highCube": Number.MAX_SAFE_INTEGER,
+        "highCone": Number.MAX_SAFE_INTEGER,
+        "low": Number.MAX_SAFE_INTEGER,
+        "mid": Number.MAX_SAFE_INTEGER,
+        "high": Number.MAX_SAFE_INTEGER
     };
 
     for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        html += ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td>` + // match link
+                `<td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td>` + // auto score
+                `<td>${data[i].game5}</td>` + // auto charge
+                `<td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td>` + // teleop score
+                `<td>${data[i].game10}</td>` + // teleop charge
+                `<td>${data[i].game25}</td>` + // grid points
+                `<td>${data[i].game21}/${data[i].game14}/${data[i].game16}/${data[i].game23}</td>` + // cubes
+                `<td>${data[i].game21}/${data[i].game14}/${data[i].game16}/${data[i].game24}</td>` + // cones
+                `<td>${data[i].game18}/${data[i].game19}/${data[i].game20}/${Number(data[i].game18) + Number(data[i].game19) + Number(data[i].game20)}</td>` + // total
+                `<td>${data[i].game11}</td>` + // cycle time
+                `<td>${data[i].weight}</td></tr>`; // standard mps
         
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
         avg.cycle += Number(data[i].game11);
         avg.perf_score += Number(data[i].weight);
+        avg.lowCube += Number(data[i].game21);
+        avg.lowCone += Number(data[i].game13);
+        avg.midCube += Number(data[i].game14);
+        avg.midCone += Number(data[i].game15);
+        avg.highCube += Number(data[i].game16);
+        avg.highCone += Number(data[i].game17);
+        avg.low += Number(data[i].game18);
+        avg.mid += Number(data[i].game19);
+        avg.high += Number(data[i].game20);
+        avg.cubes += Number(data[i].game23);
+        avg.cones += Number(data[i].game24);
 
-        if (max.auto_charge < data[i].game5) max.auto_charge = Number(data[i].game5);
-        if (max.teleop_charge < data[i].game10) max.teleop_charge = Number(data[i].game10);
-        if (max.grid < data[i].game25) max.grid = Number(data[i].game25);
-        if (max.cycle < data[i].game11) max.cycle = Number(data[i].game11);
-        if (max.perf_score < data[i].weight) max.perf_score = Number(data[i].weight);
+        setIfHigher(max.auto_charge, data[i].game5);
+        setIfHigher(max.teleop_charge, data[i].game10);
+        setIfHigher(max.grid, data[i].game25);
+        setIfHigher(max.cycle, data[i].game11);
+        setIfHigher(max.perf_score, data[i].weight);
 
-        if (min.auto_charge > data[i].game5) min.auto_charge = Number(data[i].game5);
-        if (min.teleop_charge > data[i].game10) min.teleop_charge = Number(data[i].game10);
-        if (min.grid > data[i].game25) min.grid = Number(data[i].game25);
-        if (min.cycle > data[i].game11) min.cycle = Number(data[i].game11);
-        if (min.perf_score > data[i].weight) min.perf_score = Number(data[i].weight);
+        setIfLower(min.auto_charge, data[i].game5);
+        setIfLower(min.teleop_charge, data[i].game10);
+        setIfLower(min.grid, data[i].game25);
+        setIfLower(min.cycle, data[i].game11);
+        setIfLower(min.perf_score, data[i].weight);
     }
 
-    avg.auto_charge /= data.length;
-    avg.teleop_charge /= data.length;
-    avg.grid /= data.length;
-    avg.cycle /= data.length;
-    avg.perf_score /= data.length;
+    for (let key in average) {
+        avg[key] /= data.length;
+    }
 
-    if (min.auto_charge === Number.MAX_SAFE_INTEGER) min.auto_charge = "und";
-    if (min.teleop_charge === Number.MAX_SAFE_INTEGER) min.teleop_charge = "und";
-    if (min.grid === Number.MAX_SAFE_INTEGER) min.grid = "und";
-    if (min.cycle === Number.MAX_SAFE_INTEGER) min.cycle = "und";
-    if (min.perf_score === Number.MAX_SAFE_INTEGER) min.perf_score = "und";
+    for (let key in minimum) {
+        if (min[key] === Number.MAX_SAFE_INTEGER) min[key] = "und";        
+    }
 
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td><td></td><td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td><td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td><td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td><td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score})</td></tr>`;
+    html += ` <tr><td>avg</td>` + // match link
+            `<td></td>` + // auto score
+            `<td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td>` + // auto charge
+            `<td></td>` + // teleop score
+            `<td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge}</td>` + // teleop charge
+            `<td>${Math.round(avg.grid)} (${min.grid} - ${max.grid}</td>` + // grid points
+            `<td>${Math.round(avg.lowCube)}/${Math.round(avg.midCube)}/${Math.round(avg.highCube)}/${avg.cubes}</td>` + // cubes
+            `<td>${Math.round(avg.lowCone)}/${Math.round(avg.midCone)}/${Math.round(avg.highCone)}/${avg.cones}</td>` + // cones
+            `<td>${Math.round(avg.low)}/${Math.round(avg.mid)}/${Math.round(avg.high)}/${Math.round(avg.low + avg.mid + avg.high)}</td>` + // total
+            `<td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td>` + // cycle time
+            `<td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score}</td></tr>`; // standard mps
     return html;
 }
 
