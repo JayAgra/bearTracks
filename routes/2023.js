@@ -112,7 +112,7 @@ function createHTMLExport(dbQueryResult) {
             `<b>low/mid/high pcs: </b>${dbQueryResult.game18}/${dbQueryResult.game19}/${dbQueryResult.game20}<br>` +
             `<b>cubes/cones: </b>${dbQueryResult.game23}/${dbQueryResult.game24}<br>` +
             `<b>total grid: </b>${dbQueryResult.game25}pts` +
-            `<b>Match Performance Score: </b>${dbQueryResult.weight}%`;
+            `<b>Match Performance Score: </b>${dbQueryResult.weight.split(",")[0]}%`;
 }
 
 function weightScores(submissionID, db) {
@@ -260,9 +260,23 @@ function weightScores(submissionID, db) {
             });
 
             // assume reasonable max is 65
-            score = score + (gridWt / 1.6875);
+            score += gridWt / 1.6875;
+            // 0 - standard
+            // 1 - grid points
+            // 2 - cubes
+            // 3 - cones
+            // 4 - bottom row
+            // 5 - middle row
+            // 6 - top row
+            // 7 - bottom row cube
+            // 8 - bottom row cone
+            // 9 - middle row cube
+            // 10 - middle row cone
+            // 11 - top row cube
+            // 12 - top row cone
+            const mpsScores = [score, score + 2 * gridWt, score * (cubes / 15), score * (cones / 22), score * (low / 9), score * (mid / 9), score * (high / 9), score * (lowCube / 9), score * (lowCone / 9), score * (midCube / 9), score * (midCone / 9), score * (highCube / 9), score * (highCone / 9)];
             const updateSubmissionStmt = "UPDATE main SET weight=?, analysis=?, game21=?, game13=?, game14=?, game15=?, game16=?, game17=?, game18=?, game19=?, game20=?, game23=?, game24=?, game25=? WHERE id=?";
-            const updateSubmissionValues = [score.toFixed(2), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, gridWt, submissionID];
+            const updateSubmissionValues = [score.toFixed(2), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, mpsScores.join(","), submissionID];
             db.run(updateSubmissionStmt, updateSubmissionValues, (err) => {
                 if (err) {
                     console.log("Error updating DB!");
@@ -288,6 +302,9 @@ function createHTMLTable(data) {
         "midCone": 0,
         "highCube": 0,
         "highCone": 0,
+        "low": 0,
+        "mid": 0,
+        "high": 0
     };
     var max = {
         "auto_charge": 0,
@@ -321,13 +338,13 @@ function createHTMLTable(data) {
                 `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cones
                 `<td>${data[i].game18}</td><td>${data[i].game19}</td><td>${data[i].game20}</td>` + // total
                 `<td>${data[i].game11}</td>` + // cycle time
-                `<td>${data[i].weight}</td></tr>`; // standard mps
+                `<td>${data[i].weight.split(",")[0]}</td></tr>`; // standard mps
         
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
         avg.cycle += Number(data[i].game11);
-        avg.perf_score += Number(data[i].weight);
+        avg.perf_score += Number(data[i].weight.split(",")[0]);
         avg.lowCube += Number(data[i].game21);
         avg.lowCone += Number(data[i].game13);
         avg.midCube += Number(data[i].game14);
@@ -342,13 +359,13 @@ function createHTMLTable(data) {
         setIfHigher("teleop_charge", data[i].game10);
         setIfHigher("grid", data[i].game25);
         setIfHigher("cycle", data[i].game11);
-        setIfHigher("perf_score", data[i].weight);
+        setIfHigher("perf_score", Number(data[i].weight.split(",")[0]));
 
         setIfLower("auto_charge", data[i].game5);
         setIfLower("teleop_charge", data[i].game10);
         setIfLower("grid", data[i].game25);
         setIfLower("cycle", data[i].game11);
-        setIfLower("perf_score", data[i].weight);
+        setIfLower("perf_score", Number(data[i].weight.split(",")[0]));
     }
 
     for (let key in avg) {
@@ -384,12 +401,12 @@ function createHTMLTableWithTeamNum(data) {
     };
 
     for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${data[i].weight.split(",")[0]}</td></tr>`;
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
         avg.cycle += Number(data[i].game11);
-        avg.perf_score += Number(data[i].weight);
+        avg.perf_score += Number(data[i].weight.split(",")[0]);
     }
 
     avg.auto_charge /= data.length;

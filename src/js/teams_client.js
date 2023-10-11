@@ -3,10 +3,11 @@ function goToHome() {
     window.location.href = "/";
 }
 async function getTeamRanks() {
-    eventCode = document.getElementById("eventCode").value
+    eventCode = document.getElementById("eventCode").value;
+    weight = Number(document.getElementById("weightType").value);
     document.getElementById("viewTeamsButton").innerText = "Requesting Data...";
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/teams/2023/${eventCode}`, true);
+    xhr.open("GET", `/api/teams/2023/${eventCode}/${weight}`, true);
     xhr.withCredentials = true;
 
     xhr.onreadystatechange = async () => {
