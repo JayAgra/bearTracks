@@ -112,7 +112,7 @@ function createHTMLExport(dbQueryResult) {
             `<b>low/mid/high pcs: </b>${dbQueryResult.game18}/${dbQueryResult.game19}/${dbQueryResult.game20}<br>` +
             `<b>cubes/cones: </b>${dbQueryResult.game23}/${dbQueryResult.game24}<br>` +
             `<b>total grid: </b>${dbQueryResult.game25}pts` +
-            `<b>Match Performance Score: </b>${dbQueryResult.weight.split(",")[0]}%`;
+            `<b>Match Performance Score: </b>${dbQueryResult.weight.split(",")[0].toFixed(2)}`;
 }
 
 function weightScores(submissionID, db) {
@@ -338,7 +338,7 @@ function createHTMLTable(data) {
                 `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cones
                 `<td>${data[i].game18}</td><td>${data[i].game19}</td><td>${data[i].game20}</td>` + // total
                 `<td>${data[i].game11}</td>` + // cycle time
-                `<td>${data[i].weight.split(",")[0]}</td></tr>`; // standard mps
+                `<td>${data[i].weight.split(",")[0].toFixed(2)}</td></tr>`; // standard mps
         
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
@@ -386,7 +386,7 @@ function createHTMLTable(data) {
             `<td>${Math.round(avg.lowCone)}</td><td>${Math.round(avg.midCone)}</td><td>${Math.round(avg.highCone)}</td>` + // cones
             `<td>${Math.round(avg.low)}</td><td>${Math.round(avg.mid)}</td><td>${Math.round(avg.high)}</td>` + // total
             `<td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td>` + // cycle time
-            `<td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score})</td></tr>`; // standard mps
+            `<td>${avg.perf_score.toFixed(2)} (${min.perf_score.toFixed(2)} - ${max.perf_score.toFixed(2)})</td></tr>`; // standard mps
     return html;
 }
 
@@ -401,7 +401,7 @@ function createHTMLTableWithTeamNum(data) {
     };
 
     for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${data[i].weight.split(",")[0]}</td></tr>`;
+        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${data[i].weight.split(",")[0].toFixed(2)}</td></tr>`;
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
@@ -415,7 +415,7 @@ function createHTMLTableWithTeamNum(data) {
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
 
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
+    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
     return html;
 }
 
