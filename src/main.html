@@ -134,7 +134,7 @@
         <br>
         <h2 class="gameflair1">Post Game</h2>
         <fieldset>
-            <label>Estimate the cycle time of the robot <span id="tooLong" style="color: red; display: none;">4 digits or less!</span><br></label><br>
+            <label>Estimate the cycle time of the robot <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br>
             <input type="tel" name="game11" class="smallerInput" id="validateLength" required> seconds
         </fieldset>
         <fieldset>
@@ -157,7 +157,7 @@
             <small><button type="button" id="uploadFormButton" onclick="uploadSubmissionJSON()" style="color: red; background-color: rgba(0,0,0,0); border: none;">Upload Submission</button></small>-->
         </p>
     </form>
-    <input type="file" name="jsonScoutFile" accept=".scout" style="display: none;" id="jsonScoutFile" disabled="disabled">
+    <!--<input type="file" name="jsonScoutFile" accept=".scout" style="display: none;" id="jsonScoutFile" disabled="disabled">-->
     <br><br>
     <script src="js/main_form_client.min.js" type="text/javascript"></script>
 </body>

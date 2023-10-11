@@ -65,20 +65,36 @@
             <div style="overflow-x: auto; width: 95vw;">
                 <table>
                     <tr>
-                        <th>Match Number</th>
+                        <th rowspan="2">Match Number</th>
                         <th>Auto Score</th>
-                        <th>Auto Charge</th>
+                        <th rowspan="2">Auto Charge</th>
                         <th>Teleop Score</th>
-                        <th>Teleop Charge</th>
-                        <th>Grid Points</th>
-                        <th>Cycle Time</th>
-                        <th>Match Performance Score</th>
+                        <th rowspan="2">Teleop Charge</th>
+                        <th rowspan="2">Grid Points</th>
+                        <th colspan="3">Cubes</th>
+                        <th colspan="3">Cones</th>
+                        <th colspan="3">Total</th>
+                        <th rowspan="2">Cycle Time</th>
+                        <th rowspan="2">Match Performance Score</th>
+                    </tr>
+                    <tr>
+                        <th>B/M/T</th>
+                        <th>B/M/T</th>
+                        <th>Low</th>
+                        <th>Mid</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>Mid</th>
+                        <th>High</th>
+                        <th>Low</th>
+                        <th>Mid</th>
+                        <th>High</th>
                     </tr>
                     <%- resultsBody %>
                 </table>
             </div>
             <!--buttons-->
-            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>&emsp;<button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="removeURLParams()">New Search</button>&emsp;<button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Home</button>
             <br><br>
             <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: #68C3E2;">here</a></small>
         </div>

@@ -380,13 +380,13 @@ app.get("/float.min.css", (req, res) => {
 // font file
 app.get("/fonts/Raleway-300.ttf", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
-    res.sendFile("./src/fonts/Raleway-300.ttf", { root: __dirname });
+    res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
 });
 
 // font file
 app.get("/fonts/Raleway-500.ttf", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
-    res.sendFile("./src/fonts/Raleway-500.ttf", { root: __dirname });
+    res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
 });
 
 // JS for form (should be unused in favor of minified js)
@@ -398,7 +398,7 @@ app.get("/form.js", (req, res) => {
 // minified JS for form         
 app.get("/form.min.js", (req, res) => {
     res.set("Cache-control", "public, max-age=7776000");
-    res.sendFile("./src/form.min.js", { root: __dirname });
+    res.sendFile("./src/js/form.min.js", { root: __dirname });
 });
 
 // favicon

@@ -68,10 +68,21 @@ function emojiValue(value) {
 // overall is STRING as overall thoughts about the team
 
 // UNUSED VALUES
-// game12 - game25 is INT (0)
+// game22 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
 
-// game25 will be set to grid total
+// game 13 will be low cones
+// game 14 will be mid cubes
+// game 15 will be mid cones
+// game 16 will be high cubes
+// game 17 will be high cones
+// game 18 will be low pcs
+// game 19 will be mid pcs
+// game 20 will be high pcs
+// game 21 will be low cubes
+// game 23 will be cubes pcs
+// game 24 will be cones pcs
+// game 25 will be grid pts
 
 // pit data:
 
@@ -89,9 +100,19 @@ function emojiValue(value) {
 // UNUSED VALUES
 // game1 - game20 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
-
 function createHTMLExport(dbQueryResult) {
-    return `Author: ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>AUTO: <br>Taxi: ${emojiValue(dbQueryResult.game1)}<br>Score B/M/T: ${emojiValue(dbQueryResult.game2)}${emojiValue(dbQueryResult.game3)}${emojiValue(dbQueryResult.game4)}<br>Charging: ${dbQueryResult.game5} pts<br><br>TELEOP: <br>Score B/M/T: ${emojiValue(dbQueryResult.game6)}${emojiValue(dbQueryResult.game7)}${emojiValue(dbQueryResult.game8)}<br>Charging: ${dbQueryResult.game10} pts<br><br>Other: <br>Alliance COOPERTITION: ${emojiValue(dbQueryResult.game9)}<br>Cycle Time: ${dbQueryResult.game11} seconds<br>Defense: ${dbQueryResult.defend}<br>Driving: ${dbQueryResult.driving}<br>Overall: ${dbQueryResult.overall}<br>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>Match Performance Score: ${dbQueryResult.weight}%`;
+    return `<b>Author:</b> ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>` +
+            `<b>AUTO: <br>Taxi: </b>${emojiValue(dbQueryResult.game1)}<br>` +
+            `<b>Score B/M/T: </b>${emojiValue(dbQueryResult.game2)}${emojiValue(dbQueryResult.game3)}${emojiValue(dbQueryResult.game4)}<br>` +
+            `<b>Charging: </b>${dbQueryResult.game5} pts<br><br>` +
+            `<b>TELEOP: <br>Score B/M/T: </b>${emojiValue(dbQueryResult.game6)}${emojiValue(dbQueryResult.game7)}${emojiValue(dbQueryResult.game8)}<br><b>Charging: </b>${dbQueryResult.game10} pts<br><br>` +
+            `<b>Other: <br>Alliance COOPERTITION: </b>${emojiValue(dbQueryResult.game9)}<br><b>Cycle Time: </b>${dbQueryResult.game11} seconds<br><b>Defense: </b>${dbQueryResult.defend}<br><b>Driving: </b>${dbQueryResult.driving}<br><b>Overall: </b>${dbQueryResult.overall}<br>` +
+            `<b>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>` +
+            `<b>low/mid/high cubes - cones: </b>${dbQueryResult.game21}/${dbQueryResult.game14}/${dbQueryResult.game16} - ${dbQueryResult.game13}/${dbQueryResult.game15}/${dbQueryResult.game17}<br>` +
+            `<b>low/mid/high pcs: </b>${dbQueryResult.game18}/${dbQueryResult.game19}/${dbQueryResult.game20}<br>` +
+            `<b>cubes/cones: </b>${dbQueryResult.game23}/${dbQueryResult.game24}<br>` +
+            `<b>total grid: </b>${dbQueryResult.game25}pts` +
+            `<b>Match Performance Score: </b>${Number(dbQueryResult.weight.split(",")[0]).toFixed(2)}`;
 }
 
 function weightScores(submissionID, db) {
@@ -132,61 +153,131 @@ function weightScores(submissionID, db) {
 
             // MAXIMUM 38
             // grid items
-            var cubes = 0;
-            var cones = 0;
-            var gridWt = 0;
-            const fullGrid = !result.game12.split("").includes("0");
-            result.game12.split("").forEach(function(item, index) {
+            var cubes = 0,
+                cones = 0,
+                gridWt = 0,
+                low = 0,
+                mid = 0,
+                high = 0,
+                lowCube = 0,
+                lowCone = 0,
+                midCube = 0,
+                midCone = 0,
+                highCube = 0,
+                highCone = 0,
+                fullGrid = !result.game12.split("").includes("0");
+
+            // process content of grid
+            result.game12.split("").forEach((item, index) => {
                 if (index <= 8 && item != "0") {
-                    if (item == "3" || item == "4" && fullGrid) {
-                        gridWt += 3;
+                    // high row
+                    high++;
+                    switch (item) {
+                        case "1": {
+                            cubes++;
+                            highCube++;
+                            gridWt += 5;
+                            break;
+                        }
+                        case "2": {
+                            cones++;
+                            highCone++;
+                            gridWt += 5;
+                            break;
+                        }
+                        case "3": {
+                            cubes += 2;
+                            highCube += 2;
+                            if (fullGrid) gridWt += 8;
+                            break;
+                        }
+                        case "4": {
+                            cones += 2;
+                            highCone += 2;
+                            if (fullGrid) gridWt += 8;
+                            break;
+                        }
                     }
-                    gridWt += 5;
                 } else if (index <= 17 && item != "0") {
-                    if (item == "3" || (item == "4" && fullGrid)) {
-                        gridWt += 3;
+                    // mid row
+                    mid++;
+                    switch (item) {
+                        case "1": {
+                            cubes++;
+                            midCube++;
+                            gridWt += 3;
+                            break;
+                        }
+                        case "2": {
+                            cones++;
+                            midCone++;
+                            gridWt += 3;
+                            break;
+                        }
+                        case "3": {
+                            cubes += 2;
+                            midCube += 2;
+                            if (fullGrid) gridWt += 6;
+                            break;
+                        }
+                        case "4": {
+                            cones += 2;
+                            midCone += 2;
+                            if (fullGrid) gridWt += 6;
+                            break;
+                        }
                     }
-                    gridWt = gridWt + 3;
                 } else if (index <= 26 && item != "0") {
-                    if (item == "3" || (item == "4" && fullGrid)) {
-                        gridWt += 3;
+                    // low row
+                    low++;
+                    switch (item) {
+                        case "1": {
+                            cubes++;
+                            lowCube++;
+                            gridWt += 2;
+                            break;
+                        }
+                        case "2": {
+                            cones++;
+                            lowCone++;
+                            gridWt += 2;
+                            break;
+                        }
+                        case "3": {
+                            cubes += 2;
+                            lowCube += 2;
+                            if (fullGrid) gridWt += 5;
+                            break;
+                        }
+                        case "4": {
+                            cones += 2;
+                            lowCone += 2;
+                            if (fullGrid) gridWt += 5;
+                            break;
+                        }
                     }
-                    gridWt += 2;
-                }
-                if (item == "1") {
-                    cubes++
-                } else if (item == "3") {
-                    cubes += 2
-                }
-                if (item == "2") {
-                    cones++
-                } else if (item == "3") {
-                    cones += 2
                 }
             });
+
             // assume reasonable max is 65
-            score = score + (gridWt / 1.6875);
-            db.run(`UPDATE main SET weight=${score.toFixed(2)} WHERE id=${submissionID}`, (err, result) => {
-                if (err) {
-                    console.log("Error updating DB!");
-                }
-            });
-            db.run(`UPDATE main SET analysis="${analysisResults.toString()}" WHERE id=${submissionID}`, (err) => {
-                if (err) {
-                    console.log("Error updating DB!");
-                }
-            });
-            db.run(`UPDATE main SET game23=${cubes} WHERE id=${submissionID}`, (err, result) => {
-                if (err) {
-                    console.log("Error updating DB!");
-                }
-            });
-            db.run(`UPDATE main SET game24=${cones} WHERE id=${submissionID}`, (err, result) => {
-                if (err) {
-                    console.log("Error updating DB!");
-                }
-            });
-            db.run(`UPDATE main SET game25=${gridWt} WHERE id=${submissionID}`, (err, result) => {
+            score += gridWt / 1.6875;
+            // 0 - standard
+            // 1 - grid points
+            // 2 - cubes
+            // 3 - cones
+            // 4 - bottom row
+            // 5 - middle row
+            // 6 - top row
+            // 7 - bottom row cube
+            // 8 - bottom row cone
+            // 9 - middle row cube
+            // 10 - middle row cone
+            // 11 - top row cube
+            // 12 - top row cone
+            const mpsScores = [score, score + 2 * gridWt, score * (cubes / 15), score * (cones / 22), score * (low / 9), score * (mid / 9), score * (high / 9), score * (lowCube / 9), score * (lowCone / 9), score * (midCube / 9), score * (midCone / 9), score * (highCube / 9), score * (highCone / 9)];
+            const updateSubmissionStmt = "UPDATE main SET weight=?, analysis=?, game21=?, game13=?, game14=?, game15=?, game16=?, game17=?, game18=?, game19=?, game20=?, game23=?, game24=?, game25=? WHERE id=?";
+            const updateSubmissionValues = [mpsScores.join(","), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, gridWt, submissionID];
+            db.run(updateSubmissionStmt, updateSubmissionValues, (err) => {
                 if (err) {
                     console.log("Error updating DB!");
                 }
@@ -204,9 +295,24 @@ function createHTMLTable(data) {
         "teleop_charge": 0,
         "grid": 0,
         "cycle": 0,
+        "perf_score": 0,
+        "lowCube": 0,
+        "lowCone": 0,
+        "midCube": 0,
+        "midCone": 0,
+        "highCube": 0,
+        "highCone": 0,
+        "low": 0,
+        "mid": 0,
+        "high": 0
+    };
+    var max = {
+        "auto_charge": 0,
+        "teleop_charge": 0,
+        "grid": 0,
+        "cycle": 0,
         "perf_score": 0
     };
-    var max = structuredClone(avg);
     var min = {
         "auto_charge": Number.MAX_SAFE_INTEGER,
         "teleop_charge": Number.MAX_SAFE_INTEGER,
@@ -214,42 +320,73 @@ function createHTMLTable(data) {
         "cycle": Number.MAX_SAFE_INTEGER,
         "perf_score": Number.MAX_SAFE_INTEGER
     };
-
+    function setIfHigher(property, value) {
+        if (max[property] < value) max[property] = value;
+    }
+    
+    function setIfLower(property, value) {
+        if (min[property] > value) min[property] = value;
+    }
     for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        html += ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td>` + // match link
+                `<td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td>` + // auto score
+                `<td>${data[i].game5}</td>` + // auto charge
+                `<td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td>` + // teleop score
+                `<td>${data[i].game10}</td>` + // teleop charge
+                `<td>${data[i].game25}</td>` + // grid points
+                `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cubes
+                `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cones
+                `<td>${data[i].game18}</td><td>${data[i].game19}</td><td>${data[i].game20}</td>` + // total
+                `<td>${data[i].game11}</td>` + // cycle time
+                `<td>${Number(data[i].weight.split(",")[0]).toFixed(2)}</td></tr>`; // standard mps
         
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
         avg.cycle += Number(data[i].game11);
-        avg.perf_score += Number(data[i].weight);
+        avg.perf_score += Number(data[i].weight.split(",")[0]);
+        avg.lowCube += Number(data[i].game21);
+        avg.lowCone += Number(data[i].game13);
+        avg.midCube += Number(data[i].game14);
+        avg.midCone += Number(data[i].game15);
+        avg.highCube += Number(data[i].game16);
+        avg.highCone += Number(data[i].game17);
+        avg.low += Number(data[i].game18);
+        avg.mid += Number(data[i].game19);
+        avg.high += Number(data[i].game20);
 
-        if (max.auto_charge < data[i].game5) max.auto_charge = Number(data[i].game5);
-        if (max.teleop_charge < data[i].game10) max.teleop_charge = Number(data[i].game10);
-        if (max.grid < data[i].game25) max.grid = Number(data[i].game25);
-        if (max.cycle < data[i].game11) max.cycle = Number(data[i].game11);
-        if (max.perf_score < data[i].weight) max.perf_score = Number(data[i].weight);
+        setIfHigher("auto_charge", data[i].game5);
+        setIfHigher("teleop_charge", data[i].game10);
+        setIfHigher("grid", data[i].game25);
+        setIfHigher("cycle", data[i].game11);
+        setIfHigher("perf_score", Number(data[i].weight.split(",")[0]));
 
-        if (min.auto_charge > data[i].game5) min.auto_charge = Number(data[i].game5);
-        if (min.teleop_charge > data[i].game10) min.teleop_charge = Number(data[i].game10);
-        if (min.grid > data[i].game25) min.grid = Number(data[i].game25);
-        if (min.cycle > data[i].game11) min.cycle = Number(data[i].game11);
-        if (min.perf_score > data[i].weight) min.perf_score = Number(data[i].weight);
+        setIfLower("auto_charge", data[i].game5);
+        setIfLower("teleop_charge", data[i].game10);
+        setIfLower("grid", data[i].game25);
+        setIfLower("cycle", data[i].game11);
+        setIfLower("perf_score", Number(data[i].weight.split(",")[0]));
     }
 
-    avg.auto_charge /= data.length;
-    avg.teleop_charge /= data.length;
-    avg.grid /= data.length;
-    avg.cycle /= data.length;
-    avg.perf_score /= data.length;
+    for (let key in avg) {
+        avg[key] /= data.length;
+    }
 
-    if (min.auto_charge === Number.MAX_SAFE_INTEGER) min.auto_charge = "und";
-    if (min.teleop_charge === Number.MAX_SAFE_INTEGER) min.teleop_charge = "und";
-    if (min.grid === Number.MAX_SAFE_INTEGER) min.grid = "und";
-    if (min.cycle === Number.MAX_SAFE_INTEGER) min.cycle = "und";
-    if (min.perf_score === Number.MAX_SAFE_INTEGER) min.perf_score = "und";
+    for (let key in min) {
+        if (min[key] === Number.MAX_SAFE_INTEGER) min[key] = "und";        
+    }
 
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td><td></td><td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td><td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td><td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td><td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score})</td></tr>`;
+    html += `<tr style="font-weight: bold"><td>avg</td>` + // match link
+            `<td></td>` + // auto score
+            `<td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td>` + // auto charge
+            `<td></td>` + // teleop score
+            `<td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td>` + // teleop charge
+            `<td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td>` + // grid points
+            `<td>${Math.round(avg.lowCube)}</td><td>${Math.round(avg.midCube)}</td><td>${Math.round(avg.highCube)}</td>` + // cubes
+            `<td>${Math.round(avg.lowCone)}</td><td>${Math.round(avg.midCone)}</td><td>${Math.round(avg.highCone)}</td>` + // cones
+            `<td>${Math.round(avg.low)}</td><td>${Math.round(avg.mid)}</td><td>${Math.round(avg.high)}</td>` + // total
+            `<td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td>` + // cycle time
+            `<td>${avg.perf_score.toFixed(2)} (${min.perf_score.toFixed(2)} - ${max.perf_score.toFixed(2)})</td></tr>`; // standard mps
     return html;
 }
 
@@ -264,12 +401,12 @@ function createHTMLTableWithTeamNum(data) {
     };
 
     for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${Number(data[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
         avg.cycle += Number(data[i].game11);
-        avg.perf_score += Number(data[i].weight);
+        avg.perf_score += Number(data[i].weight.split(",")[0]);
     }
 
     avg.auto_charge /= data.length;
@@ -278,7 +415,7 @@ function createHTMLTableWithTeamNum(data) {
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
 
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
+    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
     return html;
 }
 

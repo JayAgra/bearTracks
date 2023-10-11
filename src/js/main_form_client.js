@@ -40,14 +40,14 @@ document.getElementById('validateTeamInput').addEventListener('input', function(
     }
 });
 
-document.getElementById('validateLength').addEventListener('input', function(event){
-    console.log("event!")
-    if ((document.getElementById('validateLength').value).length <= 4) {
+document.getElementById('validateLength').addEventListener('input', () => {
+    let currentVal = document.getElementById("validateLength").value;
+    if (currentVal <= 120 && currentVal >= 0) {
         document.getElementById('tooLong').style.display = "none";
-        document.getElementById('submitButton').removeAttribute("disabled");
+        submitButton.removeAttribute("disabled");
     } else {
         document.getElementById('tooLong').style.display = "inherit";
-        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        submitButton.setAttribute("disabled", "disabled");
     }
 });
 //end data validation
