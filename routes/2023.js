@@ -326,9 +326,9 @@ function createHTMLTable(data) {
                 `<td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td>` + // teleop score
                 `<td>${data[i].game10}</td>` + // teleop charge
                 `<td>${data[i].game25}</td>` + // grid points
-                `<td>${data[i].game21}/${data[i].game14}/${data[i].game16}/${data[i].game23}</td>` + // cubes
-                `<td>${data[i].game21}/${data[i].game14}/${data[i].game16}/${data[i].game24}</td>` + // cones
-                `<td>${data[i].game18}/${data[i].game19}/${data[i].game20}/${Number(data[i].game18) + Number(data[i].game19) + Number(data[i].game20)}</td>` + // total
+                `<td>${data[i].game21}  ${data[i].game14}  ${data[i].game16}  ${data[i].game23}</td>` + // cubes
+                `<td>${data[i].game21}  ${data[i].game14}  ${data[i].game16}  ${data[i].game24}</td>` + // cones
+                `<td>${data[i].game18}  ${data[i].game19}  ${data[i].game20}  ${Number(data[i].game18) + Number(data[i].game19) + Number(data[i].game20)}</td>` + // total
                 `<td>${data[i].game11}</td>` + // cycle time
                 `<td>${data[i].weight}</td></tr>`; // standard mps
         
@@ -376,9 +376,9 @@ function createHTMLTable(data) {
             `<td></td>` + // teleop score
             `<td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge}</td>` + // teleop charge
             `<td>${Math.round(avg.grid)} (${min.grid} - ${max.grid}</td>` + // grid points
-            `<td>${Math.round(avg.lowCube)}/${Math.round(avg.midCube)}/${Math.round(avg.highCube)}/${avg.cubes}</td>` + // cubes
-            `<td>${Math.round(avg.lowCone)}/${Math.round(avg.midCone)}/${Math.round(avg.highCone)}/${avg.cones}</td>` + // cones
-            `<td>${Math.round(avg.low)}/${Math.round(avg.mid)}/${Math.round(avg.high)}/${Math.round(avg.low + avg.mid + avg.high)}</td>` + // total
+            `<td>${Math.round(avg.lowCube)}  ${Math.round(avg.midCube)}  ${Math.round(avg.highCube)}  ${avg.cubes}</td>` + // cubes
+            `<td>${Math.round(avg.lowCone)}  ${Math.round(avg.midCone)}  ${Math.round(avg.highCone)}  ${avg.cones}</td>` + // cones
+            `<td>${Math.round(avg.low)}  ${Math.round(avg.mid)}  ${Math.round(avg.high)}  ${Math.round(avg.low + avg.mid + avg.high)}</td>` + // total
             `<td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td>` + // cycle time
             `<td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score}</td></tr>`; // standard mps
     return html;
