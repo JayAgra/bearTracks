@@ -326,9 +326,9 @@ function createHTMLTable(data) {
                 `<td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td>` + // teleop score
                 `<td>${data[i].game10}</td>` + // teleop charge
                 `<td>${data[i].game25}</td>` + // grid points
-                `<td>${data[i].game21}  ${data[i].game14}  ${data[i].game16}  ${data[i].game23}</td>` + // cubes
-                `<td>${data[i].game21}  ${data[i].game14}  ${data[i].game16}  ${data[i].game24}</td>` + // cones
-                `<td>${data[i].game18}  ${data[i].game19}  ${data[i].game20}  ${Number(data[i].game18) + Number(data[i].game19) + Number(data[i].game20)}</td>` + // total
+                `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td><td>${data[i].game23}</td>` + // cubes
+                `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td><td>${data[i].game24}</td>` + // cones
+                `<td>${data[i].game18}</td><td>${data[i].game19}</td><td>${data[i].game20}</td><td>${Number(data[i].game18) + Number(data[i].game19) + Number(data[i].game20)}</td>` + // total
                 `<td>${data[i].game11}</td>` + // cycle time
                 `<td>${data[i].weight}</td></tr>`; // standard mps
         
@@ -376,9 +376,9 @@ function createHTMLTable(data) {
             `<td></td>` + // teleop score
             `<td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge}</td>` + // teleop charge
             `<td>${Math.round(avg.grid)} (${min.grid} - ${max.grid}</td>` + // grid points
-            `<td>${Math.round(avg.lowCube)}  ${Math.round(avg.midCube)}  ${Math.round(avg.highCube)}  ${avg.cubes}</td>` + // cubes
-            `<td>${Math.round(avg.lowCone)}  ${Math.round(avg.midCone)}  ${Math.round(avg.highCone)}  ${avg.cones}</td>` + // cones
-            `<td>${Math.round(avg.low)}  ${Math.round(avg.mid)}  ${Math.round(avg.high)}  ${Math.round(avg.low + avg.mid + avg.high)}</td>` + // total
+            `<td>${Math.round(avg.lowCube)}</td><td>${Math.round(avg.midCube)}</td><td>${Math.round(avg.highCube)}</td><td>${avg.cubes}</td>` + // cubes
+            `<td>${Math.round(avg.lowCone)}</td><td>${Math.round(avg.midCone)}</td><td>${Math.round(avg.highCone)}</td><td>${avg.cones}</td>` + // cones
+            `<td>${Math.round(avg.low)}</td><td>${Math.round(avg.mid)}</td><td>${Math.round(avg.high)}</td><td>${Math.round(avg.low + avg.mid + avg.high)}</td>` + // total
             `<td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td>` + // cycle time
             `<td>${Math.round(avg.perf_score)} (${min.perf_score} - ${max.perf_score}</td></tr>`; // standard mps
     return html;
@@ -395,7 +395,7 @@ function createHTMLTableWithTeamNum(data) {
     };
 
     for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
+        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${data[i].weight}</td></tr>`;
         avg.auto_charge += Number(data[i].game5);
         avg.teleop_charge += Number(data[i].game10);
         avg.grid += Number(data[i].game25);
@@ -409,7 +409,7 @@ function createHTMLTableWithTeamNum(data) {
     avg.cycle /= data.length;
     avg.perf_score /= data.length;
 
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
+    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${Math.round(avg.perf_score)}</td></tr>`;
     return html;
 }
 
