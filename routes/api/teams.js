@@ -1,5 +1,5 @@
 function teams(req, res, db, season) {
-    if (req.params.event && req.params.type) {
+    if (req.params.event) {
         const stmt = `SELECT team, weight FROM main WHERE event=? AND season=?`;
         const values = [req.params.event, season];
         db.all(stmt, values, (err, dbQueryResult) => {

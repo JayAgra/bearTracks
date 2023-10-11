@@ -546,7 +546,7 @@ app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
     require("./routes/api/pit.js").pit(req, res, db);
 });
 
-app.get("/api/teams/:season/:event/:type", apiCheckAuth, async (req, res) => {
+app.get("/api/teams/:season/:event", apiCheckAuth, async (req, res) => {
     require("./routes/api/teams.js").teams(req, res, db, season);
 });
 
