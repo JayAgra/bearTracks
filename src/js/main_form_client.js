@@ -9,14 +9,12 @@ async function getEventTeams() {
     xhr.onreadystatechange = async () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             allTeams = (xhr.responseText).split(",");
-        } else if (xhr.status === 401) {
+        } else if (xhr.status === 401 || xhr.status === 403) {
             window.location.href = "/login";
         } else if (xhr.status === 400) {
             document.getElementById("viewNoteButton").innerHTML = "bad request";
         } else if (xhr.status === 500) {
             document.getElementById("viewNoteButton").innerHTML = "internal server error";
-        } else if (xhr.status === 403) {
-            document.getElementById("viewNoteButton").innerHTML = "access denied";
         } else {
             console.log("awaiting response")
         }
@@ -27,27 +25,28 @@ async function getEventTeams() {
 
 getEventTeams()
 
-document.getElementById('eventCode').addEventListener('change', async function(){console.log(getEventTeams()); console.log(allTeams)});
+document.getElementById('eventCode').addEventListener('change', async () => {console.log(getEventTeams()); console.log(allTeams)});
 
-document.getElementById('validateTeamInput').addEventListener('input', function(event){
-    console.log("event!")
+const submitButton = document.getElementById("submitButton");
+
+document.getElementById('validateTeamInput').addEventListener('input', () => {
     if (allTeams.includes(document.getElementById('validateTeamInput').value)) {
         document.getElementById('invalidTeamInput').style.display = "none";
-        document.getElementById('submitButton').removeAttribute("disabled");
+        submitButton.removeAttribute("disabled");
     } else {
         document.getElementById('invalidTeamInput').style.display = "inherit";
-        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        submitButton.setAttribute("disabled", "disabled");
     }
 });
 
-document.getElementById('validateLength').addEventListener('input', function(event){
-    console.log("event!")
-    if ((document.getElementById('validateLength').value).length <= 4) {
+document.getElementById('validateLength').addEventListener('input', () => {
+    let currentVal = document.getElementById("validateLength").value;
+    if (currentVal <= 120 && currentVal >= 0) {
         document.getElementById('tooLong').style.display = "none";
-        document.getElementById('submitButton').removeAttribute("disabled");
+        submitButton.removeAttribute("disabled");
     } else {
         document.getElementById('tooLong').style.display = "inherit";
-        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        submitButton.setAttribute("disabled", "disabled");
     }
 });
 //end data validation
@@ -57,7 +56,7 @@ if (window.innerHeight > window.innerWidth) {
     document.getElementById('landscapeReminder').style.display = "inline";
 }
 
-window.addEventListener('resize', function(event){
+window.addEventListener('resize', () => {
     if(window.innerHeight > window.innerWidth){
         document.getElementById('landscapeReminder').style.display = "inline";
     } else {
@@ -76,17 +75,20 @@ function getAllCells() {
     }
     return cells;
 }
+
 var sgCellStatus = [
     0, 0, 0,  0, 0, 0,  0, 0, 0,
     0, 0, 0,  0, 0, 0,  0, 0, 0,
     0, 0, 0,  0, 0, 0,  0, 0, 0
 ];
 const allCells = getAllCells();
+
 function processCellClick(dataNum, numset) {
     sgCellStatus[Number(dataNum)] = numset;
     document.getElementById('griddata').value = sgCellStatus.join('');
     console.log(document.getElementById('griddata').value);
 }
+
 function setGray(that) {
     that.innerText = "";
     if (that.getAttribute("data-coop") == "true") {
@@ -97,18 +99,21 @@ function setGray(that) {
     that.setAttribute("data-state", "0")
     processCellClick(that.getAttribute("data-num"), 0);
 }
+
 function setSingleCube(that) {
     that.style.background = "#a216a2";
     that.innerText = "";
     that.setAttribute("data-state", "1")
     processCellClick(that.getAttribute("data-num"), 1);
 }
+
 function setSingleCone(that) {
     that.style.background = "#ff0";
     that.innerText = "";
     that.setAttribute("data-state", "2")
     processCellClick(that.getAttribute("data-num"), 2);
 }
+
 function setDoubleCube(that) {
     that.style.background = "#a216a2";
     that.style.color = "#ff0";
@@ -116,6 +121,7 @@ function setDoubleCube(that) {
     that.setAttribute("data-state", "3")
     processCellClick(that.getAttribute("data-num"), 3);
 }
+
 function setDoubleCone(that) {
     that.style.background = "#ff0";
     that.style.color = "#a216a2";
@@ -123,8 +129,9 @@ function setDoubleCone(that) {
     that.setAttribute("data-state", "5")
     processCellClick(that.getAttribute("data-num"), 4);
 }
-for (var i = 0; i < allCells.length; i += 1) {
-    allCells[i].addEventListener('click', function (e) {
+
+for (var i = 0; i < allCells.length; i++) {
+    allCells[i].addEventListener('click', () => {
         if (this.getAttribute("data-gp") === "cube") {
             if (this.getAttribute("data-state") === "0") {
                 setSingleCube(this);
