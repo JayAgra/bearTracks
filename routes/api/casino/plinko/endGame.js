@@ -8,7 +8,7 @@ async function endGame(req, res, db, casinoToken) {
             res.status(500).send("" + 0x1f41);
             return;
         } else {
-            if (crypto.createHash('sha1').update(casinoToken + req.user.id + dbQueryResult.score).digest('hex') == req.params.token && req.params.pts <= 75) {
+            if (crypto.createHash('sha1').update(casinoToken + req.user.id + dbQueryResult.score).digest('hex') == req.params.token && req.params.pts <= 10) {
                 let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
                 let pointValues = [req.params.pts, req.user.id];
                 db.run(pointStmt, pointValues, (err) => {
