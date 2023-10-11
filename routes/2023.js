@@ -68,7 +68,7 @@ function emojiValue(value) {
 // overall is STRING as overall thoughts about the team
 
 // UNUSED VALUES
-// game21 and game22 is INT (0)
+// game22 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
 
 // game 13 will be low cones
