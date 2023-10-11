@@ -71,7 +71,6 @@ function emojiValue(value) {
 // game21 and game22 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
 
-// game 12 will be low cubes
 // game 13 will be low cones
 // game 14 will be mid cubes
 // game 15 will be mid cones
@@ -80,6 +79,7 @@ function emojiValue(value) {
 // game 18 will be low pcs
 // game 19 will be mid pcs
 // game 20 will be high pcs
+// game 21 will be low cubes
 // game 23 will be cubes pcs
 // game 24 will be cones pcs
 // game 25 will be grid pts
@@ -109,7 +109,7 @@ function createHTMLExport(dbQueryResult) {
             `<b>TELEOP: <br>Score B/M/T: </b>${emojiValue(dbQueryResult.game6)}${emojiValue(dbQueryResult.game7)}${emojiValue(dbQueryResult.game8)}<br><b>Charging: </b>${dbQueryResult.game10} pts<br><br>` +
             `<b>Other: <br>Alliance COOPERTITION: </b>${emojiValue(dbQueryResult.game9)}<br><b>Cycle Time: </b>${dbQueryResult.game11} seconds<br><b>Defense: </b>${dbQueryResult.defend}<br><b>Driving: </b>${dbQueryResult.driving}<br><b>Overall: </b>${dbQueryResult.overall}<br>` +
             `<b>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>` +
-            `<b>low/mid/high cubes - cones: </b>${dbQueryResult.game12}/${dbQueryResult.game14}/${dbQueryResult.game16} - ${dbQueryResult.game13}/${dbQueryResult.game15}/${dbQueryResult.game17}<br>` +
+            `<b>low/mid/high cubes - cones: </b>${dbQueryResult.game21}/${dbQueryResult.game14}/${dbQueryResult.game16} - ${dbQueryResult.game13}/${dbQueryResult.game15}/${dbQueryResult.game17}<br>` +
             `<b>low/mid/high pcs: </b>${dbQueryResult.game18}/${dbQueryResult.game19}/${dbQueryResult.game20}<br>` +
             `<b>cubes/cones: </b>${dbQueryResult.game23}/${dbQueryResult.game24}<br>` +
             `<b>total grid: </b>${dbQueryResult.game25}pts` +
@@ -262,7 +262,7 @@ function weightScores(submissionID, db) {
 
             // assume reasonable max is 65
             score = score + (gridWt / 1.6875);
-            const updateSubmissionStmt = "UPDATE main SET weight=?, analysis=?, game12=?, game13=?, game14=?, game15=?, game16=?, game17=?, game18=?, game19=?, game20=?, game23=?, game24=?, game25=? WHERE id=?";
+            const updateSubmissionStmt = "UPDATE main SET weight=?, analysis=?, game21=?, game13=?, game14=?, game15=?, game16=?, game17=?, game18=?, game19=?, game20=?, game23=?, game24=?, game25=? WHERE id=?";
             const updateSubmissionValues = [score.toFixed(2), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, gridWt, submissionID];
             db.run(updateSubmissionStmt, updateSubmissionValues, (err) => {
                 if (err) {
