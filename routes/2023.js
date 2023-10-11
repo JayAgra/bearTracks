@@ -276,7 +276,7 @@ function weightScores(submissionID, db) {
             // 12 - top row cone
             const mpsScores = [score, score + 2 * gridWt, score * (cubes / 15), score * (cones / 22), score * (low / 9), score * (mid / 9), score * (high / 9), score * (lowCube / 9), score * (lowCone / 9), score * (midCube / 9), score * (midCone / 9), score * (highCube / 9), score * (highCone / 9)];
             const updateSubmissionStmt = "UPDATE main SET weight=?, analysis=?, game21=?, game13=?, game14=?, game15=?, game16=?, game17=?, game18=?, game19=?, game20=?, game23=?, game24=?, game25=? WHERE id=?";
-            const updateSubmissionValues = [score.toFixed(2), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, mpsScores.join(","), submissionID];
+            const updateSubmissionValues = [mpsScores.join(","), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, gridWt, submissionID];
             db.run(updateSubmissionStmt, updateSubmissionValues, (err) => {
                 if (err) {
                     console.log("Error updating DB!");
