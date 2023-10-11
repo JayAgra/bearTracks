@@ -171,31 +171,31 @@ function weightScores(submissionID, db) {
             // process content of grid
             result.game12.split("").forEach((item, index) => {
                 if (index <= 8 && item != "0") {
-                    // low row
-                    low++;
+                    // high row
+                    high++;
                     switch (item) {
                         case "1": {
                             cubes++;
-                            lowCube++;
-                            gridWt += 2;
+                            highCube++;
+                            gridWt += 5;
                             break;
                         }
                         case "2": {
                             cones++;
-                            lowCone++;
-                            gridWt += 2;
+                            highCone++;
+                            gridWt += 5;
                             break;
                         }
                         case "3": {
                             cubes += 2;
-                            lowCube += 2;
-                            if (fullGrid) gridWt += 5;
+                            highCube += 2;
+                            if (fullGrid) gridWt += 8;
                             break;
                         }
                         case "4": {
                             cones += 2;
-                            lowCone += 2;
-                            if (fullGrid) gridWt += 5;
+                            highCone += 2;
+                            if (fullGrid) gridWt += 8;
                             break;
                         }
                     }
@@ -229,31 +229,31 @@ function weightScores(submissionID, db) {
                         }
                     }
                 } else if (index <= 26 && item != "0") {
-                    // high row
-                    high++;
+                    // low row
+                    low++;
                     switch (item) {
                         case "1": {
                             cubes++;
-                            highCube++;
-                            gridWt += 5;
+                            lowCube++;
+                            gridWt += 2;
                             break;
                         }
                         case "2": {
                             cones++;
-                            highCone++;
-                            gridWt += 5;
+                            lowCone++;
+                            gridWt += 2;
                             break;
                         }
                         case "3": {
                             cubes += 2;
-                            highCube += 2;
-                            if (fullGrid) gridWt += 8;
+                            lowCube += 2;
+                            if (fullGrid) gridWt += 5;
                             break;
                         }
                         case "4": {
                             cones += 2;
-                            highCone += 2;
-                            if (fullGrid) gridWt += 8;
+                            lowCone += 2;
+                            if (fullGrid) gridWt += 5;
                             break;
                         }
                     }
