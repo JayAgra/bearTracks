@@ -37,7 +37,7 @@ async function getTeamRanks() {
             document.getElementById("preInsert").insertAdjacentHTML("afterend", htmltable)
             document.getElementById("search").style.display = "none";
             document.getElementById("results").style.display = "flex";
-            document.getElementById("eventCodeDisplay").innerText = `Top teams at ${eventCode}<br>${document.getElementById("weightType").selectedOptions[0].innerText}`;
+            document.getElementById("eventCodeDisplay").innerHTML = `Top teams at ${eventCode}<br>${document.getElementById("weightType").selectedOptions[0].innerText}`;
             document.getElementById("viewTeamsButton").innerText = "View";
         } else if (xhr.status === 401 || xhr.status === 403) {
             window.location.href = "/login";
