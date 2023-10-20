@@ -171,8 +171,8 @@ textarea:focus {
     outline: none;
     border-bottom: 1px solid var(--inputColorSelected);
 }
-input[type=checkbox]:checked,
-input[type=radio]:checked {
+input[type=checkbox],
+input[type=radio] {
     accent-color: var(---checkAccent) !important;
 }
 code {
