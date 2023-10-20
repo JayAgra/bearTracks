@@ -289,6 +289,7 @@ function weightScores(submissionID, db) {
 }
 
 function createHTMLTable(data) {
+    if (data.length === 0) return "";
     var html = ``;
     var avg = {
         "auto_charge": 0,
@@ -391,6 +392,7 @@ function createHTMLTable(data) {
 }
 
 function createHTMLTableWithTeamNum(data) {
+    if (data.length === 0) return "";
     var html = ``;
     var avg = {
         "auto_charge": 0,
