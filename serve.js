@@ -275,6 +275,10 @@ async function forwardFRCAPIdata(url, req, res) {
     });
 }
 
+function selectSeason(req) {
+    return req.params.season == "current" ? season : req.params.season;
+}
+
 // before server creation
 console.log("Preparing...");
 
@@ -349,126 +353,126 @@ app.get("/", checkAuth, async (req, res) => {
 // main scouting form
 app.get("/main", checkAuth, (req, res) => {
     res.sendFile("src/main.html", { root: __dirname });
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=23328000");
 });
 
 // pit form
 app.get("/pit", checkAuth, (req, res) => {
     res.sendFile("src/pit.html", { root: __dirname });
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=23328000");
 });
 
 // webmanifest for PWAs
 app.get("/app.webmanifest", (req, res) => {
     res.sendFile("./src/app.webmanifest", { root: __dirname });
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=23328000");
 });
 
 // CSS (should be unused in favor of minified css)
 app.get("/float.css", (req, res) => {
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("./src/float.css", { root: __dirname });
 });
 
 // minified css
 app.get("/float.min.css", (req, res) => {
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("./src/float.min.css", { root: __dirname });
 });
 
 // font file
 app.get("/fonts/Raleway-300.ttf", (req, res) => {
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=233280000");
     res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
 });
 
 // font file
 app.get("/fonts/Raleway-500.ttf", (req, res) => {
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=233280000");
     res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
 });
 
 // JS for form (should be unused in favor of minified js)
 app.get("/form.js", (req, res) => {
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=31104000");
     res.sendFile("./src/form.js", { root: __dirname });
 });
 
 // minified JS for form         
 app.get("/form.min.js", (req, res) => {
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=15552000");
     res.sendFile("./src/js/form.min.js", { root: __dirname });
 });
 
 // favicon
 app.get("/favicon.ico", (req, res) => { 
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=311040000");
     res.sendFile("src/favicon.ico", { root: __dirname });
 });
 
 // scout rank page
 app.get("/scouts", (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/scouts.html", { root: __dirname });
 });
 
 // play blackjack
-app.get("/blackjack", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
-    res.sendFile("src/blackjack.html", { root: __dirname });
-});
+// app.get("/blackjack", checkAuth, (req, res) => {
+//     res.set("Cache-control", "public, max-age=259200");
+//     res.sendFile("src/blackjack.html", { root: __dirname });
+// });
 
 // spin wheel
 app.get("/spin", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/spin.html", { root: __dirname });
 });
 
 // list of gambling opportunities
 app.get("/points", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=7776000");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/points.html", { root: __dirname });
 });
 
 // teams left to pit scout (data with XHR request)
 app.get("/topitscout", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/topitscout.html", { root: __dirname });
 });
 
 // notes feature
 app.get("/notes", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/notes.html", { root: __dirname });
 });
 
 // per-scout profile
 app.get("/profile", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/profile.html", { root: __dirname });
 });
 
 // get images from pit scouting. images are located in scouting-app/images
 app.get("/pitimages", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/pitimg.html", { root: __dirname });
 });
 
 // page with fake blue banners for future use
 app.get("/awards", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/awards.html", { root: __dirname });
 });
 
 // plinko game
 app.get("/plinko", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=259200");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/plinko.html", { root: __dirname });
 });
 
 // match list
 app.get("/matches", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=2592000");
+    res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/matches.html", { root: __dirname });
 });
 
@@ -542,15 +546,11 @@ app.get("/api/data/:season/:event/:team", apiCheckAuth, async (req, res) => {
 });
 
 app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
-    require("./routes/api/pit.js").pit(req, res, db);
-});
-
-app.get("/api/teams/current/:event", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams.js").teams(req, res, db, req.params.season);
+    require("./routes/api/pit.js").pit(req, res, req.params.season);
 });
 
 app.get("/api/teams/:season/:event", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams.js").teams(req, res, db, season);
+    require("./routes/api/teams.js").teams(req, res, db, selectSeason(req));
 });
 
 app.get("/api/scouts", apiCheckAuth, async (req, res) => {
@@ -617,11 +617,7 @@ app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, checkGamble, asy
 
 // team, weight pair from db
 app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req, res) => {
-    require("./routes/api/events/teams.js").teams(req, res, frcapi, req.params.season);
-});
-
-app.get("/api/events/current/:event/teams", apiCheckAuth, async (req, res) => {
-    require("./routes/api/events/teams.js").teams(req, res, frcapi, season);
+    require("./routes/api/events/teams.js").teams(req, res, frcapi, selectSeason(req));
 });
 
 // frc api teams data
@@ -630,12 +626,8 @@ app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req, res) => {
 });
 
 // pit scouted team list
-app.get("/api/events/current/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
-    require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, season);
-});
-
 app.get("/api/events/:season/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
-    require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, req.params.season);
+    require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, selectSeason(req));
 });
 
 // notes api
@@ -657,37 +649,21 @@ app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req, res) => {
 });
 
 // get weight for teams
-app.get("/api/teams/event/current/:event/:team/weight", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, season);
-});
-
 app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, req.params.season);
-});
-
-app.get("/api/teams/season/current/:team/weight", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, season);
+    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, selectSeason(req));
 });
 
 app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, req.params.season);
+    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, selectSeason(req));
 });
 
 // get all data for teams
-app.get("/api/teams/event/current/:event/:team/all", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/eventAll.js").teamsByEventAll(req, res, db, season);
-});
-
 app.get("/api/teams/event/:season/:event/:team/all", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/eventAll.js").teamsByEventAll(req, res, db, req.params.season);
-});
-
-app.get("/api/teams/season/current/:team/all", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/seasonAll.js").teamsBySeasonAll(req, res, db, season);
+    require("./routes/api/teams/eventAll.js").teamsByEventAll(req, res, db, selectSeason(req));
 });
 
 app.get("/api/teams/season/:season/:team/all", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/seasonAll.js").teamsBySeasonAll(req, res, db, req.params.season);
+    require("./routes/api/teams/seasonAll.js").teamsBySeasonAll(req, res, db, selectSeason(req));
 });
 
 // auth functions
