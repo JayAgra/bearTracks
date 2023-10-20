@@ -89,6 +89,7 @@ select {
     border: none;
     color: var(--textColor);
     border-bottom: 2px solid var(--defaultInputColor);
+    font-size: 16px;
 }
 input[type='text'] {
     border: none;
@@ -159,6 +160,7 @@ select,
 textarea {
     -webkit-border-radius: 0;
     border-radius: 0;
+    font-size: 16px;
 }
 textarea {
     border: none;
