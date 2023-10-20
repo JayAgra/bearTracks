@@ -8,55 +8,46 @@ body {
     --gameFlairColor: #68c3e2;
     --cancelColor: #e90202;
     --returnColor: #ffb600;
+    --checkAccent: var(--gameFlairColor);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 @media (prefers-color-scheme: light) {
     body {
-        --fieldsetColor: rgba(0,0,0,0);
         --bodyColor: #fff;
         --textColor: #000;
         --defaultInputColor: #000;
-        --transparency: rgba(0,0,0,0);
         --inputColorSelected: #ffb600;
         --gameFlairColor: #68c3e2;
-        --cancelColor: #e90202;
-        --returnColor: #ffb600;
+        --checkAccent: var(--gameFlairColor);
     }
 }
 body.dark-mode {
-    --fieldsetColor: rgba(0,0,0,0);
     --bodyColor: #121212;
     --textColor: #fff;
-    --transparency: rgba(0,0,0,0);
     --defaultInputColor: #fff;
     --inputColorSelected: #ffb600;
     --gameFlairColor: #68c3e2;
-    --cancelColor: #e90202;
-    --returnColor: #ffb600;
+    --checkAccent: var(--gameFlairColor);
 }
 body.light-mode {
-    --fieldsetColor: rgba(0,0,0,0);
     --bodyColor: #fff;
     --textColor: #000;
     --defaultInputColor: #000;
-    --transparency: rgba(0,0,0,0);
     --inputColorSelected: #ffb600;
     --gameFlairColor: #68c3e2;
-    --cancelColor: #e90202;
-    --returnColor: #ffb600;
+    --checkAccent: var(--gameFlairColor);
 }
 body.gruvbox {
-    --fieldsetColor: rgba(0,0,0,0);
     --bodyColor: #282828;
     --textColor: #ebdbb2;
-    --defaultInputColor: #000;
-    --transparency: rgba(0,0,0,0);
+    --defaultInputColor: #504945;
     --inputColorSelected: #b8bb26;
     --gameFlairColor: #d3869b;
-    --cancelColor: #fb4934;
+    --cancelColor: #cc241d;
     --returnColor: #83a598;
+    --checkAccent: #fe8019;
 }
 @font-face {
     font-family: 'raleway-300';
@@ -182,7 +173,7 @@ textarea:focus {
 }
 input[type=checkbox]:checked,
 input[type=radio]:checked {
-    accent-color: var(--gameFlairColor) !important;
+    accent-color: var(---checkAccent) !important;
 }
 code {
     font-family:'SF Mono', SFMono-Regular, ui-monospace, Menlo, courier new, monospace;
