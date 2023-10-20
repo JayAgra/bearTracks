@@ -8,7 +8,7 @@ body {
     --gameFlairColor: #68c3e2;
     --cancelColor: #e90202;
     --returnColor: #ffb600;
-    --checkAccent: var(--gameFlairColor);
+    --checkAccent: #68c3e2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +20,7 @@ body {
         --defaultInputColor: #000;
         --inputColorSelected: #ffb600;
         --gameFlairColor: #68c3e2;
-        --checkAccent: var(--gameFlairColor);
+        --checkAccent: #68c3e2;
     }
 }
 body.dark-mode {
@@ -29,7 +29,7 @@ body.dark-mode {
     --defaultInputColor: #fff;
     --inputColorSelected: #ffb600;
     --gameFlairColor: #68c3e2;
-    --checkAccent: var(--gameFlairColor);
+    --checkAccent: #68c3e2;
 }
 body.light-mode {
     --bodyColor: #fff;
@@ -37,7 +37,7 @@ body.light-mode {
     --defaultInputColor: #000;
     --inputColorSelected: #ffb600;
     --gameFlairColor: #68c3e2;
-    --checkAccent: var(--gameFlairColor);
+    --checkAccent: #68c3e2;
 }
 body.gruvbox {
     --bodyColor: #282828;
@@ -148,6 +148,7 @@ label {
     -moz-transform: scale(2);
     -ms-transform: scale(2);
     transform: scale(2);
+    accent-color: var(---checkAccent) !important;
 }
 .smallerInput {
     min-width: 45% !important;
@@ -170,10 +171,6 @@ textarea {
 textarea:focus {
     outline: none;
     border-bottom: 1px solid var(--inputColorSelected);
-}
-input[type=checkbox],
-input[type=radio] {
-    accent-color: var(---checkAccent) !important;
 }
 code {
     font-family:'SF Mono', SFMono-Regular, ui-monospace, Menlo, courier new, monospace;
