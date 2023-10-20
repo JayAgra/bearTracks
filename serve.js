@@ -75,7 +75,6 @@ app.engine("html", ejs.renderFile);
 app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
 app.use("/images", express.static("images"));
-app.use("/public", express.static("src/public"));
 // all cards by Lydia Honerkamp (https://github.com/1yd1a)
 app.use("/assets", express.static("src/assets", 
     {
@@ -546,6 +545,10 @@ app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
     require("./routes/api/pit.js").pit(req, res, db);
 });
 
+app.get("/api/teams/current/:event", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams.js").teams(req, res, db, req.params.season);
+});
+
 app.get("/api/teams/:season/:event", apiCheckAuth, async (req, res) => {
     require("./routes/api/teams.js").teams(req, res, db, season);
 });
@@ -611,24 +614,27 @@ app.get("/api/casino/plinko/startGame", apiCheckAuth, checkGamble, async (req, r
 app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/plinko/endGame.js").endGame(req, res, db, casinoToken);
 });
-// end plinko
 
-app.get("/api/events/:event/teams", apiCheckAuth, async (req, res) => {
+// team, weight pair from db
+app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req, res) => {
+    require("./routes/api/events/teams.js").teams(req, res, frcapi, req.params.season);
+});
+
+app.get("/api/events/current/:event/teams", apiCheckAuth, async (req, res) => {
     require("./routes/api/events/teams.js").teams(req, res, frcapi, season);
 });
 
+// frc api teams data
 app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req, res) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${req.params.event}`, req, res);
 });
 
-app.get("/api/events/current/allData", apiCheckAuth, async (req, res) => {
-    forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${currentComp}`, req, res);
-});
-
+// pit scouted team list
 app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
     require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, season);
 });
 
+// notes api
 app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req, res) => {
     require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
 });
@@ -641,8 +647,43 @@ app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req, res) =
     require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
 });
 
+// frc api's data on a team
 app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req, res) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
+});
+
+// get weight for teams
+app.get("/api/teams/event/current/:event/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, season);
+});
+
+app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, req.params.season);
+});
+
+app.get("/api/teams/season/current/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, season);
+});
+
+app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, req.params.season);
+});
+
+// get all data for teams
+app.get("/api/teams/event/current/:event/:team/all", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/eventAll.js").teamsByEventAll(req, res, db, season);
+});
+
+app.get("/api/teams/event/:season/:event/:team/all", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/eventAll.js").teamsByEventAll(req, res, db, req.params.season);
+});
+
+app.get("/api/teams/season/current/:team/all", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/seasonAll.js").teamsBySeasonAll(req, res, db, season);
+});
+
+app.get("/api/teams/season/:season/:team/all", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/seasonAll.js").teamsBySeasonAll(req, res, db, req.params.season);
 });
 
 // auth functions

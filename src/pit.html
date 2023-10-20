@@ -1,106 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Pit Scouting - 766 Scouting</title>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="language" content="English">
-    <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scouting">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="stylesheet" href="css/float.min.css" type="text/css">
-    <link rel="manifest" href="/app.webmanifest" />
-    <link rel="apple-touch-startup-image" href="public/launch.png">
-    <script src="js/form.min.js"></script>
-</head>
-
-<body class="dark-mode">
-    <script>
-        themeHandle()
-    </script>
-    <form action="/submitPit" target="_self" method="POST" enctype="multipart/form-data">
-        <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
-        <input type="text" value="pit" name="formType" hidden>
-        <br>
-        <h2 class="gameflair1">General Info</h2>
-        <small><a href="topitscout" style="all: unset;">Teams to scout</a></small><br><br>
-        <fieldset>
-            <label>Event Code</label><br>
-            <select name="event" id="eventCode">
-                    <option value="CADA">CADA - Sacramento Regional</option>
-                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
-                    <option value="WOOD" selected>WOOD - CalGames</option>
-                </select>
-        </fieldset>
-        <fieldset>
-            <label>Team Number <span id="invalidTeamInput" style="color: red; display: none;">Not in comp!</span><br></label>
-            <input type="tel" name="team" id="validateTeamInput" required>
-        </fieldset>
-        <h2 class="gameflair1">Pit Scouting</h2>
-        <h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
-        <fieldset>
-            <label>Drive Type<br></label>
-            <select name="drivetype">
-                    <option value="westcoast">Westcoast</option>
-                    <option value="swerve" selected>Swerve (Like Ours)</option>
-                    <option value="other">Other (Explain in overall)</option>
-                </select>
-        </fieldset>
-        <fieldset>
-            <label>Experience<br></label>
-            <input type="text" name="driveTeam" class="smallerInput"> Days of drive team work<br>
-            <input placeholder="0 or 1" type="text" name="attended" class="smallerInput"> Attended events
-        </fieldset>
-        <input value="0" type="number" name="game1" hidden>
-        <input value="0" type="number" name="game2" hidden>
-        <input value="0" type="number" name="game3" hidden>
-        <input value="0" type="number" name="game4" hidden>
-        <input value="0" type="number" name="game5" hidden>
-        <input value="0" type="number" name="game6" hidden>
-        <input value="0" type="number" name="game7" hidden>
-        <input value="0" type="number" name="game8" hidden>
-        <input value="0" type="number" name="game9" hidden>
-        <input value="0" type="number" name="game10" hidden>
-        <input value="0" type="number" name="game11" hidden>
-        <input value="0" type="number" name="game12" hidden>
-        <input value="0" type="number" name="game13" hidden>
-        <input value="0" type="number" name="game14" hidden>
-        <input value="0" type="number" name="game15" hidden>
-        <input value="0" type="number" name="game16" hidden>
-        <input value="0" type="number" name="game17" hidden>
-        <input value="0" type="number" name="game18" hidden>
-        <input value="0" type="number" name="game19" hidden>
-        <input value="0" type="number" name="game20" hidden>
-        <fieldset>
-            <label>Overall assessment<br></label>
-            <textarea rows="4" cols="38" name="overall"></textarea>
-        </fieldset>
-        <fieldset>
-            <label>Images of ROBOT</label><br>
-            <label>Image 1 - <strong>FRONT</strong></label>
-            <input type="file" name="image1" accept="image/png, image/jpeg" required><br>
-            <label>Image 2 - <strong>BACK</strong></label>
-            <input type="file" name="image2" accept="image/png, image/jpeg" required><br>
-            <label>Image 3 - <strong>SIDE</strong></label>
-            <input type="file" name="image3" accept="image/png, image/jpeg" required><br>
-            <label>Image 4 - <strong>BOTTOM</strong></label>
-            <input type="file" name="image4" accept="image/png, image/jpeg" required><br>
-            <label>Image 5 - <strong>SOMETHING ELSE</strong></label>
-            <input type="file" name="image5" accept="image/png, image/jpeg" required>
-        </fieldset>
-        <br>
-        <p style="text-align:center">
-            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;">Submit</button><br>
-            <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem; border-style: solid; border-color: #E90202; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-        </p>
-    </form>
-    <br><br>
-    <script src="js/pitscouting_client.min.js" type="text/javascript"></script>
-</body>
-
+    <head>
+        <title>Pit Scouting - 766 Scouting</title>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="language" content="English">
+        <meta name="robots" content="index, follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Scouting">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="apple-touch-startup-image" href="public/launch.png">
+        <script src="js/form.min.js"></script>
+    </head>
+    <body class="dark-mode">
+        <script>
+            themeHandle()
+        </script>
+        <form action="/submitPit" target="_self" method="POST" enctype="multipart/form-data">
+            <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
+            <input type="text" value="pit" name="formType" hidden>
+            <br>
+            <h2 class="gameflair1">General Info</h2>
+            <small><a href="topitscout" style="all: unset;">Teams to scout</a></small><br><br>
+            <fieldset>
+                <label>Event Code</label><br>
+                <select name="event" id="eventCode">
+                        <option value="CADA">CADA - Sacramento Regional</option>
+                        <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                        <option value="WOOD">WOOD - CalGames</option>
+                        <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                    </select>
+            </fieldset>
+            <fieldset>
+                <label>Team Number <span id="invalidTeamInput" style="color: red; display: none;">Not in comp!</span><br></label>
+                <input type="tel" name="team" id="validateTeamInput" required>
+            </fieldset>
+            <h2 class="gameflair1">Pit Scouting</h2>
+            <h4 style="color: #a9a9a9;">&emsp;If you don't know the answer, just ask the team themselves</h4>
+            <fieldset>
+                <label>Drive Type<br></label>
+                <select name="drivetype">
+                        <option value="westcoast">Westcoast</option>
+                        <option value="swerve" selected>Swerve (Like Ours)</option>
+                        <option value="other">Other (Explain in overall)</option>
+                    </select>
+            </fieldset>
+            <fieldset>
+                <label>Experience<br></label>
+                <input type="text" name="driveTeam" class="smallerInput"> Days of drive team work<br>
+                <input placeholder="0 or 1" type="text" name="attended" class="smallerInput"> Attended events
+            </fieldset>
+            <input value="0" type="number" name="game1" hidden>
+            <input value="0" type="number" name="game2" hidden>
+            <input value="0" type="number" name="game3" hidden>
+            <input value="0" type="number" name="game4" hidden>
+            <input value="0" type="number" name="game5" hidden>
+            <input value="0" type="number" name="game6" hidden>
+            <input value="0" type="number" name="game7" hidden>
+            <input value="0" type="number" name="game8" hidden>
+            <input value="0" type="number" name="game9" hidden>
+            <input value="0" type="number" name="game10" hidden>
+            <input value="0" type="number" name="game11" hidden>
+            <input value="0" type="number" name="game12" hidden>
+            <input value="0" type="number" name="game13" hidden>
+            <input value="0" type="number" name="game14" hidden>
+            <input value="0" type="number" name="game15" hidden>
+            <input value="0" type="number" name="game16" hidden>
+            <input value="0" type="number" name="game17" hidden>
+            <input value="0" type="number" name="game18" hidden>
+            <input value="0" type="number" name="game19" hidden>
+            <input value="0" type="number" name="game20" hidden>
+            <fieldset>
+                <label>Overall assessment<br></label>
+                <textarea rows="4" cols="38" name="overall"></textarea>
+            </fieldset>
+            <fieldset>
+                <label>Images of ROBOT</label><br>
+                <label>Image 1 - <strong>FRONT</strong></label>
+                <input type="file" name="image1" accept="image/png, image/jpeg" required><br>
+                <label>Image 2 - <strong>BACK</strong></label>
+                <input type="file" name="image2" accept="image/png, image/jpeg" required><br>
+                <label>Image 3 - <strong>SIDE</strong></label>
+                <input type="file" name="image3" accept="image/png, image/jpeg" required><br>
+                <label>Image 4 - <strong>BOTTOM</strong></label>
+                <input type="file" name="image4" accept="image/png, image/jpeg" required><br>
+                <label>Image 5 - <strong>SOMETHING ELSE</strong></label>
+                <input type="file" name="image5" accept="image/png, image/jpeg" required>
+            </fieldset>
+            <br>
+            <p style="text-align:center">
+                <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;">Submit</button><br>
+                <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem; border-style: solid; border-color: #E90202; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            </p>
+        </form>
+        <br><br>
+        <script src="js/pitscouting_client.min.js" type="text/javascript"></script>
+    </body>
 </html>
