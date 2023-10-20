@@ -46,7 +46,7 @@ body.gruvbox {
     --defaultInputColor: #000;
     --transparency: rgba(0,0,0,0);
     --inputColorSelected: #b8bb26;
-    --gameFlairColor: #8ec07c;
+    --gameFlairColor: #d3869b;
 }
 @font-face {
     font-family: 'raleway-300';
