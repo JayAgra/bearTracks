@@ -68,9 +68,7 @@ body {
     color: var(--textColor);
 }
 fieldset {
-    border: var(--fieldsetColor);
-    border-width: 0.15rem;
-    border-style: solid;
+    border: 0.15rem solid var(--fieldsetColor);
     border-radius: 0.5rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
@@ -89,27 +87,29 @@ select {
     border: none;
     color: var(--textColor);
     border-bottom: 2px solid var(--defaultInputColor);
+    font-size: 16px;
+    margin-top: 2vh;
 }
 input[type='text'] {
     border: none;
     background-color: var(--transparency);
     color: var(--textColor);
     border-bottom: 1px solid var(--defaultInputColor);
-    width: 95%;
+    width: 80%;
 }
 input[type='number'] {
     border: none;
     background-color: var(--transparency);
     color: var(--textColor);
     border-bottom: 1px solid var(--defaultInputColor);
-    width: 95%;
+    width: 80%;
 }
 input[type='tel'] {
     border: none;
     background-color: var(--transparency);
     color: var(--textColor);
     border-bottom: 1px solid var(--defaultInputColor);
-    width: 95%;
+    width: 80%;
 }
 input[type='number']:focus {
     background-color: var(--transparency);
@@ -151,14 +151,18 @@ label {
     accent-color: var(---checkAccent) !important;
 }
 .smallerInput {
-    min-width: 45% !important;
-    max-width: 65% !important;
+    width: 40% !important;
+}
+.lowerSelect {
+    position: relative;
+    top: 5px;
 }
 input,
 select,
 textarea {
     -webkit-border-radius: 0;
     border-radius: 0;
+    font-size: 16px;
 }
 textarea {
     border: none;
@@ -166,7 +170,7 @@ textarea {
     background-color: var(--transparency);
     color: var(--textColor);
     resize: none;
-    width: 85vw;
+    width: 80%;
 }
 textarea:focus {
     outline: none;
@@ -198,4 +202,7 @@ label {
     color: #000;
     background-color: var(--gameFlairColor);
     border-color: var(--gameFlairColor);
+}
+form {
+    width: 95%;
 }

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Match Scouting - 766 Scouting</title>
         <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Match Scouting - 766 Scouting</title>
+        
         <meta name="language" content="English">
-        <meta name="robots" content="index, follow">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="Scouting">
@@ -39,11 +39,11 @@
             <fieldset>
                 <label>Match Number<br></label>
                 <input type="tel" name="match" class="smallerInput" required>
-                <select name="level">
+                <select name="level" class="lowerSelect">
                     <option value="Practice">Practice</option>
                     <option value="Qualification" selected>Qual</option>
-                    <option value="Upper">Upper Bracket</option>
-                    <option value="Lower">Lower Bracket</option>
+                    <option value="Upper">Upper</option>
+                    <option value="Lower">Lower</option>
                 </select>
             </fieldset>
 
@@ -133,20 +133,20 @@
             <br>
             <h2 class="gameflair1">Post Game</h2>
             <fieldset>
-                <label>Estimate the cycle time of the robot <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br>
+                <label>Cycle time <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br>
                 <input type="tel" name="game11" class="smallerInput" id="validateLength" required> seconds
             </fieldset>
             <fieldset>
-                <label>Did the robot play defense? If so, what did they do, and did they get fouls?<br><br></label>
-                <textarea rows="2" cols="35" name="defend"></textarea>
+                <label>Did the robot play defense? Explain.<br><br></label>
+                <textarea rows="2" cols="30" name="defend"></textarea>
             </fieldset>
             <fieldset>
-                <label>Thoughts about driving and performance during teleop phase<br><br></label>
-                <textarea rows="2" cols="35" name="driving"></textarea>
+                <label>Thoughts about driving<br><br></label>
+                <textarea rows="2" cols="30" name="driving"></textarea>
             </fieldset>
             <fieldset>
                 <label>Overall assessment<br><br></label>
-                <textarea rows="4" cols="35" name="overall"></textarea>
+                <textarea rows="4" cols="30" name="overall"></textarea>
             </fieldset>
             <br>
             <p style="text-align:center">
