@@ -22,13 +22,13 @@
     <body>
         <div id="dummy" class="dummydiv">
             <h1 id="title" style="font-family: 'raleway-300'">766 Casino<br><span class="gametitle">plinko</span></h1>
-            <button id="playBtn" type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="startGame()">Play (15 pts)</button><button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            <button id="playBtn" type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="startGame()">Play (15 pts)</button><button id="backBtn" type="button" style="color: var(--gameFlairColor); background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
         </div>
         <div id="gameover" class="gameover" style="display: none !important;">
             <h1 style="text-align: center;">game over</h1>
             <h4 style="text-align: center;" id="pts"></h4>
             <small id="wait">points being added...</small>
-            <button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+            <button id="backBtn" type="button" style="color: var(--gameFlairColor); background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
         </div>
     </body>
 </html>
