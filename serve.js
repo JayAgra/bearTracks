@@ -630,8 +630,12 @@ app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req, res) => {
 });
 
 // pit scouted team list
-app.get("/api/events/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
+app.get("/api/events/current/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
     require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, season);
+});
+
+app.get("/api/events/:season/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
+    require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, req.params.season);
 });
 
 // notes api
