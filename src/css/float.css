@@ -6,6 +6,8 @@ body {
     --defaultInputColor: #fff;
     --inputColorSelected: #ffb600;
     --gameFlairColor: #68c3e2;
+    --cancelColor: #e90202;
+    --returnColor: #ffb600;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,6 +21,8 @@ body {
         --transparency: rgba(0,0,0,0);
         --inputColorSelected: #ffb600;
         --gameFlairColor: #68c3e2;
+        --cancelColor: #e90202;
+        --returnColor: #ffb600;
     }
 }
 body.dark-mode {
@@ -29,6 +33,8 @@ body.dark-mode {
     --defaultInputColor: #fff;
     --inputColorSelected: #ffb600;
     --gameFlairColor: #68c3e2;
+    --cancelColor: #e90202;
+    --returnColor: #ffb600;
 }
 body.light-mode {
     --fieldsetColor: rgba(0,0,0,0);
@@ -38,6 +44,8 @@ body.light-mode {
     --transparency: rgba(0,0,0,0);
     --inputColorSelected: #ffb600;
     --gameFlairColor: #68c3e2;
+    --cancelColor: #e90202;
+    --returnColor: #ffb600;
 }
 body.gruvbox {
     --fieldsetColor: rgba(0,0,0,0);
@@ -47,6 +55,8 @@ body.gruvbox {
     --transparency: rgba(0,0,0,0);
     --inputColorSelected: #b8bb26;
     --gameFlairColor: #d3869b;
+    --cancelColor: #fb4934;
+    --returnColor: #83a598;
 }
 @font-face {
     font-family: 'raleway-300';
@@ -179,4 +189,25 @@ code {
 }
 label {
     font-weight: 700;
+}
+.uiButton {
+    border-radius: 0.5rem;
+    border-style: solid;
+    border-width: 0.875rem;
+    margin-top: 1rem;
+}
+.cancelButton {
+    color: #fff;
+    background-color: var(--cancelColor);
+    border-color: var(--cancelColor);
+}
+.returnButton {
+    color: #000;
+    background-color: var(--returnColor);
+    border-color: var(--returnColor);
+}
+.actionButton {
+    color: #000;
+    background-color: var(--gameFlairColor);
+    border-color: var(--gameFlairColor);
 }

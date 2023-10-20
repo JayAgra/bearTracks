@@ -49,8 +49,8 @@
                                 <option value="CCCC" selected>CCCC - Capital City Classic</option>
                             </select>
                         </fieldset>
-                        <button type="button" style="color: #000; background-color: var(--gameFlairColor); border-radius: 0.5rem; border-style: solid; border-color: var(--gameFlairColor); border-width: 0.875rem; margin-top: 1rem;" onclick="searchImg()" id="searchBtn">Search</button><br>
-                        <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+                        <button type="button" class="uiButton actionButton" onclick="searchImg()" id="searchBtn">Search</button><br>
+                        <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
                     </fieldset>
                     <!--/search sect-->
                     <!--results sect-->
@@ -62,7 +62,7 @@
                             <h5 style="text-align: left" id="resultsbody"></h5>
                         </fieldset>
                         <!--buttons-->
-                        <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+                        <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
                     </fieldset>
                     <!--/results sect-->
                     <small style="text-align: center;">To see match scouting data, go <a href="browse" style="all: unset; color: var(--gameFlairColor);">here</a></small>

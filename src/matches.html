@@ -45,8 +45,8 @@
                         <option value="CCCC" selected>CCCC - Capital City Classic</option>
                     </select><br><br>
                     <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
-                    <button type="button" style="color: #000; background-color: var(--gameFlairColor); border-radius: 0.5rem; border-style: solid; border-color: var(--gameFlairColor); border-width: 0.875rem; margin-top: 1rem;" id="viewMatchButton" onclick="getMatches()">View</button><br>
-                    <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
+                    <button type="button" class="uiButton actionButton" id="viewMatchButton" onclick="getMatches()">View</button><br>
+                    <button type="button" class="uiButton returnButton" onclick="goToHome()" type="button">Back</button>
                 </fieldset>
             </div>
             <br><br>
@@ -57,7 +57,7 @@
                 <h1 style="font-family: 'raleway-300'" id="matchHeader">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
 
                 <!--buttons-->
-                <button style="color: #000; background-color: var(--gameFlairColor); border-radius: 0.5rem; border-style: solid; border-color: var(--gameFlairColor); border-width: 0.875rem; margin-top: 1rem;" onclick='goToHome()'>Back</button><br>
+                <button class="uiButton actionButton" onclick='goToHome()'>Back</button><br>
                 <br><br>
             </div>
         </div>
