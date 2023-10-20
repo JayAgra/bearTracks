@@ -1,35 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Plinko - 766 Scouting</title>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="language" content="English">
-    <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scouting">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="stylesheet" href="css/float.min.css" type="text/css">
-    <link rel="stylesheet" href="css/plinko.min.css" type="text/css">
-    <link rel="manifest" href="/app.webmanifest" />
-    <link rel="apple-touch-startup-image" href="public/launch.png">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js" crossorigin="anonymous" integrity="sha256-vfaOKX1sTshbjdaTuHgdmdsAkEScmjummUju3gjJJ1o="></script>
-    <script src="assets/plinko.js"></script>
-</head>
-
-<body>
-    <div id="dummy" class="dummydiv">
-        <h1 id="title" style="font-family: 'raleway-300'">766 Casino<br><span class="gametitle">plinko</span></h1>
-        <button id="playBtn" type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="startGame()">Play (15 pts)</button><button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-    </div>
-    <div id="gameover" class="gameover" style="display: none !important;">
-        <h1 style="text-align: center;">game over</h1>
-        <h4 style="text-align: center;" id="pts"></h4>
-        <small id="wait">points being added...</small>
-        <button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-    </div>
-</body>
+    <head>
+        <title>Plinko - 766 Scouting</title>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="language" content="English">
+        <meta name="robots" content="index, follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Scouting">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/plinko.min.css" type="text/css">
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="apple-touch-startup-image" href="public/launch.png">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js" crossorigin="anonymous" integrity="sha256-vfaOKX1sTshbjdaTuHgdmdsAkEScmjummUju3gjJJ1o="></script>
+        <script src="assets/plinko.js"></script>
+    </head>
+    <body>
+        <div id="dummy" class="dummydiv">
+            <h1 id="title" style="font-family: 'raleway-300'">766 Casino<br><span class="gametitle">plinko</span></h1>
+            <button id="playBtn" type="button" class="uiButton returnButton" onclick="startGame()">Play (15 pts)</button><button id="backBtn" type="button" style="color: var(--gameFlairColor); background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+        </div>
+        <div id="gameover" class="gameover" style="display: none !important;">
+            <h1 style="text-align: center;">game over</h1>
+            <h4 style="text-align: center;" id="pts"></h4>
+            <small id="wait">points being added...</small>
+            <button id="backBtn" type="button" style="color: var(--gameFlairColor); background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
+        </div>
+    </body>
+</html>

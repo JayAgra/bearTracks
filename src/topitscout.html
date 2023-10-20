@@ -1,45 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Teams To Pit Scout - 766 Scouting</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <meta charset="UTF-8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="apple-touch-startup-image" href="public/launch.png">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scouting">
-    <link rel="manifest" href="/app.webmanifest" />
-    <link rel="stylesheet" href="css/float.min.css" type="text/css">
-    <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
-    <meta name="mobile-web-app-capable" content="yes">
-    <script src="js/form.min.js"></script>
-</head>
-
-<body class="dark-mode">
-    <script>
-        themeHandle()
-    </script>
-    <div class="container" id="search" style="display: flex;">
-        <!--flex is shown-->
-        <form>
-            <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP℠</span></h1>
-            <h4>Teams To Pit Scout</h4><br>
-            <fieldset>
-                <label id="eventLabel">Event Code: </label><br>
-                <select name="event" id="eventCode">
-                    <option value="CADA">CADA - Sacramento Regional</option>
-                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
-                    <option value="WOOD" selected>WOOD - CalGames</option>
-                </select>
-            </fieldset>
-            <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" id="viewTeamsButton" onclick="getUnscoutedTeams()">View</button><br>
-            <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button>
-        </form>
-        <br><br>
-    </div>
-    <script src="js/topitscout_client.min.js" type="text/javascript"></script>
-</body>
-
+    <head>
+        <title>Teams To Pit Scout - 766 Scouting</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="apple-touch-startup-image" href="public/launch.png">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Scouting">
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
+        <meta name="mobile-web-app-capable" content="yes">
+        <script src="js/form.min.js"></script>
+    </head>
+    <body class="dark-mode">
+        <script>
+            themeHandle()
+        </script>
+        <div class="container" id="search" style="display: flex;">
+            <!--flex is shown-->
+            <form>
+                <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP</span></h1>
+                <h4>Teams To Pit Scout</h4><br>
+                <fieldset>
+                    <label id="eventLabel">Event Code: </label><br>
+                    <select name="event" id="eventCode">
+                        <option value="CADA">CADA - Sacramento Regional</option>
+                        <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                        <option value="WOOD">WOOD - CalGames</option>
+                        <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                    </select>
+                </fieldset>
+                <button type="button" class="uiButton actionButton" id="viewTeamsButton" onclick="getUnscoutedTeams()">View</button><br>
+                <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
+            </form>
+            <br><br>
+        </div>
+        <script src="js/topitscout_client.min.js" type="text/javascript"></script>
+    </body>
 </html>

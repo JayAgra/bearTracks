@@ -2,7 +2,7 @@ var allTeams = [];
 
 async function getEventTeams() {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/events/${document.getElementById('eventCode').value}/teams`, true);
+    xhr.open("GET", `/api/events/current/${document.getElementById('eventCode').value}/teams`, true);
     xhr.withCredentials = true;
 
     xhr.onreadystatechange = async () => {

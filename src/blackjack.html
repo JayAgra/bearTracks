@@ -1,45 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Blackjack - 766 Scouting</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <meta charset="UTF-8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="apple-touch-startup-image" href="public/launch.png">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scouting">
-    <link rel="manifest" href="/app.webmanifest" />
-    <link rel="stylesheet" href="css/float.min.css" type="text/css">
-    <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
-    <meta name="mobile-web-app-capable" content="yes">
-    <script src="js/form.min.js"></script>
-    <style>
-        canvas {
-            background-color: #121212;
-            image-rendering: crisp-edges;
-        }
-    </style>
-</head>
-
-<body class="dark-mode">
-    <script>
-        themeHandle()
-    </script>
-    <div class="container" id="search" style="display: flex;">
-        <div>
-            <h1 id="title" style="font-family: 'raleway-300'">766 Casino<br><span class="gametitle">Single-Player Blackjack</span></h1>
-            <canvas id="bjCanvas" width="128" height="128" style="display: none;"></canvas><br>
-            <button id="playBtn" type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="startBlackjack(false)">Play</button><br><button id="backBtn" type="button" style="color: #68C3E2; background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button><br><button id="playProgBtn" type="button" style="color: #fff; background-color: rgba(0,0,0,0); border-radius: 0.5rem; border-style: solid; border-color: rgba(0,0,0,0); border-width: 0.875rem; margin-top: 1rem;" onclick="startBlackjack(true)">Play With Programming Deck</button>
+    <head>
+        <title>Blackjack - 766 Scouting</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="apple-touch-startup-image" href="public/launch.png">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Scouting">
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
+        <meta name="mobile-web-app-capable" content="yes">
+        <script src="js/form.min.js"></script>
+        <style>
+            canvas {
+                background-color: #121212;
+                image-rendering: crisp-edges;
+            }
+        </style>
+    </head>
+    <body class="dark-mode">
+        <script>
+            themeHandle()
+        </script>
+        <div class="container" id="search" style="display: flex;">
+            <div>
+                <h1 id="title" style="font-family: 'raleway-300'">766 Casino<br><span class="gametitle">Single-Player Blackjack</span></h1>
+                <canvas id="bjCanvas" width="128" height="128" style="display: none;"></canvas><br>
+                <button id="playBtn" type="button" class="uiButton returnButton" onclick="startBlackjack(false)">Play</button><br><button id="backBtn" type="button" style="color: var(--gameFlairColor); background-color: #121212; border-radius: 0.5rem; border-style: solid; border-color: #121212; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()">Back</button><br><button id="playProgBtn" type="button" style="color: #fff; background-color: rgba(0,0,0,0); border-radius: 0.5rem; border-style: solid; border-color: rgba(0,0,0,0); border-width: 0.875rem; margin-top: 1rem;" onclick="startBlackjack(true)">Play With Programming Deck</button>
+            </div>
         </div>
-    </div>
-    <script src="assets/blackjack.js"></script>
-    <script>
-        function goToHome() {
-            window.location.href = "/points";
-        }
-    </script>
-</body>
-
+        <script src="assets/blackjack.js"></script>
+        <script>
+            function goToHome() {
+                window.location.href = "/points";
+            }
+        </script>
+    </body>
 </html>

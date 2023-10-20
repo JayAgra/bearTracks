@@ -15,7 +15,7 @@ async function getTeamRanks() {
     const weight = Number(document.getElementById("weightType").value);
     document.getElementById("viewTeamsButton").innerText = "Requesting Data...";
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/teams/2023/${eventCode}`, true);
+    xhr.open("GET", `/api/teams/current/${eventCode}`, true);
     xhr.withCredentials = true;
 
     xhr.onreadystatechange = async () => {

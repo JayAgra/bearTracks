@@ -8,7 +8,7 @@ function getAllTeams() {
     eventCode = document.getElementById("eventCode").value
     document.getElementById("viewTeamsButton").innerHTML = "Requesting Data...";
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/events/${eventCode}/teams`, true);
+    xhr.open("GET", `/api/events/current/${eventCode}/teams`, true);
     xhr.withCredentials = true;
 
     xhr.onreadystatechange = async () => {
@@ -38,7 +38,7 @@ function getScoutedTeams() {
     eventCode = document.getElementById("eventCode").value
     document.getElementById("viewTeamsButton").innerHTML = "Requesting Data...";
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/events/${eventCode}/pitscoutedteams`, true);
+    xhr.open("GET", `/api/events/current/${eventCode}/pitscoutedteams`, true);
     xhr.withCredentials = true;
 
     xhr.onreadystatechange = async () => {

@@ -1,68 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Matches - 766 Scouting</title>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="language" content="English">
-    <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scouting">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="stylesheet" href="css/float.min.css" type="text/css">
-    <link rel="manifest" href="/app.webmanifest" />
-    <link rel="apple-touch-startup-image" href="public/launch.png">
-    <script src="js/form.min.js"></script>
-    <style>
-        a,a:visited {
-            text-align: center;
-            text-decoration: none;
-            font-size: 6vh;
-            border-bottom: #fff;
-            color: inherit
-        }
-        body {
-            text-align: center;
-        }
-    </style>
-</head>
-
-<body class="dark-mode">
-    <script>
-        themeHandle()
-    </script>
-    <div class="container" id="search" style="display: flex;">
-        <div class="maincontent">
-            <h1 style="font-family: 'raleway-300'">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
-            <fieldset>
-                <label>Event Code: </label><br>
-                <select name="event" id="eventCode">
-                    <option value="CADA">CADA - Sacramento Regional</option>
-                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
-                    <option value="WOOD" selected>WOOD - CalGames</option>
-                </select><br><br>
-                <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
-                <button type="button" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" id="viewMatchButton" onclick="getMatches()">View</button><br>
-                <button type="button" style="color: #000; background-color: #FFB600; border-radius: 0.5rem; border-style: solid; border-color: #FFB600; border-width: 0.875rem; margin-top: 1rem;" onclick="goToHome()" type="button">Back</button>
-            </fieldset>
-        </div>
-        <br><br>
-    </div>
-    <div class="container" id="results" style="display: none;">
-        <!--flex is shown-->
-        <div class="dummy">
-            <h1 style="font-family: 'raleway-300'" id="matchHeader">2023 Matches<br><span class="gametitle">CHARGED UP℠</span></h1><br><br>
-
-            <!--buttons-->
-            <button style="color: #000; background-color: #68C3E2; border-radius: 0.5rem; border-style: solid; border-color: #68C3E2; border-width: 0.875rem; margin-top: 1rem;" onclick='goToHome()'>Back</button><br>
+    <head>
+        <title>Matches - 766 Scouting</title>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="language" content="English">
+        <meta name="robots" content="index, follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Scouting">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="apple-touch-startup-image" href="public/launch.png">
+        <script src="js/form.min.js"></script>
+        <style>
+            a,a:visited {
+                text-align: center;
+                text-decoration: none;
+                font-size: 6vh;
+                border-bottom: #fff;
+                color: inherit
+            }
+            body {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body class="dark-mode">
+        <script>
+            themeHandle()
+        </script>
+        <div class="container" id="search" style="display: flex;">
+            <div class="maincontent">
+                <h1 style="font-family: 'raleway-300'">2023 Matches<br><span class="gametitle">CHARGED UP</span></h1><br><br>
+                <fieldset>
+                    <label>Event Code: </label><br>
+                    <select name="event" id="eventCode">
+                        <option value="CADA">CADA - Sacramento Regional</option>
+                        <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                        <option value="WOOD">WOOD - CalGames</option>
+                        <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                    </select><br><br>
+                    <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
+                    <button type="button" class="uiButton actionButton" id="viewMatchButton" onclick="getMatches()">View</button><br>
+                    <button type="button" class="uiButton returnButton" onclick="goToHome()" type="button">Back</button>
+                </fieldset>
+            </div>
             <br><br>
         </div>
-    </div>
-    <script src="js/matches_client.min.js" type="text/javascript"></script>
-</body>
+        <div class="container" id="results" style="display: none;">
+            <!--flex is shown-->
+            <div class="dummy">
+                <h1 style="font-family: 'raleway-300'" id="matchHeader">2023 Matches<br><span class="gametitle">CHARGED UP</span></h1><br><br>
 
+                <!--buttons-->
+                <button class="uiButton actionButton" onclick='goToHome()'>Back</button><br>
+                <br><br>
+            </div>
+        </div>
+        <script src="js/matches_client.min.js" type="text/javascript"></script>
+    </body>
 </html>

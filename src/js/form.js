@@ -20,9 +20,11 @@ function themeHandle() {
             document.body.classList.replace("dark-mode", "light-mode");
             document.getElementById("themeMeta").content = "#ffffff";
             break;
-        case "dark":
-        case undefined:
-        default:
+        case "gruvbox":
+            document.body.classList.replace("dark-mode", "gruvbox");
+            document.getElementById("themeMeta").content = "#282828";
+            break;
+        case "dark": case undefined: default:
             document.body.classList.replace("light-mode", "dark-mode");
             document.getElementById("themeMeta").content = "#121212";
             break;
