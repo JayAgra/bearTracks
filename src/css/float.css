@@ -68,9 +68,7 @@ body {
     color: var(--textColor);
 }
 fieldset {
-    border: var(--fieldsetColor);
-    border-width: 0.15rem;
-    border-style: solid;
+    border: 0.15rem solid var(--fieldsetColor);
     border-radius: 0.5rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
@@ -96,21 +94,21 @@ input[type='text'] {
     background-color: var(--transparency);
     color: var(--textColor);
     border-bottom: 1px solid var(--defaultInputColor);
-    width: 95%;
+    width: 80%;
 }
 input[type='number'] {
     border: none;
     background-color: var(--transparency);
     color: var(--textColor);
     border-bottom: 1px solid var(--defaultInputColor);
-    width: 95%;
+    width: 80%;
 }
 input[type='tel'] {
     border: none;
     background-color: var(--transparency);
     color: var(--textColor);
     border-bottom: 1px solid var(--defaultInputColor);
-    width: 95%;
+    width: 80%;
 }
 input[type='number']:focus {
     background-color: var(--transparency);
@@ -152,8 +150,7 @@ label {
     accent-color: var(---checkAccent) !important;
 }
 .smallerInput {
-    min-width: 45% !important;
-    max-width: 65% !important;
+    width: 35% !important;
 }
 input,
 select,
@@ -200,4 +197,7 @@ label {
     color: #000;
     background-color: var(--gameFlairColor);
     border-color: var(--gameFlairColor);
+}
+form {
+    width: 90%;
 }
