@@ -44,9 +44,9 @@ body.gruvbox {
     --textColor: #ebdbb2;
     --defaultInputColor: #504945;
     --inputColorSelected: #b8bb26;
-    --gameFlairColor: #d3869b;
+    --gameFlairColor: #83a598;
     --cancelColor: #cc241d;
-    --returnColor: #83a598;
+    --returnColor: #d3869b;
     --checkAccent: #fe8019;
 }
 @font-face {
