@@ -4,8 +4,8 @@ body {
     --textColor: #fff;
     --transparency: rgba(0,0,0,0);
     --defaultInputColor: #fff;
-    --inputColorSelected: #FFB600;
-    --gameFlairColor: #68C3E2;
+    --inputColorSelected: #ffb600;
+    --gameFlairColor: #68c3e2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,8 +17,8 @@ body {
         --textColor: #000;
         --defaultInputColor: #000;
         --transparency: rgba(0,0,0,0);
-        --inputColorSelected: #FFB600;
-        --gameFlairColor: #68C3E2;
+        --inputColorSelected: #ffb600;
+        --gameFlairColor: #68c3e2;
     }
 }
 body.dark-mode {
@@ -27,8 +27,8 @@ body.dark-mode {
     --textColor: #fff;
     --transparency: rgba(0,0,0,0);
     --defaultInputColor: #fff;
-    --inputColorSelected: #FFB600;
-    --gameFlairColor: #68C3E2;
+    --inputColorSelected: #ffb600;
+    --gameFlairColor: #68c3e2;
 }
 body.light-mode {
     --fieldsetColor: rgba(0,0,0,0);
@@ -36,8 +36,17 @@ body.light-mode {
     --textColor: #000;
     --defaultInputColor: #000;
     --transparency: rgba(0,0,0,0);
-    --inputColorSelected: #FFB600;
-    --gameFlairColor: #68C3E2;
+    --inputColorSelected: #ffb600;
+    --gameFlairColor: #68c3e2;
+}
+body.gruvbox {
+    --fieldsetColor: rgba(0,0,0,0);
+    --bodyColor: #282828;
+    --textColor: #ebdbb2;
+    --defaultInputColor: #000;
+    --transparency: rgba(0,0,0,0);
+    --inputColorSelected: #b8bb26;
+    --gameFlairColor: #8ec07c;
 }
 @font-face {
     font-family: 'raleway-300';
