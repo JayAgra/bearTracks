@@ -88,6 +88,7 @@ select {
     color: var(--textColor);
     border-bottom: 2px solid var(--defaultInputColor);
     font-size: 16px;
+    margin-top: 2vh;
 }
 input[type='text'] {
     border: none;
@@ -150,7 +151,11 @@ label {
     accent-color: var(---checkAccent) !important;
 }
 .smallerInput {
-    width: 35% !important;
+    width: 40% !important;
+}
+.lowerSelect {
+    position: relative;
+    top: 5px;
 }
 input,
 select,
@@ -165,7 +170,7 @@ textarea {
     background-color: var(--transparency);
     color: var(--textColor);
     resize: none;
-    width: 85vw;
+    width: 80%;
 }
 textarea:focus {
     outline: none;
@@ -199,5 +204,5 @@ label {
     border-color: var(--gameFlairColor);
 }
 form {
-    width: 90%;
+    width: 95%;
 }

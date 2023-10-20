@@ -39,7 +39,7 @@
             <fieldset>
                 <label>Match Number<br></label>
                 <input type="tel" name="match" class="smallerInput" required>
-                <select name="level">
+                <select name="level" class="lowerSelect">
                     <option value="Practice">Practice</option>
                     <option value="Qualification" selected>Qual</option>
                     <option value="Upper">Upper</option>
@@ -133,15 +133,15 @@
             <br>
             <h2 class="gameflair1">Post Game</h2>
             <fieldset>
-                <label>Estimate the cycle time of the robot <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br>
+                <label>Cycle time <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br>
                 <input type="tel" name="game11" class="smallerInput" id="validateLength" required> seconds
             </fieldset>
             <fieldset>
-                <label>Did the robot play defense? If so, what did they do, and did they get fouls?<br><br></label>
+                <label>Did the robot play defense? Explain.<br><br></label>
                 <textarea rows="2" cols="35" name="defend"></textarea>
             </fieldset>
             <fieldset>
-                <label>Thoughts about driving and performance during teleop phase<br><br></label>
+                <label>Thoughts about driving<br><br></label>
                 <textarea rows="2" cols="35" name="driving"></textarea>
             </fieldset>
             <fieldset>
