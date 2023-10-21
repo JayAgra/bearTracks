@@ -528,12 +528,12 @@ app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
 });
 
 // get detailed data by query
-app.get("/api/data/:season/detail/query/:event/:team/:page/:discordID", apiCheckAuth, async (req, res) => {
+app.get("/api/data/:season/detail/query/:event/:team/:page", apiCheckAuth, async (req, res) => {
     require("./routes/api/data/detail.js").detailBySpecs(req, res, db, selectSeason(req));
 });
 
 // get detailed data by id
-app.get("/api/data/:season/detail/id/:id", apiCheckAuth, async (req, res) => {
+app.get("/api/data/detail/id/:id", apiCheckAuth, async (req, res) => {
     require("./routes/api/data/detailID.js").detailByID(req, res, db);
 });
 
