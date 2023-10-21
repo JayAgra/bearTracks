@@ -3,36 +3,11 @@
 "use strict";
 const saModule = require("./sentiment-analysis.js");
 
-function toIcons(str) {
-    var step1 = str.replaceAll("0", "⬜");
-    var step2 = step1.replaceAll("1", "🟪");
-    var step3 = step2.replaceAll("2", "🟨");
-    var step4 = step3.replaceAll("3", "❷");
-    return step4.replaceAll("4", "❷");
-}
-
-function fullGridString(str, sep) {
-    var strings = str.match(/.{1,9}/g);
-    var iconstrings = [];
-    iconstrings.push(toIcons(strings[0]));
-    iconstrings.push(toIcons(strings[1]));
-    iconstrings.push(toIcons(strings[2]));
-    return iconstrings.join(sep);
-}
-
 function boolToNum(val) {
     if (val) {
         return 1;
     } else {
         return 0;
-    }
-}
-
-function emojiValue(value) {
-    if (value == "true") {
-        return "✅";
-    } else {
-        return "❌";
     }
 }
 
@@ -100,20 +75,6 @@ function emojiValue(value) {
 // UNUSED VALUES
 // game1 - game20 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
-function createHTMLExport(dbQueryResult) {
-    return `<b>Author:</b> ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>` +
-            `<b>AUTO: <br>Taxi: </b>${emojiValue(dbQueryResult.game1)}<br>` +
-            `<b>Score B/M/T: </b>${emojiValue(dbQueryResult.game2)}${emojiValue(dbQueryResult.game3)}${emojiValue(dbQueryResult.game4)}<br>` +
-            `<b>Charging: </b>${dbQueryResult.game5} pts<br><br>` +
-            `<b>TELEOP: <br>Score B/M/T: </b>${emojiValue(dbQueryResult.game6)}${emojiValue(dbQueryResult.game7)}${emojiValue(dbQueryResult.game8)}<br><b>Charging: </b>${dbQueryResult.game10} pts<br><br>` +
-            `<b>Other: <br>Alliance COOPERTITION: </b>${emojiValue(dbQueryResult.game9)}<br><b>Cycle Time: </b>${dbQueryResult.game11} seconds<br><b>Defense: </b>${dbQueryResult.defend}<br><b>Driving: </b>${dbQueryResult.driving}<br><b>Overall: </b>${dbQueryResult.overall}<br>` +
-            `<b>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>` +
-            `<b>low/mid/high cubes - cones: </b>${dbQueryResult.game21}/${dbQueryResult.game14}/${dbQueryResult.game16} - ${dbQueryResult.game13}/${dbQueryResult.game15}/${dbQueryResult.game17}<br>` +
-            `<b>low/mid/high pcs: </b>${dbQueryResult.game18}/${dbQueryResult.game19}/${dbQueryResult.game20}<br>` +
-            `<b>cubes/cones: </b>${dbQueryResult.game23}/${dbQueryResult.game24}<br>` +
-            `<b>total grid: </b>${dbQueryResult.game25}pts` +
-            `<b>Match Performance Score: </b>${Number(dbQueryResult.weight.split(",")[0]).toFixed(2)}`;
-}
 
 function weightScores(submissionID, db) {
     db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
@@ -289,6 +250,5 @@ function weightScores(submissionID, db) {
 }
 
 module.exports = {
-    createHTMLExport,
     weightScores
 };
