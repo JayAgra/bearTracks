@@ -43,7 +43,6 @@ const EventEmitter = require("events").EventEmitter;
 const helmet = require("helmet");
 const sanitize = require("sanitize-filename");
 const leadToken = crypto.randomBytes(48).toString("hex");
-const casinoToken = crypto.randomBytes(48).toString("hex");
 const app = express();
 app.disable("x-powered-by");
 app.use(cookieParser());
@@ -73,9 +72,8 @@ const certsizes = {
 };
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
-var server;
 if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
-    server = https.createServer(options, app).listen(443);
+    https.createServer(options, app).listen(443);
 }
 app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
