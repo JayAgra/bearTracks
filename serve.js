@@ -477,6 +477,11 @@ app.get("/matches", checkAuth, async (req, res) => {
     res.sendFile("src/matches.html", { root: __dirname });
 });
 
+app.get("/browse", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/browse.html", { root: __dirname });
+});
+
 // allow people to get denied :)
 app.get("/denied", (req, res) => {
     res.status(400).send("access denied");
@@ -485,10 +490,6 @@ app.get("/denied", (req, res) => {
 // tool to browse match scouting data
 app.get("/detail", checkAuth, async (req, res) => {
     require("./routes/detail.js").detail(req, res, db, __dirname, season);
-});
-
-app.get("/browse", checkAuth, async (req, res) => {
-    require("./routes/browse.js").browse(req, res, db, __dirname, season);
 });
 
 
