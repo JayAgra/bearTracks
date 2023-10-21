@@ -1,11 +1,11 @@
 # numbers sent as responses mostly for errors
 ## 200s
 ### 200 success
-`0xC80`&emsp;`3200`&emsp;`success`<br>
-`0xC81`&emsp;`3201`&emsp;`note created`<br>
-`0xC82`&emsp;`3202`&emsp;`note updated`<br>
-`0xC83`&emsp;`3203`&emsp;`content deleted`<br>
-`0xC84`&emsp;`3204`&emsp;`points updated`<br>
+`0xc80`&emsp;`3200`&emsp;`success`<br>
+`0xc81`&emsp;`3201`&emsp;`note created`<br>
+`0xc82`&emsp;`3202`&emsp;`note updated`<br>
+`0xc83`&emsp;`3203`&emsp;`content deleted`<br>
+`0xc84`&emsp;`3204`&emsp;`points updated`<br>
 ### 204 no content
 `0xcc0`&emsp;`3264`&emsp;`no content`<br>
 `0xcc1`&emsp;`3265`&emsp;`no query results`<br>
@@ -26,9 +26,9 @@
 `0x1933`&emsp;`6451`&emsp;`not enough money to gamble`<br>
 ## 500s
 ### 500 internal server error
-`0x1F40`&emsp;`8000`&emsp;`unknown error`<br>
-`0x1F41`&emsp;`8001`&emsp;`database query error`<br>
-`0x1F42`&emsp;`8002`&emsp;`database transaction error`<br>
+`0x1f40`&emsp;`8000`&emsp;`unknown error`<br>
+`0x1f41`&emsp;`8001`&emsp;`database query error`<br>
+`0x1f42`&emsp;`8002`&emsp;`database transaction error`<br>
 ### 502 bad gateway
-`0x1F60`&emsp;`8032`&emsp;`bad gateway`<br>
-`0x1F61`&emsp;`8033`&emsp;`bad frc api response`<br>
+`0x1f60`&emsp;`8032`&emsp;`bad gateway`<br>
+`0x1f61`&emsp;`8033`&emsp;`bad frc api response`<br>

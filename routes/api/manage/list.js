@@ -11,7 +11,7 @@ async function listSubmissions(req, res, db, leadToken) {
                 res.status(500).send("" + 0x1f41);
                 return;
             } else {
-                res.json(result);
+                res.status(200).json(result);
             }
         });
     } else {

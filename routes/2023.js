@@ -3,36 +3,11 @@
 "use strict";
 const saModule = require("./sentiment-analysis.js");
 
-function toIcons(str) {
-    var step1 = str.replaceAll("0", "⬜");
-    var step2 = step1.replaceAll("1", "🟪");
-    var step3 = step2.replaceAll("2", "🟨");
-    var step4 = step3.replaceAll("3", "❷");
-    return step4.replaceAll("4", "❷");
-}
-
-function fullGridString(str, sep) {
-    var strings = str.match(/.{1,9}/g);
-    var iconstrings = [];
-    iconstrings.push(toIcons(strings[0]));
-    iconstrings.push(toIcons(strings[1]));
-    iconstrings.push(toIcons(strings[2]));
-    return iconstrings.join(sep);
-}
-
 function boolToNum(val) {
     if (val) {
         return 1;
     } else {
         return 0;
-    }
-}
-
-function emojiValue(value) {
-    if (value == "true") {
-        return "✅";
-    } else {
-        return "❌";
     }
 }
 
@@ -100,20 +75,6 @@ function emojiValue(value) {
 // UNUSED VALUES
 // game1 - game20 is INT (0)
 // formType is STRING the form that was submitted and is not entered into db
-function createHTMLExport(dbQueryResult) {
-    return `<b>Author:</b> ${dbQueryResult.discordName}#${dbQueryResult.discordTag}<br><br>` +
-            `<b>AUTO: <br>Taxi: </b>${emojiValue(dbQueryResult.game1)}<br>` +
-            `<b>Score B/M/T: </b>${emojiValue(dbQueryResult.game2)}${emojiValue(dbQueryResult.game3)}${emojiValue(dbQueryResult.game4)}<br>` +
-            `<b>Charging: </b>${dbQueryResult.game5} pts<br><br>` +
-            `<b>TELEOP: <br>Score B/M/T: </b>${emojiValue(dbQueryResult.game6)}${emojiValue(dbQueryResult.game7)}${emojiValue(dbQueryResult.game8)}<br><b>Charging: </b>${dbQueryResult.game10} pts<br><br>` +
-            `<b>Other: <br>Alliance COOPERTITION: </b>${emojiValue(dbQueryResult.game9)}<br><b>Cycle Time: </b>${dbQueryResult.game11} seconds<br><b>Defense: </b>${dbQueryResult.defend}<br><b>Driving: </b>${dbQueryResult.driving}<br><b>Overall: </b>${dbQueryResult.overall}<br>` +
-            `<b>Grid:<br>${fullGridString((dbQueryResult.game12).toString(), "<br>")}<br><br>` +
-            `<b>low/mid/high cubes - cones: </b>${dbQueryResult.game21}/${dbQueryResult.game14}/${dbQueryResult.game16} - ${dbQueryResult.game13}/${dbQueryResult.game15}/${dbQueryResult.game17}<br>` +
-            `<b>low/mid/high pcs: </b>${dbQueryResult.game18}/${dbQueryResult.game19}/${dbQueryResult.game20}<br>` +
-            `<b>cubes/cones: </b>${dbQueryResult.game23}/${dbQueryResult.game24}<br>` +
-            `<b>total grid: </b>${dbQueryResult.game25}pts` +
-            `<b>Match Performance Score: </b>${Number(dbQueryResult.weight.split(",")[0]).toFixed(2)}`;
-}
 
 function weightScores(submissionID, db) {
     db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
@@ -288,142 +249,6 @@ function weightScores(submissionID, db) {
     });
 }
 
-function createHTMLTable(data) {
-    if (data.length === 0) return "";
-    var html = ``;
-    var avg = {
-        "auto_charge": 0,
-        "teleop_charge": 0,
-        "grid": 0,
-        "cycle": 0,
-        "perf_score": 0,
-        "lowCube": 0,
-        "lowCone": 0,
-        "midCube": 0,
-        "midCone": 0,
-        "highCube": 0,
-        "highCone": 0,
-        "low": 0,
-        "mid": 0,
-        "high": 0
-    };
-    var max = {
-        "auto_charge": 0,
-        "teleop_charge": 0,
-        "grid": 0,
-        "cycle": 0,
-        "perf_score": 0
-    };
-    var min = {
-        "auto_charge": Number.MAX_SAFE_INTEGER,
-        "teleop_charge": Number.MAX_SAFE_INTEGER,
-        "grid": Number.MAX_SAFE_INTEGER,
-        "cycle": Number.MAX_SAFE_INTEGER,
-        "perf_score": Number.MAX_SAFE_INTEGER
-    };
-    function setIfHigher(property, value) {
-        if (max[property] < value) max[property] = value;
-    }
-    
-    function setIfLower(property, value) {
-        if (min[property] > value) min[property] = value;
-    }
-    for (var i = 0; i < data.length; i++) {
-        html += ` <tr><td><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td>` + // match link
-                `<td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td>` + // auto score
-                `<td>${data[i].game5}</td>` + // auto charge
-                `<td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td>` + // teleop score
-                `<td>${data[i].game10}</td>` + // teleop charge
-                `<td>${data[i].game25}</td>` + // grid points
-                `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cubes
-                `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cones
-                `<td>${data[i].game18}</td><td>${data[i].game19}</td><td>${data[i].game20}</td>` + // total
-                `<td>${data[i].game11}</td>` + // cycle time
-                `<td>${Number(data[i].weight.split(",")[0]).toFixed(2)}</td></tr>`; // standard mps
-        
-        avg.auto_charge += Number(data[i].game5);
-        avg.teleop_charge += Number(data[i].game10);
-        avg.grid += Number(data[i].game25);
-        avg.cycle += Number(data[i].game11);
-        avg.perf_score += Number(data[i].weight.split(",")[0]);
-        avg.lowCube += Number(data[i].game21);
-        avg.lowCone += Number(data[i].game13);
-        avg.midCube += Number(data[i].game14);
-        avg.midCone += Number(data[i].game15);
-        avg.highCube += Number(data[i].game16);
-        avg.highCone += Number(data[i].game17);
-        avg.low += Number(data[i].game18);
-        avg.mid += Number(data[i].game19);
-        avg.high += Number(data[i].game20);
-
-        setIfHigher("auto_charge", data[i].game5);
-        setIfHigher("teleop_charge", data[i].game10);
-        setIfHigher("grid", data[i].game25);
-        setIfHigher("cycle", data[i].game11);
-        setIfHigher("perf_score", Number(data[i].weight.split(",")[0]));
-
-        setIfLower("auto_charge", data[i].game5);
-        setIfLower("teleop_charge", data[i].game10);
-        setIfLower("grid", data[i].game25);
-        setIfLower("cycle", data[i].game11);
-        setIfLower("perf_score", Number(data[i].weight.split(",")[0]));
-    }
-
-    for (let key in avg) {
-        avg[key] /= data.length;
-    }
-
-    for (let key in min) {
-        if (min[key] === Number.MAX_SAFE_INTEGER) min[key] = "und";        
-    }
-
-    html += `<tr style="font-weight: bold"><td>avg</td>` + // match link
-            `<td></td>` + // auto score
-            `<td>${Math.round(avg.auto_charge)} (${min.auto_charge} - ${max.auto_charge})</td>` + // auto charge
-            `<td></td>` + // teleop score
-            `<td>${Math.round(avg.teleop_charge)} (${min.teleop_charge} - ${max.teleop_charge})</td>` + // teleop charge
-            `<td>${Math.round(avg.grid)} (${min.grid} - ${max.grid})</td>` + // grid points
-            `<td>${Math.round(avg.lowCube)}</td><td>${Math.round(avg.midCube)}</td><td>${Math.round(avg.highCube)}</td>` + // cubes
-            `<td>${Math.round(avg.lowCone)}</td><td>${Math.round(avg.midCone)}</td><td>${Math.round(avg.highCone)}</td>` + // cones
-            `<td>${Math.round(avg.low)}</td><td>${Math.round(avg.mid)}</td><td>${Math.round(avg.high)}</td>` + // total
-            `<td>${Math.round(avg.cycle)} (${min.cycle} - ${max.cycle})</td>` + // cycle time
-            `<td>${avg.perf_score.toFixed(2)} (${min.perf_score.toFixed(2)} - ${max.perf_score.toFixed(2)})</td></tr>`; // standard mps
-    return html;
-}
-
-function createHTMLTableWithTeamNum(data) {
-    if (data.length === 0) return "";
-    var html = ``;
-    var avg = {
-        "auto_charge": 0,
-        "teleop_charge": 0,
-        "grid": 0,
-        "cycle": 0,
-        "perf_score": 0
-    };
-
-    for (var i = 0; i < data.length; i++) {
-        html = html + ` <tr><td><strong>Team ${data[i].team}</strong><br><a href="/detail?id=${data[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${data[i].level} ${data[i].match}</a><br><span>${data[i].discordName}#${data[i].discordTag}</span></td><td>${emojiValue(data[i].game2)}${emojiValue(data[i].game3)}${emojiValue(data[i].game4)}</td><td>${data[i].game5}</td><td>${emojiValue(data[i].game6)}${emojiValue(data[i].game7)}${emojiValue(data[i].game8)}</td><td>${data[i].game10}</td><td>${data[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${data[i].game11}</td><td>${Number(data[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
-        avg.auto_charge += Number(data[i].game5);
-        avg.teleop_charge += Number(data[i].game10);
-        avg.grid += Number(data[i].game25);
-        avg.cycle += Number(data[i].game11);
-        avg.perf_score += Number(data[i].weight.split(",")[0]);
-    }
-
-    avg.auto_charge /= data.length;
-    avg.teleop_charge /= data.length;
-    avg.grid /= data.length;
-    avg.cycle /= data.length;
-    avg.perf_score /= data.length;
-
-    html += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
-    return html;
-}
-
 module.exports = {
-    createHTMLExport,
-    weightScores,
-    createHTMLTable,
-    createHTMLTableWithTeamNum
+    weightScores
 };
