@@ -1,4 +1,4 @@
-function detailByID(req, res, db, season) {
+function detailByID(req, res, db) {
     const stmt = "SELECT * FROM main WHERE id=?";
     const values = [req.params.id];
     db.get(stmt, values, (err, dbQueryResult) => {
