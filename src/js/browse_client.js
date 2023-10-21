@@ -1,5 +1,5 @@
 var numberInput = document.getElementById("number"),
-    eventCode = document.getElementById("event").value,
+    eventCode = document.getElementById("event"),
     error = document.getElementById("errorTxt"),
     searchBtn = document.getElementById("searchBtn");
 
@@ -23,10 +23,10 @@ async function search() {
         type, 
         htmlTable = "";
     if (document.getElementById("type").value === "team") {
-        fetchEndpoint = `/api/data/current/team/${eventCode}/${num}`;
+        fetchEndpoint = `/api/data/current/team/${eventCode.value}/${num}`;
         type = "team";
     } else {
-        fetchEndpoint = `/api/data/current/match/${eventCode}/${num}`;
+        fetchEndpoint = `/api/data/current/match/${eventCode.value}/${num}`;
         type = "match";
     }
 
