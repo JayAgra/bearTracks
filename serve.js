@@ -77,9 +77,6 @@ var server;
 if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
     server = https.createServer(options, app).listen(443);
 }
-const ejs = require("ejs");
-app.set("view engine", "html");
-app.engine("html", ejs.renderFile);
 app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
 app.use("/images", express.static("images"));
@@ -477,19 +474,21 @@ app.get("/matches", checkAuth, async (req, res) => {
     res.sendFile("src/matches.html", { root: __dirname });
 });
 
+// data browsing tool
 app.get("/browse", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/browse.html", { root: __dirname });
 });
 
+// data browsing tool with detail
+app.get("/detail", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/detail.html", { root: __dirname });
+});
+
 // allow people to get denied :)
 app.get("/denied", (req, res) => {
     res.status(400).send("access denied");
-});
-
-// tool to browse match scouting data
-app.get("/detail", checkAuth, async (req, res) => {
-    require("./routes/detail.js").detail(req, res, db, __dirname, season);
 });
 
 
