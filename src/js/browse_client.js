@@ -1,4 +1,4 @@
-const numberInput = document.getElementById("number"),
+var numberInput = document.getElementById("number"),
     eventCode = document.getElementById("event").value,
     error = document.getElementById("errorTxt"),
     searchBtn = document.getElementById("searchBtn");
