@@ -9,7 +9,7 @@ async function formDetailId(req, res, db) {
             res.status(204).send("" + 0xcc1);
             return;
         } else {
-            res.json(dbQueryResult);
+            res.status(200).json(dbQueryResult);
             return;
         }
     });

@@ -1,4 +1,9 @@
-// CONFIG
+//////////////////////////////////
+//////////////////////////////////
+//////        CONFIG        //////
+//////////////////////////////////
+//////////////////////////////////
+
 /*jslint node: true*/
 /*jslint es6*/
 
@@ -14,17 +19,17 @@ const {
     baseURLNoPcl,
     anotherServerID,
     currentComp,
-    serverSecret
+    serverSecret,
 } = require("./config.json");
 
-// SETUP DATABASE
+// sqlite database
 const sqlite3 = require("sqlite3");
 const db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
 
-// SETUP SERVER(S)
+// server imports
 const fs = require("fs");
 const express = require("express");
 const session = require("express-session");
@@ -60,8 +65,11 @@ const options = {
 };
 
 const certsizes = {
-  key: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, "utf8"),
-  cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, "utf8"),
+    key: fs.statSync(
+        `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
+        "utf8"
+    ),
+    cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, "utf8"),
 };
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
@@ -76,8 +84,9 @@ app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
 app.use("/images", express.static("images"));
 // all cards by Lydia Honerkamp (https://github.com/1yd1a)
-app.use("/assets", express.static("src/assets", 
-    {
+app.use(
+    "/assets",
+    express.static("src/assets", {
         setHeaders: (res, path) => {
             res.set("X-Artist", "Lydia Honerkamp");
         },
@@ -152,7 +161,7 @@ passport.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// SETUP IMAGE UPLOADING
+// image uploading
 const qs = require("querystring");
 const multer = require("multer");
 const mulstorage = multer.diskStorage({
@@ -166,7 +175,12 @@ const mulstorage = multer.diskStorage({
 });
 const upload = multer({ storage: mulstorage });
 
-// BASIC FUNCTIONS TO SHORTEN CODE
+//////////////////////////////////
+//////////////////////////////////
+//////      HELPER FNS      //////
+//////////////////////////////////
+//////////////////////////////////
+
 function invalidJSON(str) {
     try {
         JSON.parse(str);
@@ -275,57 +289,21 @@ async function forwardFRCAPIdata(url, req, res) {
     });
 }
 
+// if "current" is specified, use current season
 function selectSeason(req) {
     return req.params.season == "current" ? season : req.params.season;
 }
 
 // before server creation
 console.log("Preparing...");
-
-// dont want etag on everything
 app.disable("etag");
 
-// login url
-app.get("/login", (req, res) => {
-    res.sendFile("src/login.html", { root: __dirname });
-});
 
-// send users to discord to login when the /loginDiscord url is visited
-app.get("/loginDiscord", passport.authenticate("discord", { scope: scopes }), (req, res) => {});
-
-// get the auth code from discord (the code parameter) and use it to get a token
-app.get("/callback", passport.authenticate("discord", { failureRedirect: "/login" }), (req, res) => {
-    res.redirect("/");
-});
-
-// clear cookies, used for debugging
-app.get("/clearCookies", (req, res) => {
-    res.clearCookie("connect.sid");
-    res.clearCookie("lead");
-    res.clearCookie("isLead");
-    res.redirect("/");
-});
-
-// settings page
-app.get("/settings", checkAuth, async (req, res) => {
-    res.sendFile("src/settings.html", { root: __dirname });
-});
-
-// destroy session
-app.get("/logout", (req, res) => {
-    if (req.session) {
-        req.session.destroy();
-        res.redirect("/");
-    } else {
-        res.send("error!");
-    }
-});
-
-// use for lets encrypt verification
-// no longer needed, use certbot from scouting.sh instead
-/*app.get("/.well-known/acme-challenge/", (req, res) => {
-    res.send("");
-});*/
+//////////////////////////////////
+//////////////////////////////////
+////// ACCEPT INCOMING FORM //////
+//////////////////////////////////
+//////////////////////////////////
 
 // get the main form submissions
 app.post("/submit", checkAuth, async (req, res) => {
@@ -345,155 +323,164 @@ app.post("/submitPit", checkAuth, imageUploads, async (req, res) => {
     require("./routes/submitPit.js").submitPit(req, res, db, __dirname, season);
 });
 
-// index.html, read the code
+
+//////////////////////////////////
+//////////////////////////////////
+//////     SERVE STATIC     //////
+//////////////////////////////////
+//////////////////////////////////
+
+// homepage. ok, fine, this is not super static
 app.get("/", checkAuth, async (req, res) => {
     require("./routes/index.js").index(req, res, __dirname, leadToken);
 });
 
 // main scouting form
-app.get("/main", checkAuth, (req, res) => {
-    res.sendFile("src/main.html", { root: __dirname });
+app.get("/main", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/main.html", { root: __dirname });
 });
 
 // pit form
-app.get("/pit", checkAuth, (req, res) => {
-    res.sendFile("src/pit.html", { root: __dirname });
+app.get("/pit", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/pit.html", { root: __dirname });
+});
+
+// login page
+app.get("/login", async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/login.html", { root: __dirname });
 });
 
 // webmanifest for PWAs
-app.get("/app.webmanifest", (req, res) => {
-    res.sendFile("./src/app.webmanifest", { root: __dirname });
+app.get("/app.webmanifest", async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("./src/app.webmanifest", { root: __dirname });
+});
+
+// settings page
+app.get("/settings", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/settings.html", { root: __dirname });
+});
+
+app.get("/teams", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/teams.html", { root: __dirname });
+});
+
+app.get("/manage", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/manage.html", { root: __dirname });
 });
 
 // CSS (should be unused in favor of minified css)
-app.get("/float.css", (req, res) => {
+app.get("/float.css", async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("./src/float.css", { root: __dirname });
 });
 
 // minified css
-app.get("/float.min.css", (req, res) => {
+app.get("/float.min.css", async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("./src/float.min.css", { root: __dirname });
 });
 
 // font file
-app.get("/fonts/Raleway-300.ttf", (req, res) => {
+app.get("/fonts/Raleway-300.ttf", async (req, res) => {
     res.set("Cache-control", "public, max-age=233280000");
     res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
 });
 
 // font file
-app.get("/fonts/Raleway-500.ttf", (req, res) => {
+app.get("/fonts/Raleway-500.ttf", async (req, res) => {
     res.set("Cache-control", "public, max-age=233280000");
     res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
 });
 
 // JS for form (should be unused in favor of minified js)
-app.get("/form.js", (req, res) => {
+app.get("/form.js", async (req, res) => {
     res.set("Cache-control", "public, max-age=31104000");
     res.sendFile("./src/form.js", { root: __dirname });
 });
 
-// minified JS for form         
-app.get("/form.min.js", (req, res) => {
+// minified JS for form
+app.get("/form.min.js", async (req, res) => {
     res.set("Cache-control", "public, max-age=15552000");
     res.sendFile("./src/js/form.min.js", { root: __dirname });
 });
 
 // favicon
-app.get("/favicon.ico", (req, res) => { 
+app.get("/favicon.ico", async (req, res) => {
     res.set("Cache-control", "public, max-age=311040000");
     res.sendFile("src/favicon.ico", { root: __dirname });
 });
 
 // scout rank page
-app.get("/scouts", (req, res) => {
+app.get("/scouts", async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/scouts.html", { root: __dirname });
 });
 
 // play blackjack
-// app.get("/blackjack", checkAuth, (req, res) => {
+// app.get("/blackjack", checkAuth, async (req, res) => {
 //     res.set("Cache-control", "public, max-age=259200");
 //     res.sendFile("src/blackjack.html", { root: __dirname });
 // });
 
 // spin wheel
-app.get("/spin", checkAuth, (req, res) => {
+app.get("/spin", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/spin.html", { root: __dirname });
 });
 
 // list of gambling opportunities
-app.get("/points", checkAuth, (req, res) => {
+app.get("/points", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/points.html", { root: __dirname });
 });
 
 // teams left to pit scout (data with XHR request)
-app.get("/topitscout", checkAuth, (req, res) => {
+app.get("/topitscout", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/topitscout.html", { root: __dirname });
 });
 
 // notes feature
-app.get("/notes", checkAuth, (req, res) => {
+app.get("/notes", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/notes.html", { root: __dirname });
 });
 
 // per-scout profile
-app.get("/profile", checkAuth, (req, res) => {
+app.get("/profile", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/profile.html", { root: __dirname });
 });
 
 // get images from pit scouting. images are located in scouting-app/images
-app.get("/pitimages", checkAuth, (req, res) => {
+app.get("/pitimages", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/pitimg.html", { root: __dirname });
 });
 
 // page with fake blue banners for future use
-app.get("/awards", checkAuth, (req, res) => {
+app.get("/awards", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/awards.html", { root: __dirname });
 });
 
-// plinko game
-app.get("/plinko", checkAuth, (req, res) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/plinko.html", { root: __dirname });
-});
-
 // match list
-app.get("/matches", checkAuth, (req, res) => {
+app.get("/matches", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/matches.html", { root: __dirname });
 });
 
 // allow people to get denied :)
 app.get("/denied", (req, res) => {
-    require("./routes/denied.js").denied(req, res, __dirname);
+    res.status(400).send("access denied");
 });
-
-// print out all info discord gives, for debugging
-app.get("/info", checkAuth, (req, res) => {
-    require("./routes/info.js").info(req, res);
-});
-
-/*// for debugging
-app.get("/teamRoleInfo", checkAuth, (req, res) => {
-    getOauthData.getGuildMember(req.user.accessToken, teamServerID).then((data) => {
-        console.log(data.roles);
-    }).catch((error) => {
-        console.log(error);
-    });
-});*/
 
 // tool to browse match scouting data
 app.get("/detail", checkAuth, async (req, res) => {
@@ -504,13 +491,87 @@ app.get("/browse", checkAuth, async (req, res) => {
     require("./routes/browse.js").browse(req, res, db, __dirname, season);
 });
 
-app.get("/teams", checkAuth, (req, res) => {
-    res.sendFile("src/teams.html", { root: __dirname });
+
+//////////////////////////////////
+//////////////////////////////////
+//////          API         //////
+//////////////////////////////////
+//////////////////////////////////
+
+//
+// data
+//
+
+// get all match data (by event)
+app.get("/api/data/:season/all/:event", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/event.js").getAllEventData(req, res, db, selectSeason(req));
 });
 
-app.get("/manage", checkAuth, async (req, res) => {
-    res.sendFile("src/manage.html", { root: __dirname });
+// get team match data (by event)
+app.get("/api/data/:season/team/:event/:team", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/team.js").getTeamEventData(req, res, db, selectSeason(req));
 });
+
+// get match data for a match
+app.get("/api/data/:season/match/:event/:match", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/match.js").getEventMatchData(req, res, db, selectSeason(req));
+});
+
+// get all match scouting data from a scout (by season)
+app.get("/api/data/:season/scout/:discordID", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/scout.js").getScoutResponses(req, res, db, selectSeason(req));
+});
+
+// get pit scouting data
+app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/pit.js").pit(req, res, req.params.season);
+});
+
+//
+// team listings
+//
+
+// get weight for teams list page
+app.get("/api/teams/:season/:event", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/teams.js").teams(req, res, db,selectSeason(req));
+});
+
+// pit scouted team list
+app.get("/api/teams/:season/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/pitscoutedteams.js").pitscoutedteams(req, res, db, selectSeason(req));
+});
+
+// other ways to get weight - not used by app, but for external use
+app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, selectSeason(req));
+ });
+
+app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, selectSeason(req));
+});
+
+//
+// scout listings
+//
+
+// list of scouts & points
+app.get("/api/scouts", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts.js").scouts(req, res, db);
+});
+
+// scout's profile (submitted forms)
+app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts/profile.js").profile(req, res, db);
+});
+
+// scout's profile (from discord)
+app.get("/api/scoutByID/:discordID", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts/scoutByID.js").scoutByID(req, res, db);
+});
+
+//
+// management
+//
 
 app.get("/api/manage/:database/list", checkAuth, async (req, res) => {
     require("./routes/api/manage/list.js").listSubmissions(req, res, db, leadToken);
@@ -520,102 +581,60 @@ app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res
     require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, leadToken);
 });
 
-// api
+//
+// gambling
+//
 
-app.get("/api/whoami", apiCheckAuth, (req, res) => {
-    res.send(req.user.id);
+// slots (unused)
+app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
+    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db);
 });
 
+// spin wheel thing
+app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
+    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db);
+ });
+
+//
+// notes
+//
+
+// get note for team
+app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req, res) => {
+    require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
+});
+
+// create the notes
+app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req, res) => {
+    require("./routes/api/notes/createNote.js").createNote(req, res, db, season);
+});
+
+// save the note
+app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req, res) => {
+    require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
+});
+
+//
+// frc api data forwarders
+//
+
+// team list for events
 app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req, res) => {
-    if (req.params.event !== "WOOD") {
+    if (req.params.event !== "CCCC") {
         var teamNumParam = "";
         if (req.params.all === "all") {
             teamNumParam = "&start=&end=";
         } else {
             teamNumParam = `&teamNumber=${myteam}`;
         }
-        forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res)
+        forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res);
     } else {
         res.header("Content-Type", "application/json");
-        res.sendFile("src/js/WOOD.json", { root: __dirname });
+        res.sendFile("src/js/CCCC.json", { root: __dirname });
     }
 });
 
-app.get("/api/data/:season/:event/:team", apiCheckAuth, async (req, res) => {
-    require("./routes/api/data.js").data(req, res, db);
-});
-
-app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
-    require("./routes/api/pit.js").pit(req, res, req.params.season);
-});
-
-app.get("/api/teams/:season/:event", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams.js").teams(req, res, db, selectSeason(req));
-});
-
-app.get("/api/scouts", apiCheckAuth, async (req, res) => {
-    require("./routes/api/scouts.js").scouts(req, res, db);
-});
-
-app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req, res) => {
-    require("./routes/api/scouts/profile.js").profile(req, res, db);
-});
-
-app.get("/api/scoutByID/:discordID", apiCheckAuth, async (req, res) => {
-    require("./routes/api/scoutByID.js").scoutByID(req, res, db);
-});
-
-// slots API
-app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
-    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db);
-});
-// end slots API
-
-// blackjack API
-// blackjack cards
-const possibleCards = [
-    { value: "A", suit: "h" }, { value: 2, suit: "h" },{ value: 3, suit: "h" },{ value: 4, suit: "h" },{ value: 5, suit: "h" },{ value: 6, suit: "h" },{ value: 7, suit: "h" },{ value: 8, suit: "h" },{ value: 9, suit: "h" },{ value: 10, suit: "h" },{ value: "J", suit: "h" },{ value: "Q", suit: "h" },{ value: "K", suit: "h" },
-    { value: "A", suit: "d" }, { value: 2, suit: "d" },{ value: 3, suit: "d" },{ value: 4, suit: "d" },{ value: 5, suit: "d" },{ value: 6, suit: "d" },{ value: 7, suit: "d" },{ value: 8, suit: "d" },{ value: 9, suit: "d" },{ value: 10, suit: "d" },{ value: "J", suit: "d" },{ value: "Q", suit: "d" },{ value: "K", suit: "d" },
-    { value: "A", suit: "s" }, { value: 2, suit: "s" },{ value: 3, suit: "s" },{ value: 4, suit: "s" },{ value: 5, suit: "s" },{ value: 6, suit: "s" },{ value: 7, suit: "s" },{ value: 8, suit: "s" },{ value: 9, suit: "s" },{ value: 10, suit: "s" },{ value: "J", suit: "s" },{ value: "Q", suit: "s" },{ value: "K", suit: "s" },
-    { value: "A", suit: "c" }, { value: 2, suit: "c" },{ value: 3, suit: "c" },{ value: 4, suit: "c" },{ value: 5, suit: "c" },{ value: 6, suit: "c" },{ value: 7, suit: "c" },{ value: 8, suit: "c" },{ value: 9, suit: "c" },{ value: 10, suit: "c" },{ value: "J", suit: "c" },{ value: "Q", suit: "c" },{ value: "K", suit: "c" }
-];
-
-// // blackjack websocket
-// app.ws('/api/casino/blackjack/blackjackSocket', function(ws, req) {
-//     require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, db);
-// });
-
-app.get("/api/casino/blackjack/startingCards", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/blackjack/startingCards.js").startingCards(req, res, db, possibleCards, casinoToken);
-});
-
-app.get("/api/casino/blackjack/newCard", apiCheckAuth, async (req, res) => {
-    require("./routes/api/casino/blackjack/newCard.js").newCard(req, res);
-});
-
-app.get("/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/blackjack/stand.js").stand(req, res, db, possibleCards, casinoToken);
-});
-
-app.get("/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/blackjack/wonViaBlackjack.js").wonViaBlackjack(req, res, db, casinoToken);
-});
-// end blackjack API
-
-app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db);
-});
-
-// plinko API
-app.get("/api/casino/plinko/startGame", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/plinko/startGame.js").startGame(req, res, db, casinoToken);
-});
-
-app.get("/api/casino/plinko/endGame/:token/:pts", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/plinko/endGame.js").endGame(req, res, db, casinoToken);
-});
-
-// team, weight pair from db
+// frc api team list
 app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req, res) => {
     require("./routes/api/events/teams.js").teams(req, res, frcapi, selectSeason(req));
 });
@@ -625,46 +644,25 @@ app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req, res) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${req.params.event}`, req, res);
 });
 
-// pit scouted team list
-app.get("/api/events/:season/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
-    require("./routes/api/events/pitscoutedteams.js").pitscoutedteams(req, res, db, selectSeason(req));
-});
-
-// notes api
-app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req, res) => {
-    require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
-});
-
-app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req, res) => {
-    require("./routes/api/notes/createNote.js").createNote(req, res, db, season);
-});
-
-app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req, res) => {
-    require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
-});
-
 // frc api's data on a team
 app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req, res) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
 });
 
-// get weight for teams
-app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, selectSeason(req));
+//
+// other
+//
+
+// whoami
+app.get("/api/whoami", apiCheckAuth, (req, res) => {
+    res.send(req.user.id);
 });
 
-app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, selectSeason(req));
-});
-
-// get all data for teams
-app.get("/api/teams/event/:season/:event/:team/all", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/eventAll.js").teamsByEventAll(req, res, db, selectSeason(req));
-});
-
-app.get("/api/teams/season/:season/:team/all", apiCheckAuth, async (req, res) => {
-    require("./routes/api/teams/seasonAll.js").teamsBySeasonAll(req, res, db, selectSeason(req));
-});
+//////////////////////////////////
+//////////////////////////////////
+//////     AUTH & SERVER    //////
+//////////////////////////////////
+//////////////////////////////////
 
 // auth functions
 app.get("/", passport.authenticate("discord"));
@@ -673,11 +671,31 @@ app.get("/callback", passport.authenticate("discord", { failureRedirect: "/" }),
     res.redirect("/");
 });
 
-// not requiring auth for offline version, you cannot submit with this and submit url is secured anyway
-app.get("/offline.html", (req, res) => {
-    res.sendFile("src/offline.html", { root: __dirname });
+// send users to discord to login when the /loginDiscord url is visited
+app.get("/loginDiscord", passport.authenticate("discord", { scope: scopes }), (req, res) => {});
+
+// get the auth code from discord (the code parameter) and use it to get a token
+app.get("/callback", passport.authenticate("discord", { failureRedirect: "/login" }), (req, res) => {
+    res.redirect("/");
 });
 
+// clear cookies, used for debugging
+app.get("/clearCookies", (req, res) => {
+    res.clearCookie("connect.sid");
+    res.clearCookie("lead");
+    res.clearCookie("isLead");
+    res.redirect("/");
+});
+
+// destroy session
+app.get("/logout", (req, res) => {
+    if (req.session) {
+        req.session.destroy();
+        res.redirect("/");
+    } else {
+        res.send("error!");
+    }
+});
 
 if (certsizes.key <= 100 || certsizes.cert <= 100) {
     app.listen(80);

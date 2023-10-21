@@ -336,7 +336,7 @@ function createHTMLTable(data) {
                 `<td>${data[i].game10}</td>` + // teleop charge
                 `<td>${data[i].game25}</td>` + // grid points
                 `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cubes
-                `<td>${data[i].game21}</td><td>${data[i].game14}</td><td>${data[i].game16}</td>` + // cones
+                `<td>${data[i].game13}</td><td>${data[i].game15}</td><td>${data[i].game17}</td>` + // cones
                 `<td>${data[i].game18}</td><td>${data[i].game19}</td><td>${data[i].game20}</td>` + // total
                 `<td>${data[i].game11}</td>` + // cycle time
                 `<td>${Number(data[i].weight.split(",")[0]).toFixed(2)}</td></tr>`; // standard mps
