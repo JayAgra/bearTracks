@@ -1,24 +1,14 @@
 function addProperty(object, property, amount) {
     if (object[property] !== undefined) {
-        object[property].push(amount);
+        object[property] += amount;
     } else {
-        object[property] = [];
+        object[property] = 0;
         addProperty(object, property, amount);
     }
 }
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
 function goToHome() {
     window.location.href = "/";
-}
-function decayingValue(x) {
-    return 5 / ((1.25 * x) + 2.5);
-}
-function decayArray(matches) {
-    var values = [];
-    for (var i = matches - 1; i >= 0; i--) {
-        values.push(decayingValue(i));
-    }
-    return values;
 }
 async function getTeamRanks() {
     const eventCode = document.getElementById("eventCode").value;
@@ -31,18 +21,14 @@ async function getTeamRanks() {
     xhr.onreadystatechange = async () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             document.getElementById("viewTeamsButton").innerText = "Rendering View...";
-            var responseObj = JSON.parse(xhr.responseText);
             var teams = {};
-            responseObj.forEach((e) => {
+            var teamsCount = {};
+            JSON.parse(xhr.responseText).forEach((e) => {
                 addProperty(teams, e.team, Number(e.weight.split(",")[Number(weight)]));
+                addProperty(teamsCount, e.team, 1);
             });
-            console.log(teams);
             for (let team in teams) {
-                let multipliers = decayArray(team.length);
-                for (let i = 0; i < team.length; i++) {
-                    team[i] *= multipliers[i];
-                }
-                team = team.reduce((a, b) => a + b, 0) / multipliers.reduce((a, b) => a + b, 0);
+                teams[team] /= teamsCount[team];
             }
             var htmltable = ``;
             Object.entries(teams).sort((a, b) => b[1] - a[1]).forEach((e, i, a) => {
