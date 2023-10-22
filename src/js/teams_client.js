@@ -36,6 +36,7 @@ async function getTeamRanks() {
             responseObj.forEach((e) => {
                 addProperty(teams, e.team, Number(e.weight.split(",")[Number(weight)]));
             });
+            console.log(teams);
             for (let team in teams) {
                 let multipliers = decayArray(team.length);
                 for (let i = 0; i < team.length; i++) {
