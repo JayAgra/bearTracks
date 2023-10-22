@@ -30,11 +30,7 @@ function blackjackSocket(ws, req, db) {
             cards.push(possibleCards[Math.floor(Math.random() * 51)]);
 
             // 0x32 - sending cards
-            ws.send(
-                0x32 +
-                    "%%%" +
-                    `{"dealt": "card-${cards[0].suit}_${cards[0].value}.png","player0": "card-${cards[1].suit}_${cards[1].value}.png","player1": "card-${cards[2].suit}_${cards[2].value}.png"`
-            );
+            ws.send(0x32 + "%%%" + `{"dealt": "card-${cards[0].suit}_${cards[0].value}.png","player0": "card-${cards[1].suit}_${cards[1].value}.png","player1": "card-${cards[2].suit}_${cards[2].value}.png"`);
         }
     });
 }
