@@ -21,7 +21,7 @@ async function deleteSubmission(req, res, db, transactions, leadToken) {
                     return;
                 }
             });
-            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [result.discordID, (req.params.database == "pit" ? 0x2001 : 0x2000), (req.params.database == "pit" ? 35 : 25)], (err) => {
+            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [result.discordID, (req.params.database == "pit" ? 0x2001 : 0x2000), (req.params.database == "pit" ? -35 : -25)], (err) => {
                 if (err) {
                     res.status(500).send("" + 0x1f42);
                     return;

@@ -1,5 +1,3 @@
-const { url } = require("inspector");
-
 var numberInput = document.getElementById("number"),
     eventCode = document.getElementById("event"),
     error = document.getElementById("errorTxt"),
