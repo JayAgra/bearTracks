@@ -28,6 +28,10 @@ const db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
+const transactions = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err) => {
+    console.log(err);
+});
+transactions.run("PRAGMA journal_mode = WAL;");
 
 // server imports
 const fs = require("fs");
@@ -302,7 +306,7 @@ app.disable("etag");
 
 // get the main form submissions
 app.post("/submit", checkAuth, async (req, res) => {
-    require("./routes/submit.js").submitForm(req, res, db, __dirname, season);
+    require("./routes/submit.js").submitForm(req, res, db, transactions, __dirname, season);
 });
 
 // use this thing to do the pit form image thing
@@ -315,7 +319,7 @@ const imageUploads = upload.fields([
 ]);
 
 app.post("/submitPit", checkAuth, imageUploads, async (req, res) => {
-    require("./routes/submitPit.js").submitPit(req, res, db, __dirname, season);
+    require("./routes/submitPit.js").submitPit(req, res, db, transactions, __dirname, season);
 });
 
 
@@ -586,7 +590,11 @@ app.get("/api/manage/:database/list", checkAuth, async (req, res) => {
 });
 
 app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res) => {
-    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, leadToken);
+    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, leadToken);
+});
+
+app.get("/api/manage/scout/:discordID/:modify", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user.js").updateScout(req, res, db, transactions, leadToken);
 });
 
 //
@@ -595,12 +603,12 @@ app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res
 
 // slots (unused)
 app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
-    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db);
+    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db, transactions);
 });
 
 // spin wheel thing
 app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db);
+    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db, transactions);
  });
 
 //

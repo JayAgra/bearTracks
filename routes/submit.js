@@ -9,7 +9,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitForm(req, res, db, dirname, season) {
+function submitForm(req, res, db, transactions, dirname, season) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -93,6 +93,12 @@ function submitForm(req, res, db, dirname, season) {
                 if (err) {
                     console.error(err);
                     res.status(500).send("" + 0x1f42);
+                }
+            });
+            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, "MAINFORM", formscoresdj], (err) => {
+                if (err) {
+                    res.status(500).send("" + 0x1f42);
+                    return;
                 }
             });
             // respond to the user with success page
