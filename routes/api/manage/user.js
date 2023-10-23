@@ -15,6 +15,7 @@ async function updateScout(req, res, db, transactions, leadToken) {
                 return;
             }
         });
+        res.status(200).send("" + 0xc84);
     } else {
         res.status(403).send("" + 0x1931);
     }
