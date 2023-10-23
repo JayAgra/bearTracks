@@ -240,7 +240,9 @@ async function searchOnLoad() {
             console.error(err);
         }
     } else {
-        search(urlParams.get("number"), urlParams.get("event"), urlParams.get("type"));
+        if (urlParams.get("number") && urlParams.get("event") && urlParams.get("type")) {
+            search(urlParams.get("number"), urlParams.get("event"), urlParams.get("type"));
+        }
     }
 }
 
