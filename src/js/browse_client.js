@@ -216,6 +216,7 @@ async function searchOnLoad() {
                 "perf_score": 0
             };
 
+            var htmlTable = "";
             for (var i = 0; i < listRes.length; i++) {
                 htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a></td><td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td><td>${listRes[i].game5}</td><td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td><td>${listRes[i].game10}</td><td>${listRes[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${listRes[i].game11}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
                 avg.auto_charge += Number(listRes[i].game5);
