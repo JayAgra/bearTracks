@@ -374,6 +374,11 @@ app.get("/manage", checkAuth, async (req, res) => {
     res.sendFile("src/manage.html", { root: __dirname });
 });
 
+app.get("/manageScouts", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/manageScouts.html", { root: __dirname });
+});
+
 // CSS (should be unused in favor of minified css)
 app.get("/float.css", async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -593,7 +598,7 @@ app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res
     require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, leadToken);
 });
 
-app.get("/api/manage/scout/:discordID/:modify", checkAuth, async (req, res) => {
+app.get("/api/manage/scout/:discordID/:modify/:reason", checkAuth, async (req, res) => {
     require("./routes/api/manage/user.js").updateScout(req, res, db, transactions, leadToken);
 });
 

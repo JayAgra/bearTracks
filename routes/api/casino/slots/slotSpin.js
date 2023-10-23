@@ -17,7 +17,7 @@ async function slotSpin(req, res, db, transactions) {
                 );
             }
         });
-        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, "GAMBLE", 766], (err) => {
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1501, 766], (err) => {
             if (err) {
                 res.status(500).send("" + 0x1f42);
                 return;
@@ -36,7 +36,7 @@ async function slotSpin(req, res, db, transactions) {
                 );
             }
         });
-        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, "GAMBLE", -10], (err) => {
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1501, -10], (err) => {
             if (err) {
                 res.status(500).send("" + 0x1f42);
                 return;

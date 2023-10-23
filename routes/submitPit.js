@@ -71,16 +71,12 @@ function submitPit(req, res, db, transactions, dirname, season) {
             res.status(500).send("" + 0x1f42);
         }
     });
-    transactions.run(
-        "INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)",
-        [req.user.id, "PIFORM", 35],
-        (err) => {
-            if (err) {
-                res.status(500).send("" + 0x1f42);
-                return;
-            }
+    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1001, 35], (err) => {
+        if (err) {
+            res.status(500).send("" + 0x1f42);
+            return;
         }
-    );
+    });
     // send success message to user
     res.sendFile("src/submitted.html", {
         root: dirname,

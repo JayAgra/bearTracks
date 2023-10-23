@@ -11,27 +11,9 @@
         <meta name="theme-color" content="#121212" id="themeMeta">
         <link rel="manifest" href="/app.webmanifest" />
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
         <meta name="mobile-web-app-capable" content="yes">
         <script src="js/form.min.js"></script>
-        <style>
-            a,a:visited {
-                text-align: center;
-                text-decoration: none;
-                font-size: 6vh;
-                border-top: rgba(35,35,35,0);
-                border-left: rgba(35,35,35,0);
-                border-right: rgba(35,35,35,0);
-                border-bottom: #fff;
-                border-style: dotted;
-                border-width: 0.25vh;
-            }
-            a:hover,a:active {
-                color: #fff;
-            }
-            body {
-                text-align: center;
-            }
-        </style>
     </head>
     <body class="dark-mode">
         <script>
@@ -50,6 +32,7 @@
                     <button type="button" class="uiButton actionButton" onclick="getData()" id="viewData">View Data</button><br>
                     <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
                 </fieldset>
+                <small style="text-align: center;">manage scouts <a href="manageScouts" style="all: unset; color: var(--gameFlairColor);">here</a></small><br>
             </form>
             <br><br>
         </div>

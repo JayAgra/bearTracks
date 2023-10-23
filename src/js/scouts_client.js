@@ -11,7 +11,12 @@ async function getTeamRanks() {
     xhr.onreadystatechange = async () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             document.getElementById("viewScoutsButton").innerHTML = "Rendering View...";
-            document.getElementById("preInsert").insertAdjacentHTML("afterend", xhr.responseText)
+            const resJson = JSON.parse(xhr.responseText);
+            var htmltable = "";
+            for (var i = 0; i < resJson.length; i++) {
+                htmltable += `<tr><td><a href="/browse?discordID=${resJson[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${resJson[i].username}</a></td><td>${Math.round(resJson[i].score)}</td></tr>`;
+            }
+            document.getElementById("preInsert").insertAdjacentHTML("afterend", htmltable)
             document.getElementById("search").style.display = "none";
             document.getElementById("results").style.display = "flex";
             document.getElementById("eventCodeDisplay").innerHTML = `Top scouts`;

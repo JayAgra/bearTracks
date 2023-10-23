@@ -95,7 +95,7 @@ function submitForm(req, res, db, transactions, dirname, season) {
                     res.status(500).send("" + 0x1f42);
                 }
             });
-            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, "MAINFORM", formscoresdj], (err) => {
+            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1000, formscoresdj], (err) => {
                 if (err) {
                     res.status(500).send("" + 0x1f42);
                     return;

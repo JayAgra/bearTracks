@@ -24,7 +24,7 @@ async function spinWheel(req, res, db, transactions) {
             return;
         }
     });
-    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, "GAMBLE", spins[spin]], (err) => {
+    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1500, spins[spin]], (err) => {
         if (err) {
             res.status(500).send("" + 0x1f42);
             return;

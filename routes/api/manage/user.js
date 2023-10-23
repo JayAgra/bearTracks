@@ -9,7 +9,7 @@ async function updateScout(req, res, db, transactions, leadToken) {
                 return;
             }
         });
-        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.params.discordID, "MANUALUPDATE", Number(req.params.modify)], (err) => {
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.params.discordID, Number(req.params.reason), Number(req.params.modify)], (err) => {
             if (err) {
                 res.status(500).send("" + 0x1f42);
                 return;
