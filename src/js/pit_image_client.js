@@ -11,7 +11,7 @@ function searchImg() {
     let eventcode = document.getElementById("eventInput").value
 
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/pit/2023/${eventcode}/${teamnum}`, true);
+    xhr.open("GET", `/api/pit/current/${eventcode}/${teamnum}`, true);
     xhr.withCredentials = true;
 
     xhr.onreadystatechange = async () => {

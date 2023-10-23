@@ -537,7 +537,7 @@ app.get("/api/data/:season/scout/:discordID", apiCheckAuth, async (req, res) => 
 
 // get pit scouting data
 app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
-    require("./routes/api/data/pit.js").pit(req, res, req.params.season);
+    require("./routes/api/data/pit.js").pit(req, res, db, selectSeason(req));
 });
 
 // get detailed data by query
