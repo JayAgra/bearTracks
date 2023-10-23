@@ -1,4 +1,3 @@
-const waitMs = ms => new Promise(res => setTimeout(res, ms));
 function goToHome() {
     window.location.href = "/";
 }

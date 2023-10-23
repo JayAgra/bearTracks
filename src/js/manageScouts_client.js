@@ -1,11 +1,8 @@
-const { response } = require("express");
-
 function goToHome() {
     window.location.href = "/";
 }
 
 async function getData() {
-    document.getElementById("viewData").innerHTML = "requesting...";
     var response, listRes;
     try {
         response = await fetch(`/api/scouts`, {
