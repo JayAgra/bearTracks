@@ -17,7 +17,7 @@ async function getData() {
 
         listRes = await response.json();
         var listHTML = "";
-        for (var i = 0; i >= listRes.length; i++) {
+        for (var i = 0; i < listRes.length; i++) {
             listHTML += `<tr class="padded"><td>${listRes.username}</td><td>${listRes.score}</td><td><div class="inlineInput"><input type="tel" id="${listRes.discordID}_input" value="${listRes.score}"><button class="uiButton actionButton" onclick="updateUser('${listRes.discordID}', ${listRes.score}, this)">save</button></div></td></tr>`;
         }
         document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);  
