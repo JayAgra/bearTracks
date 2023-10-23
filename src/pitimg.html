@@ -17,24 +17,15 @@
         <link rel="manifest" href="/app.webmanifest" />
         <link rel="apple-touch-startup-image" href="public/launch.png">
         <script src="js/form.min.js"></script>
-        <style>
-            img {
-                width: 90vw;
-                height: 90vw;
-            }
-        </style>
+        <style>img {width: 90vw; height: 90vw;}</style>
     </head>
     <body class="dark-mode">
-        <script>
-            themeHandle()
-        </script>
+        <script>themeHandle()</script>
         <div class="container" style="display: flex;">
-            <!--flex is shown-->
             <form>
                 <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP</span></h1>
                 <h4 style="color: red; display: none">/h4>
                     <h4>Image Database</h4><br>
-                    <!--search sect-->
                     <fieldset id="searchsect" style="display: block;">
                         <label>Target Team Number: <br></label>
                         <input type="tel" id="teamInput" required><br>
@@ -52,8 +43,6 @@
                         <button type="button" class="uiButton actionButton" onclick="searchImg()" id="searchBtn">Search</button><br>
                         <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
                     </fieldset>
-                    <!--/search sect-->
-                    <!--results sect-->
                     <fieldset id="resultsect" style="display: none;">
                         <fieldset>
                             <h3>Team Number: <span id="resultsTeamNumber"></span></h3>
@@ -61,13 +50,10 @@
                             <h5>Images: Front, Back, Side, Bottom, Other</h5>
                             <h5 style="text-align: left" id="resultsbody"></h5>
                         </fieldset>
-                        <!--buttons-->
                         <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
                     </fieldset>
-                    <!--/results sect-->
                     <small style="text-align: center;">To see match scouting data, go <a href="browse" style="all: unset; color: var(--gameFlairColor);">here</a></small>
             </form>
-            <br><br>
         </div>
         <script src="js/pit_image_client.min.js" type="text/javascript"></script>
     </body>

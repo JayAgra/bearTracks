@@ -16,8 +16,6 @@ async function getTeamRanks() {
                 htmltable += `<tr><td><a href="/browse?discordID=${resJson[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${resJson[i].username}</a></td><td>${Math.round(resJson[i].score)}</td></tr>`;
             }
             document.getElementById("preInsert").insertAdjacentHTML("afterend", htmltable)
-            document.getElementById("search").style.display = "none";
-            document.getElementById("results").style.display = "flex";
             document.getElementById("eventCodeDisplay").innerHTML = `Top scouts`;
             document.getElementById("viewScoutsButton").innerHTML = "Reload Data";
         } else if (xhr.status === 204 && xhr.responseText == 0xcc1) {

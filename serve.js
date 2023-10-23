@@ -463,6 +463,12 @@ app.get("/profile", checkAuth, async (req, res) => {
     res.sendFile("src/profile.html", { root: __dirname });
 });
 
+// scout point transactions
+app.get("/pointRecords", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/pointRecords.html", { root: __dirname });
+});
+
 // get images from pit scouting. images are located in scouting-app/images
 app.get("/pitimages", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -579,6 +585,11 @@ app.get("/api/scouts", apiCheckAuth, async (req, res) => {
 // scout's profile (submitted forms)
 app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req, res) => {
     require("./routes/api/scouts/profile.js").profile(req, res, db);
+});
+
+// scout's point transactions
+app.get("/api/scouts/transactions/me", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts/transactions.js").scoutTransactions(req, res, transactions);
 });
 
 // scout's profile (from discord)

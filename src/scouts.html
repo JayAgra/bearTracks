@@ -17,20 +17,8 @@
         <script src="js/form.min.js"></script>
     </head>
     <body class="dark-mode" onload="getTeamRanks()">
-        <script>
-            themeHandle()
-        </script>
-        <div class="container" id="search" style="display: flex;">
-            <!--flex is shown-->
-            <form>
-                <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP</span></h1>
-                <h4>Scout Ranks</h4><br>
-                <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
-            </form>
-            <br><br>
-        </div>
-        <div class="container" id="results" style="display: none;">
-            <!--flex is shown-->
+        <script>themeHandle()</script>
+        <div class="container" id="results" style="display: flex;">
             <div class="dummy">
                 <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP</span></h1>
                 <fieldset>
@@ -43,11 +31,9 @@
                             </tr>
                         </table>
                     </fieldset>
-                    <!--buttons-->
                     <button type="button" class="uiButton actionButton" id="viewScoutsButton" onclick="window.location.reload()">Reload</button><br>
                     <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
                 </fieldset>
-                <br><br>
             </div>
         </div>
         <script src="js/scouts_client.min.js" type="text/javascript"></script>
