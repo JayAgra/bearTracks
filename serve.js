@@ -150,21 +150,14 @@ function invalidJSON(str) {
     }
 }
 
-// check the authentication and server membership
-function checkAuth(req, res, next) {
+app.use((req, res, next) => {
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
-            if (err) {
-                return res.redirect("/login");
-            }
-            if (!result) {
+            if (err || !result || result.accessOk == "false") {
                 return res.redirect("/login");
             }
             if (Number(result.expires) < Date.now()) {
                 res.clearCookie("key");
-                return res.redirect("/login");
-            }
-            if (result.accessOk == "false") {
                 return res.redirect("/login");
             }
             req.user = {
@@ -172,40 +165,34 @@ function checkAuth(req, res, next) {
                 "name": result.name,
                 "admin": result.admin,
                 "key": result.key,
-                "expires": result.expires
+                "expires": result.expires,
+                "accessOk": result.accessOk
             }
             return next();
         });
+    }
+})
+
+// check the authentication and server membership
+function checkAuth(req, res, next) {
+    if (req.user && req.user.accessOk == "true") {
+        if (Number(req.user.expires) < Date.now()) {
+            res.clearCookie("key");
+            return res.redirect("/login");
+        }
+        return next();
     }
     return res.redirect("/login");
 }
 
 // check the authentication and server membership
 function apiCheckAuth(req, res, next) {
-    if (req.cookies.key) {
-        authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
-            if (err) {
-                return res.status(401).send("" + 0x1911);
-            }
-            if (!result) {
-                return res.status(401).send("" + 0x1911);
-            }
-            if (Number(result.expires) < Date.now()) {
-                res.clearCookie("key");
-                return res.status(403).send("" + 0x1932);
-            }
-            if (result.accessOk == "false") {
-                return res.status(403).send("" + 0x1932);
-            }
-            req.user = {
-                "id": result.userId,
-                "name": result.name,
-                "admin": result.admin,
-                "key": result.key,
-                "expires": result.expires
-            }
-            return next();
-        });
+    if (req.user && req.user.accessOk == "true") {
+        if (Number(req.user.expires) < Date.now()) {
+            res.clearCookie("key");
+            return res.status(401).send("" + 0x1911);
+        }
+        return next();
     }
     return res.status(401).send("" + 0x1911);
 }
