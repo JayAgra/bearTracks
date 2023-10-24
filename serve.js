@@ -151,11 +151,10 @@ function invalidJSON(str) {
 }
 
 app.use((req, res, next) => {
-    if (req.path == "/login") return next();
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
             if (err || !result || Number(result.expires) < Date.now()) {
-                return res.clearCookie("key");
+                res.clearCookie("key");
             } else {
                 req.user = {
                     "id": result.userId,
@@ -164,8 +163,8 @@ app.use((req, res, next) => {
                     "key": result.key,
                     "expires": result.expires,
                 }
-                return next();
             }
+            return next();
         });
     }
 })
@@ -689,6 +688,7 @@ app.post("/login", (req, res) => {
 
 // clear cookies, used for debugging
 app.get("/clearCookies", (req, res) => {
+    authDb.run("DELETE FROM keys WHERE key=?", [req.cookies.key], (err) => {});
     res.clearCookie("connect.sid");
     res.clearCookie("lead");
     res.clearCookie("key");
@@ -697,13 +697,10 @@ app.get("/clearCookies", (req, res) => {
 
 // destroy session
 app.get("/logout", (req, res) => {
-    if (req.session) {
-        res.clearCookie("key");
-        res.clearCookie("lead");
-        res.redirect("/login");
-    } else {
-        res.send("error!");
-    }
+    authDb.run("DELETE FROM keys WHERE key=?", [req.cookies.key], (err) => {});
+    res.clearCookie("key");
+    res.clearCookie("lead");
+    res.redirect("/login");
 });
 
 if (certsizes.key <= 100 || certsizes.cert <= 100) {
