@@ -13,7 +13,9 @@ async function getTeamRanks() {
             const resJson = JSON.parse(xhr.responseText);
             var htmltable = "";
             for (var i = 0; i < resJson.length; i++) {
-                htmltable += `<tr><td><a href="/browse?discordID=${resJson[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${resJson[i].username}</a></td><td>${Math.round(resJson[i].score)}</td></tr>`;
+                if (resJson[i].accessOk == "true") {
+                    htmltable += `<tr><td><a href="/browse?userId=${resJson[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">${resJson[i].nickName}</a></td><td>${Math.round(resJson[i].score)}</td></tr>`;
+                }
             }
             document.getElementById("preInsert").insertAdjacentHTML("afterend", htmltable)
             document.getElementById("eventCodeDisplay").innerHTML = `Top scouts`;

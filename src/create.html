@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Login - 766 Scouting</title>
+        <title>Create Account - 766 Scouting</title>
         <meta name="language" content="English">
         <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,14 +22,14 @@
         <div class="container">
             <div class="dummy">
                 <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1>
-                <h2>Log In</h2><br>
-                <form action="/loginForm" target="_self" method="POST">
+                <h2>Create Account</h2><br>
+                <form action="/createAccount" target="_self" method="POST">
+                    <label for="fullName">Full Name</label><br><input type="text" name="fullName" autocomplete="name" style="min-width: 20rem;" required><br><br>
+                    <label for="nickName">Short Name</label><br><input type="text" name="nickName" autocomplete="nickname" style="min-width: 20rem;" required><br><br>
                     <label for="email">Email</label><br><input type="email" name="email" autocomplete="email" style="min-width: 20rem;" required><br><br>
-                    <label for="password">Password</label><br><input type="password" name="password" autocomplete="password" style="min-width: 20rem;" required><br><br><br>
-                    <button type="submit" class="uiButton actionButton">Log In</button>
+                    <label for="password">Password</label><br><input type="password" name="password" autocomplete="new-password" style="min-width: 20rem;" required><br><br><br>
+                    <button type="submit" class="uiButton actionButton">Create Account</button>
                 </form>
-                <br><br>
-                <small style="text-align: center;"><a href="create" style="all: unset; color: var(--gameFlairColor);">create account&emsp;</a></small><br>
             </div>
         </div>
     </body>

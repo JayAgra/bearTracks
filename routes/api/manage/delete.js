@@ -2,9 +2,9 @@ function getSafeDbName(input) {
     return input === "pit" ? "pit" : "main";
 }
 
-async function deleteSubmission(req, res, db, transactions, leadToken) {
-    if (req.cookies.lead === leadToken) {
-        const stmt = `SELECT discordID FROM ${getSafeDbName(req.params.database)} WHERE id=?`;
+async function deleteSubmission(req, res, db, transactions, authDb) {
+    if (req.user.admin == "true") {
+        const stmt = `SELECT userId FROM ${getSafeDbName(req.params.database)} WHERE id=?`;
         const values = [req.params.submissionId];
         await db.get(stmt, values, (err, result) => {
             if (err) {
@@ -12,16 +12,16 @@ async function deleteSubmission(req, res, db, transactions, leadToken) {
                 res.status(500).send("" + 0x1f41);
                 return;
             }
-            const getUserIDstmt = `UPDATE scouts SET score = score - ? WHERE discordID=?`;
-            const getUserIdValues = [(req.params.database == "pit" ? 35 : 25), result.discordID];
-            db.run(getUserIDstmt, getUserIdValues, (err) => {
+            const updateUserStmt = `UPDATE users SET score = score - ? WHERE id=?`;
+            const updateUserValues = [(req.params.database == "pit" ? 35 : 25), result.userId];
+            authDb.run(updateUserStmt, updateUserValues, (err) => {
                 if (err) {
                     console.error(err);
                     res.status(500).send("" + 0x1f42);
                     return;
                 }
             });
-            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [result.discordID, (req.params.database == "pit" ? 0x2001 : 0x2000), (req.params.database == "pit" ? -35 : -25)], (err) => {
+            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [result.userId, (req.params.database == "pit" ? 0x2001 : 0x2000), (req.params.database == "pit" ? -35 : -25)], (err) => {
                 if (err) {
                     res.status(500).send("" + 0x1f42);
                     return;

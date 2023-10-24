@@ -47,7 +47,7 @@ async function loadData() {
         }
 
         const listRes = await response.json();
-        var text = `<b>Author:</b> ${listRes.discordName}#${listRes.discordTag}<br><br>` +
+        var text = `<b>Author:</b> ${listRes.name}<br><br>` +
                 `<b>AUTO: <br>Taxi: </b>${emojiValue(listRes.game1)}<br>` +
                 `<b>Score B/M/T: </b>${emojiValue(listRes.game2)}${emojiValue(listRes.game3)}${emojiValue(listRes.game4)}<br>` +
                 `<b>Charging: </b>${listRes.game5} pts<br><br>` +

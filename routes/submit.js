@@ -9,7 +9,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitForm(req, res, db, transactions, dirname, season) {
+function submitForm(req, res, db, transactions, authDb, dirname, season) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -33,12 +33,10 @@ function submitForm(req, res, db, transactions, dirname, season) {
                 formscoresdj = 20;
             }
             // db statement
-            let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            // values (escaped!) from POST data
+            let stmt = `INSERT INTO main (event, season, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, defend, driving, overall, userId, name, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             let values = [
                 escapeHTML(formData.event),
                 season,
-                escapeHTML(req.user.username),
                 escapeHTML(formData.team),
                 escapeHTML(formData.match),
                 escapeHTML(formData.level),
@@ -67,14 +65,11 @@ function submitForm(req, res, db, transactions, dirname, season) {
                 escapeHTML(formData.game23),
                 escapeHTML(formData.game24),
                 escapeHTML(formData.game25),
-                "dropped",
                 escapeHTML(formData.defend),
                 escapeHTML(formData.driving),
                 escapeHTML(formData.overall),
                 escapeHTML(req.user.id),
-                escapeHTML(req.user.username),
-                escapeHTML(req.user.discriminator),
-                escapeHTML(req.user.avatar),
+                escapeHTML(req.user.name),
                 0,
                 "0",
             ];
@@ -87,9 +82,9 @@ function submitForm(req, res, db, transactions, dirname, season) {
                 require(`./${season}.js`).weightScores(this.lastID, db);
             });
             // statement to credit points
-            let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+            let pointStmt = `UPDATE users SET score = score + ? WHERE id=?`;
             let pointValues = [formscoresdj, req.user.id];
-            db.run(pointStmt, pointValues, (err) => {
+            authDb.run(pointStmt, pointValues, (err) => {
                 if (err) {
                     console.error(err);
                     res.status(500).send("" + 0x1f42);

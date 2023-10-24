@@ -6,6 +6,9 @@
 `0xc82`&emsp;`3202`&emsp;`note updated`<br>
 `0xc83`&emsp;`3203`&emsp;`content deleted`<br>
 `0xc84`&emsp;`3204`&emsp;`points updated`<br>
+`0xc85`&emsp;`3205`&emsp;`account created`<br>
+`0xc86`&emsp;`3206`&emsp;`access updated`<br>
+`0xc87`&emsp;`3207`&emsp;`key revoked`<br>
 ### 204 no content
 `0xcc0`&emsp;`3264`&emsp;`no content`<br>
 `0xcc1`&emsp;`3265`&emsp;`no query results`<br>
@@ -22,8 +25,12 @@
 ### 403 forbidden
 `0x1930`&emsp;`6448`&emsp;`forbidden`<br>
 `0x1931`&emsp;`6449`&emsp;`not a lead scout`<br>
-`0x1932`&emsp;`6450`&emsp;`not in team server`<br>
+`0x1932`&emsp;`6450`&emsp;`account not approved`<br>
 `0x1933`&emsp;`6451`&emsp;`not enough money to gamble`<br>
+### 409 conflict
+`0x1990`&emsp;`6544`&emsp;`conflict`<br>
+`0x1991`&emsp;`6545`&emsp;`email used`<br>
+`0x1992`&emsp;`6546`&emsp;`bad credentials`<br>
 ## 500s
 ### 500 internal server error
 `0x1f40`&emsp;`8000`&emsp;`unknown error`<br>

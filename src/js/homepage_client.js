@@ -5,7 +5,7 @@ const getCookie = (name) => {
     }, '')
 }
 
-if (getCookie("isLead") === "true") {
+if (getCookie("lead") === "true") {
     var url = document.getElementById("additionalUrl");
     url.style.display = "unset";
 }
