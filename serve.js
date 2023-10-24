@@ -167,6 +167,7 @@ app.use((req, res, next) => {
             return next();
         });
     }
+    return next();
 })
 
 // check the authentication and server membership
