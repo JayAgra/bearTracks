@@ -172,7 +172,7 @@ app.use((req, res, next) => {
 
 // check the authentication and server membership
 function checkAuth(req, res, next) {
-    if (req.user.key) {
+    if (Object.hasOwn(req.user, "key")) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
             return res.redirect("/login");
@@ -184,7 +184,7 @@ function checkAuth(req, res, next) {
 
 // check the authentication and server membership
 function apiCheckAuth(req, res, next) {
-    if (req.user.key) {
+    if (Object.hasOwn(req.user, "key")) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
             return res.status(401).send("" + 0x1911);
