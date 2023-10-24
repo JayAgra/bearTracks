@@ -7,7 +7,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitPit(req, res, db, transactions, dirname, season) {
+function submitPit(req, res, db, transactions, authDb, dirname, season) {
     // get body of POST data
     let formData = req.body;
     // db statement
@@ -16,7 +16,7 @@ function submitPit(req, res, db, transactions, dirname, season) {
     let values = [
         escapeHTML(formData.event),
         season,
-        escapeHTML(req.user.username),
+        escapeHTML(req.user.name),
         escapeHTML(formData.team),
         escapeHTML(formData.drivetype),
         escapeHTML(formData.game1),
@@ -45,9 +45,9 @@ function submitPit(req, res, db, transactions, dirname, season) {
         escapeHTML(formData.bqual),
         escapeHTML(formData.overall),
         escapeHTML(req.user.id),
-        escapeHTML(req.user.username),
-        escapeHTML(req.user.discriminator),
-        escapeHTML(req.user.avatar),
+        escapeHTML(req.user.name),
+        escapeHTML(0),
+        escapeHTML("0"),
         req.files.image1[0].filename,
         req.files.image2[0].filename,
         req.files.image3[0].filename,
@@ -63,9 +63,9 @@ function submitPit(req, res, db, transactions, dirname, season) {
     });
     // credit points to scout
     // TODO: variable points on pit form
-    let pointStmt = `UPDATE scouts SET score = score + 35 WHERE discordID=?`;
+    let pointStmt = `UPDATE users SET score = score + 35 WHERE id=?`;
     let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
+    authDb.run(pointStmt, pointValues, (err) => {
         if (err) {
             console.error(err);
             res.status(500).send("" + 0x1f42);

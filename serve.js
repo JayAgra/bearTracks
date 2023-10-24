@@ -12,13 +12,7 @@ const {
     frcapi,
     myteam,
     season,
-    clientId,
-    clientSec,
-    redirectURI,
-    teamServerID,
     baseURLNoPcl,
-    anotherServerID,
-    currentComp,
     serverSecret,
 } = require("./config.json");
 
@@ -32,6 +26,10 @@ const transactions = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READW
     console.log(err);
 });
 transactions.run("PRAGMA journal_mode = WAL;");
+const authDb = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err) => {
+    console.log(err);
+});
+authDb.run("PRAGMA journal_mode = WAL;");
 
 // server imports
 const fs = require("fs");
@@ -123,43 +121,6 @@ app.use(
 );
 app.use(limiter);
 
-// SETUP OAUTH
-const passport = require("passport");
-const Strategy = require("passport-discord").Strategy;
-passport.serializeUser((user, done) => {
-    "use strict";
-    done(null, user);
-});
-passport.deserializeUser((obj, done) => {
-    "use strict";
-    done(null, obj);
-});
-const scopes = [
-    "identify",
-    "email",
-    "guilds",
-    "guilds.members.read",
-    "role_connections.write",
-];
-passport.use(
-    new Strategy(
-        {
-            clientID: clientId,
-            clientSecret: clientSec,
-            callbackURL: redirectURI,
-            scope: scopes,
-        },
-        function (accessToken, refreshToken, profile, done) {
-            "use strict";
-            process.nextTick(() => {
-                return done(null, profile);
-            });
-        }
-    )
-);
-app.use(passport.initialize());
-app.use(passport.session());
-
 // image uploading
 const qs = require("querystring");
 const multer = require("multer");
@@ -189,62 +150,72 @@ function invalidJSON(str) {
     }
 }
 
-// check the JSON file to see if the user is in the team discord server
-function inTeamServer(json) {
-    var isInTheServer = false;
-    for (var index = 0; index < json.length; ++index) {
-        var server = json[index];
-        if (server.id == teamServerID || server.id == anotherServerID) {
-            isInTheServer = true;
-            break;
-        }
-    }
-    return isInTheServer;
-}
-
 // check the authentication and server membership
 function checkAuth(req, res, next) {
-    if (req.isAuthenticated() && inTeamServer(req.user.guilds)) {
-        return addToDataBase(req, next);
+    if (req.cookies.key) {
+        authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
+            if (err) {
+                return res.redirect("/login");
+            }
+            if (!result) {
+                return res.redirect("/login");
+            }
+            if (Number(result.expires) < Date.now()) {
+                res.clearCookie("key");
+                return res.redirect("/login");
+            }
+            if (result.accessOk == "false") {
+                return res.redirect("/login");
+            }
+            req.user.id = result.userId;
+            req.user.name = result.name;
+            req.user.admin = result.admin;
+            req.user.key = result.key;
+            req.user.expires = result.expires;
+            return next();
+        });
     }
-    if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) {
-        return res.redirect("/denied");
-    }
-    res.redirect("/login");
+    return res.redirect("/login");
 }
 
 // check the authentication and server membership
 function apiCheckAuth(req, res, next) {
-    if (req.isAuthenticated() && inTeamServer(req.user.guilds)) {
-        return next();
+    if (req.cookies.key) {
+        authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
+            if (err) {
+                return res.status(401).send("" + 0x1911);
+            }
+            if (!result) {
+                return res.status(401).send("" + 0x1911);
+            }
+            if (Number(result.expires) < Date.now()) {
+                res.clearCookie("key");
+                return res.status(403).send("" + 0x1932);
+            }
+            if (result.accessOk == "false") {
+                return res.status(403).send("" + 0x1932);
+            }
+            req.user.id = result.userId;
+            req.user.name = result.name;
+            req.user.admin = result.admin;
+            req.user.key = result.key;
+            req.user.expires = result.expires;
+            return next();
+        });
     }
-    if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) {
-        return res.status(403).send("" + 0x1932);
-    }
-    res.status(401).send("" + 0x1911);
+    return res.status(401).send("" + 0x1911);
 }
 
 async function checkGamble(req, res, next) {
-    let pointStmt = `SELECT score FROM scouts WHERE discordID=?`;
+    let pointStmt = `SELECT score FROM users WHERE id=?`;
     let pointValues = [req.user.id];
-    db.get(pointStmt, pointValues, (err, result) => {
+    authDb.get(pointStmt, pointValues, (err, result) => {
         if (Number(result.score) > -2000) {
             return next();
         } else {
             return res.status(403).send("" + 0x1933);
         }
     });
-}
-
-// add scouts to database
-async function addToDataBase(req, next) {
-    // creating a password for, uh, something i guess
-    const password = crypto.randomBytes(12).toString("hex");
-    // update email, avatar, username, discrim, and times
-    db.run(`UPDATE scouts SET email="${req.user.email}", discordProfile="${req.user.avatar}", username="${req.user.username}", discriminator=${req.user.discriminator}, addedAt="${req.user.fetchedAt}" WHERE discordID=${req.user.id}`);
-    // add to db if not in already
-    db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt, badges) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}", 0000000000)`);
-    return next();
 }
 
 // forwards FRC API data for some API endpoints
@@ -306,7 +277,7 @@ app.disable("etag");
 
 // get the main form submissions
 app.post("/submit", checkAuth, async (req, res) => {
-    require("./routes/submit.js").submitForm(req, res, db, transactions, __dirname, season);
+    require("./routes/submit.js").submitForm(req, res, db, transactions, authDb, __dirname, season);
 });
 
 // use this thing to do the pit form image thing
@@ -319,7 +290,7 @@ const imageUploads = upload.fields([
 ]);
 
 app.post("/submitPit", checkAuth, imageUploads, async (req, res) => {
-    require("./routes/submitPit.js").submitPit(req, res, db, transactions, __dirname, season);
+    require("./routes/submitPit.js").submitPit(req, res, db, transactions, authDb, __dirname, season);
 });
 
 
@@ -331,7 +302,8 @@ app.post("/submitPit", checkAuth, imageUploads, async (req, res) => {
 
 // homepage. ok, fine, this is not super static
 app.get("/", checkAuth, async (req, res) => {
-    require("./routes/index.js").index(req, res, __dirname, leadToken);
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/index.html", { root: __dirname });
 });
 
 // main scouting form
@@ -352,6 +324,12 @@ app.get("/login", async (req, res) => {
     res.sendFile("src/login.html", { root: __dirname });
 });
 
+// create account page
+app.get("/create", async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/create.html", { root: __dirname });
+});
+
 // webmanifest for PWAs
 app.get("/app.webmanifest", async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -370,13 +348,21 @@ app.get("/teams", checkAuth, async (req, res) => {
 });
 
 app.get("/manage", checkAuth, async (req, res) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/manage.html", { root: __dirname });
+    if (req.user.admin == "true") {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/manage.html", { root: __dirname });
+    } else {
+        res.redirect("/denied");
+    }
 });
 
 app.get("/manageScouts", checkAuth, async (req, res) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/manageScouts.html", { root: __dirname });
+    if (req.user.admin == "true") {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/manageScouts.html", { root: __dirname });
+    } else {
+        res.redirect("/denied");
+    }
 });
 
 // CSS (should be unused in favor of minified css)
@@ -579,12 +565,12 @@ app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req, res)
 
 // list of scouts & points
 app.get("/api/scouts", apiCheckAuth, async (req, res) => {
-    require("./routes/api/scouts.js").scouts(req, res, db);
+    require("./routes/api/scouts.js").scouts(req, res, authDb);
 });
 
 // scout's profile (submitted forms)
 app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req, res) => {
-    require("./routes/api/scouts/profile.js").profile(req, res, db);
+    require("./routes/api/scouts/profile.js").profile(req, res, authDb);
 });
 
 // scout's point transactions
@@ -606,11 +592,19 @@ app.get("/api/manage/:database/list", checkAuth, async (req, res) => {
 });
 
 app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res) => {
-    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, leadToken);
+    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, authDb);
 });
 
-app.get("/api/manage/scout/:discordID/:modify/:reason", checkAuth, async (req, res) => {
-    require("./routes/api/manage/user.js").updateScout(req, res, db, transactions, leadToken);
+app.get("/api/manage/scout/points/:discordID/:modify/:reason", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user/points.js").updateScout(req, res, transactions, authDb);
+});
+
+app.get("/api/manage/scout/access/:id/:accessOk", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user/access.js").updateAccess(req, res, authDb);
+});
+
+app.get("/api/manage/scout/revokeKey/:id", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user/revokeKey.js").revokeKey(req, res, authDb);
 });
 
 //
@@ -619,12 +613,12 @@ app.get("/api/manage/scout/:discordID/:modify/:reason", checkAuth, async (req, r
 
 // slots (unused)
 app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
-    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db, transactions);
+    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, authDb, transactions);
 });
 
 // spin wheel thing
 app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db, transactions);
+    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, authDb, transactions);
  });
 
 //
@@ -696,19 +690,12 @@ app.get("/api/whoami", apiCheckAuth, (req, res) => {
 //////////////////////////////////
 //////////////////////////////////
 
-// auth functions
-app.get("/", passport.authenticate("discord"));
-
-app.get("/callback", passport.authenticate("discord", { failureRedirect: "/" }), (req, res) => {
-    res.redirect("/");
+app.post("/createAccount", (req, res) => {
+    require("./routes/api/auth/create.js").createAccount(req, res, authDb);
 });
 
-// send users to discord to login when the /loginDiscord url is visited
-app.get("/loginDiscord", passport.authenticate("discord", { scope: scopes }), (req, res) => {});
-
-// get the auth code from discord (the code parameter) and use it to get a token
-app.get("/callback", passport.authenticate("discord", { failureRedirect: "/login" }), (req, res) => {
-    res.redirect("/");
+app.post("/login", (req, res) => {
+    require("./routes/api/auth/login.js").checkLogIn(req, res, authDb);
 });
 
 // clear cookies, used for debugging
@@ -716,13 +703,14 @@ app.get("/clearCookies", (req, res) => {
     res.clearCookie("connect.sid");
     res.clearCookie("lead");
     res.clearCookie("isLead");
+    res.clearCookie("key");
     res.redirect("/");
 });
 
 // destroy session
 app.get("/logout", (req, res) => {
     if (req.session) {
-        req.session.destroy();
+        res.clearCookie("key");
         res.redirect("/");
     } else {
         res.send("error!");

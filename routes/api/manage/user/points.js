@@ -1,8 +1,8 @@
-async function updateScout(req, res, db, transactions, leadToken) {
-    if (req.cookies.lead === leadToken) {
-        const setUserScoreStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+async function updateScout(req, res, transactions, authDb) {
+    if (req.user.admin == "true") {
+        const setUserScoreStmt = `UPDATE users SET a = score + ? WHERE id=?`;
         const setUserScoreVals = [Number(req.params.modify), req.params.discordID];
-        db.run(setUserScoreStmt, setUserScoreVals, (err) => {
+        authDb.run(setUserScoreStmt, setUserScoreVals, (err) => {
             if (err) {
                 console.error(err);
                 res.status(500).send("" + 0x1f42);

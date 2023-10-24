@@ -1,13 +1,13 @@
-async function slotSpin(req, res, db, transactions) {
+async function slotSpin(req, res, authDb, transactions) {
     const spin = [
         Math.floor(Math.random() * 7 + 1),
         Math.floor(Math.random() * 7 + 1),
         Math.floor(Math.random() * 7 + 1),
     ];
     if (spin[0] === spin[1] && spin[0] === spin[2]) {
-        let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
+        let pointStmt = `UPDATE users SET score = score + 766 WHERE id=?`;
         let pointValues = [req.user.id];
-        db.run(pointStmt, pointValues, (err) => {
+        authDb.run(pointStmt, pointValues, (err) => {
             if (err) {
                 res.status(500).send("" + 0x1f42);
                 return;
@@ -24,9 +24,9 @@ async function slotSpin(req, res, db, transactions) {
             }
         });
     } else {
-        let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
+        let pointStmt = `UPDATE users SET score = score - 10 WHERE id=?`;
         let pointValues = [req.user.id];
-        db.run(pointStmt, pointValues, (err) => {
+        authDb.run(pointStmt, pointValues, (err) => {
             if (err) {
                 res.status(500).send("" + 0x1f42);
                 return;

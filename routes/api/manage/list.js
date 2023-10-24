@@ -3,7 +3,7 @@ function getSafeDbName(input) {
 }
 
 async function listSubmissions(req, res, db, leadToken) {
-    if (req.cookies.lead === leadToken) {
+    if (req.user.admin == "true") {
         const stmt = `SELECT id FROM ${getSafeDbName(req.params.database)} ORDER BY id ASC`;
         db.all(stmt, (err, result) => {
             if (err) {

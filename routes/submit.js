@@ -9,7 +9,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitForm(req, res, db, transactions, dirname, season) {
+function submitForm(req, res, db, transactions, authDb, dirname, season) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -38,7 +38,7 @@ function submitForm(req, res, db, transactions, dirname, season) {
             let values = [
                 escapeHTML(formData.event),
                 season,
-                escapeHTML(req.user.username),
+                escapeHTML(req.user.name),
                 escapeHTML(formData.team),
                 escapeHTML(formData.match),
                 escapeHTML(formData.level),
@@ -67,14 +67,14 @@ function submitForm(req, res, db, transactions, dirname, season) {
                 escapeHTML(formData.game23),
                 escapeHTML(formData.game24),
                 escapeHTML(formData.game25),
-                "dropped",
+                "0",
                 escapeHTML(formData.defend),
                 escapeHTML(formData.driving),
                 escapeHTML(formData.overall),
                 escapeHTML(req.user.id),
-                escapeHTML(req.user.username),
-                escapeHTML(req.user.discriminator),
-                escapeHTML(req.user.avatar),
+                escapeHTML(req.user.name),
+                escapeHTML(0),
+                escapeHTML("0"),
                 0,
                 "0",
             ];
@@ -87,9 +87,9 @@ function submitForm(req, res, db, transactions, dirname, season) {
                 require(`./${season}.js`).weightScores(this.lastID, db);
             });
             // statement to credit points
-            let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
+            let pointStmt = `UPDATE users SET score = score + ? WHERE id=?`;
             let pointValues = [formscoresdj, req.user.id];
-            db.run(pointStmt, pointValues, (err) => {
+            authDb.run(pointStmt, pointValues, (err) => {
                 if (err) {
                     console.error(err);
                     res.status(500).send("" + 0x1f42);
