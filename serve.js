@@ -167,11 +167,13 @@ function checkAuth(req, res, next) {
             if (result.accessOk == "false") {
                 return res.redirect("/login");
             }
-            req.user.id = result.userId;
-            req.user.name = result.name;
-            req.user.admin = result.admin;
-            req.user.key = result.key;
-            req.user.expires = result.expires;
+            req.user = {
+                "id": result.userId,
+                "name": result.name,
+                "admin": result.admin,
+                "key": result.key,
+                "expires": result.expires
+            }
             return next();
         });
     }
@@ -195,11 +197,13 @@ function apiCheckAuth(req, res, next) {
             if (result.accessOk == "false") {
                 return res.status(403).send("" + 0x1932);
             }
-            req.user.id = result.userId;
-            req.user.name = result.name;
-            req.user.admin = result.admin;
-            req.user.key = result.key;
-            req.user.expires = result.expires;
+            req.user = {
+                "id": result.userId,
+                "name": result.name,
+                "admin": result.admin,
+                "key": result.key,
+                "expires": result.expires
+            }
             return next();
         });
     }
