@@ -151,6 +151,7 @@ function invalidJSON(str) {
 }
 
 app.use((req, res, next) => {
+    if (req.path === "/login") return next();
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
             if (err || !result || Number(result.expires) < Date.now()) {
@@ -174,6 +175,7 @@ app.use((req, res, next) => {
 
 // check the authentication and server membership
 function checkAuth(req, res, next) {
+    console.log(req.user);
     if (req.user !== false) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
@@ -685,7 +687,7 @@ app.post("/createAccount", (req, res) => {
     require("./routes/api/auth/create.js").createAccount(req, res, authDb);
 });
 
-app.post("/login", (req, res) => {
+app.post("/loginForm", (req, res) => {
     require("./routes/api/auth/login.js").checkLogIn(req, res, authDb);
 });
 
