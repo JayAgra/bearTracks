@@ -151,6 +151,7 @@ function invalidJSON(str) {
 }
 
 app.use((req, res, next) => {
+    if (req.path == "/login") return next();
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
             if (err || !result || Number(result.expires) < Date.now()) {
@@ -307,6 +308,7 @@ app.get("/pit", checkAuth, async (req, res) => {
 
 // login page
 app.get("/login", async (req, res) => {
+    res.clearCookie("key");
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/login.html", { root: __dirname });
 });
