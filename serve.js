@@ -691,16 +691,16 @@ app.post("/login", (req, res) => {
 app.get("/clearCookies", (req, res) => {
     res.clearCookie("connect.sid");
     res.clearCookie("lead");
-    res.clearCookie("isLead");
     res.clearCookie("key");
-    res.redirect("/");
+    res.redirect("/login");
 });
 
 // destroy session
 app.get("/logout", (req, res) => {
     if (req.session) {
         res.clearCookie("key");
-        res.redirect("/");
+        res.clearCookie("lead");
+        res.redirect("/login");
     } else {
         res.send("error!");
     }
