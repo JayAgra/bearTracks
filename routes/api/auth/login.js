@@ -31,7 +31,7 @@ function checkLogIn(req, res, authDb) {
                             ];
                             authDb.run(keyStmt, keyValues, (err) => {
                                 if (err) {
-                                    res.status(500).send("" + 0x1f42);
+                                    res.status(500).send("" + 0x1f42 + " internal server error (500)");
                                 } else {
                                     res.cookie("key", key, {
                                         expire: Date.now() + 24 * 60 * 60 * 1000,
@@ -51,7 +51,7 @@ function checkLogIn(req, res, authDb) {
                                 }
                             });
                         } else {
-                            res.status(409).send("" + 0x1992);
+                            res.status(409).send("" + 0x1992 + " bad username/password");
                         }
                     }
                 } else {

@@ -12,7 +12,7 @@ function createAccount(req, res, authDb) {
         let accountData = qs.parse(body);
         authDb.all("SELECT id FROM users WHERE email=?", [accountData.email], (err, result) => {
             if (err) {
-                res.status(500).send("" + 0x1f42);
+                res.status(500).send("" + 0x1f42 + " internal server error (500)");
             }
             if (result.length === 0) {
                 const stmt = "INSERT INTO users (email, fullName, nickName, passHash, admin, accessOk, recentAttempts, lastLogin, score) VALUES (?, ?, ?, ?, 'false', 'false', 0, ?, 0)";
@@ -26,7 +26,7 @@ function createAccount(req, res, authDb) {
                     }
                 })
             } else {
-                res.status(409).send("" + 0x1991);
+                res.status(409).send("" + 0x1991 + " email already in use");
             }
         });
     });
