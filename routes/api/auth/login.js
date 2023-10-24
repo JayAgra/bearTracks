@@ -14,7 +14,7 @@ function checkLogIn(req, res, authDb) {
             if (err) {
                 res.status(500).send("" + 0x1f42);
             } else {
-                if (result.accessOK == "true") {
+                if (result.accessOk == "true") {
                     if (!result) {
                         res.status(409).send("" + 0x1992);
                     } else {
@@ -55,7 +55,7 @@ function checkLogIn(req, res, authDb) {
                         }
                     }
                 } else {
-                    res.status(403).send("" + 0x1932 + "account not yet approved for access by an admin.");
+                    res.status(403).send("" + 0x1932 + " account not yet approved for access by an admin.");
                 }
             }
         });
