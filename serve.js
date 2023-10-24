@@ -673,7 +673,7 @@ app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req, res) => {
 
 // whoami
 app.get("/api/whoami", apiCheckAuth, (req, res) => {
-    res.send(req.user.id);
+    res.send("" + req.user.id);
 });
 
 //////////////////////////////////
