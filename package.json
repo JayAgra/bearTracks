@@ -1,6 +1,6 @@
 {
   "name": "scouting-app",
-  "version": "2023.1.8.4",
+  "version": "2023.1.8.5",
   "main": "serve.js",
   "dependencies": {
     "cookie-parser": "^1.4.6",
@@ -25,8 +25,9 @@
   "keywords": [],
   "author": "JayAgra",
   "license": "MIT",
+  "repository": "https://github.com/JayAgra/scouting-app.git",
   "devDependencies": {
     "node": "^16.13.2"
   },
-  "description": "Scouting app for FRC. Connects with discord."
+  "description": "Scouting app for FRC."
 }

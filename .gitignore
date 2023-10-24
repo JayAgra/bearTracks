@@ -2,3 +2,7 @@
 *.DS_Store*
 config.json
 *.dccache*
+data.db-shm
+data.db-wal
+data_transact.db-shm
+data_transact.db-wal

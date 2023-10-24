@@ -26,6 +26,15 @@ if [ "$1" ]; then
     elif [ "$1" = "renewssl" ]; then 
         ## assumes pm2
         certbot renew --deploy-hook='pm2 restart all'
+    elif [ "$1" = "savedb" ]; then
+        # save database file to the /images directory for backups
+        rm data.zip
+        zip data.zip data.db data.db-shm data.db-wal data_transact.db data_transact.db-shm data_transact.db-wal
+        rm images/data.zip
+        mv data.zip images/data.zip
+    elif [ "$1" = "clearbackup" ]; then
+        rm images/data.zip
+        rm data.zip
     else
         echo "invalad parameter"
     fi
