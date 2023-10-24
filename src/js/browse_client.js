@@ -11,9 +11,12 @@ function eV(value) {
     }
 }
 
-async function search() {
-    const num = Number(numberInput.value);
-    if (num < 1 || isNaN(num)) {
+function callSearch() {
+    search(Number(numberInput.value), eventCode.value, document.getElementById("type").value)
+}
+
+async function search(num, eCode, searchType = "team") {
+    if (num < 0 || isNaN(num)) {
         numberInput.style.borderColor = "var(--cancelColor)";
         return;
     }
@@ -22,11 +25,11 @@ async function search() {
         fetchEndpoint, 
         type, 
         htmlTable = "";
-    if (document.getElementById("type").value === "team") {
-        fetchEndpoint = `/api/data/current/team/${eventCode.value}/${num}`;
+    if (searchType === "team") {
+        fetchEndpoint = `/api/data/current/team/${eCode}/${num}`;
         type = "team";
     } else {
-        fetchEndpoint = `/api/data/current/match/${eventCode.value}/${num}`;
+        fetchEndpoint = `/api/data/current/match/${eCode}/${num}`;
         type = "match";
     }
 
@@ -183,11 +186,80 @@ async function search() {
     }
 }
 
-document.getElementById("number").onkeyup = (e) => {
+async function searchOnLoad() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const discordId = urlParams.get("discordID");
+    if (discordId) {
+        try {
+            response = await fetch(`/api/data/current/scout/${discordId}`, {
+                method: "GET",
+                credentials: "include",
+                redirect: "follow",
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = "/login";
+                return;
+            }
+
+            if (response.status === 204) {
+                error.innerText = "no results";
+                error.style.display = "unset";
+            }
+
+            listRes = await response.json();
+            var avg = {
+                "auto_charge": 0,
+                "teleop_charge": 0,
+                "grid": 0,
+                "cycle": 0,
+                "perf_score": 0
+            };
+
+            var htmlTable = "";
+            for (var i = 0; i < listRes.length; i++) {
+                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a></td><td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td><td>${listRes[i].game5}</td><td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td><td>${listRes[i].game10}</td><td>${listRes[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${listRes[i].game11}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
+                avg.auto_charge += Number(listRes[i].game5);
+                avg.teleop_charge += Number(listRes[i].game10);
+                avg.grid += Number(listRes[i].game25);
+                avg.cycle += Number(listRes[i].game11);
+                avg.perf_score += Number(listRes[i].weight.split(",")[0]);
+            }
+
+            for (let key in avg) {
+                avg[key] /= listRes.length;
+            }
+
+            htmlTable += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
+            document.getElementById("subheadings").insertAdjacentHTML("afterend", htmlTable);
+            document.getElementById("search").style.display = "none";
+            document.getElementById("results").style.display = "flex";
+        } catch (err) {
+            searchBtn.innerText = "error";
+            error.innerText = "no results";
+            error.style.display = "unset";
+            console.error(err);
+        }
+    } else {
+        if (urlParams.get("number") && urlParams.get("event") && urlParams.get("type")) {
+            search(urlParams.get("number"), urlParams.get("event"), urlParams.get("type"));
+        }
+    }
+}
+
+document.getElementById("number").addEventListener("keyup", (e) => {
     if (e.target.value !== "") {
         document.getElementById("number").style.borderColor = "var(--defaultInputColor)";
     }
-}
+})
+
+window.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        if (document.getElementById("results").style.display === "none") {
+            callSearch();
+        }
+    }
+})
 
 function goToHome() {
     window.location.href = "/";

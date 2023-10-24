@@ -1,4 +1,4 @@
-async function slotSpin(req, res, db) {
+async function slotSpin(req, res, db, transactions) {
     const spin = [
         Math.floor(Math.random() * 7 + 1),
         Math.floor(Math.random() * 7 + 1),
@@ -17,6 +17,12 @@ async function slotSpin(req, res, db) {
                 );
             }
         });
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1501, 766], (err) => {
+            if (err) {
+                res.status(500).send("" + 0x1f42);
+                return;
+            }
+        });
     } else {
         let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
         let pointValues = [req.user.id];
@@ -28,6 +34,12 @@ async function slotSpin(req, res, db) {
                 res.status(200).json(
                     `{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`
                 );
+            }
+        });
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1501, -10], (err) => {
+            if (err) {
+                res.status(500).send("" + 0x1f42);
+                return;
             }
         });
     }

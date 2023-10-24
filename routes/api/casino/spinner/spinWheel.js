@@ -1,7 +1,7 @@
-async function spinWheel(req, res, db) {
-    // 12 spins
-    const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
+// 12 spins
+const spins = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
 
+async function spinWheel(req, res, db, transactions) {
     // weighting (you didnt think this was fair, did you??)
     var spin = Math.floor(Math.random() * 12);
     for (var i = 0; i < 2; i++) {
@@ -19,6 +19,12 @@ async function spinWheel(req, res, db) {
     let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
     let pointValues = [spins[spin], req.user.id];
     db.run(pointStmt, pointValues, (err) => {
+        if (err) {
+            res.status(500).send("" + 0x1f42);
+            return;
+        }
+    });
+    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1500, spins[spin]], (err) => {
         if (err) {
             res.status(500).send("" + 0x1f42);
             return;

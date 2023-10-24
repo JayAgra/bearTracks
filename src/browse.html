@@ -16,10 +16,8 @@
         <meta name="mobile-web-app-capable" content="yes">
         <script src="js/form.min.js"></script>
     </head>
-    <body class="dark-mode">
-        <script>
-            themeHandle()
-        </script>
+    <body class="dark-mode" onload="searchOnLoad()">
+        <script>themeHandle()</script>
         <div class="container" id="search" style="display: flex;">
             <form>
                 <h1 style="font-family: 'raleway-300'">2023 Scouting Data<br><span class="gametitle">CHARGED UP</span></h1>
@@ -40,7 +38,7 @@
                             <option value="CCCC" selected>CCCC - Capital City Classic</option>
                         </select>
                     </fieldset>
-                    <button type="button" class="uiButton actionButton" onclick="search()" id="searchBtn">Search</button><br>
+                    <button type="button" class="uiButton actionButton" onclick="callSearch()" id="searchBtn">Search</button><br>
                     <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
                 </fieldset>
                 <small style="text-align: center;">To see all teams ranked by weighted score <a href="teams" style="all: unset; color: var(--gameFlairColor);">here</a></small><br>
@@ -84,7 +82,7 @@
                         </tr>
                     </table>
                 </div>
-                <button type="button" class="uiButton returnButton" onclick="window.location.reload()">New Search</button>&emsp;<button type="button" class="uiButton returnButton" onclick="goToHome()">Home</button>
+                <button type="button" class="uiButton returnButton" onclick="window.location.href = window.location.pathname;">New Search</button>&emsp;<button type="button" class="uiButton returnButton" onclick="goToHome()">Home</button>
                 <br><br>
                 <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: var(--gameFlairColor);">here</a></small>
             </div>

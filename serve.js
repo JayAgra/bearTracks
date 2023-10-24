@@ -28,6 +28,10 @@ const db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
+const transactions = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err) => {
+    console.log(err);
+});
+transactions.run("PRAGMA journal_mode = WAL;");
 
 // server imports
 const fs = require("fs");
@@ -302,7 +306,7 @@ app.disable("etag");
 
 // get the main form submissions
 app.post("/submit", checkAuth, async (req, res) => {
-    require("./routes/submit.js").submitForm(req, res, db, __dirname, season);
+    require("./routes/submit.js").submitForm(req, res, db, transactions, __dirname, season);
 });
 
 // use this thing to do the pit form image thing
@@ -315,7 +319,7 @@ const imageUploads = upload.fields([
 ]);
 
 app.post("/submitPit", checkAuth, imageUploads, async (req, res) => {
-    require("./routes/submitPit.js").submitPit(req, res, db, __dirname, season);
+    require("./routes/submitPit.js").submitPit(req, res, db, transactions, __dirname, season);
 });
 
 
@@ -368,6 +372,11 @@ app.get("/teams", checkAuth, async (req, res) => {
 app.get("/manage", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/manage.html", { root: __dirname });
+});
+
+app.get("/manageScouts", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/manageScouts.html", { root: __dirname });
 });
 
 // CSS (should be unused in favor of minified css)
@@ -454,6 +463,12 @@ app.get("/profile", checkAuth, async (req, res) => {
     res.sendFile("src/profile.html", { root: __dirname });
 });
 
+// scout point transactions
+app.get("/pointRecords", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/pointRecords.html", { root: __dirname });
+});
+
 // get images from pit scouting. images are located in scouting-app/images
 app.get("/pitimages", checkAuth, async (req, res) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -522,7 +537,7 @@ app.get("/api/data/:season/scout/:discordID", apiCheckAuth, async (req, res) => 
 
 // get pit scouting data
 app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
-    require("./routes/api/data/pit.js").pit(req, res, req.params.season);
+    require("./routes/api/data/pit.js").pit(req, res, db, selectSeason(req));
 });
 
 // get detailed data by query
@@ -572,6 +587,11 @@ app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req, res) => {
     require("./routes/api/scouts/profile.js").profile(req, res, db);
 });
 
+// scout's point transactions
+app.get("/api/scouts/transactions/me", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts/transactions.js").scoutTransactions(req, res, transactions);
+});
+
 // scout's profile (from discord)
 app.get("/api/scoutByID/:discordID", apiCheckAuth, async (req, res) => {
     require("./routes/api/scouts/scoutByID.js").scoutByID(req, res, db);
@@ -586,7 +606,11 @@ app.get("/api/manage/:database/list", checkAuth, async (req, res) => {
 });
 
 app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res) => {
-    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, leadToken);
+    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, leadToken);
+});
+
+app.get("/api/manage/scout/:discordID/:modify/:reason", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user.js").updateScout(req, res, db, transactions, leadToken);
 });
 
 //
@@ -595,12 +619,12 @@ app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res
 
 // slots (unused)
 app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
-    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db);
+    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, db, transactions);
 });
 
 // spin wheel thing
 app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
-    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db);
+    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, db, transactions);
  });
 
 //

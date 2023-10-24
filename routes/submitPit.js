@@ -7,7 +7,7 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitPit(req, res, db, dirname, season) {
+function submitPit(req, res, db, transactions, dirname, season) {
     // get body of POST data
     let formData = req.body;
     // db statement
@@ -69,6 +69,12 @@ function submitPit(req, res, db, dirname, season) {
         if (err) {
             console.error(err);
             res.status(500).send("" + 0x1f42);
+        }
+    });
+    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1001, 35], (err) => {
+        if (err) {
+            res.status(500).send("" + 0x1f42);
+            return;
         }
     });
     // send success message to user
