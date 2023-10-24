@@ -6,3 +6,6 @@ data.db-shm
 data.db-wal
 data_transact.db-shm
 data_transact.db-wal
+data_auth.db-shm
+data_auth.db-wal
+images/*
