@@ -154,17 +154,17 @@ app.use((req, res, next) => {
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
             if (err || !result || Number(result.expires) < Date.now()) {
-                res.clearCookie("key");
-                return res.redirect("/login");
+                return res.clearCookie("key");
+            } else {
+                req.user = {
+                    "id": result.userId,
+                    "name": result.name,
+                    "admin": result.admin,
+                    "key": result.key,
+                    "expires": result.expires,
+                }
+                return next();
             }
-            req.user = {
-                "id": result.userId,
-                "name": result.name,
-                "admin": result.admin,
-                "key": result.key,
-                "expires": result.expires,
-            }
-            return next();
         });
     }
 })
