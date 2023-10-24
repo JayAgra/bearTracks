@@ -91,7 +91,7 @@ async function search(num, eCode, searchType = "team") {
                 if (min[property] > value) min[property] = value;
             }
             for (var i = 0; i < listRes.length; i++) {
-                htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a><br><span>${listRes[i].discordName}#${listRes[i].discordTag}</span></td>` + // match link
+                htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a><br><span>${listRes[i].name}</span></td>` + // match link
                         `<td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td>` + // auto score
                         `<td>${listRes[i].game5}</td>` + // auto charge
                         `<td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td>` + // teleop score
@@ -161,7 +161,7 @@ async function search(num, eCode, searchType = "team") {
             };
 
             for (var i = 0; i < listRes.length; i++) {
-                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a><br><span>${listRes[i].discordName}#${listRes[i].discordTag}</span></td><td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td><td>${listRes[i].game5}</td><td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td><td>${listRes[i].game10}</td><td>${listRes[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${listRes[i].game11}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
+                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a><br><span>${listRes[i].name}</span></td><td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td><td>${listRes[i].game5}</td><td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td><td>${listRes[i].game10}</td><td>${listRes[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${listRes[i].game11}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
                 avg.auto_charge += Number(listRes[i].game5);
                 avg.teleop_charge += Number(listRes[i].game10);
                 avg.grid += Number(listRes[i].game25);
@@ -188,10 +188,10 @@ async function search(num, eCode, searchType = "team") {
 
 async function searchOnLoad() {
     const urlParams = new URLSearchParams(window.location.search);
-    const discordId = urlParams.get("discordID");
-    if (discordId) {
+    const userId = urlParams.get("userId");
+    if (userId) {
         try {
-            response = await fetch(`/api/data/current/scout/${discordId}`, {
+            response = await fetch(`/api/data/current/scout/${userId}`, {
                 method: "GET",
                 credentials: "include",
                 redirect: "follow",

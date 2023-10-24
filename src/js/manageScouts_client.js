@@ -31,11 +31,11 @@ async function getData() {
     }
 }
 
-async function updateUser(targetDiscordID, origScore, button) {
+async function updateUser(targetuserId, origScore, button) {
     button.innerText = "..."
-    const modifyAmt = Number(document.getElementById(`${targetDiscordID}_input`).value) - origScore;
+    const modifyAmt = Number(document.getElementById(`${targetuserId}_input`).value) - origScore;
     try {
-        response = await fetch(`/api/manage/scout/points/${targetDiscordID}/${modifyAmt}/${Number(document.getElementById("reason").value)}`, {
+        response = await fetch(`/api/manage/scout/points/${targetuserId}/${modifyAmt}/${Number(document.getElementById("reason").value)}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",

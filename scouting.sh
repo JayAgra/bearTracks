@@ -29,7 +29,7 @@ if [ "$1" ]; then
     elif [ "$1" = "savedb" ]; then
         # save database file to the /images directory for backups
         rm data.zip
-        zip data.zip data.db data.db-shm data.db-wal data_transact.db data_transact.db-shm data_transact.db-wal
+        zip data.zip data.db data.db-shm data.db-wal data_transact.db data_transact.db-shm data_transact.db-wal data_auth.db data_auth.db-shm data_auth.db-wal
         rm images/data.zip
         mv data.zip images/data.zip
     elif [ "$1" = "clearbackup" ]; then

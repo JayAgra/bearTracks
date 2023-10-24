@@ -151,7 +151,6 @@ function invalidJSON(str) {
 }
 
 app.use((req, res, next) => {
-    if (req.path === "/login") return next();
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
             if (err || !result || Number(result.expires) < Date.now()) {
@@ -168,14 +167,14 @@ app.use((req, res, next) => {
             }
             return next();
         });
+    } else {
+        req.user = false;
+        return next();
     }
-    req.user = false;
-    return next();
-})
+});
 
 // check the authentication and server membership
 function checkAuth(req, res, next) {
-    console.log(req.user);
     if (req.user !== false) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
@@ -510,7 +509,7 @@ app.get("/api/data/:season/match/:event/:match", apiCheckAuth, async (req, res) 
 });
 
 // get all match scouting data from a scout (by season)
-app.get("/api/data/:season/scout/:discordID", apiCheckAuth, async (req, res) => {
+app.get("/api/data/:season/scout/:userId", apiCheckAuth, async (req, res) => {
     require("./routes/api/data/scout.js").getScoutResponses(req, res, db, selectSeason(req));
 });
 
@@ -571,8 +570,8 @@ app.get("/api/scouts/transactions/me", apiCheckAuth, async (req, res) => {
     require("./routes/api/scouts/transactions.js").scoutTransactions(req, res, transactions);
 });
 
-// scout's profile (from discord)
-app.get("/api/scoutByID/:discordID", apiCheckAuth, async (req, res) => {
+// scout's profile
+app.get("/api/scoutByID/:userId", apiCheckAuth, async (req, res) => {
     require("./routes/api/scouts/scoutByID.js").scoutByID(req, res, db);
 });
 
@@ -588,7 +587,7 @@ app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res
     require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, authDb);
 });
 
-app.get("/api/manage/scout/points/:discordID/:modify/:reason", checkAuth, async (req, res) => {
+app.get("/api/manage/scout/points/:userId/:modify/:reason", checkAuth, async (req, res) => {
     require("./routes/api/manage/user/points.js").updateScout(req, res, transactions, authDb);
 });
 

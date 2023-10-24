@@ -16,7 +16,7 @@ async function spinWheel(req, res, authDb, transactions) {
         }
     }
 
-    let pointStmt = `UPDATE users SET score = score + ? WHERE discordID=?`;
+    let pointStmt = `UPDATE users SET score = score + ? WHERE userId=?`;
     let pointValues = [spins[spin], req.user.id];
     authDb.run(pointStmt, pointValues, (err) => {
         if (err) {

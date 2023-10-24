@@ -33,12 +33,10 @@ function submitForm(req, res, db, transactions, authDb, dirname, season) {
                 formscoresdj = 20;
             }
             // db statement
-            let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            // values (escaped!) from POST data
+            let stmt = `INSERT INTO main (event, season, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, defend, driving, overall, userId, name, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             let values = [
                 escapeHTML(formData.event),
                 season,
-                escapeHTML(req.user.name),
                 escapeHTML(formData.team),
                 escapeHTML(formData.match),
                 escapeHTML(formData.level),
@@ -67,14 +65,11 @@ function submitForm(req, res, db, transactions, authDb, dirname, season) {
                 escapeHTML(formData.game23),
                 escapeHTML(formData.game24),
                 escapeHTML(formData.game25),
-                "0",
                 escapeHTML(formData.defend),
                 escapeHTML(formData.driving),
                 escapeHTML(formData.overall),
                 escapeHTML(req.user.id),
                 escapeHTML(req.user.name),
-                escapeHTML(0),
-                escapeHTML("0"),
                 0,
                 "0",
             ];

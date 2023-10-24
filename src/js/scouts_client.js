@@ -14,7 +14,7 @@ async function getTeamRanks() {
             var htmltable = "";
             for (var i = 0; i < resJson.length; i++) {
                 if (resJson[i].accessOk == "true") {
-                    htmltable += `<tr><td><a href="/browse?discordID=${resJson[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">${resJson[i].nickName}</a></td><td>${Math.round(resJson[i].score)}</td></tr>`;
+                    htmltable += `<tr><td><a href="/browse?userId=${resJson[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">${resJson[i].nickName}</a></td><td>${Math.round(resJson[i].score)}</td></tr>`;
                 }
             }
             document.getElementById("preInsert").insertAdjacentHTML("afterend", htmltable)

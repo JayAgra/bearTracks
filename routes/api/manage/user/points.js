@@ -1,7 +1,7 @@
 async function updateScout(req, res, transactions, authDb) {
     if (req.user.admin == "true") {
-        const setUserScoreStmt = `UPDATE users SET a = score + ? WHERE id=?`;
-        const setUserScoreVals = [Number(req.params.modify), req.params.discordID];
+        const setUserScoreStmt = `UPDATE users SET score = score + ? WHERE id=?`;
+        const setUserScoreVals = [Number(req.params.modify), req.params.userId];
         authDb.run(setUserScoreStmt, setUserScoreVals, (err) => {
             if (err) {
                 console.error(err);
@@ -9,7 +9,7 @@ async function updateScout(req, res, transactions, authDb) {
                 return;
             }
         });
-        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.params.discordID, Number(req.params.reason), Number(req.params.modify)], (err) => {
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.params.userId, Number(req.params.reason), Number(req.params.modify)], (err) => {
             if (err) {
                 res.status(500).send("" + 0x1f42);
                 return;

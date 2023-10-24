@@ -8,7 +8,7 @@ function blackjackSocket(ws, req, db) {
             // for debug i guess
             ws.send(0x12);
             let okToGamble = db.get(
-                "SELECT score FROM scouts WHERE discordID=?",
+                "SELECT score FROM scouts WHERE userId=?",
                 [message.toString()],
                 (err, result) => {
                     return result.score > -2000;
