@@ -153,7 +153,7 @@ function invalidJSON(str) {
 app.use((req, res, next) => {
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
-            if (err || !result || result.accessOk == "false") {
+            if (err || !result) {
                 return res.redirect("/login");
             }
             if (Number(result.expires) < Date.now()) {
@@ -166,7 +166,6 @@ app.use((req, res, next) => {
                 "admin": result.admin,
                 "key": result.key,
                 "expires": result.expires,
-                "accessOk": result.accessOk
             }
             return next();
         });
@@ -175,7 +174,7 @@ app.use((req, res, next) => {
 
 // check the authentication and server membership
 function checkAuth(req, res, next) {
-    if (req.user && req.user.accessOk == "true") {
+    if (req.user) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
             return res.redirect("/login");
@@ -187,7 +186,7 @@ function checkAuth(req, res, next) {
 
 // check the authentication and server membership
 function apiCheckAuth(req, res, next) {
-    if (req.user && req.user.accessOk == "true") {
+    if (req.user) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
             return res.status(401).send("" + 0x1911);
