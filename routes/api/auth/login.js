@@ -9,7 +9,7 @@ function checkLogIn(req, res, authDb) {
     });
 
     req.on("end", async () => {
-        let loginData = req.body;
+        let loginData = qs.parse(body);
         authDb.get("SELECT id, fullName, passHash, accessOk, admin FROM users WHERE email=?", [loginData.email], (err, result) => {
             if (err) {
                 res.status(500).send("" + 0x1f42);
