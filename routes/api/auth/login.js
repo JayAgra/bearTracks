@@ -55,7 +55,7 @@ function checkLogIn(req, res, authDb) {
                         }
                     }
                 } else {
-                    res.status(403).send("" + 0x1932);
+                    res.status(403).send("" + 0x1932 + "account not yet approved for access by an admin.");
                 }
             }
         });
