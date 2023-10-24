@@ -153,10 +153,7 @@ function invalidJSON(str) {
 app.use((req, res, next) => {
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
-            if (err || !result) {
-                return res.redirect("/login");
-            }
-            if (Number(result.expires) < Date.now()) {
+            if (err || !result || Number(result.expires) < Date.now()) {
                 res.clearCookie("key");
                 return res.redirect("/login");
             }
