@@ -21,7 +21,8 @@ function createAccount(req, res, authDb) {
                     if (err) {
                         res.status(500).send("" + 0x1f42);
                     } else {
-                        res.status(200).send("" + 0xc85);
+                        // res.status(200).send("" + 0xc85);
+                        res.redirect("/login");
                     }
                 })
             } else {
