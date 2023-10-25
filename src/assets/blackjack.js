@@ -21,6 +21,8 @@ function startBlackjack() {
             setupBoard();
         } else if (event.data === 0xe1) {
             alert("you are too poor to gamble 💀");
+        } else if (event.data === 0x13) {
+            blackjackSocket.send(0x31);
         } else if (Number(event.data.split("%%%")[0]) === 0x32) {
             var sCards = JSON.parse(event.data.split("%%%")[1]);
             drawCard("assets/progcards/" + sCards.dealer1 + "dealer1");
