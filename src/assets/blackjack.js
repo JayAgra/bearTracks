@@ -29,8 +29,8 @@ function startBlackjack() {
             drawCard(`assets/progcards/card-${data.card.suit}_${data.card.value}.png`, data.target)
             window.disableInputs = false;
         } else if (data.playerResult || data.dealerResult) {
-            console.log('Player: ' + data.playerResult);
-            console.log('Dealer: ' + data.dealerResult);
+            alert(data.playerResult);
+            console.log(data);
         }
     };
 }
