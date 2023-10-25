@@ -70,14 +70,14 @@ async function blackjackSocket(ws, req, transactions, authDb) {
     ws.on('message', (message) => {
         if (message == 0x30) {
             // hit
-            game.player.score = populateCard(game.player.hand, game.player.score, `player${player.length + 1}`);
+            game.player.score = populateCard(game.player.hand, game.player.score, `player${game.player.hand.length + 1}`);
             if (game.player.score > 21) {
                 endGame();
             }
         } else if (message == 0x31) {
             // stand
             while (game.dealer.score < 17) {
-                game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, `dealer${dealer.length + 1}`);
+                game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, `dealer${game.dealer.hand.length + 1}`);
             }
             endGame();
         }
