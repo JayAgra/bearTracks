@@ -7,12 +7,15 @@ function displayErrors() {
             case "0":
                 errorEl.innerText = "500 internal server error";
                 errorEl.style.display = "unset";
+                break;
             case "1":
                 errorEl.innerText = "bad email/password";
                 errorEl.style.display = "unset";
+                break;
             case "2":
                 errorEl.innerText = "account not yet approved by an admin";
                 errorEl.style.display = "unset";
+                break;
             case undefined: default:
                 break;
         }
