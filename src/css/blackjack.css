@@ -113,11 +113,11 @@
 }
 
 .hit.noDeal {
-    top: 60px;
-    right: 32px;
+    top: 102px;
+    right: 22px;
 }
 
 .stand.noDeal {
-    top: 60px;
-    right: 32px;
+    top: 102px;
+    right: -18px;
 }
