@@ -27,8 +27,8 @@ function blackjackSocket(ws, req, transactions, authDb) {
             // for debug i guess
             ws.send(0x12);
             claimedUserId = message.toString();
-            let okToGamble = authDb.get("SELECT score FROM scouts WHERE userId=?", [claimedUserId], (err, result) => {
-                return result.score > -2000;
+            let okToGamble = authDb.get("SELECT score FROM users WHERE userId=?", [claimedUserId], (err, result) => {
+                return result.score > -34359738368;
             });
 
             if (!okToGamble) {
