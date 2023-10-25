@@ -6,17 +6,18 @@ function goToHome() {
 
 window.disableInputs = false;
 
+const blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
+
 function startBlackjack() {
     var whoami = 1;
     // get who i am TODO
     while (whoami === 0) {}
 
-    window.blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
-    window.blackjackSocket.onmessage = async (event) => {
+    blackjackSocket.send(0x11 + "$" + myUserID);
+
+    blackjackSocket.onmessage = async (event) => {
         console.log(event.data);
-        if (event.data === 0x10) {
-            window.blackjackSocket.send(0x11 + "$" + myUserID);
-        } else if (event.data === 0x13) {
+        if (event.data === 0x13) {
             setupBoard();
         } else if (event.data === 0xe1) {
             alert("you are too poor to gamble 💀");
@@ -30,36 +31,36 @@ function startBlackjack() {
             drawCard("assets/progcards/" + nCard[nCard.id] + nCard.id)
             window.disableInputs = false;
         } else if (event.data === 0x99) {
-            window.blackjackSocket.close();
+            blackjackSocket.close();
             window.disableInputs = true;
             await waitMs(5000);
             alert("you won");
         } else if (event.data === 0x98) {
-            window.blackjackSocket.close();
+            blackjackSocket.close();
             window.disableInputs = true;
             await waitMs(5000);
             alert("you lost");
         } else if (event.data === 0x97) {
-            window.blackjackSocket.close();
+            blackjackSocket.close();
             window.disableInputs = true;
             await waitMs(5000);
             alert("you tied");
         } else if (event.data === 0xff) {
-            window.blackjackSocket.close();
+            blackjackSocket.close();
         }
     };
 }
 
 document.getElementsByClassName("hit")[0].onclick = (e) => {
     if (!window.disableInputs) {
-        window.blackjackSocket.send(0x40);
+        blackjackSocket.send(0x40);
         window.disableInputs = true;
     }
 }
 
 document.getElementsByClassName("stand")[0].onclick = (e) => {
     if (!window.disableInputs) {
-        window.blackjackSocket.send(0x41);
+        blackjackSocket.send(0x41);
         window.disableInputs = true;
     }
 }

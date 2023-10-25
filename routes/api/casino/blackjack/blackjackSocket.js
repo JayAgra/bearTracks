@@ -21,8 +21,6 @@ function blackjackSocket(ws, req, transactions, authDb) {
         }
     }
     var claimedUserId = "";
-    // 0x10 - send user id
-    ws.send(0x10);
     ws.on("message", (message) => {
         if (Number(message.split("$")[0]) === 0x11) {
             // 0x12 - recd user id, checking gamble
