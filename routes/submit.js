@@ -26,7 +26,7 @@ function submitForm(req, res, db, transactions, authDb, dirname, season) {
         } else if (formData.formType === "main") {
             // change score based on response length
             var formscoresdj = 0;
-            if (formData.overall.length >= 70) {
+            if (formData.overall.length >= 70 && !(formData.overall.length >= 10e19)) {
                 // logarithmic points
                 formscoresdj = Math.ceil(20 + 5 * (Math.log(formData.overall.length - 65) / Math.log(6)));
             } else {

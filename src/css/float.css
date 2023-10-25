@@ -206,3 +206,8 @@ label {
 form {
     width: 95%;
 }
+.dummy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

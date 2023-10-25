@@ -61,7 +61,7 @@ async function updateUser(targetuserId, origScore, button) {
 async function approveUser(targetId, button) {
     button.innerText = "..."
     try {
-        response = await fetch(`/api/manage/scout/access/${targetId}/false`, {
+        response = await fetch(`/api/manage/scout/access/${targetId}/true`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",

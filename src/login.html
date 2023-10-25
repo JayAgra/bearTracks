@@ -17,20 +17,22 @@
         <script src="js/form.min.js"></script>
         <style>body {text-align: center;}</style>
     </head>
-    <body class="dark-mode">
+    <body class="dark-mode" onload="displayErrors()">
         <script>themeHandle()</script>
         <div class="container">
             <div class="dummy">
                 <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1>
-                <h2>Log In</h2><br>
                 <form action="/loginForm" target="_self" method="POST">
+                    <h2 style="margin-top: 0; margin-bottom: 2rem">Log In</h2>
+                    <h4 style="color: var(--cancelColor); display: none;" id="error"></h4>
                     <label for="email">Email</label><br><input type="email" name="email" autocomplete="email" style="min-width: 20rem;" required><br><br>
                     <label for="password">Password</label><br><input type="password" name="password" autocomplete="password" style="min-width: 20rem;" required><br><br><br>
                     <button type="submit" class="uiButton actionButton">Log In</button>
                 </form>
                 <br><br>
-                <small style="text-align: center;"><a href="create" style="all: unset; color: var(--gameFlairColor);">create account&emsp;</a></small><br>
+                <small style="text-align: center;"><a href="create" style="all: unset; color: var(--gameFlairColor);">create account</a></small><br>
             </div>
         </div>
+        <script src="js/login_client.min.js" type="text/javascript"></script>
     </body>
 </html>
