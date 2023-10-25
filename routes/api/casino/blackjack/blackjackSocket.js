@@ -64,7 +64,7 @@ function blackjackSocket(ws, req, transactions, authDb) {
                 ws.send(0x99);
                 // TODO credit points here
             } else if (sums.aceHigh.player === 21 && sums.aceHigh.dealer === 21) {
-
+                ws.send(0x97);
             }
         } else if (message === 0x40) {
             // 0x40 - hit
