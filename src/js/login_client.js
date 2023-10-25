@@ -16,6 +16,6 @@ function displayErrors() {
             case undefined: default:
                 break;
         }
-        History.replaceState(null, "", window.location.origin + window.location.pathname);
+        history.replaceState(null, "", window.location.origin + window.location.pathname);
     }
 }
