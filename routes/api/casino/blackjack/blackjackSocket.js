@@ -44,9 +44,21 @@ async function blackjackSocket(ws, req, transactions, authDb) {
     }
 
     function endGame() {
-        const playerResult = playerScore > 21 ? 'you bust' : 'you win';
-        const dealerResult = dealerScore > 21 ? 'dealer bust' : dealerScore >= playerScore ? 'dealer win' : 'you win';
+        let playerResult, dealerResult;
+        if (playerScore > 21) {
+            playerResult = "you bust";
+        } else if (dealerScore > 21) {
+            dealerResult = "dealer bust";
+        } else if (playerScore > dealerScore) {
+            playerResult = "you win";
+        } else if (playerScore < dealerScore) {
+            dealerResult = "dealer win";
+        } else {
+            playerResult = "tie";
+            dealerResult = "tie";
+        }
         ws.send(JSON.stringify({ playerResult, dealerResult }));
+        ws.close();
     }
 
     ws.on('message', (message) => {
