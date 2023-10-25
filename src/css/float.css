@@ -67,6 +67,7 @@ body {
     background-color: var(--bodyColor);
     color: var(--textColor);
     width: 100vw;
+    margin: 0;
 }
 fieldset {
     border: 0.15rem solid var(--fieldsetColor);
