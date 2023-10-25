@@ -14,7 +14,8 @@ function displayErrors() {
                 errorEl.innerText = "min password length is 8";
                 errorEl.style.display = "unset";
             case undefined: default:
-                return;
+                break;
         }
+        History.replaceState({}, "Create Account - 766 Scouting", window.location.origin + window.location.pathname);
     }
 }

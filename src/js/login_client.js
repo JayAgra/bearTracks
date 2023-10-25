@@ -14,7 +14,8 @@ function displayErrors() {
                 errorEl.innerText = "account not yet approved by an admin";
                 errorEl.style.display = "unset";
             case undefined: default:
-                return;
+                break;
         }
+        History.replaceState({}, "Login - 766 Scouting", window.location.origin + window.location.pathname);
     }
 }
