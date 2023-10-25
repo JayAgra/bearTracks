@@ -43,9 +43,9 @@ function blackjackSocket(ws, req, transactions, authDb) {
                     authDb.run("UPDATE users SET score = score - 10 WHERE id=?", [user.id], (err) => {});
                     transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1502, -10], (err) => {});
                     ws.send(JSON.stringify({ "status": 0x91 }));
-                    game.player.score = populateCard(game.player.hand, game.player.score, "player1");
-                    game.player.score = populateCard(game.player.hand, game.player.score, "player2");
-                    game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, "dealer1");
+                    game.player.score = populateCard(game.player.hand, game.player.score, "player1", false);
+                    game.player.score = populateCard(game.player.hand, game.player.score, "player2", false);
+                    game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, "dealer1", true);
                     if (game.player.score > 21) endGame();
                 }
             });
