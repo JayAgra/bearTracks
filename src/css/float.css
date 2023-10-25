@@ -67,6 +67,7 @@ body {
     background-color: var(--bodyColor);
     color: var(--textColor);
     width: 100vw;
+    max-width: 100%;
 }
 fieldset {
     border: 0.15rem solid var(--fieldsetColor);
@@ -82,6 +83,8 @@ h1 {
 .container {
     justify-content: center;
     display: flex;
+    width: 100vw;
+    max-width: 100%;
 }
 select {
     background-color: var(--transparency);
