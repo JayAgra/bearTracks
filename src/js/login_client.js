@@ -16,6 +16,6 @@ function displayErrors() {
             case undefined: default:
                 break;
         }
-        History.replaceState({}, "Login - 766 Scouting", window.location.origin + window.location.pathname);
+        History.replaceState(null, "", window.location.origin + window.location.pathname);
     }
 }
