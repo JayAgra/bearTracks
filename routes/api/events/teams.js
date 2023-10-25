@@ -52,12 +52,12 @@ async function teams(req, res, frcapi, season) {
                 for (var i = 0; i < parsedData.teams.length; i++) {
                     teams.push(parsedData.teams[i].teamNumber);
                 }
-                res.status(200)
-                    .setHeader("Content-type", "text/plain")
-                    .send(teams.toString());
+                res.set("Cache-control", "public, max-age=23328000");
+                res.status(200).setHeader("Content-type", "text/plain").send(teams.toString());
             }
         });
     } else {
+        res.set("Cache-control", "public, max-age=23328000");
         res.status(200).send("8,253,649,701,766,841,846,852,1072,1425,1458,1671,1678,1967,2073,2135,2288,2551,2643,3189,3257,3482,3598,3859,4135,4159,4255,4643,4698,5027,5274,5458,5817,5924,59240,5940,59400,6059,6918,7137,7419,74190,7528,8016,80160,8768,9400,9634");
     }
 }

@@ -645,9 +645,11 @@ app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req, res
         } else {
             teamNumParam = `&teamNumber=${myteam}`;
         }
+        res.set("Cache-control", "public, max-age=23328000");
         forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res);
     } else {
         res.header("Content-Type", "application/json");
+        res.set("Cache-control", "public, max-age=23328000");
         res.sendFile("src/js/CCCC.json", { root: __dirname });
     }
 });
