@@ -8,60 +8,40 @@ window.disableInputs = false;
 
 const blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
 
+blackjackSocket.addEventListener("open", () => {
+    console.info("blackjack socket opened");
+})
+
+blackjackSocket.addEventListener("close", () => {
+    console.info("blackjack socket closed");
+})
+
 function startBlackjack() {
-    var whoami = 1;
-    // get who i am TODO
-    while (whoami === 0) {}
-
-    blackjackSocket.send(0x11 + "$" + whoami);
-
+    setupBoard();
     blackjackSocket.onmessage = async (event) => {
-        console.log(event.data);
-        if (event.data == 0x13) {
-            setupBoard();
-            blackjackSocket.send(0x31);
-        } else if (event.data == 0xe1) {
-            alert("you are too poor to gamble 💀");
-        } else if (Number(event.data.split("%%%")[0]) == 0x32) {
-            var sCards = JSON.parse(event.data.split("%%%")[1]);
-            drawCard("assets/progcards/" + sCards.dealer1 + "dealer1");
-            drawCard("assets/progcards/" + sCards.player1 + "player1");
-            drawCard("assets/progcards/" + sCards.player2 + "player2");
-        } else if (Number(event.data.split("%%%")[0]) == 0x33) {
-            var nCard = JSON.parse(event.data.split("%%%%")[1]);
-            drawCard("assets/progcards/" + nCard[nCard.id] + nCard.id)
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        if (data.card) {
+            drawCard(`assets/progcards/card-${data.card.suit}_${data.card.value}.png`, data.target)
             window.disableInputs = false;
-        } else if (event.data == 0x99) {
-            blackjackSocket.close();
-            window.disableInputs = true;
-            await waitMs(5000);
-            alert("you won");
-        } else if (event.data == 0x98) {
-            blackjackSocket.close();
-            window.disableInputs = true;
-            await waitMs(5000);
-            alert("you lost");
-        } else if (event.data == 0x97) {
-            blackjackSocket.close();
-            window.disableInputs = true;
-            await waitMs(5000);
-            alert("you tied");
-        } else if (event.data == 0xff) {
-            blackjackSocket.close();
+        } else if (data.playerResult || data.dealerResult) {
+            console.log('Player: ' + data.playerResult);
+            console.log('Dealer: ' + data.dealerResult);
         }
     };
 }
 
 document.getElementsByClassName("hit")[0].onclick = (e) => {
     if (!window.disableInputs) {
-        blackjackSocket.send(0x40);
+        blackjackSocket.send("hit");
         window.disableInputs = true;
     }
 }
 
 document.getElementsByClassName("stand")[0].onclick = (e) => {
     if (!window.disableInputs) {
-        blackjackSocket.send(0x41);
+        blackjackSocket.send("stand");
         window.disableInputs = true;
     }
 }
