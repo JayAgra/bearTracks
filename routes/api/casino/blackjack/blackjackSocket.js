@@ -1,11 +1,18 @@
 const suits = ['h', 'd', 'c', 's'];
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const dealerValues = ['2', '3', '4', '5', '6', '7', '8', '9', 'A'];
 
 function newCard() {
-    return { "suit": suits[Math.floor(Math.random() * suits.length)], "value": values[Math.floor(Math.random() * values.length)] };
+    return { "suit": suits[Math.floor(Math.random() * 4)], "value": values[Math.floor(Math.random() * 13)] };
+}
+
+function newDealerCard() {
+    return { "suit": suits[Math.floor(Math.random() * 4)], "value": dealerValues[Math.floor(Math.random() * 9)] };
 }
 
 async function blackjackSocket(ws, req, transactions, authDb) {
+    console.log(req.cookies);
+
     var game = {
         "player": {
             "hand": [],
@@ -42,8 +49,13 @@ async function blackjackSocket(ws, req, transactions, authDb) {
         return score;
     }
 
-    function populateCard(hand, score, target) {
-        const card = newCard();
+    function populateCard(hand, score, target, rigged) {
+        var card;
+        if (rigged) {
+            card = newDealerCard();
+        } else {
+            card = newCard();
+        }
         hand.push(card);
         score = getScore(hand);
         ws.send(JSON.stringify({ card, score, target }));
@@ -70,14 +82,14 @@ async function blackjackSocket(ws, req, transactions, authDb) {
     ws.on('message', (message) => {
         if (message == 0x30) {
             // hit
-            game.player.score = populateCard(game.player.hand, game.player.score, `player${game.player.hand.length + 1}`);
+            game.player.score = populateCard(game.player.hand, game.player.score, `player${game.player.hand.length + 1}`, false);
             if (game.player.score > 21) {
                 endGame();
             }
         } else if (message == 0x31) {
             // stand
             while (game.dealer.score < 17) {
-                game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, `dealer${game.dealer.hand.length + 1}`);
+                game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, `dealer${game.dealer.hand.length + 1}`, true);
             }
             endGame();
         }
