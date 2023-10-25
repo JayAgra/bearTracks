@@ -15,8 +15,8 @@ function checkLogIn(req, res, authDb) {
                 // res.status(500).send("" + 0x1f42);
                 res.redirect("/login?err=0");
             } else {
-                if (result) {
-                    if (result.accessOk != "true") {
+                if (Object.hasOwn(result, "accessOk")) {
+                    if (result.accessOk === "false") {
                         // res.status(403).send("" + 0x1932 + " account not yet approved for access by an admin.");
                         res.redirect("/login?err=2");
                     } else {
