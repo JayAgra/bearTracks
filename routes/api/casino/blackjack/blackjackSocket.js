@@ -16,19 +16,22 @@ async function blackjackSocket(ws, req, transactions, authDb) {
         "key": req.cookies.key,
         "id": ""
     }
-    authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
+
+    await authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
         if (err || !result || Number(result.expires) < Date.now()) {
             ws.send(JSON.stringify({ "status": 0x90 }));
             ws.close();
+            return;
         } else {
             user.id = result.userId;
         }
     });
 
-    authDb.get("SELECT id, points FROM users WHERE id=?", [user.id], (err, result) => {
+    await authDb.get("SELECT id, points FROM users WHERE id=?", [user.id], (err, result) => {
         if (err || !result || result.points < -2000) {
             ws.send(JSON.stringify({ "status": 0x90 }));
             ws.close();
+            return;
         } else {
             ws.send(JSON.stringify({ "status": 0x91 }));
         }
@@ -98,6 +101,7 @@ async function blackjackSocket(ws, req, transactions, authDb) {
         }
         ws.send(JSON.stringify({ "result": result }));
         ws.close();
+        return;
     }
 
     ws.on('message', (message) => {

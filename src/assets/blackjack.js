@@ -15,8 +15,6 @@ window.disableInputs = false;
 var blackjackSocket;
 
 function startBlackjack() {
-    setupBoard();
-
     blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
 
     blackjackSocket.addEventListener("open", () => {
@@ -35,6 +33,7 @@ function startBlackjack() {
                 alert("balance too low to gamble");
             } else if (data.status === 0x91) {
                 console.info("balance ok");
+                setupBoard();
             }
         } else if (data.card) {
             console.info("new card");
