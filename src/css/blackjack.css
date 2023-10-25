@@ -45,22 +45,27 @@
 
 .dealer2 {
     top: 0px;
-    right: -30px;
+    right: -25px;
 }
 
 .dealer3 {
     top: 0px;
-    right: -40px;
+    right: -35px;
 }
 
 .dealer4 {
     top: 0px;
-    right: -50px;
+    right: -45px;
 }
 
 .dealer5 {
     top: 0px;
-    right: -60px;
+    right: -55px;
+}
+
+.dealer6 {
+    top: 0px;
+    right: -65px;
 }
 
 .playerCard {
@@ -75,22 +80,27 @@
 
 .player2 {
     top: 50px;
-    right: -30px;
+    right: -25px;
 }
 
 .player3 {
     top: 50px;
-    right: -40px;
+    right: -35px;
 }
 
 .player4 {
     top: 50px;
-    right: -50px;
+    right: -45px;
 }
 
 .player5 {
     top: 50px;
-    right: -60px;
+    right: -55px;
+}
+
+.player6 {
+    top: 50px;
+    right: -65px;
 }
 
 .deal {
