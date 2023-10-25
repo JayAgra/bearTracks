@@ -13,7 +13,7 @@ function startBlackjack() {
     // get who i am TODO
     while (whoami === 0) {}
 
-    blackjackSocket.send(0x11 + "$" + myUserID);
+    blackjackSocket.send(0x11 + "$" + whoami);
 
     blackjackSocket.onmessage = async (event) => {
         console.log(event.data);
