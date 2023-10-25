@@ -616,7 +616,7 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, 
 });
 
 app.ws('/api/casino/blackjack/blackjackSocket', function(ws, req) {
-    require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, db);
+    require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, transactions, authDb);
 });
 
 //
