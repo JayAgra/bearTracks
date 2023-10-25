@@ -33,72 +33,72 @@
     position: fixed;
 }
 
-.dealerCard {
-    top: 0px;
-    right: -5px;
-}
-
 .dealer1 {
     top: 0px;
-    right: -15px;
+    right: -5px;
 }
 
 .dealer2 {
     top: 0px;
-    right: -25px;
+    right: -15px;
 }
 
 .dealer3 {
     top: 0px;
-    right: -35px;
+    right: -25px;
 }
 
 .dealer4 {
     top: 0px;
-    right: -45px;
+    right: -35px;
 }
 
 .dealer5 {
     top: 0px;
-    right: -55px;
+    right: -45px;
 }
 
 .dealer6 {
     top: 0px;
-    right: -65px;
+    right: -55px;
 }
 
-.playerCard {
-    top: 50px;
-    right: -5px;
+.dealer7 {
+    top: 0px;
+    right: -65px;
 }
 
 .player1 {
     top: 50px;
-    right: -15px;
+    right: -5px;
 }
 
 .player2 {
     top: 50px;
-    right: -25px;
+    right: -15px;
 }
 
 .player3 {
     top: 50px;
-    right: -35px;
+    right: -25px;
 }
 
 .player4 {
     top: 50px;
-    right: -45px;
+    right: -35px;
 }
 
 .player5 {
     top: 50px;
-    right: -55px;
+    right: -45px;
 }
 
 .player6 {
+    top: 50px;
+    right: -55px;
+}
+
+.player7 {
     top: 50px;
     right: -65px;
 }
