@@ -54,11 +54,11 @@ async function blackjackSocket(ws, req, transactions, authDb) {
         let result;
         if (game.player.score > 21) {
             result = "you bust";
-        } else if (dScore > 21) {
+        } else if (game.dealer.score > 21) {
             result = "you win- dealer bust";
-        } else if (game.player.score > dScore) {
+        } else if (game.player.score > game.dealer.score) {
             result = "you win";
-        } else if (game.player.score < dScore) {
+        } else if (game.player.score < game.dealer.score) {
             result = "you lose";
         } else {
             result = "tie";
