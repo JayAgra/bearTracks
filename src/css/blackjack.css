@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
     /* drawing roughly 140px tall and 70px wide */
-    transform: scale(5);
+    /* transform: scale(5); */
     position: relative;
     left: 17.5vw;
 }
@@ -21,11 +21,7 @@
 .cardImg {
     height: 64px;
     position: fixed;
-}
-
-.handImg {
-    height: 64px;
-    position: fixed;
+    filter: drop-shadow(0 0 1px #000);
 }
 
 .bjBtn {
