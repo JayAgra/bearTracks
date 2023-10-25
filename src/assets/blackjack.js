@@ -6,18 +6,21 @@ function goToHome() {
 
 window.disableInputs = false;
 
-const blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
-
-blackjackSocket.addEventListener("open", () => {
-    console.info("blackjack socket opened");
-})
-
-blackjackSocket.addEventListener("close", () => {
-    console.info("blackjack socket closed");
-})
+var blackjackSocket;
 
 function startBlackjack() {
     setupBoard();
+
+    blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
+
+    blackjackSocket.addEventListener("open", () => {
+        console.info("blackjack socket opened");
+    });
+
+    blackjackSocket.addEventListener("close", () => {
+        console.info("blackjack socket closed");
+    });
+
     blackjackSocket.onmessage = async (event) => {
         const data = JSON.parse(event.data);
         console.log(data);
