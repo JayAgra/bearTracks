@@ -26,25 +26,24 @@ function startBlackjack() {
         console.log(data);
 
         if (data.card) {
-            drawCard(`assets/progcards/card-${data.card.suit}_${data.card.value}.png`, data.target)
+            drawCard(`${document.getElementById("deck").value}card-${data.card.suit}_${data.card.value}.png`, data.target)
             window.disableInputs = false;
-        } else if (data.playerResult || data.dealerResult) {
-            alert(data.playerResult);
-            console.log(data);
+        } else if (data.result) {
+            alert(data.result);
         }
     };
 }
 
 document.getElementsByClassName("hit")[0].onclick = (e) => {
     if (!window.disableInputs) {
-        blackjackSocket.send("hit");
+        blackjackSocket.send(0x30);
         window.disableInputs = true;
     }
 }
 
 document.getElementsByClassName("stand")[0].onclick = (e) => {
     if (!window.disableInputs) {
-        blackjackSocket.send("stand");
+        blackjackSocket.send(0x31);
         window.disableInputs = true;
     }
 }

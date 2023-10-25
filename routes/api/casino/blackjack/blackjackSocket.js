@@ -1,23 +1,32 @@
 const suits = ['h', 'd', 'c', 's'];
 const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
+function newCard() {
+    return { "suit": suits[Math.floor(Math.random() * suits.length)], "value": values[Math.floor(Math.random() * values.length)] };
+}
+
 async function blackjackSocket(ws, req, transactions, authDb) {
-    let playerHand = [];
-    let dealerHand = [];
-    let playerScore = 0;
-    let dealerScore = 0;
-    playerScore = sendCardAndUpdateScore(playerHand, playerScore, "player1");
-    playerScore = sendCardAndUpdateScore(playerHand, playerScore, "player2");
-    dealerScore = sendCardAndUpdateScore(dealerHand, dealerScore, "dealer1");
+    var game = {
+        "player": {
+            "hand": [],
+            "score": 0
+        },
+        "dealer": {
+            "hand": [],
+            "score": 0
+        }
+    }
+    game.player.score = populateCard(game.player.hand, game.player.score, "player1");
+    game.player.score = populateCard(game.player.hand, game.player.score, "player2");
+    game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, "dealer1");
 
-    function calculateScore(hand) {
+    function getScore(hand) {
         let score = 0;
-        let numAces = 0;
-
+        let aces = 0;
         for (const card of hand) {
             const value = card.value;
             if (value === "A") {
-                numAces++;
+                aces++;
                 score += 11;
             } else if (["K", "Q", "J"].includes(value)) {
                 score += 10;
@@ -25,63 +34,53 @@ async function blackjackSocket(ws, req, transactions, authDb) {
                 score += parseInt(value, 10);
             }
         }
-
-        while (numAces > 0 && score > 21) {
+        while (aces > 0 && score > 21) {
             score -= 10;
-            numAces--;
+            aces--;
         }
-
         return score;
     }
 
-    function sendCardAndUpdateScore(hand, score, target) {
-        const card = getRandomCard();
+    function populateCard(hand, score, target) {
+        const card = newCard();
         hand.push(card);
-        score = calculateScore(hand);
-        const response = { card, score, target };
-        ws.send(JSON.stringify(response));
+        score = getScore(hand);
+        ws.send(JSON.stringify({ card, score, target }));
         return score;
     }
 
     function endGame() {
-        let playerResult, dealerResult;
-        if (playerScore > 21) {
-            playerResult = "you bust";
-        } else if (dealerScore > 21) {
-            dealerResult = "dealer bust";
-        } else if (playerScore > dealerScore) {
-            playerResult = "you win";
-        } else if (playerScore < dealerScore) {
-            dealerResult = "dealer win";
+        let result;
+        if (pScore > 21) {
+            result = "you bust";
+        } else if (dScore > 21) {
+            result = "you win- dealer bust";
+        } else if (pScore > dScore) {
+            result = "you win";
+        } else if (pScore < dScore) {
+            result = "you lose";
         } else {
-            playerResult = "tie";
-            dealerResult = "tie";
+            result = "tie";
         }
-        ws.send(JSON.stringify({ playerResult, dealerResult }));
+        ws.send(JSON.stringify({ "playerResult": result }));
         ws.close();
     }
 
     ws.on('message', (message) => {
-        if (message === 'hit') {
-            playerScore = sendCardAndUpdateScore(playerHand, playerScore, `player${playerHand.length + 1}`);
-            if (playerScore > 21) {
+        if (message === 0x30) {
+            // hit
+            game.player.score = populateCard(game.player.hand, game.player.score, `player${player.length + 1}`);
+            if (pScore > 21) {
                 endGame();
             }
-        } else if (message === 'stand') {
-            while (dealerScore < 17) {
-                dealerScore = sendCardAndUpdateScore(dealerHand, dealerScore, `dealer${dealerHand.length + 1}`);
+        } else if (message === 0x31) {
+            // stand
+            while (game.dealer.score < 17) {
+                game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, `dealer${dealer.length + 1}`);
             }
             endGame();
         }
     });
 }
-
-function getRandomCard() {
-    const randomSuit = suits[Math.floor(Math.random() * suits.length)];
-    const randomValue = values[Math.floor(Math.random() * values.length)];
-    return { suit: randomSuit, value: randomValue };
-}
-
-
 
 module.exports = { blackjackSocket };
