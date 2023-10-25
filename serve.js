@@ -74,9 +74,11 @@ const certsizes = {
 };
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
+var server;
 if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
-    https.createServer(options, app).listen(443);
+    server = https.createServer(options, app).listen(443);
 }
+var expressWs = require("express-ws")(app, server);
 app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
 app.use("/images", express.static("images"));
@@ -406,10 +408,10 @@ app.get("/scouts", async (req, res) => {
 });
 
 // play blackjack
-// app.get("/blackjack", checkAuth, async (req, res) => {
-//     res.set("Cache-control", "public, max-age=259200");
-//     res.sendFile("src/blackjack.html", { root: __dirname });
-// });
+app.get("/blackjack", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=259200");
+    res.sendFile("src/blackjack.html", { root: __dirname });
+});
 
 // spin wheel
 app.get("/spin", checkAuth, async (req, res) => {
@@ -611,7 +613,11 @@ app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
 // spin wheel thing
 app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
     require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, authDb, transactions);
- });
+});
+
+app.ws('/api/casino/blackjack/blackjackSocket', function(ws, req) {
+    require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, db);
+});
 
 //
 // notes
