@@ -1,194 +1,70 @@
 /*jslint browser: true, es6*/
+const waitMs = (ms) => new Promise((res) => setTimeout(res, ms));
+function goToHome() {
+    window.location.href = "/points";
+}
 
-var myUserID = 0;
+const x = Math.min(document.documentElement.clientWidth / 85, document.documentElement.clientHeight / 125);
+const styleSheet = `.bjContainer{margin:0;padding:0;}.bjContainer{display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;left:-17.5vw;}.blackjack{image-rendering:pixelated;}.cardImg,.handImg{height:${64 * x}px;position:fixed;filter:drop-shadow(0 0 ${x * 2}px #000);}.bjBtn{height:${20 * x}px;position:fixed}.dealer1{top:0;left:${5 * x}px;}.dealer2{top:0;left:${15 * x}px;}.dealer3{top:0;left:${25 * x}px;}.dealer4{top:0;left:${35 * x}px;}.dealer5{top:0;left:${45 * x}px;}.dealer6{top:0;left:${55 * x}px;}.dealer7{top:0;left:${65 * x}px;}.player1{top:${50 * x}px;left:${5 * x}px;}.player2{top:${50 * x}px;left:${15 * x}px;}.player3{top:${50 * x}px;left:${25 * x}px;}.player4{top:${50 * x}px;left:${35 * x}px;}.player5{top:${50 * x}px;left:${45 * x}px;}.player6{top:${50 * x}px;left:${55 * x}px;}.player7{top:${50 * x}px;left:${65 * x}px;}.deal{top:${102 * x}px;left:${-22 * x}px;}.hit{top:${102 * x}px;left:${-2 * x}px;}.stand{top:${102 * x}px;left:${18 * x}px;}.deal.noDeal{display:none;}.hit.noDeal{top:${102 * x}px;left:${46 * x}px;}.stand.noDeal{top:${102 * x}px;left:${18 * x}px;}`;
+const stylesheet = new CSSStyleSheet();
+stylesheet.replaceSync(styleSheet);
+document.adoptedStyleSheets = [stylesheet];
 
-const whoamiXHR = new XMLHttpRequest();
-whoamiXHR.open("GET", `/api/whoami`, true);
-whoamiXHR.withCredentials = true;
+window.disableInputs = false;
 
-whoamiXHR.onreadystatechange = async () => {
-    if (whoamiXHR.readyState === XMLHttpRequest.DONE && whoamiXHR.status === 200) {
-        console.log("200 good");
-        myUserID = whoamiXHR.responseText;
-    } else if (whoamiXHR.status === 401) {
-        console.log("401 failure");
-        window.location.href = "/login";
-    } else if (whoamiXHR.status === 400) {
-        console.log("400 failure");
-    } else if (whoamiXHR.status === 500) {
-        console.log("500 failure");
-    } else {
-        console.log("awaiting response");
-    }
-};
-whoamiXHR.send();
+var blackjackSocket;
 
-while (myUserID === 0) {}
+function startBlackjack() {
+    setupBoard();
 
-const blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
+    blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
 
-blackjackSocket.onmessage = (event) => {
-    console.log(event.data);
-    if (event.data === 0x10) {
-        blackjackSocket.send(0x11 + "$" + myUserID);
-    } else if (event.data === 0x13) {
-        alert("you are ok to gamble");
-    } else if (event.data === 0xE1) {
-        alert("you are too poor to gamble 💀");
-    } else if (Number(event.data.split("%%%")[0]) === 0x32) {
-        console.log(JSON.parse(event.data.split("%%%")[1]));
-    } else if (event.data === 0xff) {
-        blackjackSocket.close();
-    }
-};
+    blackjackSocket.addEventListener("open", () => {
+        console.info("blackjack socket opened");
+    });
 
-var cvs = document.getElementById("bjCanvas");
-var ctx = document.getElementById("bjCanvas").getContext("2d");
-window.disableBtns = false;
-window.casinoSecToken = "";
-window.cardsURL = "assets/progcards/";
-//var allCards = [];
-//helper function to get mouse positions
-function getMousePos(canvas, event) {
-    "use strict";
-    var rect = canvas.getBoundingClientRect();
-    return {
-        x: (event.clientX - rect.left),
-        y: (event.clientY - rect.top)
+    blackjackSocket.addEventListener("close", () => {
+        console.info("blackjack socket closed");
+    });
+
+    blackjackSocket.onmessage = async (event) => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+
+        if (data.card) {
+            drawCard(`${document.getElementById("deck").value}card-${data.card.suit}_${data.card.value}.png`, data.target)
+            window.disableInputs = false;
+        } else if (data.result) {
+            alert(data.result);
+        }
     };
 }
 
-//helper function to check whether a point is inside a rectangle
-function isInside(pos, rect) {
-    "use strict";
-    return (pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y)
-}
-
-function hideGame() {
-    document.body.style.backgroundColor = "#121212";
-    document.getElementById("bjCanvas").style.display = "none"
-    document.getElementById("title").style.display = "inline";
-    document.getElementById("playBtn").style.display = "inline";
-    document.getElementById("backBtn").style.display = "inline";
-}
-
-const waitMs = ms => new Promise(res => setTimeout(res, ms));
-
-function startBlackjack(progdeck) {
-    if (progdeck) {
-        window.cardsURL = "assets/progcards/"
-    } else {
-        window.cardsURL = "assets/stdcards/";
-    }
-
-    if (window.innerHeight < window.innerWidth) {
-        alert("play in portrait mode, on a phone.")
-    } else {
-        window.allCardValues = 0;
-        window.allCards = [];
-
-        /*if (cvs.requestFullScreen) {
-            cvs.requestFullScreen();
-        } else if (cvs.webkitRequestFullScreen) {
-            cvs.webkitRequestFullScreen();
-        } else if (cvs.mozRequestFullScreen) {
-            cvs.mozRequestFullScreen();
-        }*/
-
-        //Scale canvas
-        cvs.style.width = window.innerWidth - ((window.innerWidth) % 64) + "px"
-        cvs.style.height = window.innerHeight - ((window.innerHeight) % 64) + "px"
-        cvs.width = (window.innerWidth - ((window.innerWidth) % 64))
-        cvs.height = (window.innerHeight - ((window.innerHeight) % 64))
-
-        //Hide all but canvas
-        cvs.style.display = "inline";
-        document.body.style.overflow = "hidden";
-        document.getElementById("title").style.display = "none";
-        document.getElementById("playBtn").style.display = "none";
-        document.getElementById("backBtn").style.display = "none";
-        try {
-            document.getElementById("gameResult").remove()
-        } catch (error) {}
-
-        //Clear canvas
-        ctx.globalCompositeOperation = 'destination-over';
-        ctx.fillStyle = "#4c8232";
-        ctx.fillRect(0, 0, cvs.width, cvs.height);
-        document.body.style.backgroundColor = "#4c8232";
-
-        //Disable image smoothing
-        ctx.imageSmoothingEnabled = false;
-        ctx.webkitImageSmoothingEnabled = false;
-
-        const cardBack = new Image();
-        //const dealerHandCard = new Image();
-        //const playerCard = new Image();
-
-        ctx.globalCompositeOperation = 'source-over';
-
-        ctx.shadowColor = "#121212";
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetX = -2.5;
-        ctx.shadowOffsetY = 2.5;
-
-        //dealerHandCard.onload = function(){ctx.drawImage(this, (cvs.width/26), 0, cvs.width/2, cvs.width/2);}
-        cardBack.onload = function() {
-            //Dealer hand
-            ctx.drawImage(this, (cvs.width / 8), 0, cvs.width / 2, cvs.width / 2);
-            ctx.drawImage(this, (cvs.width / 8) + (cvs.width / 8), 0, cvs.width / 2, cvs.width / 2);
-            //Player hand
-            ctx.drawImage(this, (cvs.width / 8), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2);
-            ctx.drawImage(this, (cvs.width / 8) + (cvs.width / 8), (cvs.width / 2) * 1.25, cvs.width / 2, cvs.width / 2);
-        };
-        //Player hand
-        //playerCard.onload = function(){ctx.drawImage(this, (cvs.width/20), (cvs.width/2)*1.25, cvs.width/2, cvs.width/2);}
-
-        //playerCard.src = "assets/player.png";
-        //dealerHandCard.src = "assets/dealerhand.png";
-        cardBack.src = `${window.cardsURL}card_back.png`;
-
-        //buttons
-        const dealButton = {
-            x: (cvs.width / 2 - cvs.width / 6) - cvs.width / 14,
-            y: (cvs.height / 8) * 6,
-            width: cvs.width / 6,
-            height: cvs.width / 6
-        };
-
-        const hitButton = {
-            x: cvs.width / 2 - cvs.width / 14,
-            y: (cvs.height / 8) * 6,
-            width: cvs.width / 6,
-            height: cvs.width / 6
-        };
-
-        const standButton = {
-            x: (cvs.width / 2 + cvs.width / 6) - cvs.width / 14,
-            y: (cvs.height / 8) * 6,
-            width: cvs.width / 6,
-            height: cvs.width / 6
-        };
-
-        const dealBtn = new Image();
-        const hitBtn = new Image();
-        const standBtn = new Image();
-
-        ctx.globalCompositeOperation = 'source-over';
-        dealBtn.onload = function() {
-            ctx.drawImage(this, dealButton.x, dealButton.y, dealButton.width, dealButton.height);
-        }
-        hitBtn.onload = function() {
-            ctx.drawImage(this, hitButton.x, hitButton.y, hitButton.width, hitButton.height);
-        }
-        standBtn.onload = function() {
-            ctx.drawImage(this, standButton.x, standButton.y, standButton.width, standButton.height);
-        }
-
-        dealBtn.src = "assets/deal.png";
-        hitBtn.src = "assets/hit.png";
-        standBtn.src = "assets/stand.png";
-
+document.getElementsByClassName("hit")[0].onclick = (e) => {
+    if (!window.disableInputs) {
         blackjackSocket.send(0x30);
+        window.disableInputs = true;
     }
+}
+
+document.getElementsByClassName("stand")[0].onclick = (e) => {
+    if (!window.disableInputs) {
+        blackjackSocket.send(0x31);
+        window.disableInputs = true;
+    }
+}
+
+function setupBoard() {
+    // show blackjack
+    document.getElementById("start").style.display = "none";
+    document.getElementById("game").style.display = "inline";
+
+    document.getElementsByClassName("dealer1")[0].src = `${document.getElementById("deck").value}card_back.png`;
+    document.getElementsByClassName("dealer2")[0].src = `${document.getElementById("deck").value}card_back.png`;
+    document.getElementsByClassName("player1")[0].src = `${document.getElementById("deck").value}card_back.png`;
+    document.getElementsByClassName("player2")[0].src = `${document.getElementById("deck").value}card_back.png`;
+}
+
+function drawCard(src, card) {
+    document.getElementsByClassName(card)[0].src = src;
 }
