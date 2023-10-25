@@ -16,18 +16,19 @@ async function spinWheel(req, res, authDb, transactions) {
         }
     }
 
-    let pointStmt = `UPDATE users SET score = score + ? WHERE userId=?`;
+    let pointStmt = `UPDATE users SET score = score + ? WHERE id=?`;
     let pointValues = [spins[spin], req.user.id];
     authDb.run(pointStmt, pointValues, (err) => {
         if (err) {
             res.status(500).send("" + 0x1f42);
             return;
-        }
-    });
-    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1500, spins[spin]], (err) => {
-        if (err) {
-            res.status(500).send("" + 0x1f42);
-            return;
+        } else {
+            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1500, spins[spin]], (err) => {
+                if (err) {
+                    res.status(500).send("" + 0x1f42);
+                    return;
+                }
+            });
         }
     });
 

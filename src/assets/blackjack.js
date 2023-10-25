@@ -41,7 +41,36 @@ function startBlackjack() {
             window.disableInputs = false;
         } else if (data.result) {
             console.info("game over");
-            alert(data.result);
+            switch (data.result) {
+                case "WN":
+                    playSound("win");
+                    await waitMs(2000);
+                    alert("you win");
+                    break;
+                case "LS":
+                    playSound("loss");
+                    await waitMs(2000);
+                    alert("you lose");
+                    break;
+                case "LB":
+                    playSound("loss");
+                    await waitMs(2000);
+                    alert("you lose (bust)");
+                    break;
+                case "WD":
+                    playSound("win");
+                    await waitMs(2000);
+                    alert("you win (dealer bust)");
+                    break;
+                case "DR":
+                    playSound("tie");
+                    await waitMs(2000);
+                    alert("tie");
+                    break;
+                default:
+                    alert("unknown error");
+                    break;
+            }
         }
     };
 }
@@ -75,4 +104,10 @@ function setupBoard() {
 
 function drawCard(src, card) {
     document.getElementsByClassName(card)[0].src = src;
+}
+
+function playSound(type) {
+    const number = type === "tie" ? Math.floor(Math.random() * 6) : Math.floor(Math.random() * 12);
+    var clip = new Audio("assets/sounds/min/" + type + "_" + number + ".min.mp3");
+    clip.play();
 }

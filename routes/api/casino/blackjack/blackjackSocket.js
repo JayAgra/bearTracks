@@ -35,7 +35,7 @@ function blackjackSocket(ws, req, transactions, authDb) {
         } else {
             user.id = result.userId;
             authDb.get("SELECT id, score FROM users WHERE id=?", [user.id], (err, result) => {
-                if (err || !result || result.score < -2000) {
+                if (err || !result || result.score < -32768) {
                     ws.send(JSON.stringify({ "status": 0x90 }));
                     ws.close();
                     return;
@@ -103,19 +103,19 @@ function blackjackSocket(ws, req, transactions, authDb) {
     function endGame() {
         let result;
         if (game.player.score > 21) {
-            result = "you bust";
+            result = "LB";
             creditLoss();
         } else if (game.dealer.score > 21) {
-            result = "you win- dealer bust";
+            result = "WD";
             creditWin();
         } else if (game.player.score > game.dealer.score) {
-            result = "you win";
+            result = "WN";
             creditWin();
         } else if (game.player.score < game.dealer.score) {
-            result = "you lose";
+            result = "LS";
             creditLoss();
         } else {
-            result = "tie";
+            result = "DR";
             creditTie();
         }
         ws.send(JSON.stringify({ "result": result }));
