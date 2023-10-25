@@ -17,37 +17,36 @@ function startBlackjack() {
 
     blackjackSocket.onmessage = async (event) => {
         console.log(event.data);
-        if (event.data === 0x13) {
+        if (event.data == 0x13) {
             setupBoard();
-        } else if (event.data === 0xe1) {
-            alert("you are too poor to gamble 💀");
-        } else if (event.data === 0x13) {
             blackjackSocket.send(0x31);
-        } else if (Number(event.data.split("%%%")[0]) === 0x32) {
+        } else if (event.data == 0xe1) {
+            alert("you are too poor to gamble 💀");
+        } else if (Number(event.data.split("%%%")[0]) == 0x32) {
             var sCards = JSON.parse(event.data.split("%%%")[1]);
             drawCard("assets/progcards/" + sCards.dealer1 + "dealer1");
             drawCard("assets/progcards/" + sCards.player1 + "player1");
             drawCard("assets/progcards/" + sCards.player2 + "player2");
-        } else if (Number(event.data.split("%%%")[0]) === 0x33) {
+        } else if (Number(event.data.split("%%%")[0]) == 0x33) {
             var nCard = JSON.parse(event.data.split("%%%%")[1]);
             drawCard("assets/progcards/" + nCard[nCard.id] + nCard.id)
             window.disableInputs = false;
-        } else if (event.data === 0x99) {
+        } else if (event.data == 0x99) {
             blackjackSocket.close();
             window.disableInputs = true;
             await waitMs(5000);
             alert("you won");
-        } else if (event.data === 0x98) {
+        } else if (event.data == 0x98) {
             blackjackSocket.close();
             window.disableInputs = true;
             await waitMs(5000);
             alert("you lost");
-        } else if (event.data === 0x97) {
+        } else if (event.data == 0x97) {
             blackjackSocket.close();
             window.disableInputs = true;
             await waitMs(5000);
             alert("you tied");
-        } else if (event.data === 0xff) {
+        } else if (event.data == 0xff) {
             blackjackSocket.close();
         }
     };
