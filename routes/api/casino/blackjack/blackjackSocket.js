@@ -19,7 +19,7 @@ async function blackjackSocket(ws, req, transactions, authDb) {
     game.player.score = populateCard(game.player.hand, game.player.score, "player1");
     game.player.score = populateCard(game.player.hand, game.player.score, "player2");
     game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, "dealer1");
-    if (pScore > 21) endGame();
+    if (game.player.score > 21) endGame();
 
     function getScore(hand) {
         let score = 0;
@@ -52,13 +52,13 @@ async function blackjackSocket(ws, req, transactions, authDb) {
 
     function endGame() {
         let result;
-        if (pScore > 21) {
+        if (game.player.score > 21) {
             result = "you bust";
         } else if (dScore > 21) {
             result = "you win- dealer bust";
-        } else if (pScore > dScore) {
+        } else if (game.player.score > dScore) {
             result = "you win";
-        } else if (pScore < dScore) {
+        } else if (game.player.score < dScore) {
             result = "you lose";
         } else {
             result = "tie";
@@ -71,7 +71,7 @@ async function blackjackSocket(ws, req, transactions, authDb) {
         if (message == 0x30) {
             // hit
             game.player.score = populateCard(game.player.hand, game.player.score, `player${player.length + 1}`);
-            if (pScore > 21) {
+            if (game.player.score > 21) {
                 endGame();
             }
         } else if (message == 0x31) {
