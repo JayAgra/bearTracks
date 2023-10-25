@@ -63,7 +63,7 @@ async function blackjackSocket(ws, req, transactions, authDb) {
         } else {
             result = "tie";
         }
-        ws.send(JSON.stringify({ "playerResult": result }));
+        ws.send(JSON.stringify({ "result": result }));
         ws.close();
     }
 
