@@ -5,15 +5,15 @@ function displayErrors() {
     if (error) {
         switch (error) {
             case "0":
-                errorEl.innerText = "500 internal server error";
+                errorEl.innerHTML = "500 internal server error<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case "1":
-                errorEl.innerText = "email already in use";
+                errorEl.innerHTML = "email already in use<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case "2":
-                errorEl.innerText = "min password length is 8";
+                errorEl.innerHTML = "min password length is 8<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case undefined: default:

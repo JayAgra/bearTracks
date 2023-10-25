@@ -5,15 +5,15 @@ function displayErrors() {
     if (error) {
         switch (error) {
             case "0":
-                errorEl.innerText = "500 internal server error";
+                errorEl.innerHTML = "500 internal server error<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case "1":
-                errorEl.innerText = "bad email/password";
+                errorEl.innerHTML = "bad email/password<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case "2":
-                errorEl.innerText = "account not yet approved by an admin";
+                errorEl.innerHTML = "account not yet approved by an admin<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case undefined: default:
