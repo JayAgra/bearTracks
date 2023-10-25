@@ -29,12 +29,19 @@ function startBlackjack() {
 
     blackjackSocket.onmessage = async (event) => {
         const data = JSON.parse(event.data);
-        console.log(data);
-
-        if (data.card) {
+        if (data.status) {
+            if (data.status === 0x90) {
+                console.info("balance too low");
+                alert("balance too low to gamble");
+            } else if (data.status === 0x91) {
+                console.info("balance ok");
+            }
+        } else if (data.card) {
+            console.info("new card");
             drawCard(`${document.getElementById("deck").value}card-${data.card.suit}_${data.card.value}.png`, data.target)
             window.disableInputs = false;
         } else if (data.result) {
+            console.info("game over");
             alert(data.result);
         }
     };
@@ -42,16 +49,18 @@ function startBlackjack() {
 
 document.getElementsByClassName("hit")[0].onclick = (e) => {
     if (!window.disableInputs) {
+        console.info("hitting...");
         blackjackSocket.send(0x30);
         window.disableInputs = true;
-    }
+    } else {console.info("buttons disabled");}
 }
 
 document.getElementsByClassName("stand")[0].onclick = (e) => {
     if (!window.disableInputs) {
+        console.info("standing...");
         blackjackSocket.send(0x31);
         window.disableInputs = true;
-    }
+    } else {console.info("buttons disabled");}
 }
 
 function setupBoard() {
