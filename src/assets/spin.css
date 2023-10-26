@@ -1,4 +1,4 @@
-@keyframes spin0{
+@keyframes spin0 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -8,7 +8,7 @@
         -webkit-transform: rotate(21600deg);
     }
 }
-@keyframes spin1{
+@keyframes spin1 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -18,7 +18,7 @@
         -webkit-transform: rotate(21630deg);
     }
 }
-@keyframes spin2{
+@keyframes spin2 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -28,7 +28,7 @@
         -webkit-transform: rotate(21660deg);
     }
 }
-@keyframes spin3{
+@keyframes spin3 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -38,7 +38,7 @@
         -webkit-transform: rotate(21690deg);
     }
 }
-@keyframes spin4{
+@keyframes spin4 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -48,7 +48,7 @@
         -webkit-transform: rotate(21720deg);
     }
 }
-@keyframes spin5{
+@keyframes spin5 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -58,7 +58,7 @@
         -webkit-transform: rotate(21750deg);
     }
 }
-@keyframes spin6{
+@keyframes spin6 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -68,7 +68,7 @@
         -webkit-transform: rotate(21780deg);
     }
 }
-@keyframes spin7{
+@keyframes spin7 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -78,7 +78,7 @@
         -webkit-transform: rotate(21810deg);
     }
 }
-@keyframes spin8{
+@keyframes spin8 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -88,7 +88,7 @@
         -webkit-transform: rotate(21840deg);
     }
 }
-@keyframes spin9{
+@keyframes spin9 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -98,7 +98,7 @@
         -webkit-transform: rotate(21870deg);
     }
 }
-@keyframes spin10{
+@keyframes spin10 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -108,7 +108,7 @@
         -webkit-transform: rotate(21900deg);
     }
 }
-@keyframes spin11{
+@keyframes spin11 {
     2% {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -118,7 +118,7 @@
         -webkit-transform: rotate(21930deg);
     }
 }
-.spinc11{
+.spinc11 {
     animation-name: spin0;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -126,7 +126,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc10{
+.spinc10 {
     animation-name: spin1;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -134,7 +134,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc9{
+.spinc9 {
     animation-name: spin2;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -142,7 +142,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc8{
+.spinc8 {
     animation-name: spin3;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -150,7 +150,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc7{
+.spinc7 {
     animation-name: spin4;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -158,7 +158,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc6{
+.spinc6 {
     animation-name: spin5;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -166,7 +166,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc5{
+.spinc5 {
     animation-name: spin6;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -174,7 +174,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc4{
+.spinc4 {
     animation-name: spin7;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -182,7 +182,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc3{
+.spinc3 {
     animation-name: spin8;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -190,7 +190,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc2{
+.spinc2 {
     animation-name: spin9;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -198,7 +198,7 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc1{
+.spinc1 {
     animation-name: spin10;
     animation-duration: 8s;
     animation-fill-mode: forwards;
@@ -206,11 +206,17 @@
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
 }
-.spinc0{
+.spinc0 {
     animation-name: spin11;
     animation-duration: 8s;
     animation-fill-mode: forwards;
     -webkit-animation-name: spin11;
     -webkit-animation-duration: 8s;
     -webkit-animation-fill-mode: forwards;
+}
+
+img {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }

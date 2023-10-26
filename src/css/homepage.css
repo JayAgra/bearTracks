@@ -39,6 +39,10 @@ a:hover,a:active {
     animation: fade 1s forwards ease-out;
 }
 @keyframes fade {
-    0% { opacity: 1 }
-    100% { opacity: 0 }
+    0% {
+        opacity: 1
+    }
+    100% {
+        opacity: 0
+    }
 }

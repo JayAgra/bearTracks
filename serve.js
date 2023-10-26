@@ -34,7 +34,6 @@ authDb.run("PRAGMA journal_mode = WAL;");
 // server imports
 const fs = require("fs");
 const express = require("express");
-const session = require("express-session");
 const lusca = require("lusca");
 const https = require("https");
 const http = require("http");
@@ -43,7 +42,6 @@ const crypto = require("crypto");
 const RateLimit = require("express-rate-limit");
 const EventEmitter = require("events").EventEmitter;
 const helmet = require("helmet");
-const sanitize = require("sanitize-filename");
 const leadToken = crypto.randomBytes(48).toString("hex");
 const app = express();
 app.disable("x-powered-by");
@@ -91,20 +89,9 @@ app.use(
         },
     })
 );
-app.use(
-    session({
-        secret: serverSecret,
-        resave: false,
-        saveUninitialized: true,
-        maxAge: 31556952000, // 365 days
-        cookie: {
-            secure: "true",
-        },
-    })
-);
 var limiter = RateLimit({
     windowMs: 10 * 60 * 1000, // 10 minutes
-    max: 1000,
+    max: 750,
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req, res) => {
@@ -124,14 +111,13 @@ app.use(
 app.use(limiter);
 
 // image uploading
-const qs = require("querystring");
 const multer = require("multer");
 const mulstorage = multer.diskStorage({
     destination: "./images/",
     filename: (req, file, cb) => {
         cb(
             null,
-            crypto.randomBytes(12).toString("hex") + sanitize(file.originalname)
+            crypto.randomBytes(12).toString("hex") + (file.originalname).replace(/[^a-z0-9]/gi, '_').toLowerCase()
         );
     },
 });

@@ -13,7 +13,7 @@ function displayErrors() {
                 errorEl.style.display = "unset";
                 break;
             case "2":
-                errorEl.innerHTML = "min password length is 8<br><br>";
+                errorEl.innerHTML = "min password length is 12<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case undefined: default:

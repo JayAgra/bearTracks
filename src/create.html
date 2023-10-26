@@ -3,32 +3,28 @@
     <head>
         <meta charset="utf-8">
         <title>Create Account - 766 Scouting</title>
-        <meta name="language" content="English">
         <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="Scouting">
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="theme-color" content="#121212" id="themeMeta">
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
-        <link rel="manifest" href="/app.webmanifest" />
-        <link rel="apple-touch-startup-image" href="public/launch.png">
         <script src="js/form.min.js"></script>
-        <style>body {text-align: center;}</style>
     </head>
-    <body class="dark-mode" onload="displayErrors()">
+    <body class="dark-mode centerText" onload="displayErrors()">
         <script>themeHandle()</script>
         <div class="container">
             <div class="dummy">
-                <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1>
+                <h1 class="w3">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1>
                 <form action="/createAccount" target="_self" method="POST">
                     <h2 style="margin-top: 0; margin-bottom: 2rem">Create Account</h2>
                     <h4 style="color: var(--cancelColor); display: none;" id="error"></h4>
-                    <label for="fullName">Full Name</label><br><input type="text" name="fullName" autocomplete="name" style="min-width: 20rem;" required><br><br>
-                    <label for="nickName">Short Name</label><br><input type="text" name="nickName" autocomplete="nickname" style="min-width: 20rem;" required><br><br>
-                    <label for="email">Email</label><br><input type="email" name="email" autocomplete="email" style="min-width: 20rem;" required><br><br>
-                    <label for="password">Password</label><br><input type="password" name="password" autocomplete="new-password" style="min-width: 20rem;" required><br><br><br>
+                    <label for="fullName">Full Name</label><br><input type="text" name="fullName" autocomplete="name" class="credInput" required><br><br>
+                    <label for="nickName">Short Name</label><br><input type="text" name="nickName" autocomplete="given-name" class="credInput" autocapitalize="none" required><br><br>
+                    <label for="email">Email</label><br><input type="email" name="email" autocomplete="email" class="credInput" required><br><br>
+                    <label for="password">Password</label><br><input type="password" name="password" autocomplete="new-password" class="credInput" minlength="12" maxlength="2048" required><br><br><br>
                     <button type="submit" class="uiButton actionButton">Create Account</button>
                 </form>
             </div>

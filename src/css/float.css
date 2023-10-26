@@ -215,3 +215,22 @@ form {
     flex-direction: column;
     align-items: center;
 }
+.w3 {
+    font-weight: 300;
+}
+.bigLink {
+    margin-bottom: 5%;
+}
+.actLink {
+    all: unset;
+    color: var(--gameFlairColor);
+}
+.credInput {
+    min-width: 16rem;
+}
+.centerText {
+    text-align: center;
+}
+.vaMiddle {
+    vertical-align: middle;
+}
