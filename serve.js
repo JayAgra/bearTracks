@@ -203,7 +203,7 @@ async function checkGamble(req, res, next) {
     let pointStmt = `SELECT score FROM users WHERE id=?`;
     let pointValues = [req.user.id];
     authDb.get(pointStmt, pointValues, (err, result) => {
-        if (Number(result.score) > -2000) {
+        if (Number(result.score) > -32768) {
             return next();
         } else {
             return res.status(403).send("" + 0x1933);

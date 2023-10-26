@@ -20,11 +20,13 @@
         <div class="container" id="start" style="display: flex;">
             <div>
                 <h1 id="title" style="font-family: 'raleway-300'">766 Casino<br><span class="gametitle">Single-Player Blackjack</span></h1><br>
-                <p>Dealer hits until their total is 17 or more. <!--Bet is 10 points.--> <b>Currently in testing- no points are used!</b></p>
+                <p>Dealer hits until their total is 17 or more.<br>Bet is 10 points.</p>
                 <select id="deck">
                     <option value="assets/stdcards/" selected>Default Cards</option>
                     <option value="assets/progcards/">Programming Cards</option>
-                    <option value="assets/gruvcards/" disabled>Gruvbox Cards</option>
+                    <optgroup label="coming 'soon'">
+                        <option value="assets/gruvcards/" disabled>Gruvbox Cards</option>
+                    </optgroup>
                 </select><br><br>
                 <button class="uiButton actionButton" onclick="startBlackjack()">Play</button><br><button  class="uiButton returnButton" onclick="goToHome()">Back</button>
             </div>
