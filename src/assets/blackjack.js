@@ -93,7 +93,6 @@ function setupBoard() {
     // show blackjack
     document.getElementById("start").style.display = "none";
     document.getElementById("game").style.display = "inline";
-
     document.getElementsByClassName("dealer1")[0].src = `${document.getElementById("deck").value}card_back.png`;
     document.getElementsByClassName("dealer2")[0].src = `${document.getElementById("deck").value}card_back.png`;
     document.getElementsByClassName("player1")[0].src = `${document.getElementById("deck").value}card_back.png`;
