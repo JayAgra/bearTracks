@@ -15,7 +15,7 @@ window.disableInputs = false;
 var blackjackSocket;
 
 function startBlackjack() {
-    blackjackSocket = new WebSocket("/api/casino/blackjack/blackjackSocket");
+    blackjackSocket = new WebSocket("wss://scout.team766.com/api/casino/blackjack/blackjackSocket");
 
     blackjackSocket.addEventListener("open", () => {
         console.info("blackjack socket opened");
