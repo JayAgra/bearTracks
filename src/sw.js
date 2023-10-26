@@ -1,45 +1,50 @@
-var version = '1.0.0'
-var cacheName = `scouting-pwa-${version}`
-var filesToCache = [
-  'offline.html',
-  '/',
-  'appinstall.js',
-  '2023_float.min.css',
-  'form.min.js',
-  'fonts/Raleway-300.ttf',
-  'fonts/Raleway-500.ttf',
-  'settings',
-  'matches '
+/*
+console.log("[SW] File Executed");
+
+const urlsToCache = [
+    "/form.min.js",
+    "/float.min.css",
+    "/assets/blackjack.js",
+    "/assets/spin.css",
+    "/assets/deal.png",
+    "/assets/hit.png",
+    "/assets/stand.png",
+    "/assets/wheel.png",
+    "/assets/yummy.mp3",
 ];
-
-console.log('service worker executed')
-//Start the service worker and cache all
-self.addEventListener('install', function(e) {
-    e.waitUntil(
-        caches.open(cacheName).then(function(cache) {
-            return cache.addAll(filesToCache);
+self.addEventListener("install", (event) => {
+    console.log("[SW] Service worker installed");
+    event.waitUntil(
+        caches.open("pwa-assets").then((cache) => {
+            return cache.addAll(urlsToCache);
         })
     );
 });
 
-self.addEventListener('activate', (evt) => {
-    evt.waitUntil(
-        caches.keys().then((keyList) => {
-            return Promise.all(keyList.map((key) => {
-                if (key !== cacheName) {
-                    return caches.delete(key);
-                }
-            }));
-        })
-    );
-    self.clients.claim();
+self.addEventListener("activate", (event) => {
+    console.log("[SW] Service worker activated");
 });
 
-/* Serve cached content when offline */
-self.addEventListener('fetch', function(event) {
-    event.respondWith(fetch(event.request).catch(function(e) {
-        return caches.open(cacheName).then(function(cache) {
-          return cache.match(event.request, {'ignoreSearch': true}).then(response => response);
-        });
-    }));
+self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+            const networkFetch = fetch(event.request)
+                .then((response) => {
+                    const responseClone = response.clone();
+                    caches
+                        .open(url.searchParams.get("name"))
+                        .then((cache) => {
+                            cache.put(event.request, responseClone);
+                        })
+                        .catch((err) => console.log(err));
+                    return response;
+                })
+                .catch(function (reason) {
+                    console.error("ServiceWorker fetch failed: ", reason);
+                });
+            return cachedResponse || networkFetch;
+        })
+    );
 });
+*/
+console.log("sw nuked");

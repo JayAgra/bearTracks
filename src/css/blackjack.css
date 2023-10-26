@@ -1,0 +1,130 @@
+.bjContainer {
+    margin: 0;
+    padding: 0;
+}
+
+.bjContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* drawing roughly 140px tall and 70px wide */
+    /* transform: scale(5); */
+    position: relative;
+    left: 17.5vw;
+}
+
+.blackjack {
+    image-rendering: pixelated;
+}
+
+.cardImg {
+    height: 64px;
+    position: fixed;
+    filter: drop-shadow(0 0 1px #000);
+}
+
+.bjBtn {
+    height: 20px;
+    position: fixed;
+    filter: drop-shadow(0 0 1px #000);
+}
+
+.dealer1 {
+    top: 0px;
+    right: -5px;
+}
+
+.dealer2 {
+    top: 0px;
+    right: -15px;
+}
+
+.dealer3 {
+    top: 0px;
+    right: -25px;
+}
+
+.dealer4 {
+    top: 0px;
+    right: -35px;
+}
+
+.dealer5 {
+    top: 0px;
+    right: -45px;
+}
+
+.dealer6 {
+    top: 0px;
+    right: -55px;
+}
+
+.dealer7 {
+    top: 0px;
+    right: -65px;
+}
+
+.player1 {
+    top: 50px;
+    right: -5px;
+}
+
+.player2 {
+    top: 50px;
+    right: -15px;
+}
+
+.player3 {
+    top: 50px;
+    right: -25px;
+}
+
+.player4 {
+    top: 50px;
+    right: -35px;
+}
+
+.player5 {
+    top: 50px;
+    right: -45px;
+}
+
+.player6 {
+    top: 50px;
+    right: -55px;
+}
+
+.player7 {
+    top: 50px;
+    right: -65px;
+}
+
+.deal {
+    top: 102px;
+    right: 22px;
+}
+
+.hit {
+    top: 102px;
+    right: 2px;
+}
+
+.stand {
+    top: 102px;
+    right: -18px;
+}
+
+.deal.noDeal {
+    display: none;
+}
+
+.hit.noDeal {
+    top: 102px;
+    right: 22px;
+}
+
+.stand.noDeal {
+    top: 102px;
+    right: -18px;
+}

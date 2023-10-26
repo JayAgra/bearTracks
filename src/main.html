@@ -1,265 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>Match Scouting - 766 Scouting</title>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="language" content="English">
-    <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scouting">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#121212" id="themeMeta">
-    <link rel="stylesheet" href="float.min.css" type="text/css">
-    <link rel="manifest" href="/app.webmanifest"/>
-    <link rel="apple-touch-startup-image" href="public/launch.png">
-    <script src="form.min.js"></script>
-    <style>
-        .sg {
-            grid-column-gap: 10px;
-            grid-row-gap: 10px;
-            aspect-ratio: 3/1;
-            -webkit-column-gap: 10px;
-            column-gap: 10px;
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            row-gap: 10px;
-            width:100%
-        }
-
-        .sg-c {
-            aspect-ratio: 1/1;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 2rem;
-            margin: 2px;
-            padding: 2px;
-            text-align: center;
-            width:100%;
-            background-color: #ddd;
-            color: #a216a2
-        }
-
-        .sg-c[data-coop=true] {
-            background-color: #bbb;
-        }
-    </style>
-</head>
-
-<body class="dark-mode" id="body">
-    <script>themeHandle()</script>
-    <form action="/submit" target="_self" method="POST" name="mainForm" id="mainFormHTML">
-        <input type="text" value="main" name="formType" hidden>
-        <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP℠</span></h1><br>
-        <h2 class="gameflair1">Pre-Match</h2>
-        <fieldset>
-            <label>Event Code</label><br>
-            <select name="event">
-                <option value="CADA" selected>CADA - Sacramento Regional</option>
-                <option value="CASJ">CASJ - Silicon Valley Regional</option>
-            </select>
-        </fieldset>
-
-        <fieldset>
-            <label>Your Name<br></label>
-            <input type="text" name="name" required>
-        </fieldset>
-
-        <fieldset>
-            <label>Number of the Team you are Scouting<br></label>
-            <input type="tel" name="team" required>
-        </fieldset>
-
-        <fieldset>
-            <label>Match Number<br></label>
-            <input type="tel" name="match" required class="smallerInput">
-            <select name="level">
-                <option value="practice">Practice</option>
-                <option value="qualification" selected>Qual</option>
-                <option value="quarterfinal">Quarterfinal</option>
-                <option value="semifinal">Semifinal</option>
-            </select>
-        </fieldset><br>
-        <h2 class="gameflair1">Match Scouting</h2>
-        <p id="landscapeReminder" style="display: none; color: red;">Consider turning your device for the grid</p>
-        <p>Select only grid squares that the robot you are scouting fills.</p>
-        <fieldset>
-            <!--INPUT TO SET FOR GRID DATA-->
-            <input value="000000000000000000000000000" type="number" name="game12" id="griddata" hidden>
-            <p><strong>Top of grid</strong></p>
-            <div class="sg">
-                <!--Grid row 1-->
-                <div class="sg-c" data-coop="false" data-num="0" id="sgc_1_1" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="1" id="sgc_1_2" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="2" id="sgc_1_3" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="3" id="sgc_1_4" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="4" id="sgc_1_5" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="5" id="sgc_1_6" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="6" id="sgc_1_7" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="7" id="sgc_1_8" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="8" id="sgc_1_9" data-state="0"></div>
-                <!--Grid row 2-->
-                <div class="sg-c" data-coop="false" data-num="9" id="sgc_2_1" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="10" id="sgc_2_2" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="11" id="sgc_2_3" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="12" id="sgc_2_4" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="13" id="sgc_2_5" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="14" id="sgc_2_6" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="15" id="sgc_2_7" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="16" id="sgc_2_8" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="17" id="sgc_2_9" data-state="0"></div>
-                <!--Grid row 3-->
-                <div class="sg-c" data-coop="false" data-num="18" id="sgc_3_1" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="19" id="sgc_3_2" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="20" id="sgc_3_3" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="21" id="sgc_3_4" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="22" id="sgc_3_5" data-state="0"></div>
-                <div class="sg-c" data-coop="true" data-num="23" id="sgc_3_6" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="24" id="sgc_3_7" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="25" id="sgc_3_8" data-state="0"></div>
-                <div class="sg-c" data-coop="false" data-num="26" id="sgc_3_9" data-state="0"></div>
-            </div>
-            <p><strong>Bottom of grid</strong></p>
-        </fieldset>
-        <br><label><strong id="vstrong">During AUTO, the robot...</strong></label>
-        <fieldset><br>
-            <input value="true" type="checkbox" name="game1" class="checkbig"><span>&emsp;Completely left COMMUNITY<br></span><br>
-            <input value="true" type="checkbox" name="game2" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br>
-            <input value="true" type="checkbox" name="game3" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br>
-            <input value="true" type="checkbox" name="game4" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br>
-            <input value="0" type="radio" name="game5" class="checkbig" checked="checked"><span>&emsp;Not DOCKED or ENGAGED<br></span><br>
-            <input value="8" type="radio" name="game5" class="checkbig"><span>&emsp;DOCKED, not ENGAGED<br></span><br>
-            <input value="12" type="radio" name="game5" class="checkbig"><span>&emsp;DOCKED and ENGAGED<br></span><br>
-        </fieldset>
-        <br><label><strong id="vstrong">During TELEOP, the robot...</strong></label>
-        <fieldset><br>
-            <input value="true" type="checkbox" name="game6" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br>
-            <input value="true" type="checkbox" name="game7" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br>
-            <input value="true" type="checkbox" name="game8" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br>
-            <input value="true" type="checkbox" name="game9" class="checkbig"><span>&emsp;COOPERTITION bonus<br></span><br>
-            <input value="0" type="radio" name="game10" class="checkbig" checked="checked"><span>&emsp;Not DOCKED or ENGAGED<br></span><br>
-            <input value="2" type="radio" name="game10" class="checkbig"><span>&emsp;PARKED (in COMMUNITY)<br></span><br>
-            <input value="6" type="radio" name="game10" class="checkbig"><span>&emsp;DOCKED and not ENGAGED<br></span><br>
-            <input value="10" type="radio" name="game10" class="checkbig"><span>&emsp;DOCKED and ENGAGED<br></span><br>
-        </fieldset>
-
-        <!--extra fields to use-->
-        <input value="0" type="number" name="game13" hidden>
-        <input value="0" type="number" name="game14" hidden>
-        <input value="0" type="number" name="game15" hidden>
-        <input value="0" type="number" name="game16" hidden>
-        <input value="0" type="number" name="game17" hidden>
-        <input value="0" type="number" name="game18" hidden>
-        <input value="0" type="number" name="game19" hidden>
-        <input value="0" type="number" name="game20" hidden>
-        <input value="0" type="number" name="game21" hidden>
-        <input value="0" type="number" name="game22" hidden>
-        <input value="0" type="number" name="game23" hidden>
-        <input value="0" type="number" name="game24" hidden>
-        <input value="0" type="number" name="game25" hidden>
-
-        <br>
-        <h2 class="gameflair1">Post Game</h2>
-        <fieldset>
-            <label>Estimate the cycle time of the robot</label><br>
-            <input type="tel" name="game11" required class="smallerInput"> seconds
-        </fieldset>
-        <fieldset>
-            <label>Did the robot play defense? If so, what did they do, and did they get fouls?<br><br></label>
-            <textarea rows="2" cols="35" name="defend"></textarea>
-        </fieldset>
-        <fieldset>
-            <label>Thoughts about driving and performance during teleop phase<br><br></label>
-            <textarea rows="2" cols="35" name="driving"></textarea>
-        </fieldset>
-        <fieldset>
-            <label>Overall assessment<br><br></label>
-            <textarea rows="4" cols="35" name="overall"></textarea>
-        </fieldset>
-        <br>
-        <p style="text-align:center">
-            <button type="submit" style="color: #000; background-color: #68C3E2; border-radius: 0.5rem;; border-style: solid; border-color: #68C3E2; border-width: 0.875rem;; margin-top: 1rem;">Submit</button><br>
-            <button type="button" style="color: #fff; background-color: #E90202; border-radius: 0.5rem;; border-style: solid; border-color: #E90202; border-width: 0.875rem;; margin-top: 1rem;" onclick="goToHome()">Back</button><br><br>
-            <!--<small><button type="button" id="downloadFormButton" onclick="exportSubmissionJSON()" style="color: red; background-color: rgba(0,0,0,0); border: none;">Download Submission</button><a id="downloadFileLink" style="color: green; background-color: rgba(0,0,0,0); text-decoration: none; border: none; display: none;"></a></small><br></small>
-            <small><button type="button" id="uploadFormButton" onclick="uploadSubmissionJSON()" style="color: red; background-color: rgba(0,0,0,0); border: none;">Upload Submission</button></small>-->
-        </p>
-    </form>
-    <input type="file" name="jsonScoutFile" accept=".scout" style="display: none;" id="jsonScoutFile" disabled="disabled">
-    <br><br>
-    <script>
-        if(window.innerHeight > window.innerWidth){
-            document.getElementById('landscapeReminder').style.display = "inline";
-        }
-        window.addEventListener('resize', function(event){
-            if(window.innerHeight > window.innerWidth){
-                document.getElementById('landscapeReminder').style.display = "inline";
-            } else {
-                document.getElementById('landscapeReminder').style.display = "none";
-            }
-        });
-        function getAllCells() {
-            var cells = [];
-            for(let j = 1; j < 4; j++) {
-                for(let i = 1; i < 10; i++) {
-                    cells.push(document.getElementById('sgc_' + j + '_' + i))
-                }
-            }
-            return cells;
-        }
-        var sgCellStatus = [
-            0, 0, 0,  0, 0, 0,  0, 0, 0,
-            0, 0, 0,  0, 0, 0,  0, 0, 0,
-            0, 0, 0,  0, 0, 0,  0, 0, 0
-        ];
-        const allCells = getAllCells();
-        function processCellClick(dataNum, numset) {
-            sgCellStatus[Number(dataNum)] = numset;
-            document.getElementById('griddata').value = sgCellStatus.join('');
-            console.log(document.getElementById('griddata').value);
-        }
-        for (var i = 0; i < allCells.length; i += 1) {
-            allCells[i].addEventListener('click', function (e) {
-                if (this.getAttribute("data-state") == "0") {
-                    this.style.background = "#a216a2";
-                    this.setAttribute("data-state", "1")
-                    processCellClick(this.getAttribute("data-num"), 1);
-                } else if (this.getAttribute("data-state") == "1") {
-                    this.style.background = "#ff0";
-                    this.setAttribute("data-state", "2")
-                    processCellClick(this.getAttribute("data-num"), 2);
-                } else if (this.getAttribute("data-state") == "2") {
-                    if (this.getAttribute("data-coop") == "true") {
-                        this.style.background = "#bbb";
-                    } else {
-                        this.style.background = "#ddd";
-                    }
-                    this.setAttribute("data-state", "0")
-                    processCellClick(this.getAttribute("data-num"), 0);
-                }
-            });
-        }
-        const inputItems = document.getElementsByTagName('input');
-        for(var i = 0; i < inputItems.length; i++) {
-            inputItems[i].addEventListener('change', (event) => {resetExportButton()});
-            inputItems[i].addEventListener('keydown', (event) => {resetExportButton()});
-            inputItems[i].addEventListener('paste', (event) => {resetExportButton()});
-        }
-        document.addEventListener('keydown', (event) => {resetExportButton()});
-        document.addEventListener('paste', (event) => {resetExportButton()});
-        function resetExportButton() {
-            const downloadFormButton = document.getElementById('downloadFormButton')
-            const downloadFileLink = document.getElementById('downloadFileLink')
-            downloadFileLink.innerHTML = "";
-            downloadFileLink.href = "";
-            downloadFileLink.download = "";
-            downloadFileLink.style.display = "none";
-            downloadFormButton.innerHTML = "Download Submission";
-            downloadFormButton.style.display = "inline";
-        }
-    </script>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <title>Match Scouting - 766 Scouting</title>
+        
+        <meta name="language" content="English">
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Scouting">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/grid.min.css" type="text/css">
+        <link rel="manifest" href="/app.webmanifest" />
+        <link rel="apple-touch-startup-image" href="public/launch.png">
+        <script src="js/form.min.js"></script>
+    </head>
+    <body class="dark-mode">
+        <script>themeHandle()</script>
+        <form action="/submit" target="_self" method="POST" name="mainForm" id="mainFormHTML">
+            <input type="text" value="main" name="formType" hidden>
+            <h1 style="font-family: 'raleway-300'">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1><br>
+            <h2 class="gameflair1">Pre-Match</h2>
+            <fieldset>
+                <label>Event Code</label><br>
+                <select name="event" id="eventCode">
+                    <option value="CADA">CADA - Sacramento Regional</option>
+                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                    <option value="WOOD">WOOD - CalGames</option>
+                    <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <label>Match Number<br></label>
+                <input type="tel" name="match" class="smallerInput" required>
+                <select name="level" class="lowerSelect">
+                    <option value="Practice">Practice</option>
+                    <option value="Qualification" selected>Qual</option>
+                    <option value="Upper">Upper</option>
+                    <option value="Lower">Lower</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <label>Team Number <span id="invalidTeamInput" style="color: red; display: none;">Not in comp!</span><br></label>
+                <input type="tel" name="team" id="validateTeamInput" required>
+            </fieldset><br>
+            <h2 class="gameflair1">Match Scouting</h2>
+            <p id="landscapeReminder" style="display: none; color: red;">Consider turning your device for the grid</p>
+            <p>Select only grid squares that the robot you are scouting fills.</p>
+            <fieldset>
+                <input value="000000000000000000000000000" type="number" name="game12" id="griddata" hidden>
+                <br><label><strong class="vstrong">During AUTO, the robot...</strong></label>
+                <fieldset><br>
+                    <input value="true" type="checkbox" name="game1" class="checkbig"><span>&emsp;Completely left COMMUNITY<br></span><br>
+                    <input value="true" type="checkbox" name="game2" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br>
+                    <input value="true" type="checkbox" name="game3" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br>
+                    <input value="true" type="checkbox" name="game4" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br>
+                    <input value="0" type="radio" name="game5" class="checkbig" checked="checked"><span>&emsp;Not DOCKED or ENGAGED<br></span><br>
+                    <input value="8" type="radio" name="game5" class="checkbig"><span>&emsp;DOCKED, not ENGAGED<br></span><br>
+                    <input value="12" type="radio" name="game5" class="checkbig"><span>&emsp;DOCKED and ENGAGED<br></span><br>
+                </fieldset>
+                <p><strong>Top of grid</strong></p>
+                <div class="sg">
+                    <!--Grid row 1-->
+                    <div class="sg-c" data-coop="false" data-num="0" id="sgc_1_1" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="false" data-num="1" id="sgc_1_2" data-state="0" data-gp="cube"></div>
+                    <div class="sg-c" data-coop="false" data-num="2" id="sgc_1_3" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="true" data-num="3" id="sgc_1_4" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="true" data-num="4" id="sgc_1_5" data-state="0" data-gp="cube"></div>
+                    <div class="sg-c" data-coop="true" data-num="5" id="sgc_1_6" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="false" data-num="6" id="sgc_1_7" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="false" data-num="7" id="sgc_1_8" data-state="0" data-gp="cube"></div>
+                    <div class="sg-c" data-coop="false" data-num="8" id="sgc_1_9" data-state="0" data-gp="cone"></div>
+                    <!--Grid row 2-->
+                    <div class="sg-c" data-coop="false" data-num="9" id="sgc_2_1" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="false" data-num="10" id="sgc_2_2" data-state="0" data-gp="cube"></div>
+                    <div class="sg-c" data-coop="false" data-num="11" id="sgc_2_3" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="true" data-num="12" id="sgc_2_4" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="true" data-num="13" id="sgc_2_5" data-state="0" data-gp="cube"></div>
+                    <div class="sg-c" data-coop="true" data-num="14" id="sgc_2_6" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="false" data-num="15" id="sgc_2_7" data-state="0" data-gp="cone"></div>
+                    <div class="sg-c" data-coop="false" data-num="16" id="sgc_2_8" data-state="0" data-gp="cube"></div>
+                    <div class="sg-c" data-coop="false" data-num="17" id="sgc_2_9" data-state="0" data-gp="cone"></div>
+                    <!--Grid row 3-->
+                    <div class="sg-c" data-coop="false" data-num="18" id="sgc_3_1" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="false" data-num="19" id="sgc_3_2" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="false" data-num="20" id="sgc_3_3" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="true" data-num="21" id="sgc_3_4" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="true" data-num="22" id="sgc_3_5" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="true" data-num="23" id="sgc_3_6" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="false" data-num="24" id="sgc_3_7" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="false" data-num="25" id="sgc_3_8" data-state="0" data-gp="h"></div>
+                    <div class="sg-c" data-coop="false" data-num="26" id="sgc_3_9" data-state="0" data-gp="h"></div>
+                </div>
+                <p><strong>Bottom of grid</strong></p>
+            </fieldset>
+            <br><label><strong class="vstrong">During TELEOP, the robot...</strong></label>
+            <fieldset><br>
+                <input value="true" type="checkbox" name="game6" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br>
+                <input value="true" type="checkbox" name="game7" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br>
+                <input value="true" type="checkbox" name="game8" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br>
+                <input value="true" type="checkbox" name="game9" class="checkbig"><span>&emsp;COOPERTITION bonus<br></span><br>
+                <input value="0" type="radio" name="game10" class="checkbig" checked="checked"><span>&emsp;Not DOCKED or ENGAGED<br></span><br>
+                <input value="2" type="radio" name="game10" class="checkbig"><span>&emsp;PARKED (in COMMUNITY)<br></span><br>
+                <input value="6" type="radio" name="game10" class="checkbig"><span>&emsp;DOCKED and not ENGAGED<br></span><br>
+                <input value="10" type="radio" name="game10" class="checkbig"><span>&emsp;DOCKED and ENGAGED<br></span><br>
+            </fieldset>
+            <input value="0" type="number" name="game13" hidden>
+            <input value="0" type="number" name="game14" hidden>
+            <input value="0" type="number" name="game15" hidden>
+            <input value="0" type="number" name="game16" hidden>
+            <input value="0" type="number" name="game17" hidden>
+            <input value="0" type="number" name="game18" hidden>
+            <input value="0" type="number" name="game19" hidden>
+            <input value="0" type="number" name="game20" hidden>
+            <input value="0" type="number" name="game21" hidden>
+            <input value="0" type="number" name="game22" hidden>
+            <input value="0" type="number" name="game23" hidden>
+            <input value="0" type="number" name="game24" hidden>
+            <input value="0" type="number" name="game25" hidden>
+            <br>
+            <h2 class="gameflair1">Post Game</h2>
+            <fieldset>
+                <label>Cycle time <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br>
+                <input type="tel" name="game11" class="smallerInput" id="validateLength" required> seconds
+            </fieldset>
+            <fieldset>
+                <label>Did the robot play defense? Explain.<br><br></label>
+                <textarea rows="2" cols="30" name="defend"></textarea>
+            </fieldset>
+            <fieldset>
+                <label>Thoughts about driving<br><br></label>
+                <textarea rows="2" cols="30" name="driving"></textarea>
+            </fieldset>
+            <fieldset>
+                <label>Overall assessment<br><br></label>
+                <textarea rows="4" cols="30" name="overall"></textarea>
+            </fieldset>
+            <br>
+            <p style="text-align:center">
+                <button type="submit" class="uiButton actionButton" id="submitButton">Submit</button><br>
+                <button type="button" class="uiButton cancelButton" onclick="goToHome()">Back</button><br><br>
+            </p>
+        </form>
+        <script src="js/main_form_client.min.js" type="text/javascript"></script>
+    </body>
 </html>

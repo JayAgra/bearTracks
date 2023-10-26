@@ -1,1065 +1,732 @@
-//CONFIG
-const { frcapi, myteam, season, scoutteama, scoutteamb, leadscout, drive, pit, clientId, clientSec, redirectURI, teamServerID, baseURLNoPcl } = require('./config.json');
+//////////////////////////////////
+//////////////////////////////////
+//////        CONFIG        //////
+//////////////////////////////////
+//////////////////////////////////
 
-//SETUP OAUTH
-const DiscordOauth2 = require("discord-oauth2");
-const getOauthData = new DiscordOauth2;
-const passport = require('passport')
-const Strategy = require('passport-discord').Strategy;
-passport.serializeUser(function(user, done) {
-  done(null, user);
+/*jslint node: true*/
+/*jslint es6*/
+
+"use strict";
+const {
+    frcapi,
+    myteam,
+    season,
+    baseURLNoPcl,
+    serverSecret,
+} = require("./config.json");
+
+// sqlite database
+const sqlite3 = require("sqlite3");
+const db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
+    console.log(err);
 });
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
+db.run("PRAGMA journal_mode = WAL;");
+const transactions = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err) => {
+    console.log(err);
 });
-const scopes = ['identify', 'email', 'guilds', 'guilds.members.read', 'role_connections.write'];
-passport.use(new Strategy({
-  clientID: clientId,
-  clientSecret: clientSec,
-  callbackURL: redirectURI,
-  scope: scopes
-}, function(accessToken, refreshToken, profile, done) {
-  process.nextTick(function() {
-    return done(null, profile);
-  });
-}));
+transactions.run("PRAGMA journal_mode = WAL;");
+const authDb = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err) => {
+    console.log(err);
+});
+authDb.run("PRAGMA journal_mode = WAL;");
 
-//SETUP DATABASE
-const sqlite3 = require('sqlite3');
-let db = new sqlite3.Database('data.db', sqlite3.OPEN_READWRITE, (err) => {});
-db.run( 'PRAGMA journal_mode = WAL;' );
-
-//SETUP SERVER(S)
-const fs = require('fs');
-const express = require('express');
-const session  = require('express-session');
-const lusca = require('lusca')
-const https = require('https');
-const http = require('http');
+// server imports
+const fs = require("fs");
+const express = require("express");
+const session = require("express-session");
+const lusca = require("lusca");
+const https = require("https");
+const http = require("http");
 const cookieParser = require("cookie-parser");
-const crypto = require('crypto');
-const seasonProcess = require('./2023.js')
-var RateLimit = require('express-rate-limit');
-var EventEmitter = require("events").EventEmitter;
-const helmet = require('helmet')
-var sanitize = require("sanitize-filename");
-const leadToken = crypto.randomBytes(48).toString('hex');
-const casinoToken = crypto.randomBytes(48).toString('hex');
-var app = express();
-app.disable('x-powered-by');
+const crypto = require("crypto");
+const RateLimit = require("express-rate-limit");
+const EventEmitter = require("events").EventEmitter;
+const helmet = require("helmet");
+const sanitize = require("sanitize-filename");
+const leadToken = crypto.randomBytes(48).toString("hex");
+const app = express();
+app.disable("x-powered-by");
 app.use(cookieParser());
 app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
+    helmet({
+        contentSecurityPolicy: false,
+    })
 );
 
 const options = {
-  key: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8'),
-  cert: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, 'utf8')
+    key: fs.readFileSync(
+        `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
+        "utf8"
+    ),
+    cert: fs.readFileSync(
+        `/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`,
+        "utf8"
+    ),
 };
 
 const certsizes = {
-  key: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`, 'utf8'),
-  cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, 'utf8')
+    key: fs.statSync(
+        `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
+        "utf8"
+    ),
+    cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, "utf8"),
 };
 
-//checks file size of ssl, if it exists (is filled), use HTTPS on port 443
-if (certsizes.key <= 100 || certsizes.cert <= 100) {} else {https.createServer(options, app).listen(443)}
-const ejs = require('ejs')
-app.set('view engine', 'html');
-app.engine('html', ejs.renderFile);
-app.use('/images', express.static('images'))
-app.use('/public', express.static('src/public'))
-//all cards by Lydia Honerkamp (https://github.com/1yd1a)
-app.use('/assets', express.static('src/assets'))
-app.use(session({
-  secret: crypto.randomBytes(48).toString('hex'),
-  resave: false,
-  saveUninitialized: false,
-  maxAge: 24 * 60 * 60 * 1000 * 183, // 183 days
-  cookie : {
-    sameSite: 'lax',
-    secure: 'true'
-  }
-}));
-var limiter = RateLimit({
-  windowMs: 10*60*1000, // 10 minutes
-  max: 1000,
-  standardHeaders: true,
-	legacyHeaders: false
-});
-app.use(lusca({
-  csrf: false,
-  xframe: 'SAMEORIGIN',
-  hsts: {maxAge: 31536000, includeSubDomains: true, preload: true},
-  xssProtection: true,
-  nosniff: true,
-  referrerPolicy: 'same-origin'
-}));
-app.use(limiter);
-app.use(passport.initialize());
-app.use(passport.session());
-
-//SETUP IMAGE UPLOADING
-const qs = require('querystring');
-const multer  = require('multer');
-const mulstorage = multer.diskStorage(
-  {
-      destination: './images/',
-      filename: function (req, file, cb ) {
-          cb(null, crypto.randomBytes(12).toString('hex') + sanitize(file.originalname));
-      }
-  }
-);
-const upload = multer( { storage: mulstorage } );
-
-//BASIC FUNCTIONS TO SHORTEN CODE
-function valueToEmote(value) {
-  if ( value == null || value == "false" ) { return "❌"; } else { return "✅"; }
+// checks file size of ssl, if it exists (is filled), use HTTPS on port 443
+var server;
+if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
+    server = https.createServer(options, app).listen(443);
 }
+var expressWs = require("express-ws")(app, server);
+app.use("/js", express.static("src/js"));
+app.use("/css", express.static("src/css"));
+app.use("/images", express.static("images"));
+// all cards by Lydia Honerkamp (https://github.com/1yd1a)
+app.use(
+    "/assets",
+    express.static("src/assets", {
+        setHeaders: (res, path) => {
+            res.set("X-Artist", "Lydia Honerkamp");
+        },
+    })
+);
+app.use(
+    session({
+        secret: serverSecret,
+        resave: false,
+        saveUninitialized: true,
+        maxAge: 31556952000, // 365 days
+        cookie: {
+            secure: "true",
+        },
+    })
+);
+var limiter = RateLimit({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    max: 1000,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req, res) => {
+        return req.connection.remoteAddress;
+    },
+});
+app.use(
+    lusca({
+        csrf: false,
+        xframe: "SAMEORIGIN",
+        hsts: { maxAge: 31556952000, includeSubDomains: true, preload: true },
+        xssProtection: true,
+        nosniff: true,
+        referrerPolicy: "same-origin",
+    })
+);
+app.use(limiter);
+
+// image uploading
+const qs = require("querystring");
+const multer = require("multer");
+const mulstorage = multer.diskStorage({
+    destination: "./images/",
+    filename: (req, file, cb) => {
+        cb(
+            null,
+            crypto.randomBytes(12).toString("hex") + sanitize(file.originalname)
+        );
+    },
+});
+const upload = multer({ storage: mulstorage });
+
+//////////////////////////////////
+//////////////////////////////////
+//////      HELPER FNS      //////
+//////////////////////////////////
+//////////////////////////////////
 
 function invalidJSON(str) {
-  try { JSON.parse(str); return false } catch (error) { return true }
-}
-
-function logInfo(info) {
-  console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' + '\x1b[32m', '[INFO] ' ,'\x1b[0m' + info)
-}
-
-function logErrors(errortodisplay) {
-  console.log('\x1b[35m', '[FORM PROCESSING] ' ,'\x1b[0m' +'\x1b[31m', '[ERROR] ' ,'\x1b[0m' + errortodisplay);
-  console.log('╰─> ' + Date.now);
-}
-
-//check the JSON file to see if the user is in the team discord server
-function inTeamServer(json) {
-  var isInTheServer = false;
-  for (var index = 0; index < json.length; ++index) {
-   var server = json[index];
-   if(server.id == teamServerID){
-     isInTheServer = true;
-     break;
-   }
-  }
-  return isInTheServer;
-}
-
-//THIS IS NOT THE DISCORD.JS MODULE, THIS IS THE FILE NAMED DISCORD.JS
-const discordSendData = require("./discord.js");
-
-function findTopRole(roles) {
-  var rolesOut = [];
-  if (roles.indexOf(leadscout) >= 0) {
-    rolesOut.push(["Lead Scout", "rgb(233, 30, 99)", "rgba(233, 30, 99, 0.1)"]);
-  }
-  if (roles.indexOf(drive) >= 0) {
-    rolesOut.push(["Drive Team", "rgb(241, 196, 15)", "rgba(241, 196, 15, 0.1)"]);
-  } 
-  if (roles.indexOf(pit) >= 0) {
-    rolesOut.push(["Pit Team", "rgb(230, 126, 34)", "rgba(230, 126, 34, 0.1)"]);
-  } 
-  if (roles.indexOf(scoutteama) >= 0) {
-    rolesOut.push(["Scout Team A", "rgb(26, 188, 156)", "rgba(26, 188, 156, 0.1)"]);
-  } 
-  if (roles.indexOf(scoutteamb) >= 0) {
-    rolesOut.push(["Scout Team B", "rgb(52, 152, 219)", "rgba(52, 152, 219, 0.1)"]);
-  }
-  rolesOut.push(["Default Role", "rgb(200, 200, 200)", "rgba(200, 200, 200, 0.1)"]);
-  return rolesOut;
-}
-
-function checkIfLead(roles) {
-  if (roles.indexOf(leadscout) >= 0) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-//check the authentication and server membership
-function checkAuth(req, res, next) {
-  if (req.isAuthenticated() && inTeamServer(req.user.guilds)) return addToDataBase(req, next);
-  if (req.isAuthenticated() && !inTeamServer(req.user.guilds)) return res.redirect('/denied')
-  res.redirect('/login');
-}
-
-//add scouts to database
-function addToDataBase(req, next) {
-  const password = crypto.randomBytes(12).toString('hex')
-  db.get(`SELECT * FROM scouts WHERE email="${req.user.email}" AND discordID="${req.user.id}" ORDER BY discordID ASC LIMIT 1`, (err, accountQueryResults) => {
-    if (err) {
-      return;
-    } else {
-      if (accountQueryResults) {
-        return;
-      } else {
-        //discordSendData.sendPasswordToUser(req.user.id, password, req.user.email);
-      }
-    }
-  });
-  db.run(`INSERT OR IGNORE INTO scouts(discordID, score, email, password, discordProfile, username, discriminator, addedAt) VALUES(${req.user.id}, 1, "${req.user.email}", "${password}", "${req.user.avatar}", "${req.user.username}", ${req.user.discriminator}, "${req.user.fetchedAt}")`);
-  return next();
-}
-
-//before server creation
-logInfo("Preparing...");
-
-//EXPRESSJS APP RESPONSES
-app.get('/login', function(req, res) {
-  res.sendFile('src/login.html', {root: __dirname})
-});
-
-//send users to discord to login when the /loginDiscord url is visited
-app.get('/loginDiscord', passport.authenticate('discord', { scope: scopes }), function(req, res) {});
-
-//get the auth code from discord (the code parameter) and use it to get a token
-app.get('/callback',
-  passport.authenticate('discord', { failureRedirect: '/login' }), function(req, res) { res.redirect('/') } // auth success
-);
-
-app.get('/clearCookies', function(req, res) {
-  res.clearCookie('role');
-  res.clearCookie('connect.sid');
-  res.clearCookie('lead');
-  res.redirect('/');
-});
-
-app.get('/settings', checkAuth, async function(req, res) {
-  res.sendFile('src/settings.html', {root: __dirname})
-});
-
-//destroy session
-app.get('/logout', function(req, res) {
-  if (req.session) {req.session.destroy(); res.redirect('/');} else {res.send("error!")}
-});
-
-//use for lets encrypt verification
-app.get('/.well-known/acme-challenge/', function(req, res) {
-  res.send("");
-});
-
-//get the main form submissions
-app.post('/submit', checkAuth, function(req, res) {
-    let body = '';
-
-    req.on('data', chunk => {
-      body += chunk.toString();
-    });
-
-    req.on('end', () => {
-      let formData = qs.parse(body);
-      if (formData.formType == 'pit') {
-        res.end("WRONG FORM")
-      } else if (formData.formType == 'main') {
-        let stmt = `INSERT INTO main (event, season, name, team, match, level, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, game21, game22, game23, game24, game25, teleop, defend, driving, overall, discordID, discordName, discordTag, discordAvatarId, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        let values = [formData.event, '2023', formData.name, formData.team, formData.match, formData.level, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.game21, formData.game22, formData.game23, formData.game24, formData.game25, "dropped", formData.defend, formData.driving, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, 0, "0"];
-        db.run(stmt, values, function(err) {
-            if (err) {
-              logErrors(err.message);
-              res.end(err.message);
-            }
-            discordSendData.newSubmission("main", this.lastID, req.user.username, formData.name);
-            seasonProcess.weightScores(this.lastID)
-        });
-        let pointStmt = `UPDATE scouts SET score = score + 25 WHERE discordID=?`;
-        let pointValues = [req.user.id];
-        db.run(pointStmt, pointValues, function(err) {
-            if (err) {
-              logErrors(err.message);
-              res.end(err.message);
-            }
-        });
-        res.sendFile('src/submitted.html', { 
-          root: __dirname
-        })
-      } else {
-        return res.status(500).send(
-          "unknown form type"
-        );
-      }
-    });
-});
-
-//use this thing to do the pit form image thing
-const imageUploads = upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }, { name: 'image4', maxCount: 1 }, { name: 'image5', maxCount: 1 }])
-app.post('/submitPit', checkAuth, imageUploads, function(req, res) {
-  let formData = req.body
-  let stmt = `INSERT INTO pit (event, season, name, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, discordID, discordName, discordTag, discordAvatarId, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  let values = [formData.event, '2023', formData.name, formData.team, formData.drivetype, formData.game1, formData.game2, formData.game3, formData.game4, formData.game5, formData.game6, formData.game7, formData.game8, formData.game9, formData.game10, formData.game11, formData.game12, formData.game13, formData.game14, formData.game15, formData.game16, formData.game17, formData.game18, formData.game19, formData.game20, formData.driveTeam, formData.attended, formData.confidence, formData.bqual, formData.overall, req.user.id, req.user.username, req.user.discriminator, req.user.avatar, req.files.image1[0].filename, req.files.image2[0].filename, req.files.image3[0].filename, req.files.image4[0].filename, req.files.image5[0].filename];
-  db.run(stmt, values, function(err) {
-    if (err) {
-      logErrors(err.message);
-      res.end('pit form error! ' + err.message);
-    }
-    discordSendData.newSubmission("pit", this.lastID, req.user.username, formData.name);
-  });
-  let pointStmt = `UPDATE scouts SET score = score + 35 WHERE discordID=?`;
-  let pointValues = [req.user.id];
-  db.run(pointStmt, pointValues, function(err) {
-      if (err) {
-        logErrors(err.message);
-        res.end(err.message);
-      }
-  });
-  res.sendFile('src/submitted.html', { 
-    root: __dirname
-  })
-});
-
-//index.html, read the code
-app.get('/', checkAuth, async function(req, res) {
-  if (!req.cookies.role) {
-    //set cookie if not exists
-    //I am setting a cookie because it takes a while to wait for role data from API
-    var oauthDataCookieSet =  await Promise.resolve(getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {return findTopRole(data.roles)}));
-
-    //btoa and atob bad idea
-    //Buffer.from(str, 'base64') and buf.toString('base64') instead
-    res.cookie("role", JSON.stringify(oauthDataCookieSet), {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
-    var rolesHTML = `<span style="color: ${oauthDataCookieSet[0][1]}; background-color: ${oauthDataCookieSet[0][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthDataCookieSet[0][0]}</span><br class="roleThing"><br class="roleThing">`;
-    if (oauthDataCookieSet[0][0] == "Pit Team" || oauthDataCookieSet[0][0] == "Drive Team") {
-      res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
-      })
-    } else if (oauthDataCookieSet[0][0] == "Lead Scout") {
-      res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
-      res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: <%- order4 %>; margin-bottom: 5%;">Manage Submissions<br></a>`
-      })
-    } else {
-      res.render('../src/index.ejs', { 
-        root: __dirname, userName: req.user.username, rolesBody: rolesHTML, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
-      })
-    }
-  } else {
-  var oauthData =  JSON.parse(req.cookies.role);
-  var rolesHTMLfromCookie = "";
-  rolesHTMLfromCookie += `<span style="color: ${oauthData[0][1]}; background-color: ${oauthData[0][2]}; border-radius: 4px; padding: 5px;" class="roleThing">${oauthData[0][0]}</span><br class="roleThing"><br class="roleThing">`
-  if (oauthData[0][0] == "Pit Team" || oauthData[0][0] == "Drive Team") {
-    res.render('../src/index.ejs', { 
-      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "2", order2: "0", order3: "1", order4: "3", additionalURLs: "<span></span>"
-    })
-  } else if (oauthData[0][0] == "Lead Scout") {
-    res.cookie("lead", leadToken, {expire: 7200000 + Date.now(), sameSite: 'Lax', secure: true, httpOnly: true }); 
-    res.render('../src/index.ejs', { 
-      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: `<a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%;">Manage Submissions<br></a>`
-    })
-  } else {
-    res.render('../src/index.ejs', { 
-      root: __dirname, userName: req.user.username, rolesBody: rolesHTMLfromCookie, order1: "0", order2: "3", order3: "2", order4: "1", additionalURLs: "<span></span>"
-    })
-  }
-  }
-});
-
-//main scouting form
-app.get('/main', checkAuth, function(req, res) {
-  res.sendFile('src/main.html', { 
-    root: __dirname
-  })
-});
-
-//pit form
-app.get('/pit', checkAuth, function(req, res) {
-  res.sendFile('src/pit.html', { 
-    root: __dirname
-  })
-});
-
-//webmanifest for PWAs
-//serve resources
-app.get('/app.webmanifest', function(req, res) {
-  res.sendFile('./src/app.webmanifest', { root: __dirname })
-  res.set('Cache-control', 'public, max-age=7776000');
-});
-
-//serve resources
-app.get('/float.css', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('./src/float.css', { root: __dirname });
-});
-
-//serve resources
-app.get('/float.min.css', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('./src/float.min.css', { root: __dirname });
-});
-
-//serve resources
-app.get('/fonts/Raleway-300.ttf', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('./src/fonts/Raleway-300.ttf', { root: __dirname });
-});
-
-//serve resources
-app.get('/fonts/Raleway-500.ttf', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('./src/fonts/Raleway-500.ttf', { root: __dirname });
-});
-
-//serve resources
-app.get('/form.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('./src/form.js', { root: __dirname });
-});
-
-//serve resources
-app.get('/form.min.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('./src/form.min.js', { root: __dirname });
-});
-
-//service worker for PWA installs
-//serve resources
-app.get('/sw.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=2592000');
-  res.sendFile('src/sw.js', { root: __dirname });
-});
-
-//serve resources
-app.get('/appinstall.js', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('src/appinstall.js', { root: __dirname });
-});
-
-//serve resources
-app.get('/favicon.ico', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('src/favicon.ico', { root: __dirname });
-});
-
-app.get('/scouts', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('src/scouts.html', { root: __dirname });
-});
-
-app.get('/scoutProfile', function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('src/scoutProfile.html', { root: __dirname });
-});
-
-app.get('/blackjack', checkAuth, function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('src/blackjack.html', { root: __dirname });
-});
-
-app.get('/spin', checkAuth, function(req, res) {
-  res.set('Cache-control', 'public, max-age=259200');
-  res.sendFile('src/spin.html', { root: __dirname });
-});
-
-app.get('/points', function(req, res) {
-  res.set('Cache-control', 'public, max-age=7776000');
-  res.sendFile('src/points.html', { root: __dirname });
-});
-
-//allow people to get denied :)
-app.get('/denied', function(req, res) {
-  try {
-  res.sendFile('src/denied.html', { root: __dirname })
-  } catch (error) {
-    res.write("Access Denied!" + "\nCould not render 404 page!" + "\n Error: " + error)
-  } 
-});
-
-//print out all info discord gives
-app.get('/info', checkAuth, function(req, res) {
-  console.log(req.user.id)
-  console.log(req.user.username)
-  console.log(req.user.avatar)
-  console.log(req.user.discriminator)
-  console.log(inTeamServer(req.user.guilds))
-  res.json(req.user);
-});
-
-app.get('/teamRoleInfo', checkAuth, function(req, res) {  
-  getOauthData.getGuildMember(req.user.accessToken, teamServerID).then( data => {
-    console.log(data.roles)
-  }).catch(error);
-});
-
-//tool to browse match scouting data
-app.get('/detail', checkAuth, function(req, res) {
-  if (req.query.team && req.query.event && req.query.page) {
-    const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC LIMIT 1 OFFSET ?`;
-    const values = [req.query.team, req.query.event, season, req.query.page];
-    db.get(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-          return;
-        } else {
-          res.render('../src/detail.ejs', { 
-            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-            resultsTeamNumber: `${dbQueryResult.team}`,
-            resultsMatchNumber: `${dbQueryResult.match}`,
-            resultsEventCode: `${dbQueryResult.event}`,
-            resultsBody: seasonProcess.createHTMLExport(dbQueryResult)
-          })
-          return;
-        }
-      }
-    });
-  } else if (req.query.id) {
-    const stmt = `SELECT * FROM main WHERE id=? LIMIT 1`;
-    const values = [req.query.id];
-    db.get(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-          return;
-        } else {
-          res.render('../src/detail.ejs', { 
-            root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex",
-            resultsTeamNumber: `${dbQueryResult.team}`,
-            resultsMatchNumber: `${dbQueryResult.match}`,
-            resultsEventCode: `${dbQueryResult.event}`,
-            resultsBody: seasonProcess.createHTMLExport(dbQueryResult)
-          })
-          return;
-        }
-      }
-    });
-  } else {
-  res.render('../src/detail.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsMatchNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-  return;
-  }
-});
-
-app.get('/browse', checkAuth, function(req, res) {
-  if (req.query.team && req.query.event) {
-    if (req.query.team == "ALL" || req.query.team == "*" || req.query.team == "0000" || req.query.team == "0") {
-      const stmt = `SELECT * FROM main WHERE event=? AND season=? ORDER BY team ASC`;
-      const values = [req.query.event, season];
-      db.all(stmt, values, (err, dbQueryResult) => {
-        if (err) {
-          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-          return;
-        } else {
-          if (typeof dbQueryResult == "undefined") {
-            res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-            return;
-          } else {
-            res.render('../src/browse.ejs', { 
-              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-              resultsTeamNumber: `ALL`,
-              resultsEventCode: `${req.query.event}`,
-              resultsBody: seasonProcess.createHTMLTableWithTeamNum(dbQueryResult)
-            })
-            return;
-          }
-        }
-      });
-    } else {
-      const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id DESC`;
-      const values = [req.query.team, req.query.event, season];
-      db.all(stmt, values, (err, dbQueryResult) => {
-        if (err) {
-          res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-          return;
-        } else {
-          if (typeof dbQueryResult == "undefined") {
-            res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-            return;
-          } else {
-            res.render('../src/browse.ejs', { 
-              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-              resultsTeamNumber: `${req.query.team}`,
-              resultsEventCode: `${req.query.event}`,
-              resultsBody: seasonProcess.createHTMLTable(dbQueryResult)
-            })
-            return;
-          }
-        }
-      });
-    }
-  } else {
-  res.render('../src/browse.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0 })
-  return;
-  }
-});
- 
-app.get('/teams', checkAuth, function(req, res) {
-  res.sendFile('src/teams.html', { root: __dirname });
-});
-
-app.get('/manage', checkAuth, async function(req, res) {
-  async function checkIfLeadScout() {
-    if (req.cookies.lead) {
-      if (req.cookies.lead == leadToken) {
-        return true;
-      } else {
+    try {
+        JSON.parse(str);
         return false;
-      }
-    } else {
-      return false;
+    } catch (error) {
+        return true;
     }
-  }
-  const isLeadScout = await checkIfLeadScout()
-  if (isLeadScout) {
-    if (req.query.dbase) {
-      function sanitizeDBName() {
-        if (req.query.dbase == "pit") {return "pit"} else {return "main"}
-      }
-      function mainOrPitLink(type) {
-        if (type == "pit") {return "pitimages"} else {return "detail"}
-      }
-      const stmt = `SELECT id FROM ${sanitizeDBName()} ORDER BY id ASC`;
-      db.all(stmt, (err, dbQueryResult) => {
-        if (err) {
-          res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: Query Error!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
-          return;
-        } else {
-          if (typeof dbQueryResult == "undefined") {
-            res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "block", errorMessage: 'Error: Results Undefined!', displaySearch: "flex", displayResults: "none", resultsBody: 0 })
-            return;
-          } else {
-            var listHTML = "";
-            for (var i = 0; i < dbQueryResult.length; i++) {
-              listHTML = listHTML + `<fieldset style="background-color: "><span><span>ID:&emsp;${dbQueryResult[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink(req.query.dbase)}?id=${dbQueryResult[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${req.query.dbase}', ${dbQueryResult[i].id}, '${req.query.dbase}${dbQueryResult[i].id}')" style="color: red" id="${req.query.dbase}${dbQueryResult[i].id}">Delete</span></span></span></fieldset>`
+}
+
+app.use((req, res, next) => {
+    if (req.cookies.key) {
+        authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
+            if (err || !result || Number(result.expires) < Date.now()) {
+                res.clearCookie("key");
+                req.user = false;
+            } else {
+                req.user = {
+                    "id": result.userId,
+                    "name": result.name,
+                    "admin": result.admin,
+                    "key": result.key,
+                    "expires": result.expires,
+                }
             }
-            res.render('../src/manage.ejs', { 
-              root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex",
-              resultsBody: listHTML
-            })
-            return;
-          }
-        }
-      });
-    } else {
-    res.render('../src/manage.ejs', { root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none",  resultsBody: 0 })
-    return;
-    }
-  } else {
-    res.status(401).send("Access Denied!");
-  }
-});
-
-app.post('/deleteSubmission', checkAuth, async function(req, res) {
-  let body = '';
-  req.on('data', chunk => {
-    body += chunk.toString();
-  });
-  req.on('end', async () => {
-    function sanitizeDBName() {
-      if (reqData.db == "pit") {return "pit"} else {return "main"}
-    }
-    let reqData = qs.parse(body);
-      async function checkIfLeadScout() {
-        if (req.cookies.lead) {
-          if (req.cookies.lead == leadToken) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
-      }
-      function selectDeductionAmount() {if (reqData.db == "pit") {return 35} else {return 25}}
-      const isLeadScout = await checkIfLeadScout()
-      if (isLeadScout) {
-        if (reqData.submissionID && reqData.db) {
-          const stmt = `SELECT discordID FROM ${sanitizeDBName()} WHERE id=?`;
-          const values = [reqData.submissionID];
-          db.get(stmt, values, (err, result) => {
-            console.log(result)
-            const getUserIDstmt = `UPDATE scouts SET score = score - ${selectDeductionAmount()} WHERE discordID="${result.discordID}"`;
-            db.run(getUserIDstmt, (err) => {if(err){console.log(err);return;}});
-          });
-          const deleteStmt = `DELETE FROM ${sanitizeDBName()} WHERE id=?`;
-          const deleteValues = [reqData.submissionID];
-          db.run(deleteStmt, deleteValues, (err) => {if(err){console.log(err);return;}});
-          res.status(200).send("done!");
-        } else {
-          res.status(400).send("Bad Request!");
-        }
-      } else {
-        res.status(401).send("Access Denied!");
-      }
-  });
-});
-
-//get list of matches
-app.get('/matches', checkAuth, function(req, res) {
-  res.set('Cache-control', 'public, max-age=2592000');
-  res.sendFile('src/matches.html', { root: __dirname });
-});
-
-//serve the uploaded images
-app.get('/pitimages', checkAuth, function(req, res) {
-  if (req.query.team && req.query.event) {
-    const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
-    const values = [req.query.team, req.query.event, season];
-    db.get(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.render('../src/pitimg.ejs', { 
-          root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
-        })
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.render('../src/pitimg.ejs', { 
-            root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
-          })
-          return;
-        } else {
-          res.render('../src/pitimg.ejs', { 
-            root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "none", displayResults: "flex", 
-            resultsTeamNumber: `${dbQueryResult.team}`, 
-            resultsEventCode: `${dbQueryResult.event}`, 
-            resultsBody: `<img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
-          })
-          return;
-        }
-      }
-    });
-  } else if (req.query.id) {
-    const stmt = `SELECT * FROM pit WHERE id=? ORDER BY id LIMIT 1`;
-    const values = [req.query.id];
-    db.get(stmt, values, (err, dbQueryResult) => {
-      if (err) {
-        res.render('../src/pitimg.ejs', { 
-          root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
-        })
-        return;
-      } else {
-        if (typeof dbQueryResult == "undefined") {
-          res.render('../src/pitimg.ejs', { 
-            root: __dirname, errorDisplay: "block", errorMessage: 'Error: No results!', displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
-          })
-          return;
-        } else {
-          res.render('../src/pitimg.ejs', { 
-            root: __dirname, errorDisplay: "block", errorMessage: "ID based query, buttons will not work!", displaySearch: "none", displayResults: "flex", 
-            resultsTeamNumber: `${dbQueryResult.team}`, 
-            resultsEventCode: `${dbQueryResult.event}`, 
-            resultsBody: `<img src="images/${dbQueryResult.image1}" alt="robot image from pit scouting (1)"/><br><img src="images/${dbQueryResult.image2}" alt="robot image from pit scouting (2)"/><br><img src="images/${dbQueryResult.image3}" alt="robot image from pit scouting (3)"/><br><img src="images/${dbQueryResult.image4}" alt="robot image from pit scouting (4)"/><br><img src="images/${dbQueryResult.image5}" alt="robot image from pit scouting (5)"/>`
-          })
-          return;
-        }
-      }
-    });
-  } else {
-  res.render('../src/pitimg.ejs', { 
-    root: __dirname, errorDisplay: "none", errorMessage: null, displaySearch: "flex", displayResults: "none", resultsTeamNumber: 0, resultsEventCode: 0, resultsBody: 0
-  })
-  return;
-  }
-});
-
-//api
-app.get('/api/matches/:season/:event/:level', checkAuth, function(req, res) {
-  var dbody = new EventEmitter();
-  var options = {
-      'method': 'GET',
-      'hostname': 'frc-api.firstinspires.org',
-      'path': `/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}&teamNumber=${myteam}`,
-      'headers': {
-          'Authorization': 'Basic ' + frcapi
-      },
-      'maxRedirects': 20
-  };
-
-  var request = https.request(options, function(response) {
-      var chunks = [];
-
-      response.on("data", function(chunk) {
-          chunks.push(chunk);
-      });
-
-      response.on("end", function(chunk) {
-          var body = Buffer.concat(chunks);
-          data = body;
-          dbody.emit('update');
-      });
-
-      response.on("error", function(error) {
-          console.error(error);
-      });
-  });
-  request.end();
-  dbody.on('update', function() {
-      if (invalidJSON(data)) {res.status(500).send('error! invalid data')} else {
-        const parsedData = JSON.parse(data);
-        var matchesContent = "";
-        const eventCode = req.params.event
-        for (let i = 0; i < parsedData.Schedule.length; i++) {
-          matchesContent = matchesContent + `<fieldset><label>${parsedData.Schedule[i].description}<br>${(parsedData.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #ff0000;"><a href="browse?team=${parsedData.Schedule[i].teams[0].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[1].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[2].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #0000ff;"><a href="browse?team=${parsedData.Schedule[i].teams[3].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[4].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?team=${parsedData.Schedule[i].teams[5].teamNumber}&event=${eventCode}">${parsedData.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;
-        }
-        res.status(200).setHeader('Content-type','text/plain').send(matchesContent);
-      }
-  });
-});
-
-app.get('/api/data/:season/:event/:team', checkAuth, function(req, res) {
-  const stmt = `SELECT * FROM main WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
-  const values = [req.params.team, req.params.event, req.params.season];
-  db.get(stmt, values, (err, dbQueryResult) => {
-    if (err) {
-      res.status(500).send("got an error from query");
-    } else {
-      res.status(200).json(JSON.parse(dbQueryResult));
-    }
-  });
-});
-
-app.get('/api/pit/:season/:event/:team', checkAuth, function(req, res) {
-  const stmt = `SELECT * FROM pit WHERE team=? AND event=? AND season=? ORDER BY id LIMIT 1`;
-  const values = [req.params.team, req.params.event, req.params.season];
-  db.get(stmt, values, (err, dbQueryResult) => {
-    if (err) {
-      res.status(500).send("got an error from query");
-    } else {
-      res.status(200).json(JSON.parse(dbQueryResult));
-    }
-  });
-});
-
-app.get('/api/teams/:season/:event', checkAuth, function(req, res) {
-  if (req.params.event) {
-      const stmt = `SELECT team, AVG(weight) FROM main WHERE event=? AND season=? GROUP BY team ORDER BY AVG(weight) DESC`;
-      const requestedEvent = sanitize(req.params.event);
-      const values = [requestedEvent, season];
-      db.all(stmt, values, (err, dbQueryResult) => {
-        if (err) {
-          res.status(500).send("got an error from query");
-          return;
-        } else {
-          if (typeof dbQueryResult == "undefined") {
-            res.status(204).send("no query results");
-          } else {
-            var htmltable = ``;
-            for (var i = 0; i < dbQueryResult.length; i++) {
-              htmltable = htmltable + `<tr><td><a href="/browse?team=${dbQueryResult[i]['team']}&event=${requestedEvent}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i]['team']}</a></td><td>${Math.round(dbQueryResult[i]['AVG(weight)'])}%</td><td><progress id="scoreWt" max="100" value="${dbQueryResult[i]['AVG(weight)']}"></progress></td>`;
-            }
-            res.status(200).setHeader('Content-type','text/plain').send(htmltable);
-          }
-        }
-      });
-  } else {
-    res.status(400).send(
-      "parameters not provided, or invalid!"
-    );
-  }
-});
-
-app.get('/api/scouts', checkAuth, function(req, res) {
-  const stmt = `SELECT * FROM scouts ORDER BY score DESC`;
-  db.all(stmt, (err, dbQueryResult) => {
-    if (err) {
-      res.status(500).send("got an error from query");
-      return;
-    } else {
-      if (typeof dbQueryResult == "undefined") {
-        res.status(204).send("no query results");
-      } else {
-        var htmltable = ``;
-        for (var i = 0; i < dbQueryResult.length; i++) {
-          htmltable = htmltable + `<tr><td><a href="/scoutProfile?discordID=${dbQueryResult[i].discordID}" style="all: unset; color: #2997FF; text-decoration: none;">${dbQueryResult[i].username}#${dbQueryResult[i].discriminator}</a></td><td>${(dbQueryResult[i].score).toFixed(2)}</td></tr>`;
-        }
-        res.status(200).setHeader('Content-type','text/plain').send(htmltable);
-      }
-    }
-  });
-});
-
-app.get('/api/scoutByID/:discordID', checkAuth, function(req, res) {
-  const stmt = `SELECT * FROM scouts WHERE discordID=?`;
-  const values = [req.params.discordID];
-  db.get(stmt, values, (err, dbQueryResult) => {
-    if (err) {
-      res.status(500).send("got an error from query");
-      return;
-    } else {
-      if (typeof dbQueryResult == "undefined") {
-        res.status(204).send("no query results");
-      } else {
-        res.status(200).setHeader('Content-type','text/plain').send(`<fieldset><p style="text-align: center;"><img src="https://cdn.discordapp.com/avatars/${dbQueryResult.discordID}/${dbQueryResult.discordProfile}.png?size=512" crossorigin="anonymous"x></p><br><br>Scout Name: ${dbQueryResult.username}#${dbQueryResult.discriminator}<br>Scout Discord: ${dbQueryResult.discordID}<br>Started Scouting: ${dbQueryResult.addedAt}<br>Score: ${dbQueryResult.score}</fieldset>`);
-      }
-    }
-  });
-});
-
-//slots API
-app.get('/api/casino/slots/slotSpin', checkAuth, function(req, res) {
-  const spin = [Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1), Math.floor(Math.random() * 7 + 1)];
-  if (spin[0] == spin[1] == spin[2]) {
-    let pointStmt = `UPDATE scouts SET score = score + 766 WHERE discordID=?`;
-    let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      } else {
-          res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
-      }
-    });
-  } else {
-    let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
-    let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      } else {
-          res.status(200).json(`{"spin0": ${spin[0]}, "spin1": ${spin[1]}, "spin2": ${spin[2]}}`);
-      }
-    });
-  }
-});
-//end slots API
-
-//blackjack API
-app.get('/api/casino/blackjack/startingCards', checkAuth, function(req, res) {
-  const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
-  var cards = [];
-  var cardValues = 0;
-  var numOfAces = 0;
-  cards.push(possibleCards[Math.floor(Math.random() * 51)])
-  cards.push(possibleCards[Math.floor(Math.random() * 51)])
-  cards.push(possibleCards[Math.floor(Math.random() * 51)])
-  //prevent cards from being duplicated
-  if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-    while (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-      if (cards[0] == cards[1] || cards[1] == cards[2] || cards[0] == cards[2]) {
-        cards = [];
-        cards.push(possibleCards[Math.floor(Math.random() * 51)])
-        cards.push(possibleCards[Math.floor(Math.random() * 51)])
-        cards.push(possibleCards[Math.floor(Math.random() * 51)])
-      } else {
-        break;
-      }
-    }
-  }
-
-  for (var i = 1; i < 3; i++) {
-    if (typeof(cards[i].value) !== "number") {
-      if (cards[i].value === "A") {
-        numOfAces = numOfAces + 1
-      } else {
-        cardValues = cardValues + 10
-      }
-    } else {
-      cardValues = cardValues + cards[i].value
-    }
-  }
-  function findDealerTotal() {if(typeof(cards[0].value) !== "number"){return 10;}else{return cards[0].value;}}
-
-  let pointStmt = `UPDATE scouts SET score = score - 10 WHERE discordID=?`;
-  let pointValues = [req.user.id];
-  db.run(pointStmt, pointValues, (err) => {
-    if (err) {
-      res.status(500).send("got an error from transaction");
-      return;
-    }
-  });
-
-  res.status(200).json(`{"dealt": "assets/card-${cards[0].suit}_${cards[0].value}.png", "player0": "assets/card-${cards[1].suit}_${cards[1].value}.png", "player1": "assets/card-${cards[2].suit}_${cards[2].value}.png", "playerTotal": ${cardValues}, "dealerTotal": ${findDealerTotal()}, "casinoToken": "${casinoToken}", "aces": ${numOfAces}}`);
-});
-
-app.get('/api/casino/blackjack/newCard', checkAuth, function(req, res) {
-  //shh, tell nobody that there are no aces here
-  const possibleCards = [{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
-  var cards = [];
-  var cardValue = 0;
-  cards.push(possibleCards[Math.floor(Math.random() * 51)])
-  if (typeof(cards[0].value) !== "number") {cardValue = 10} else {cardValue = cards[0].value}
-  res.status(200).json(`{"card": "assets/card-${cards[0].suit}_${cards[0].value}.png", "cardValue": ${cardValue}}`);
-});
-
-app.get('/api/casino/blackjack/stand/:casinoToken/:playerTotal/:dealerCard', checkAuth, function(req, res) {
-  if (req.params.casinoToken == casinoToken) {
-    const possibleCards = [{"value":"A","suit":"h"},{"value":2,"suit":"h"},{"value":3,"suit":"h"},{"value":4,"suit":"h"},{"value":5,"suit":"h"},{"value":6,"suit":"h"},{"value":7,"suit":"h"},{"value":8,"suit":"h"},{"value":9,"suit":"h"},{"value":10,"suit":"h"},{"value":"J","suit":"h"},{"value":"Q","suit":"h"},{"value":"K","suit":"h"},{"value":"A","suit":"d"},{"value":2,"suit":"d"},{"value":3,"suit":"d"},{"value":4,"suit":"d"},{"value":5,"suit":"d"},{"value":6,"suit":"d"},{"value":7,"suit":"d"},{"value":8,"suit":"d"},{"value":9,"suit":"d"},{"value":10,"suit":"d"},{"value":"J","suit":"d"},{"value":"Q","suit":"d"},{"value":"K","suit":"d"},{"value":"A","suit":"s"},{"value":2,"suit":"s"},{"value":3,"suit":"s"},{"value":4,"suit":"s"},{"value":5,"suit":"s"},{"value":6,"suit":"s"},{"value":7,"suit":"s"},{"value":8,"suit":"s"},{"value":9,"suit":"s"},{"value":10,"suit":"s"},{"value":"J","suit":"s"},{"value":"Q","suit":"s"},{"value":"K","suit":"s"},{"value":"A","suit":"c"},{"value":2,"suit":"c"},{"value":3,"suit":"c"},{"value":4,"suit":"c"},{"value":5,"suit":"c"},{"value":6,"suit":"c"},{"value":7,"suit":"c"},{"value":8,"suit":"c"},{"value":9,"suit":"c"},{"value":10,"suit":"c"},{"value":"J","suit":"c"},{"value":"Q","suit":"c"},{"value":"K","suit":"c"}]
-    if (((possibleCards[Math.floor(Math.random() * 51)].value) + Number(req.params.dealerCard)) < Number(req.params.playerTotal)) {
-      if (req.params.playerTotal < 21) {
-        let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
-        let pointValues = [req.user.id];
-        db.run(pointStmt, pointValues, (err) => {
-          if (err) {
-            res.status(500).send("got an error from transaction");
-            return;
-          }
+            return next();
         });
-        res.status(200).json(`{"result": "win"}`);
-      } else {
-        res.send("you pig")
-      }
     } else {
-      res.status(200).json(`{"result": "loss"}`);
+        req.user = false;
+        return next();
     }
-  } else {
-    res.send("you pig")
-  }
 });
 
-app.get('/api/casino/blackjack/:cval/:casinoToken/wonViaBlackjack', checkAuth, function(req, res) {
-  if (req.params.cval == 21 && req.params.casinoToken == casinoToken) {
-    let pointStmt = `UPDATE scouts SET score = score + 20 WHERE discordID=?`;
-    let pointValues = [req.user.id];
-    db.run(pointStmt, pointValues, (err) => {
-      if (err) {
-        res.status(500).send("got an error from transaction");
-        return;
-      }
-    });
-  } else {
-    res.send("you pig")
-  }
-});
-//end blackjack API
-
-app.get('/api/casino/spinner/spinWheel', checkAuth, function(req, res) {
-  //12 spins
-  const spins = [10, 20, 50, -10, -20, -25, -50, 100, -100, 250, -1000, 1250]
-
-  //weighting (you didnt think this was fair, did you??)
-  var spin = Math.floor(Math.random() * 12);
-  for (var i = 0; i < 2; i++) {
-    if (spin >= 8) {
-      spin = Math.floor(Math.random() * 12);
-      if (spin >= 9) {
-        spin = Math.floor(Math.random() * 12)
-        if (spin >= 10) {
-          spin = Math.floor(Math.random() * 12)
+// check the authentication and server membership
+function checkAuth(req, res, next) {
+    if (req.user !== false) {
+        if (Number(req.user.expires) < Date.now()) {
+            res.clearCookie("key");
+            return res.redirect("/login");
         }
-      }
+        return next();
     }
-  }
+    return res.redirect("/login");
+}
 
-  let pointStmt = `UPDATE scouts SET score = score + ? WHERE discordID=?`;
-  let pointValues = [score, req.user.id];
-  db.run(pointStmt, pointValues, (err) => {
-    if (err) {
-      res.status(500).send("got an error from transaction");
-      return;
+// check the authentication and server membership
+function apiCheckAuth(req, res, next) {
+    if (req.user !== false) {
+        if (Number(req.user.expires) < Date.now()) {
+            res.clearCookie("key");
+            return res.status(401).send("" + 0x1911);
+        }
+        return next();
     }
-  });
+    return res.status(401).send("" + 0x1911);
+}
 
-  res.status(200).json(`{"spin": ${spin}}`);
+async function checkGamble(req, res, next) {
+    let pointStmt = `SELECT score FROM users WHERE id=?`;
+    let pointValues = [req.user.id];
+    authDb.get(pointStmt, pointValues, (err, result) => {
+        if (Number(result.score) > -32768) {
+            return next();
+        } else {
+            return res.status(403).send("" + 0x1933);
+        }
+    });
+}
+
+// forwards FRC API data for some API endpoints
+// insert first forward 2022 pun
+async function forwardFRCAPIdata(url, req, res) {
+    var dbody = new EventEmitter();
+    var options = {
+        method: "GET",
+        hostname: "frc-api.firstinspires.org",
+        path: url,
+        headers: {
+            Authorization: "Basic " + frcapi,
+        },
+        maxRedirects: 20,
+    };
+
+    var request = https.request(options, (response) => {
+        var chunks = [];
+
+        response.on("data", (chunk) => {
+            chunks.push(chunk);
+        });
+
+        response.on("end", (chunk) => {
+            var body = Buffer.concat(chunks);
+            dbody.emit("update", body);
+        });
+
+        response.on("error", (error) => {
+            console.error(error);
+        });
+    });
+    request.end();
+
+    dbody.on("update", (body) => {
+        if (invalidJSON(body)) {
+            res.status(500).send("" + 0x1f61);
+        } else {
+            res.status(200).json(JSON.parse(body));
+        }
+    });
+}
+
+// if "current" is specified, use current season
+function selectSeason(req) {
+    return req.params.season == "current" ? season : req.params.season;
+}
+
+// before server creation
+console.log("Preparing...");
+app.disable("etag");
+
+
+//////////////////////////////////
+//////////////////////////////////
+////// ACCEPT INCOMING FORM //////
+//////////////////////////////////
+//////////////////////////////////
+
+// get the main form submissions
+app.post("/submit", checkAuth, async (req, res) => {
+    require("./routes/submit.js").submitForm(req, res, db, transactions, authDb, __dirname, season);
 });
 
-//auth functions
-app.get('/', passport.authenticate('discord'));
+// use this thing to do the pit form image thing
+const imageUploads = upload.fields([
+    { name: "image1", maxCount: 1 },
+    { name: "image2", maxCount: 1 },
+    { name: "image3", maxCount: 1 },
+    { name: "image4", maxCount: 1 },
+    { name: "image5", maxCount: 1 },
+]);
 
-app.get('/callback', passport.authenticate('discord', { failureRedirect: '/' }), function(req, res) {
-    res.redirect('/');
+app.post("/submitPit", checkAuth, imageUploads, async (req, res) => {
+    require("./routes/submitPit.js").submitPit(req, res, db, transactions, authDb, __dirname, season);
 });
 
-//not requiring auth for offline version, you cannot submit with this and submit url is secured anyway
-app.get('/offline.html', function(req, res) {
-  res.sendFile('src/offline.html', { root: __dirname })
+
+//////////////////////////////////
+//////////////////////////////////
+//////     SERVE STATIC     //////
+//////////////////////////////////
+//////////////////////////////////
+
+// homepage. ok, fine, this is not super static
+app.get("/", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/index.html", { root: __dirname });
 });
 
-// deepcode ignore HttpToHttps: ignoring because it is used only to redirect requests to HTTPS, deepcode ignore OR: ignored because it is redirecting to HTTPS, deepcode ignore OR: <please specify a reason of ignoring this>
-if (certsizes.key <= 100 || certsizes.cert <= 100) {app.listen(80)} else {const httpRedirect = express(); httpRedirect.all('*', (req, res) => res.redirect(`https://${req.hostname}${req.url}`)); const httpServer = http.createServer(httpRedirect); httpServer.listen(80, () => logInfo(`HTTP server listening: http://localhost`));}
+// main scouting form
+app.get("/main", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/main.html", { root: __dirname });
+});
 
-//server created and ready for a request
-logInfo("Ready!");
+// pit form
+app.get("/pit", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/pit.html", { root: __dirname });
+});
+
+// login page
+app.get("/login", async (req, res) => {
+    res.clearCookie("key");
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/login.html", { root: __dirname });
+});
+
+// create account page
+app.get("/create", async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/create.html", { root: __dirname });
+});
+
+// webmanifest for PWAs
+app.get("/app.webmanifest", async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("./src/app.webmanifest", { root: __dirname });
+});
+
+// settings page
+app.get("/settings", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/settings.html", { root: __dirname });
+});
+
+app.get("/teams", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/teams.html", { root: __dirname });
+});
+
+app.get("/manage", checkAuth, async (req, res) => {
+    if (req.user.admin == "true") {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/manage.html", { root: __dirname });
+    } else {
+        res.redirect("/denied");
+    }
+});
+
+app.get("/manageScouts", checkAuth, async (req, res) => {
+    if (req.user.admin == "true") {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/manageScouts.html", { root: __dirname });
+    } else {
+        res.redirect("/denied");
+    }
+});
+
+// CSS (should be unused in favor of minified css)
+app.get("/float.css", async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("./src/float.css", { root: __dirname });
+});
+
+// minified css
+app.get("/float.min.css", async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("./src/float.min.css", { root: __dirname });
+});
+
+// font file
+app.get("/fonts/Raleway-300.ttf", async (req, res) => {
+    res.set("Cache-control", "public, max-age=233280000");
+    res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
+});
+
+// font file
+app.get("/fonts/Raleway-500.ttf", async (req, res) => {
+    res.set("Cache-control", "public, max-age=233280000");
+    res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
+});
+
+// JS for form (should be unused in favor of minified js)
+app.get("/form.js", async (req, res) => {
+    res.set("Cache-control", "public, max-age=31104000");
+    res.sendFile("./src/form.js", { root: __dirname });
+});
+
+// minified JS for form
+app.get("/form.min.js", async (req, res) => {
+    res.set("Cache-control", "public, max-age=15552000");
+    res.sendFile("./src/js/form.min.js", { root: __dirname });
+});
+
+// favicon
+app.get("/favicon.ico", async (req, res) => {
+    res.set("Cache-control", "public, max-age=311040000");
+    res.sendFile("src/favicon.ico", { root: __dirname });
+});
+
+// scout rank page
+app.get("/scouts", async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/scouts.html", { root: __dirname });
+});
+
+// play blackjack
+app.get("/blackjack", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=259200");
+    res.sendFile("src/blackjack.html", { root: __dirname });
+});
+
+// spin wheel
+app.get("/spin", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/spin.html", { root: __dirname });
+});
+
+// list of gambling opportunities
+app.get("/points", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/points.html", { root: __dirname });
+});
+
+// teams left to pit scout (data with XHR request)
+app.get("/topitscout", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/topitscout.html", { root: __dirname });
+});
+
+// notes feature
+app.get("/notes", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/notes.html", { root: __dirname });
+});
+
+// per-scout profile
+app.get("/profile", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/profile.html", { root: __dirname });
+});
+
+// scout point transactions
+app.get("/pointRecords", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/pointRecords.html", { root: __dirname });
+});
+
+// get images from pit scouting. images are located in scouting-app/images
+app.get("/pitimages", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/pitimg.html", { root: __dirname });
+});
+
+// page with fake blue banners for future use
+app.get("/awards", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/awards.html", { root: __dirname });
+});
+
+// match list
+app.get("/matches", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/matches.html", { root: __dirname });
+});
+
+// data browsing tool
+app.get("/browse", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/browse.html", { root: __dirname });
+});
+
+// data browsing tool with detail
+app.get("/detail", checkAuth, async (req, res) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/detail.html", { root: __dirname });
+});
+
+// allow people to get denied :)
+app.get("/denied", (req, res) => {
+    res.status(400).send("access denied");
+});
+
+
+//////////////////////////////////
+//////////////////////////////////
+//////          API         //////
+//////////////////////////////////
+//////////////////////////////////
+
+//
+// data
+//
+
+// get all match data (by event)
+app.get("/api/data/:season/all/:event", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/event.js").getAllEventData(req, res, db, selectSeason(req));
+});
+
+// get team match data (by event)
+app.get("/api/data/:season/team/:event/:team", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/team.js").getTeamEventData(req, res, db, selectSeason(req));
+});
+
+// get match data for a match
+app.get("/api/data/:season/match/:event/:match", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/match.js").getEventMatchData(req, res, db, selectSeason(req));
+});
+
+// get all match scouting data from a scout (by season)
+app.get("/api/data/:season/scout/:userId", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/scout.js").getScoutResponses(req, res, db, selectSeason(req));
+});
+
+// get pit scouting data
+app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/pit.js").pit(req, res, db, selectSeason(req));
+});
+
+// get detailed data by query
+app.get("/api/data/:season/detail/query/:event/:team/:page", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/detail.js").detailBySpecs(req, res, db, selectSeason(req));
+});
+
+// get detailed data by id
+app.get("/api/data/detail/id/:id", apiCheckAuth, async (req, res) => {
+    require("./routes/api/data/detailID.js").detailByID(req, res, db);
+});
+
+//
+// team listings
+//
+
+// get weight for teams list page
+app.get("/api/teams/:season/:event", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/teams.js").teams(req, res, db,selectSeason(req));
+});
+
+// pit scouted team list
+app.get("/api/teams/:season/:event/pitscoutedteams", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/pitscoutedteams.js").pitscoutedteams(req, res, db, selectSeason(req));
+});
+
+// other ways to get weight - not used by app, but for external use
+app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, selectSeason(req));
+ });
+
+app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req, res) => {
+    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, selectSeason(req));
+});
+
+//
+// scout listings
+//
+
+// list of scouts & points
+app.get("/api/scouts", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts.js").scouts(req, res, authDb);
+});
+
+// scout's profile (submitted forms)
+app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts/profile.js").profile(req, res, authDb);
+});
+
+// scout's point transactions
+app.get("/api/scouts/transactions/me", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts/transactions.js").scoutTransactions(req, res, transactions);
+});
+
+// scout's profile
+app.get("/api/scoutByID/:userId", apiCheckAuth, async (req, res) => {
+    require("./routes/api/scouts/scoutByID.js").scoutByID(req, res, db);
+});
+
+//
+// management
+//
+
+app.get("/api/manage/:database/list", checkAuth, async (req, res) => {
+    require("./routes/api/manage/list.js").listSubmissions(req, res, db, leadToken);
+});
+
+app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req, res) => {
+    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, authDb);
+});
+
+app.get("/api/manage/scout/points/:userId/:modify/:reason", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user/points.js").updateScout(req, res, transactions, authDb);
+});
+
+app.get("/api/manage/scout/access/:id/:accessOk", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user/access.js").updateAccess(req, res, authDb);
+});
+
+app.get("/api/manage/scout/revokeKey/:id", checkAuth, async (req, res) => {
+    require("./routes/api/manage/user/revokeKey.js").revokeKey(req, res, authDb);
+});
+
+//
+// gambling
+//
+
+// slots (unused)
+app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req, res) => {
+    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, authDb, transactions);
+});
+
+// spin wheel thing
+app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req, res) => {
+    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, authDb, transactions);
+});
+
+app.ws('/api/casino/blackjack/blackjackSocket', function(ws, req) {
+    require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, transactions, authDb);
+});
+
+//
+// notes
+//
+
+// get note for team
+app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req, res) => {
+    require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
+});
+
+// create the notes
+app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req, res) => {
+    require("./routes/api/notes/createNote.js").createNote(req, res, db, season);
+});
+
+// save the note
+app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req, res) => {
+    require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
+});
+
+//
+// frc api data forwarders
+//
+
+// team list for events
+app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req, res) => {
+    if (req.params.event !== "CCCC") {
+        var teamNumParam = "";
+        if (req.params.all === "all") {
+            teamNumParam = "&start=&end=";
+        } else {
+            teamNumParam = `&teamNumber=${myteam}`;
+        }
+        res.set("Cache-control", "public, max-age=23328000");
+        forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res);
+    } else {
+        res.header("Content-Type", "application/json");
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/js/CCCC.json", { root: __dirname });
+    }
+});
+
+// frc api team list
+app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req, res) => {
+    require("./routes/api/events/teams.js").teams(req, res, frcapi, selectSeason(req));
+});
+
+// frc api teams data
+app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req, res) => {
+    forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${req.params.event}`, req, res);
+});
+
+// frc api's data on a team
+app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req, res) => {
+    forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
+});
+
+//
+// other
+//
+
+// whoami
+app.get("/api/whoami", apiCheckAuth, (req, res) => {
+    res.send("" + req.user.id);
+});
+
+//////////////////////////////////
+//////////////////////////////////
+//////     AUTH & SERVER    //////
+//////////////////////////////////
+//////////////////////////////////
+
+app.post("/createAccount", (req, res) => {
+    require("./routes/api/auth/create.js").createAccount(req, res, authDb);
+});
+
+app.post("/loginForm", (req, res) => {
+    require("./routes/api/auth/login.js").checkLogIn(req, res, authDb);
+});
+
+// clear cookies, used for debugging
+app.get("/clearCookies", (req, res) => {
+    authDb.run("DELETE FROM keys WHERE key=?", [req.cookies.key], (err) => {});
+    res.clearCookie("connect.sid");
+    res.clearCookie("lead");
+    res.clearCookie("key");
+    res.redirect("/login");
+});
+
+// destroy session
+app.get("/logout", (req, res) => {
+    authDb.run("DELETE FROM keys WHERE key=?", [req.cookies.key], (err) => {});
+    res.clearCookie("key");
+    res.clearCookie("lead");
+    res.redirect("/login");
+});
+
+if (certsizes.key <= 100 || certsizes.cert <= 100) {
+    app.listen(80);
+} else {
+    const httpRedirect = express();
+    httpRedirect.all("*", (req, res) =>
+        res.redirect(`https://${req.hostname}${req.url}`)
+    );
+    const httpServer = http.createServer(httpRedirect);
+    httpServer.listen(80, () =>
+        console.log(`HTTP server listening: http://localhost`)
+    );
+}
+
+// server created and ready for a request
+console.log("Ready!");

@@ -1,0 +1,17 @@
+a,a:visited {
+    text-align: center;
+    text-decoration: none;
+    font-size: 6vh;
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+    border-bottom: var(--textColor);
+    border-style: dotted;
+    border-width: 0.25vh;
+}
+a:hover,a:active {
+    color: var(--textColor);
+}
+body {
+    text-align: center;
+}

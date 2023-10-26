@@ -1,0 +1,44 @@
+body {
+    text-align: center;
+}
+a,a:visited {
+    text-align: center;
+    text-decoration: none;
+    font-size: 6vh;
+}
+a:hover,a:active {
+    color: var(--textColor);
+}
+#rolesDisplay span{
+    display:none;
+}
+#rolesDisplay br{
+    display:none;
+}
+#rolesDisplay span:first-child{
+    display:inline;
+}
+.offlineAlert {
+    padding: 10px;
+    background-color: #f00;
+    color: white;
+    position: absolute;
+}
+.closeAlert {
+    margin-left: 15px;
+    color: #fff;
+    float: right;
+    font-size: 22px;
+    line-height: 17.5px;
+    cursor: pointer;
+}
+.closeAlert:hover {
+    color: #121212;
+}
+.fadeout {
+    animation: fade 1s forwards ease-out;
+}
+@keyframes fade {
+    0% { opacity: 1 }
+    100% { opacity: 0 }
+}
