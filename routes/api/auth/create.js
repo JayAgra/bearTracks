@@ -16,7 +16,7 @@ function createAccount(req, res, authDb) {
                 res.redirect("/create?err=0");
             }
             if (result.length === 0) {
-                if (accountData.password.length >= 8) {
+                if (accountData.password.length >= 12) {
                     const stmt = "INSERT INTO users (email, fullName, nickName, passHash, admin, accessOk, recentAttempts, lastLogin, score) VALUES (?, ?, ?, ?, 'false', 'false', 0, ?, 0)";
                     const values = [accountData.email, accountData.fullName, accountData.nickName, crypto.createHash('sha256').update(accountData.password).digest('hex'), String(Date.now())];
                     authDb.run(stmt, values, (err) => {

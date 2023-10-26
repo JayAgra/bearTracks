@@ -1,18 +1,15 @@
 {
   "name": "scouting-app",
-  "version": "2023.1.9.0",
+  "version": "2023.1.9.1",
   "main": "serve.js",
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
-    "express-session": "^1.17.3",
     "express-ws": "^5.0.2",
-    "follow-redirects": "^1.14.9",
     "helmet": "^6.0.1",
     "lusca": "^1.7.0",
     "multer": "^1.4.5-lts.1",
-    "sanitize-filename": "^1.6.3",
     "sqlite3": "^5.1.4",
     "vader-sentiment": "^1.1.3"
   },
