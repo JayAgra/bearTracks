@@ -45,17 +45,6 @@ const nodeCrypto = require("crypto");
 const RateLimit = require("express-rate-limit");
 const EventEmitter = require("events").EventEmitter;
 const helmet = require("helmet");
-const appBase = express();
-var expressWs = require("express-ws")(appBase, server);
-let { app } = expressWs;
-app.disable("x-powered-by");
-app.use(cookieParser());
-app.use(
-    helmet({
-        contentSecurityPolicy: false,
-    })
-);
-
 const options = {
     key: fs.readFileSync(
         `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
@@ -76,10 +65,20 @@ const certsizes = {
 };
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
+const appBase = express();
 var server;
 if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
-    server = https.createServer(options, app).listen(443);
+    server = https.createServer(options, appBase).listen(443);
 }
+var expressWs = require("express-ws")(appBase, server);
+let { app } = expressWs;
+app.disable("x-powered-by");
+app.use(cookieParser());
+app.use(
+    helmet({
+        contentSecurityPolicy: false,
+    })
+);
 app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
 app.use("/images", express.static("images"));
