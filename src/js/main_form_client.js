@@ -26,18 +26,20 @@ async function getEventTeams() {
 }
 
 // check session
-try {
-    response = await fetch(`/api/whoami`, {
-        method: "GET",
-        credentials: "include",
-        redirect: "follow",
-    });
-    if (response.status === 401 || response.status === 403) {
+async function checkLogin() {
+    try {
+        response = await fetch(`/api/whoami`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+    } catch (error) {
+        console.log("failure")
         window.location.href = "/login";
     }
-} catch (error) {
-    console.log("failure")
-    window.location.href = "/login";
 }
 
 getEventTeams()
