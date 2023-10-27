@@ -19,59 +19,51 @@ const season = new Date().getFullYear();
 
 // sqlite database
 import * as sqlite3 from "sqlite3";
-const db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err: any) => {
+const db: sqlite3.Database = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err: any) => {
     console.log(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
 
-const transactions = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err: any) => {
+const transactions: sqlite3.Database = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err: any) => {
     console.log(err);
 });
 transactions.run("PRAGMA journal_mode = WAL;");
 
-const authDb = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err: any) => {
+const authDb: sqlite3.Database = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err: any) => {
     console.log(err);
 });
 authDb.run("PRAGMA journal_mode = WAL;");
 
 // server imports
-const fs = require("fs");
 import express from "express";
-const lusca = require("lusca");
-const https = require("https");
-const http = require("http");
-const cookieParser = require("cookie-parser");
-const nodeCrypto = require("crypto");
-const RateLimit = require("express-rate-limit");
-const EventEmitter = require("events").EventEmitter;
-const helmet = require("helmet");
+import expressWs from "express-ws";
+import cookieParser from "cookie-parser";
+import RateLimit from "express-rate-limit";
+import helmet from "helmet";
+import lusca from "lusca";
+import * as fs from "fs";
+import * as https from "https";
+import * as http from "http";
+import * as nodeCrypto from "crypto";
+import { EventEmitter } from "events";
 const options = {
-    key: fs.readFileSync(
-        `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
-        "utf8"
-    ),
-    cert: fs.readFileSync(
-        `/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`,
-        "utf8"
-    ),
+    key: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`),
+    cert: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, "utf8"),
 };
 
 const certsizes = {
-    key: fs.statSync(
-        `/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`,
-        "utf8"
-    ),
-    cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, "utf8"),
+    key: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`),
+    cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`)
 };
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
-const appBase = express();
+const app: express.Express = express();
 var server;
-if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
-    server = https.createServer(options, appBase).listen(443);
+if (!(Number(certsizes.key) <= 100) && !(Number(certsizes.cert) <= 100)) {
+    server = https.createServer(options, app).listen(443);
 }
-var expressWs = require("express-ws")(appBase, server);
-let { app } = expressWs;
+const { app: wsApp } = expressWs(app, server);
+
 app.disable("x-powered-by");
 app.use(cookieParser());
 app.use(
@@ -86,7 +78,7 @@ app.use("/images", express.static("images"));
 app.use(
     "/assets",
     express.static("src/assets", {
-        setHeaders: (res, path) => {
+        setHeaders: (res: express.Response, path: string) => {
             res.set("X-Artist", "Lydia Honerkamp");
         },
     })
@@ -97,7 +89,7 @@ var limiter = RateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req: express.Request, res: express.Response) => {
-        return req.connection.remoteAddress;
+        return req.connection.remoteAddress ? req.connection.remoteAddress : "0";
     },
 });
 app.use(
@@ -114,7 +106,7 @@ app.use(limiter);
 
 // image uploading
 import multer from "multer";
-const mulstorage = multer.diskStorage({
+const mulstorage: multer.StorageEngine = multer.diskStorage({
     destination: "./images/",
     filename: (req: express.Request, file, cb) => {
         cb(
@@ -123,7 +115,7 @@ const mulstorage = multer.diskStorage({
         );
     },
 });
-const upload = multer({ storage: mulstorage });
+const upload: multer.Multer = multer({ storage: mulstorage });
 
 //////////////////////////////////
 //////////////////////////////////
@@ -228,7 +220,7 @@ async function checkGamble(req: express.Request, res: express.Response, next: ex
 // forwards FRC API data for some API endpoints
 // insert first forward 2022 pun
 async function forwardFRCAPIdata(url: string, req: express.Request, res: express.Response) {
-    var dbody = new EventEmitter();
+    var dbody: EventEmitter = new EventEmitter();
     var options = {
         method: "GET",
         hostname: "frc-api.firstinspires.org",
@@ -267,7 +259,7 @@ async function forwardFRCAPIdata(url: string, req: express.Request, res: express
 }
 
 // if "current" is specified, use current season
-function selectSeason(req: express.Request) {
+function selectSeason(req: express.Request<any>) {
     return req.params.season == "current" ? season : req.params.season;
 }
 
@@ -297,7 +289,7 @@ const imageUploads = upload.fields([
 ]);
 
 app.post("/submitPit", checkAuth, imageUploads, async (req: express.Request, res: express.Response) => {
-    require("./routes/submitPit.js").submitPit(req, res, db, transactions, authDb, __dirname, season);
+    require("./routes/submitPit.ts").submitPit(req, res, db, transactions, authDb, __dirname, season);
 });
 
 
@@ -510,37 +502,37 @@ app.get("/denied", (req: express.Request, res: express.Response) => {
 //
 
 // get all match data (by event)
-app.get("/api/data/:season/all/:event", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/data/:season/all/:event", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
     require("./routes/api/data/event.js").getAllEventData(req, res, db, selectSeason(req));
 });
 
 // get team match data (by event)
-app.get("/api/data/:season/team/:event/:team", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/data/:season/team/:event/:team", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     require("./routes/api/data/team.js").getTeamEventData(req, res, db, selectSeason(req));
 });
 
 // get match data for a match
-app.get("/api/data/:season/match/:event/:match", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/data/:season/match/:event/:match", apiCheckAuth, async (req: express.Request<{event: string, match: string}>, res: express.Response) => {
     require("./routes/api/data/match.js").getEventMatchData(req, res, db, selectSeason(req));
 });
 
 // get all match scouting data from a scout (by season)
-app.get("/api/data/:season/scout/:userId", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/data/:season/scout/:userId", apiCheckAuth, async (req: express.Request<{userId: string}>, res: express.Response) => {
     require("./routes/api/data/scout.js").getScoutResponses(req, res, db, selectSeason(req));
 });
 
 // get pit scouting data
-app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     require("./routes/api/data/pit.js").pit(req, res, db, selectSeason(req));
 });
 
 // get detailed data by query
-app.get("/api/data/:season/detail/query/:event/:team/:page", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/data/:season/detail/query/:event/:team/:page", apiCheckAuth, async (req: express.Request<{event: string, team: string, page: string}>, res: express.Response) => {
     require("./routes/api/data/detail.js").detailBySpecs(req, res, db, selectSeason(req));
 });
 
 // get detailed data by id
-app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     require("./routes/api/data/detailID.js").detailByID(req, res, db);
 });
 
@@ -549,21 +541,21 @@ app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request, re
 //
 
 // get weight for teams list page
-app.get("/api/teams/:season/:event", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/teams/:season/:event", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
     require("./routes/api/teams/teams.js").teams(req, res, db,selectSeason(req));
 });
 
 // pit scouted team list
-app.get("/api/teams/:season/:event/pitscoutedteams", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/teams/:season/:event/pitscoutedteams", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
     require("./routes/api/teams/pitscoutedteams.js").pitscoutedteams(req, res, db, selectSeason(req));
 });
 
 // other ways to get weight - not used by app, but for external use
-app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, selectSeason(req));
  });
 
-app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: express.Request<{team: string}>, res: express.Response) => {
     require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, selectSeason(req));
 });
 
@@ -577,7 +569,7 @@ app.get("/api/scouts", apiCheckAuth, async (req: express.Request, res: express.R
 });
 
 // scout's profile (submitted forms)
-app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req: express.Request<{scout: string}>, res: express.Response) => {
     require("./routes/api/scouts/profile.js").profile(req, res, authDb);
 });
 
@@ -587,7 +579,7 @@ app.get("/api/scouts/transactions/me", apiCheckAuth, async (req: express.Request
 });
 
 // scout's profile
-app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request<{userId: string}>, res: express.Response) => {
     require("./routes/api/scouts/scoutByID.js").scoutByID(req, res, db);
 });
 
@@ -595,23 +587,23 @@ app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request, res
 // management
 //
 
-app.get("/api/manage/:database/list", checkAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/manage/:database/list", checkAuth, async (req: express.Request<{database: string}>, res: express.Response) => {
     require("./routes/api/manage/list.js").listSubmissions(req, res, db);
 });
 
-app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req: express.Request<{database: string, submissionId: string}>, res: express.Response) => {
     require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, authDb);
 });
 
-app.get("/api/manage/scout/points/:userId/:modify/:reason", checkAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/manage/scout/points/:userId/:modify/:reason", checkAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
     require("./routes/api/manage/user/points.js").updateScout(req, res, transactions, authDb);
 });
 
-app.get("/api/manage/scout/access/:id/:accessOk", checkAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/manage/scout/access/:id/:accessOk", checkAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
     require("./routes/api/manage/user/access.js").updateAccess(req, res, authDb);
 });
 
-app.get("/api/manage/scout/revokeKey/:id", checkAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/manage/scout/revokeKey/:id", checkAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     require("./routes/api/manage/user/revokeKey.js").revokeKey(req, res, authDb);
 });
 
@@ -629,7 +621,7 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req: 
     require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, authDb, transactions);
 });
 
-expressWs('/api/casino/blackjack/blackjackSocket', function(ws: any, req: express.Request) {
+wsApp.ws('/api/casino/blackjack/blackjackSocket', function(ws: any, req: express.Request) {
     require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, transactions, authDb);
 });
 
@@ -638,17 +630,17 @@ expressWs('/api/casino/blackjack/blackjackSocket', function(ws: any, req: expres
 //
 
 // get note for team
-app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
 });
 
 // create the notes
-app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     require("./routes/api/notes/createNote.js").createNote(req, res, db, season);
 });
 
 // save the note
-app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
 });
 
@@ -657,7 +649,7 @@ app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req: expres
 //
 
 // team list for events
-app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req: express.Request<{event: string, level: string, all: string, season: string}>, res: express.Response) => {
     if (req.params.event !== "CCCC") {
         var teamNumParam = "";
         if (req.params.all === "all") {
@@ -675,17 +667,17 @@ app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req: exp
 });
 
 // frc api team list
-app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
     require("./routes/api/events/teams.js").teams(req, res, frcapi, selectSeason(req));
 });
 
 // frc api teams data
-app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${req.params.event}`, req, res);
 });
 
 // frc api's data on a team
-app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req: express.Request<{team: string}>, res: express.Response) => {
     forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
 });
 
@@ -729,7 +721,7 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
     res.redirect("/login");
 });
 
-if (certsizes.key <= 100 || certsizes.cert <= 100) {
+if (Number(certsizes.key) <= 100 || Number(certsizes.cert) <= 100) {
     app.listen(80);
 } else {
     const httpRedirect = express();
