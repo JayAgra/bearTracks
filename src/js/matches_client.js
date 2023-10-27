@@ -1,6 +1,6 @@
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }
 async function getMatches() {
     var allOrTeam = ""

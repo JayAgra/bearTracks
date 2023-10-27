@@ -13,8 +13,9 @@ if [ "$1" ]; then
     elif [ "$1" = "start" ]; then
         npm start
     elif [ "$1" = "setup-pm2" ]; then
+        curl -fsSL https://bun.sh/install | bash
         sudo npm install pm2 -g
-        pm2 start serve.js
+        pm2 start pm2.config.js
         pm2 save
         pm2 startup
     elif [ "$1" = "install" ]; then
@@ -28,6 +29,11 @@ if [ "$1" ]; then
     elif [ "$1" = "renewssl" ]; then 
         ## assumes pm2
         certbot renew --deploy-hook='pm2 restart all'
+    elif [ "$1" = "backup" ]; then
+        rm data.zip
+        zip data.zip data.db data.db-shm data.db-wal data_transact.db data_transact.db-shm data_transact.db-wal data_auth.db data_auth.db-shm data_auth.db-wal
+        rm backups/data.zip
+        mv data.zip backups/data_$(date +%s).zip
     elif [ "$1" = "savedb" ]; then
         # save database file to the /images directory for backups
         if [ "$2" = "auth"]; then
@@ -73,6 +79,7 @@ if [ "$1" ]; then
         printf "install\t\t\tinstalls deps\n"
         printf "ssl\t\t\tgets a new ssl certificate\n"
         printf "renewssl\t\trenews an existing ssl certificate\n"
+        printf "backup\t\t\tbacks up entire database to backups dir\n"
         printf "savedb\t\t\tzips db and makes it available in the images directory\n"
         printf "clearbackup\t\tdeletes db backup from images directory\n"
         printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"
@@ -90,6 +97,7 @@ else
     printf "install\t\t\tinstalls deps\n"
     printf "ssl\t\t\tgets a new ssl certificate\n"
     printf "renewssl\t\trenews an existing ssl certificate\n"
+    printf "backup\t\t\tbacks up entire database to backups dir\n"
     printf "savedb\t\t\tzips db and makes it available in the images directory\n"
     printf "clearbackup\t\tdeletes db backup from images directory\n"
     printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"

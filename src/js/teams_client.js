@@ -8,7 +8,7 @@ function addProperty(object, property, amount) {
 }
 const waitMs = ms => new Promise(res => setTimeout(res, ms));
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }
 async function getTeamRanks() {
     const eventCode = document.getElementById("eventCode").value;

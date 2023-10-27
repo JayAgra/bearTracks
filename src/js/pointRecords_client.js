@@ -1,5 +1,5 @@
 function goToHome() {
-    window.location.href = "/points";
+    history.back();
 }
 
 async function getData() {
@@ -38,7 +38,7 @@ async function getData() {
         }
         listRes = await response.json();
         var listHTML = "";
-        for (var i = listRes.length - 1; i >= 0; i--) {
+        for (var i = 0; i < listRes.length; i++) {
             listHTML += `<tr class="padded"><td>${types[String(listRes[i].type)]}</td><td>${listRes[i].amount}</td><td>${listRes[i].time}</td></tr>`;
         }
         document.getElementById("preInsert").insertAdjacentHTML("afterend", listHTML);  

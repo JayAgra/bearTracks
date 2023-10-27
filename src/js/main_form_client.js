@@ -25,6 +25,23 @@ async function getEventTeams() {
     xhr.send()
 }
 
+// check session
+async function checkLogin() {
+    try {
+        response = await fetch(`/api/whoami`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+    } catch (error) {
+        console.log("failure")
+        window.location.href = "/login";
+    }
+}
+
 getEventTeams()
 
 document.getElementById('eventCode').addEventListener('change', async function(){console.log(getEventTeams()); console.log(allTeams)});
@@ -155,4 +172,8 @@ for (var i = 0; i < allCells.length; i += 1) {
             }
         }
     });
+}
+
+function goToHome() {
+    history.back();
 }

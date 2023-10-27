@@ -1,9 +1,5 @@
 {
     "frcapi": "",
     "myteam": "766",
-    "repoUrl": "https://github.com/JayAgra/scouting-app.git",
-    "season": 2023,
-    "currentComp": "NONE",
-    "baseURL": "http://localhost/",
     "baseURLNoPcl": "localhost"
 }

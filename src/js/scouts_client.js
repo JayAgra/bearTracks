@@ -1,5 +1,5 @@
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }
 async function getTeamRanks() {
     document.getElementById("viewScoutsButton").innerHTML = "Requesting Data...";

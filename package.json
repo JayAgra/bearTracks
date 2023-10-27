@@ -22,7 +22,16 @@
   "license": "MIT",
   "repository": "https://github.com/JayAgra/scouting-app.git",
   "devDependencies": {
-    "node": "^16.13.2"
+    "@types/cookie-parser": "^1.4.5",
+    "@types/express": "^4.17.20",
+    "@types/express-ws": "^3.0.3",
+    "@types/lusca": "^1.7.3",
+    "@types/multer": "^1.4.9",
+    "@types/node": "^20.8.9",
+    "@types/sqlite3": "^3.1.10",
+    "node": "^16.13.2",
+    "typescript": "^5.2.2",
+    "bun-types": "latest"
   },
   "description": "Scouting app for FRC."
 }

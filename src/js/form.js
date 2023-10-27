@@ -32,7 +32,7 @@ function themeHandle() {
 }
 
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }
 
 /*
