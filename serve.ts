@@ -45,7 +45,9 @@ const nodeCrypto = require("crypto");
 const RateLimit = require("express-rate-limit");
 const EventEmitter = require("events").EventEmitter;
 const helmet = require("helmet");
-const app = express();
+const appBase = express();
+var expressWs = require("express-ws")(appBase, server);
+let { app } = expressWs;
 app.disable("x-powered-by");
 app.use(cookieParser());
 app.use(
@@ -78,7 +80,6 @@ var server;
 if (!(certsizes.key <= 100) && !(certsizes.cert <= 100)) {
     server = https.createServer(options, app).listen(443);
 }
-var expressWs = require("express-ws")(app, server);
 app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
 app.use("/images", express.static("images"));
