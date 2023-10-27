@@ -78,10 +78,7 @@ if [ "$1" ]; then
         printf "install\t\t\tinstalls deps\n"
         printf "ssl\t\t\tgets a new ssl certificate\n"
         printf "renewssl\t\trenews an existing ssl certificate\n"
-<<<<<<< HEAD
         printf "backup\t\t\tbacks up entire database to backups dir\n"
-=======
->>>>>>> origin/main
         printf "savedb\t\t\tzips db and makes it available in the images directory\n"
         printf "clearbackup\t\tdeletes db backup from images directory\n"
         printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"
@@ -99,10 +96,7 @@ else
     printf "install\t\t\tinstalls deps\n"
     printf "ssl\t\t\tgets a new ssl certificate\n"
     printf "renewssl\t\trenews an existing ssl certificate\n"
-<<<<<<< HEAD
     printf "backup\t\t\tbacks up entire database to backups dir\n"
-=======
->>>>>>> origin/main
     printf "savedb\t\t\tzips db and makes it available in the images directory\n"
     printf "clearbackup\t\tdeletes db backup from images directory\n"
     printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"
