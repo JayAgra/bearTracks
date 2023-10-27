@@ -244,7 +244,7 @@ function weightScores(submissionID, db) {
                 }
             });
         } else {
-            console.log("query failure");
+            console.error("query failure");
         }
     });
 }

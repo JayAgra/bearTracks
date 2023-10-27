@@ -3,7 +3,7 @@ function removeURLParams() {
     window.location.href = "/pitimages"
 }
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }
 function searchImg() {
     document.getElementById("searchBtn").innerHTML = "Requesting Data...";

@@ -11,10 +11,10 @@
 const {
     frcapi,
     myteam,
-    season,
     baseURLNoPcl,
-    serverSecret,
 } = require("./config.json");
+
+const season = new Date().getFullYear();
 
 // sqlite database
 const sqlite3 = require("sqlite3");
@@ -22,10 +22,12 @@ const db = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
+
 const transactions = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log(err);
 });
 transactions.run("PRAGMA journal_mode = WAL;");
+
 const authDb = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err) => {
     console.log(err);
 });
@@ -545,7 +547,7 @@ app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req, res)
 
 // list of scouts & points
 app.get("/api/scouts", apiCheckAuth, async (req, res) => {
-    require("./routes/api/scouts.js").scouts(req, res, authDb);
+    require("./routes/api/scouts/scouts.js").scouts(req, res, authDb);
 });
 
 // scout's profile (submitted forms)

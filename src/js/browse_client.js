@@ -262,5 +262,5 @@ window.addEventListener("keydown", (e) => {
 })
 
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }

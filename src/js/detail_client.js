@@ -71,5 +71,5 @@ async function loadData() {
 }
 
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }

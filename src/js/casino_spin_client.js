@@ -52,5 +52,5 @@ async function spinWheel() {
     }
 }
 function goToHome() {
-    window.location.href = "/points";
+    history.back();
 }

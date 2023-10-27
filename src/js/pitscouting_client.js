@@ -42,5 +42,5 @@ document.getElementById('validateTeamInput').addEventListener('input', function(
 });
 
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }

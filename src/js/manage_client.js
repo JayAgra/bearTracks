@@ -3,7 +3,7 @@ function newSearch() {
 }
 
 function goToHome() {
-    window.location.href = "/";
+    history.back();
 }
 
 function mainOrPitLink() {

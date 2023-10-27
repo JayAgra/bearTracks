@@ -1,22 +1,5 @@
 {
-	"clientId": "",
-	"token": "",
-	"frcapi": "",
-	"scoutteama": "",
-	"scoutteamb": "",
-	"scoutteamc": "",
-	"leadscout": "",
-	"drive": "",
-	"pit": "",
-	"myteam": "766",
-	"botOwnerUserID": "",
-	"season": 2023,
-	"currentComp": "NONE",
-	"clientSec": "",
-	"redirectURI": "https://scout.example.com/callback",
-	"teamServerID": "",
-	"anotherServerID": "",
-	"baseURL": "https://scout.example.com/",
-	"baseURLNoPcl": "scout.example.com",
-	"serverSecret" : "putsomethinghere"
+    "frcapi": "",
+    "myteam": "766",
+    "baseURLNoPcl": "localhost"
 }
