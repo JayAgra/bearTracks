@@ -289,7 +289,7 @@ const imageUploads = upload.fields([
 ]);
 
 app.post("/submitPit", checkAuth, imageUploads, async (req: express.Request, res: express.Response) => {
-    require("./routes/submitPit.ts").submitPit(req, res, db, transactions, authDb, __dirname, season);
+    require("./routes/submitPit.js").submitPit(req, res, db, transactions, authDb, __dirname, season);
 });
 
 
