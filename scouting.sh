@@ -13,6 +13,7 @@ if [ "$1" ]; then
     elif [ "$1" = "start" ]; then
         npm start
     elif [ "$1" = "setup-pm2" ]; then
+        curl -fsSL https://bun.sh/install | bash
         sudo npm install pm2 -g
         pm2 start pm2.config.js
         pm2 save
