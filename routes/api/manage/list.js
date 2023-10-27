@@ -2,7 +2,7 @@ function getSafeDbName(input) {
     return input === "pit" ? "pit" : "main";
 }
 
-async function listSubmissions(req, res, db, leadToken) {
+async function listSubmissions(req, res, db) {
     if (req.user.admin == "true") {
         const stmt = `SELECT id FROM ${getSafeDbName(req.params.database)} ORDER BY id ASC`;
         db.all(stmt, (err, result) => {
