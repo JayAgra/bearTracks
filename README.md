@@ -12,7 +12,8 @@ You will need a VPS to run this, I would suggest using DigitalOcean Droplets. Mi
 	"repoUrl": "https://github.com/JayAgra/scouting-app.git",
 	"season": 2023,
 	"currentComp": "NONE",
-	"baseURL": "http://localhost/"
+	"baseURL": "http://localhost/",
+    "baseURLNoPcl": "localhost"
 }
 ```
 + **frcapi** FRC API credentials, in base64. Encode like username:token, and do not include anything before the base64 string. Obtain a key: https://frc-events.firstinspires.org/services/API<br>

@@ -39,7 +39,7 @@ async function getData() {
         listRes = await response.json();
         var listHTML = "";
         for (var i = listRes.length - 1; i >= 0; i--) {
-            listHTML += `<tr class="padded"><td>${types[String(listRes[i].type)]}</td><td>${listRes[i].amount}</td></tr>`;
+            listHTML += `<tr class="padded"><td>${types[String(listRes[i].type)]}</td><td>${listRes[i].amount}</td><td>${listRes[i].time}</td></tr>`;
         }
         document.getElementById("preInsert").insertAdjacentHTML("afterend", listHTML);  
     } catch (error) {

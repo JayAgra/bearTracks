@@ -1,5 +1,5 @@
 function scoutTransactions(req, res, transactions) {
-    const stmt = "SELECT type, amount FROM transactions WHERE userId = ?";
+    const stmt = "SELECT type, amount, time FROM transactions WHERE userId=? ORDER BY id DESC LIMIT 250";
     transactions.all(stmt, [req.user.id], (err, result) => {
         if (err || typeof result == "undefined") {
             res.status(500).send("" + 0x1f41);
