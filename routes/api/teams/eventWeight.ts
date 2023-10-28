@@ -12,5 +12,3 @@ export async function teamsByEvent(req: express.Request, res: express.Response, 
         }
     });
 }
-
-module.exports = { teamsByEvent };

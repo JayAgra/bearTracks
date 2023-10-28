@@ -35,5 +35,3 @@ export async function spinWheel(req: express.Request, res: express.Response, aut
 
     return res.status(200).json(`{"spin": ${spin}}`);
 }
-
-module.exports = { spinWheel };
