@@ -1,6 +1,8 @@
-const qs = require("querystring");
+import express from "express";
+import * as sqlite3 from "sqlite3";
+import { parse } from "qs";
 
-function escapeHTML(htmlStr) {
+function escapeHTML(htmlStr: string): string {
     return String(htmlStr)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -9,8 +11,49 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitForm(req, res, db, transactions, authDb, dirname, season) {
-    let body = "";
+type mainFormIncoming = {
+	"formType": string,
+	"event": string,
+	"season": number,
+	"team": number,
+	"match": number,
+	"level": string,
+	"game1": string,
+	"game2": string,
+	"game3": string,
+	"game4": string,
+	"game5": string,
+	"game6": string,
+	"game7": string,
+	"game8": string,
+	"game9": string,
+	"game10": string,
+	"game11": string,
+	"game12": string,
+	"game13": string,
+	"game14": string,
+	"game15": string,
+	"game16": string,
+	"game17": string,
+	"game18": string,
+	"game19": string,
+	"game20": string,
+	"game21": string,
+	"game22": string,
+	"game23": string,
+	"game24": string,
+	"game25": string,
+	"defend": string,
+	"driving": string,
+	"overall": string,
+	"userId": string,
+	"name": string,
+	"weight": string,
+	"analysis": string,
+}
+
+export async function submitForm(req: express.Request, res: express.Response, db: sqlite3.Database, transactions: sqlite3.Database, authDb: sqlite3.Database, dirname: string, season: number) {
+    let body: string = "";
 
     req.on("data", (chunk) => {
         body += chunk.toString();
@@ -19,14 +62,17 @@ function submitForm(req, res, db, transactions, authDb, dirname, season) {
     req.on("end", async () => {
         // server has all data!
         // parse form
-        let formData = qs.parse(body);
+        let formData: mainFormIncoming = parse(body) as unknown as mainFormIncoming;
         // well, this should never happen but if a pit form is sent to the main form, stop
         if (formData.formType === "pit") {
             res.status(400).send("" + 0x1903);
         } else if (formData.formType === "main") {
             // change score based on response length
             var formscoresdj = 0;
-            if (formData.overall.length >= 70 && !(formData.overall.length >= 10e19)) {
+            if (
+                formData.overall.length >= 70 &&
+                !(formData.overall.length >= 10e19)
+            ) {
                 // logarithmic points
                 formscoresdj = Math.ceil(20 + 5 * (Math.log(formData.overall.length - 65) / Math.log(6)));
             } else {
@@ -37,8 +83,8 @@ function submitForm(req, res, db, transactions, authDb, dirname, season) {
             let values = [
                 escapeHTML(formData.event),
                 season,
-                escapeHTML(formData.team),
-                escapeHTML(formData.match),
+                Number(escapeHTML(String(formData.team))),
+                Number(escapeHTML(String(formData.match))),
                 escapeHTML(formData.level),
                 escapeHTML(formData.game1),
                 escapeHTML(formData.game2),
@@ -68,43 +114,39 @@ function submitForm(req, res, db, transactions, authDb, dirname, season) {
                 escapeHTML(formData.defend),
                 escapeHTML(formData.driving),
                 escapeHTML(formData.overall),
-                escapeHTML(req.user.id),
+                escapeHTML(String(req.user.id)),
                 escapeHTML(req.user.name),
                 0,
                 "0",
             ];
             // run the statement, add to the database
-            db.run(stmt, values, function(err) {
+            db.run(stmt, values, function(err: any) {
                 if (err) {
                     console.error(err);
-                    res.status(500).send("" + 0x1f42);
+                    return res.status(500).send("" + 0x1f42);
                 }
                 require(`./${season}.js`).weightScores(this.lastID, db);
             });
             // statement to credit points
-            let pointStmt = `UPDATE users SET score = score + ? WHERE id=?`;
-            let pointValues = [formscoresdj, req.user.id];
+            let pointStmt: string = `UPDATE users SET score = score + ? WHERE id=?`;
+            let pointValues: Array<number> = [formscoresdj, req.user.id];
             authDb.run(pointStmt, pointValues, (err) => {
                 if (err) {
-                    console.error(err);
-                    res.status(500).send("" + 0x1f42);
+                    return res.status(500).send("" + 0x1f42);
                 }
             });
-            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1000, formscoresdj], (err) => {
+            transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1000, formscoresdj], (err: any) => {
                 if (err) {
-                    res.status(500).send("" + 0x1f42);
-                    return;
+                    return res.status(500).send("" + 0x1f42);
                 }
             });
             // respond to the user with success page
-            res.sendFile("src/submitted.html", {
+            return res.sendFile("src/submitted.html", {
                 root: dirname,
             });
         } else {
             // unknown form type
-            res.status(400).send("" + 0x1902);
+            return res.status(400).send("" + 0x1902);
         }
     });
 }
-
-module.exports = { submitForm };

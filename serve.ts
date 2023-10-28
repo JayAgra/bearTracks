@@ -275,8 +275,9 @@ app.disable("etag");
 //////////////////////////////////
 
 // get the main form submissions
+import { submitForm } from "./routes/submit";
 app.post("/submit", checkAuth, async (req: express.Request, res: express.Response) => {
-    require("./routes/submit.js").submitForm(req, res, db, transactions, authDb, __dirname, season);
+    submitForm(req, res, db, transactions, authDb, __dirname, season);
 });
 
 // use this thing to do the pit form image thing
@@ -288,8 +289,9 @@ const imageUploads = upload.fields([
     { name: "image5", maxCount: 1 },
 ]);
 
+import { submitPit } from "./routes/submitPit";
 app.post("/submitPit", checkAuth, imageUploads, async (req: express.Request, res: express.Response) => {
-    require("./routes/submitPit.js").submitPit(req, res, db, transactions, authDb, __dirname, season);
+    submitPit(req, res, db, transactions, authDb, __dirname, season);
 });
 
 
@@ -502,38 +504,45 @@ app.get("/denied", (req: express.Request, res: express.Response) => {
 //
 
 // get all match data (by event)
+import { getAllEventData } from "./routes/api/data/event";
 app.get("/api/data/:season/all/:event", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    require("./routes/api/data/event.js").getAllEventData(req, res, db, selectSeason(req));
+    getAllEventData(req, res, db, selectSeason(req));
 });
 
 // get team match data (by event)
+import { getTeamEventData } from "./routes/api/data/team";
 app.get("/api/data/:season/team/:event/:team", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    require("./routes/api/data/team.js").getTeamEventData(req, res, db, selectSeason(req));
+    getTeamEventData(req, res, db, selectSeason(req));
 });
 
 // get match data for a match
+import { getEventMatchData } from "./routes/api/data/match";
 app.get("/api/data/:season/match/:event/:match", apiCheckAuth, async (req: express.Request<{event: string, match: string}>, res: express.Response) => {
-    require("./routes/api/data/match.js").getEventMatchData(req, res, db, selectSeason(req));
+    getEventMatchData(req, res, db, selectSeason(req));
 });
 
 // get all match scouting data from a scout (by season)
+import { getScoutResponses } from "./routes/api/data/scout";
 app.get("/api/data/:season/scout/:userId", apiCheckAuth, async (req: express.Request<{userId: string}>, res: express.Response) => {
-    require("./routes/api/data/scout.js").getScoutResponses(req, res, db, selectSeason(req));
+    getScoutResponses(req, res, db, selectSeason(req));
 });
 
 // get pit scouting data
+import { pit } from "./routes/api/data/pit";
 app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    require("./routes/api/data/pit.js").pit(req, res, db, selectSeason(req));
+    pit(req, res, db, selectSeason(req));
 });
 
 // get detailed data by query
+import { detailBySpecs } from "./routes/api/data/detail";
 app.get("/api/data/:season/detail/query/:event/:team/:page", apiCheckAuth, async (req: express.Request<{event: string, team: string, page: string}>, res: express.Response) => {
-    require("./routes/api/data/detail.js").detailBySpecs(req, res, db, selectSeason(req));
+    detailBySpecs(req, res, db, selectSeason(req));
 });
 
 // get detailed data by id
+import { detailByID } from "./routes/api/data/detailID";
 app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    require("./routes/api/data/detailID.js").detailByID(req, res, db);
+    detailByID(req, res, db);
 });
 
 //
@@ -541,22 +550,26 @@ app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request<{id
 //
 
 // get weight for teams list page
+import { teams } from "./routes/api/teams/teams";
 app.get("/api/teams/:season/:event", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    require("./routes/api/teams/teams.js").teams(req, res, db,selectSeason(req));
+    teams(req, res, db,selectSeason(req));
 });
 
 // pit scouted team list
+import { pitScoutedTeams } from "./routes/api/teams/pitScoutedTeams";
 app.get("/api/teams/:season/:event/pitscoutedteams", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    require("./routes/api/teams/pitscoutedteams.js").pitscoutedteams(req, res, db, selectSeason(req));
+    pitScoutedTeams(req, res, db, selectSeason(req));
 });
 
 // other ways to get weight - not used by app, but for external use
+import { teamsByEvent } from "./routes/api/teams/eventWeight";
 app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    require("./routes/api/teams/eventWeight.js").teamsByEvent(req, res, db, selectSeason(req));
+    teamsByEvent(req, res, db, selectSeason(req));
  });
 
+import { teamsBySeason } from "./routes/api/teams/seasonWeight";
 app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: express.Request<{team: string}>, res: express.Response) => {
-    require("./routes/api/teams/seasonWeight.js").teamsBySeason(req, res, db, selectSeason(req));
+    teamsBySeason(req, res, db, selectSeason(req));
 });
 
 //
@@ -564,47 +577,56 @@ app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: expr
 //
 
 // list of scouts & points
+import { scouts } from "./routes/api/scouts/scouts";
 app.get("/api/scouts", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    require("./routes/api/scouts/scouts.js").scouts(req, res, authDb);
+    scouts(req, res, authDb);
 });
 
 // scout's profile (submitted forms)
+import { profile } from "./routes/api/scouts/profile";
 app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req: express.Request<{scout: string}>, res: express.Response) => {
-    require("./routes/api/scouts/profile.js").profile(req, res, authDb);
+    profile(req, res, authDb);
 });
 
 // scout's point transactions
+import { scoutTransactions } from "./routes/api/scouts/transactions";
 app.get("/api/scouts/transactions/me", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    require("./routes/api/scouts/transactions.js").scoutTransactions(req, res, transactions);
+    scoutTransactions(req, res, transactions);
 });
 
 // scout's profile
+import { scoutByID } from "./routes/api/scouts/scoutByID";
 app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request<{userId: string}>, res: express.Response) => {
-    require("./routes/api/scouts/scoutByID.js").scoutByID(req, res, db);
+    scoutByID(req, res, db);
 });
 
 //
 // management
 //
 
+import { listSubmissions } from "./routes/api/manage/list";
 app.get("/api/manage/:database/list", checkAuth, async (req: express.Request<{database: string}>, res: express.Response) => {
-    require("./routes/api/manage/list.js").listSubmissions(req, res, db);
+    listSubmissions(req, res, db);
 });
 
+import { deleteSubmission } from "./routes/api/manage/delete";
 app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req: express.Request<{database: string, submissionId: string}>, res: express.Response) => {
-    require("./routes/api/manage/delete.js").deleteSubmission(req, res, db, transactions, authDb);
+    deleteSubmission(req, res, db, transactions, authDb);
 });
 
+import { updateScout } from "./routes/api/manage/user/points";
 app.get("/api/manage/scout/points/:userId/:modify/:reason", checkAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
-    require("./routes/api/manage/user/points.js").updateScout(req, res, transactions, authDb);
+    updateScout(req, res, transactions, authDb);
 });
 
+import { updateAccess } from "./routes/api/manage/user/access";
 app.get("/api/manage/scout/access/:id/:accessOk", checkAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
-    require("./routes/api/manage/user/access.js").updateAccess(req, res, authDb);
+    updateAccess(req, res, authDb);
 });
 
+import { revokeKey } from "./routes/api/manage/user/revokeKey";
 app.get("/api/manage/scout/revokeKey/:id", checkAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    require("./routes/api/manage/user/revokeKey.js").revokeKey(req, res, authDb);
+    revokeKey(req, res, authDb);
 });
 
 //
@@ -612,17 +634,20 @@ app.get("/api/manage/scout/revokeKey/:id", checkAuth, async (req: express.Reques
 //
 
 // slots (unused)
+import { slotSpin } from "./routes/api/casino/slots/slotSpin";
 app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    require("./routes/api/casino/slots/slotSpin.js").slotSpin(req, res, authDb, transactions);
+    slotSpin(req, res, authDb, transactions);
 });
 
 // spin wheel thing
+import { spinWheel } from "./routes/api/casino/spinner/spinWheel";
 app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req: express.Request, res: express.Response) => {
-    require("./routes/api/casino/spinner/spinWheel.js").spinWheel(req, res, authDb, transactions);
+    spinWheel(req, res, authDb, transactions);
 });
 
+import { blackjackSocket } from "./routes/api/casino/blackjack/blackjackSocket";
 wsApp.ws('/api/casino/blackjack/blackjackSocket', function(ws: any, req: express.Request) {
-    require("./routes/api/casino/blackjack/blackjackSocket.js").blackjackSocket(ws, req, transactions, authDb);
+    blackjackSocket(ws, req, transactions, authDb);
 });
 
 //
@@ -630,18 +655,21 @@ wsApp.ws('/api/casino/blackjack/blackjackSocket', function(ws: any, req: express
 //
 
 // get note for team
+import { getNotes } from "./routes/api/notes/getNotes";
 app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    require("./routes/api/notes/getNotes.js").getNotes(req, res, db, season);
+    getNotes(req, res, db, season);
 });
 
 // create the notes
+import { createNote } from "./routes/api/notes/createNote";
 app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    require("./routes/api/notes/createNote.js").createNote(req, res, db, season);
+    createNote(req, res, db, season);
 });
 
 // save the note
+import { updateNotes } from "./routes/api/notes/updateNotes";
 app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    require("./routes/api/notes/updateNotes.js").updateNotes(req, res, db, season);
+    updateNotes(req, res, db, season);
 });
 
 //
@@ -667,8 +695,9 @@ app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req: exp
 });
 
 // frc api team list
+import { teamsFrcApi } from "./routes/api/events/teams";
 app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    require("./routes/api/events/teams.js").teams(req, res, frcapi, selectSeason(req));
+    teamsFrcApi(req, res, frcapi, selectSeason(req));
 });
 
 // frc api teams data
@@ -696,12 +725,14 @@ app.get("/api/whoami", apiCheckAuth, (req: express.Request, res: express.Respons
 //////////////////////////////////
 //////////////////////////////////
 
+import { createAccount } from "./routes/api/auth/create";
 app.post("/createAccount", (req: express.Request, res: express.Response) => {
-    require("./routes/api/auth/create.js").createAccount(req, res, authDb);
+    createAccount(req, res, authDb);
 });
 
+import { checkLogIn } from "./routes/api/auth/login";
 app.post("/loginForm", (req: express.Request, res: express.Response) => {
-    require("./routes/api/auth/login.js").checkLogIn(req, res, authDb);
+    checkLogIn(req, res, authDb);
 });
 
 // clear cookies, used for debugging

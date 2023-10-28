@@ -1,4 +1,7 @@
-function escapeHTML(htmlStr) {
+import express from "express";
+import * as sqlite3 from "sqlite3";
+
+function escapeHTML(htmlStr: string): string {
     return String(htmlStr)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -7,11 +10,12 @@ function escapeHTML(htmlStr) {
         .replace(/'/g, "&#39;");
 }
 
-function submitPit(req, res, db, transactions, authDb, dirname, season) {
+export async function submitPit(req: express.Request, res: express.Response, db: sqlite3.Database, transactions: sqlite3.Database, authDb: sqlite3.Database, dirname: string, season: number) {
     // get body of POST data
     let formData = req.body;
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
     // db statement
-    let stmt = `INSERT INTO pit (event, season, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, userId, name, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    let stmt: string = `INSERT INTO pit (event, season, team, drivetype, game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16, game17, game18, game19, game20, driveTeam, attended, confidence, bqual, overall, userId, name, image1, image2, image3, image4, image5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     // escaped data from user added as values
     let values = [
         escapeHTML(formData.event),
@@ -43,41 +47,37 @@ function submitPit(req, res, db, transactions, authDb, dirname, season) {
         escapeHTML(formData.confidence),
         escapeHTML(formData.bqual),
         escapeHTML(formData.overall),
-        escapeHTML(req.user.id),
+        escapeHTML(String(req.user.id)),
         escapeHTML(req.user.name),
-        req.files.image1[0].filename,
-        req.files.image2[0].filename,
-        req.files.image3[0].filename,
-        req.files.image4[0].filename,
-        req.files.image5[0].filename,
+        files.image1[0].filename,
+        files.image2[0].filename,
+        files.image3[0].filename,
+        files.image4[0].filename,
+        files.image5[0].filename,
     ];
     // run db statement
-    db.run(stmt, values, (err) => {
+    db.run(stmt, values, (err: any) => {
         if (err) {
             console.error(err);
-            res.status(500).send("" + 0x1f42);
+            return res.status(500).send("" + 0x1f42);
         }
     });
     // credit points to scout
     // TODO: variable points on pit form
-    let pointStmt = `UPDATE users SET score = score + 35 WHERE id=?`;
-    let pointValues = [req.user.id];
-    authDb.run(pointStmt, pointValues, (err) => {
+    let pointStmt: string = `UPDATE users SET score = score + 35 WHERE id=?`;
+    let pointValues: Array<number> = [req.user.id];
+    authDb.run(pointStmt, pointValues, (err: any) => {
         if (err) {
-            console.error(err);
-            res.status(500).send("" + 0x1f42);
+            return res.status(500).send("" + 0x1f42);
         }
     });
-    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1001, 35], (err) => {
+    transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1001, 35], (err: any) => {
         if (err) {
-            res.status(500).send("" + 0x1f42);
-            return;
+            return res.status(500).send("" + 0x1f42);
         }
     });
     // send success message to user
-    res.sendFile("src/submitted.html", {
+    return res.sendFile("src/submitted.html", {
         root: dirname,
     });
 }
-
-module.exports = { submitPit };

@@ -1,19 +1,33 @@
-const suits = ['h', 'd', 'c', 's'];
-const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-const dealerValues = ['2', '3', '4', '5', '6', '7', '8', '9', 'A'];
+import express from "express";
+import * as sqlite3 from "sqlite3";
+import expressWs from "express-ws";
 
-function newCard() {
+const suits: Array<string> = ['h', 'd', 'c', 's'];
+const values: Array<string> = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const dealerValues: Array<string> = ['2', '3', '4', '5', '6', '7', '8', '9', 'A'];
+
+function newCard(): { "suit": string, "value": string } {
     return { "suit": suits[Math.floor(Math.random() * 4)], "value": values[Math.floor(Math.random() * 13)] };
 }
 
-function newDealerCard() {
+function newDealerCard(): { "suit": string, "value": string } {
     return { "suit": suits[Math.floor(Math.random() * 4)], "value": dealerValues[Math.floor(Math.random() * 9)] };
 }
 
-function blackjackSocket(ws, req, transactions, authDb) {
+type keysDb = {
+    "id": number,
+    "key": string,
+    "userId": number,
+    "name": string,
+    "created": string,
+    "expires": string,
+    "admin": string
+}
+
+export async function blackjackSocket(ws: expressWs.RouterLike, req: express.Request, transactions: sqlite3.Database, authDb: sqlite3.Database) {
     const user = {
         "key": req.cookies.key,
-        "id": "0"
+        "id": 0
     }
 
     var game = {
@@ -27,14 +41,14 @@ function blackjackSocket(ws, req, transactions, authDb) {
         }
     }
 
-    authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err, result) => {
+    authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err: any, result: keysDb | undefined) => {
         if (err || !result || Number(result.expires) < Date.now()) {
             ws.send(JSON.stringify({ "status": 0x90 }));
             ws.close();
             return;
         } else {
             user.id = result.userId;
-            authDb.get("SELECT id, score FROM users WHERE id=?", [user.id], (err, result) => {
+            authDb.get("SELECT id, score FROM users WHERE id=?", [user.id], (err: any, result: { "id": number, "score": number } | undefined) => {
                 if (err || !result || result.score < -32768) {
                     ws.send(JSON.stringify({ "status": 0x90 }));
                     ws.close();
@@ -52,11 +66,11 @@ function blackjackSocket(ws, req, transactions, authDb) {
         }
     });
 
-    function getScore(hand) {
-        let score = 0;
-        let aces = 0;
+    function getScore(hand: Array<{ "suit": string, "value": string }>): number {
+        let score: number = 0;
+        let aces: number = 0;
         for (const card of hand) {
-            const value = card.value;
+            const value: string = card.value;
             if (value === "A") {
                 aces++;
                 score += 11;
@@ -73,8 +87,8 @@ function blackjackSocket(ws, req, transactions, authDb) {
         return score;
     }
 
-    function populateCard(hand, score, target, rigged) {
-        var card;
+    function populateCard(hand: Array<{ "suit": string, "value": string }>, score: number, target: string, rigged: boolean): number {
+        var card: { "suit": string, "value": string };
         if (rigged) {
             card = newDealerCard();
         } else {
@@ -123,7 +137,7 @@ function blackjackSocket(ws, req, transactions, authDb) {
         return;
     }
 
-    ws.on('message', (message) => {
+    ws.on('message', (message: any) => {
         if (message == 0x30) {
             // hit
             game.player.score = populateCard(game.player.hand, game.player.score, `player${game.player.hand.length + 1}`, false);
@@ -139,5 +153,3 @@ function blackjackSocket(ws, req, transactions, authDb) {
         }
     });
 }
-
-module.exports = { blackjackSocket };
