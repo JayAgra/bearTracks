@@ -1,9 +1,6 @@
-function goToHome() {
-    history.back();
-}
 async function getTeamRanks() {
     document.getElementById("viewScoutsButton").innerHTML = "Requesting Data...";
-    const xhr = new XMLHttpRequest();
+    const xhr: XMLHttpRequest = new XMLHttpRequest();
     xhr.open("GET", `/api/scouts/me/profile`, true);
     xhr.withCredentials = true;
 

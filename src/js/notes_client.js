@@ -7,16 +7,15 @@ window.currentTeam = 0;
 
 document.getElementById("editor").style.display = "none";
 
-const waitMs = ms => new Promise(res => setTimeout(res, ms));
 function goToHome() {
     history.back();
 }
 
 async function getNote() {
-    eventCode = document.getElementById("eventCode").value
-    teamNumber = document.getElementById("teamNumber").value
-    window.currentEvent = eventCode
-    window.currentTeam = teamNumber
+    var eventCode = document.getElementById("eventCode").value;
+    var teamNumber = document.getElementById("teamNumber").value;
+    window.currentEvent = eventCode;
+    window.currentTeam = teamNumber;
 
     document.getElementById("viewNoteButton").innerHTML = "Requesting Data...";
     const xhr = new XMLHttpRequest();
@@ -39,14 +38,14 @@ async function getNote() {
             document.getElementById("viewNoteButton").innerHTML = "bad request";
         } else if (xhr.status === 500) {
             document.getElementById("viewNoteButton").innerHTML = "500 Internal Server Error";
-        } else if (xhr.status === 204 && xhr.responseText == 0xcc2) {
+        } else if (xhr.status === 204 && xhr.responseText == String(0xcc2)) {
             const newxhr = new XMLHttpRequest();
             newxhr.open("GET", `/api/notes/${eventCode}/${teamNumber}/createNote`, true);
             newxhr.withCredentials = true;
 
             newxhr.onreadystatechange = async () => {
                 if (newxhr.readyState === XMLHttpRequest.DONE && newxhr.status === 200) {
-                    if (newxhr.responseText == 0xc81) {
+                    if (newxhr.responseText == String(0xc81)) {
                         getNote();
                     }
                 } else if (newxhr.status === 401 || newxhr.status === 403) {
@@ -70,8 +69,8 @@ async function getNote() {
 }
 
 function saveNote() {
-    eventCode = document.getElementById("eventCode").value
-    teamNumber = document.getElementById("teamNumber").value
+    let eventCode = document.getElementById("eventCode").value
+    let teamNumber = document.getElementById("teamNumber").value
     document.getElementById("saveNoteButton").innerHTML = "Saving Data...";
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `/api/notes/${eventCode}/${teamNumber}/updateNotes`, true);

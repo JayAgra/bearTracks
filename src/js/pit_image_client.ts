@@ -1,4 +1,3 @@
-const waitMs = ms => new Promise(res => setTimeout(res, ms));
 function removeURLParams() {
     window.location.href = "/pitimages"
 }
@@ -7,8 +6,8 @@ function goToHome() {
 }
 function searchImg() {
     document.getElementById("searchBtn").innerHTML = "Requesting Data...";
-    let teamnum = document.getElementById("teamInput").value
-    let eventcode = document.getElementById("eventInput").value
+    let teamnum = (document.getElementById("teamInput") as HTMLInputElement).value
+    let eventcode = (document.getElementById("eventInput") as HTMLInputElement).value
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/pit/current/${eventcode}/${teamnum}`, true);

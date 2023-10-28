@@ -1,6 +1,6 @@
-const error = document.getElementById("errorTxt");
+const errElement: HTMLElement = document.getElementById("errorTxt") as HTMLElement;
 
-function emojiValue(value) {
+function emojiValue(value: string): string {
     if (value == "true") {
         return "✅";
     } else {
@@ -8,7 +8,7 @@ function emojiValue(value) {
     }
 }
 
-function toIcons(str) {
+function toIcons(str: string): string {
     var step1 = str.replaceAll("0", "⬜");
     var step2 = step1.replaceAll("1", "🟪");
     var step3 = step2.replaceAll("2", "🟨");
@@ -16,21 +16,21 @@ function toIcons(str) {
     return step4.replaceAll("4", "❷");
 }
 
-function fullGridString(str, sep) {
+function fullGridString(str: string, sep: string): string {
     var strings = str.match(/.{1,9}/g);
-    var iconstrings = [];
-    iconstrings.push(toIcons(strings[0]));
-    iconstrings.push(toIcons(strings[1]));
-    iconstrings.push(toIcons(strings[2]));
-    return iconstrings.join(sep);
+    var iconStrings = [];
+    iconStrings.push(toIcons(strings[0]));
+    iconStrings.push(toIcons(strings[1]));
+    iconStrings.push(toIcons(strings[2]));
+    return iconStrings.join(sep);
 }
 
 async function loadData() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const submissionID = urlParams.get("id");
+    const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
+    const submissionID: string = urlParams.get("id") as string;
 
     try {
-        response = await fetch(`/api/data/detail/id/${submissionID}`, {
+        var response = await fetch(`/api/data/detail/id/${submissionID}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -42,8 +42,8 @@ async function loadData() {
         }
 
         if (response.status === 204) {
-            error.innerText = "no results";
-            error.style.display = "unset";
+            errElement.innerText = "no results";
+            errElement.style.display = "unset";
         }
 
         const listRes = await response.json();
@@ -59,17 +59,13 @@ async function loadData() {
                 `<b>cubes/cones: </b>${listRes.game23}/${listRes.game24}<br>` +
                 `<b>total grid: </b>${listRes.game25}pts<br>` +
                 `<b>Match Performance Score: </b>${Number(listRes.weight.split(",")[0]).toFixed(2)}`;
-        document.getElementById("resultTeamNum").innerText = listRes.team;
-        document.getElementById("resultMatchNum").innerText = listRes.match;
-        document.getElementById("resultEventCode").innerText = listRes.event;
-        document.getElementById("resultText").innerHTML = text;
-    } catch (err) {
-        error.innerText = "no results";
-        error.style.display = "unset";
+        (document.getElementById("resultTeamNum") as HTMLElement).innerText = listRes.team;
+        (document.getElementById("resultMatchNum") as HTMLElement).innerText = listRes.match;
+        (document.getElementById("resultEventCode") as HTMLElement).innerText = listRes.event;
+        (document.getElementById("resultText") as HTMLElement).innerHTML = text;
+    } catch (err: any) {
+        errElement.innerText = "no results";
+        errElement.style.display = "unset";
         console.error(err);
     }
-}
-
-function goToHome() {
-    history.back();
 }

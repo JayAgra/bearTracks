@@ -1,7 +1,7 @@
 function displayErrors() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const error = urlParams.get("err");
-    const errorEl = document.getElementById("error");
+    const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
+    const error: string = urlParams.get("err");
+    const errorEl: HTMLElement = document.getElementById("error") as HTMLElement;
     if (error) {
         switch (error) {
             case "0":
@@ -9,11 +9,11 @@ function displayErrors() {
                 errorEl.style.display = "unset";
                 break;
             case "1":
-                errorEl.innerHTML = "bad email/password<br><br>";
+                errorEl.innerHTML = "email already in use<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case "2":
-                errorEl.innerHTML = "account not yet approved by an admin<br><br>";
+                errorEl.innerHTML = "min password length is 12<br><br>";
                 errorEl.style.display = "unset";
                 break;
             case undefined: default:

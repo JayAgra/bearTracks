@@ -9,10 +9,9 @@ window.addEventListener("load", () => {
         checkNetwork(false);
     });
 });
-function checkNetwork(online) {
+function checkNetwork(online: boolean) {
     const alert = document.getElementById("offlineAlert");
-    if (online) {
-    } else {
+    if (!online) {
         alert.style.display = "inline"
     }
 }
