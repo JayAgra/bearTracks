@@ -1,5 +1,5 @@
 /*jslint browser: true, es6*/
-const waitMs = (ms: number) => new Promise((res) => setTimeout(res, ms));
+let waitMs = (ms: number) => new Promise((res) => setTimeout(res, ms));
 function goToHome() {
     window.location.href = "/points";
 }
