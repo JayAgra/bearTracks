@@ -6,7 +6,6 @@ function addProperty(object, property, amount) {
         addProperty(object, property, amount);
     }
 }
-const waitMs = ms => new Promise(res => setTimeout(res, ms));
 function goToHome() {
     history.back();
 }
