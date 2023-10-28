@@ -1,11 +1,7 @@
-const waitMs = ms => new Promise(res => setTimeout(res, ms));
-function goToHome() {
-    history.back();
-}
 async function getMatches() {
     var allOrTeam = ""
-    if (document.getElementById('allmatch').checked) {allOrTeam = "all"} else {allOrTeam = "team"}
-    eventCode = document.getElementById("eventCode").value
+    if ((document.getElementById('allmatch') as HTMLInputElement).checked) {allOrTeam = "all"} else {allOrTeam = "team"}
+    var eventCode: string = (document.getElementById("eventCode") as HTMLInputElement).value
     document.getElementById("viewMatchButton").innerHTML = "Requesting Data...";
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/matches/2023/${eventCode}/qual/${allOrTeam}`, true);
@@ -15,7 +11,7 @@ async function getMatches() {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             console.log("200 ok")
             console.log(xhr.responseText)
-            matchesJSON = JSON.parse(xhr.responseText)
+            var matchesJSON = JSON.parse(xhr.responseText)
             document.getElementById("viewMatchButton").innerHTML = "Rendering View...";
             var matchesHtml = "";
             for (let i = 0; i < matchesJSON.Schedule.length; i++) {

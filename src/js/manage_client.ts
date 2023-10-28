@@ -2,12 +2,8 @@ function newSearch() {
     location.reload();
 }
 
-function goToHome() {
-    history.back();
-}
-
 function mainOrPitLink() {
-    if (document.getElementById("db").value === "pit") {
+    if ((document.getElementById("db") as HTMLInputElement).value === "pit") {
         return "pitimages";
     } else {
         return "detail";
@@ -16,9 +12,9 @@ function mainOrPitLink() {
 
 async function getData() {
     document.getElementById("viewData").innerHTML = "requesting...";
-    var response, listRes;
+    var response, listRes: Array<{ "id": number }>;
     try {
-        response = await fetch(`/api/manage/${document.getElementById("db").value}/list`, {
+        response = await fetch(`/api/manage/${(document.getElementById("db") as HTMLInputElement).value}/list`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -35,7 +31,7 @@ async function getData() {
         listRes = await response.json();
         var listHTML = "";
         for (var i = listRes.length - 1; i >= 0; i--) {
-            listHTML = listHTML + `<fieldset><span><span>ID:&emsp;${listRes[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink()}?id=${listRes[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${document.getElementById("db").value}', ${listRes[i].id}, '${document.getElementById("db").value}${listRes[i].id}')" style="color: red" id="${document.getElementById("db").value}${listRes[i].id}">Delete</span></span></span></fieldset>`;
+            listHTML = listHTML + `<fieldset><span><span>ID:&emsp;${listRes[i].id}</span>&emsp;&emsp;<span><a href="/${mainOrPitLink()}?id=${listRes[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission('${(document.getElementById("db") as HTMLInputElement).value}', ${listRes[i].id}, '${(document.getElementById("db") as HTMLInputElement).value}${listRes[i].id}')" style="color: red" id="${(document.getElementById("db") as HTMLInputElement).value}${listRes[i].id}">Delete</span></span></span></fieldset>`;
         }
         document.getElementById("resultsInsert").insertAdjacentHTML("afterbegin", listHTML);
         document.getElementById("search").style.display = "none";
@@ -47,7 +43,7 @@ async function getData() {
     }
 }
 
-async function deleteSubmission(database, submission, linkID) {
+async function deleteSubmission(database: string, submission: string, linkID: string) {
     document.getElementById(linkID).innerHTML = "Preparing Request...";
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/manage/${database}/${submission}/delete`, true);

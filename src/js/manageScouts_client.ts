@@ -1,9 +1,12 @@
-function goToHome() {
-    history.back();
-}
+type scoutsData = {
+    "id": number;
+    "score": number;
+    "nickName": string;
+    "accessOk": string;
+};
 
 async function getData() {
-    var response, listRes;
+    var response, listRes: Array<scoutsData>;
     try {
         response = await fetch(`/api/scouts`, {
             method: "GET",
@@ -31,11 +34,11 @@ async function getData() {
     }
 }
 
-async function updateUser(targetuserId, origScore, button) {
+async function updateUser(targetuserId: string, origScore: string, button: any) {
     button.innerText = "..."
-    const modifyAmt = Number(document.getElementById(`${targetuserId}_input`).value) - origScore;
+    const modifyAmt = Number((document.getElementById(`${targetuserId}_input`) as HTMLInputElement).value) - Number(origScore);
     try {
-        response = await fetch(`/api/manage/scout/points/${targetuserId}/${modifyAmt}/${Number(document.getElementById("reason").value)}`, {
+        var response = await fetch(`/api/manage/scout/points/${targetuserId}/${modifyAmt}/${Number((document.getElementById("reason") as HTMLInputElement).value)}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -47,7 +50,7 @@ async function updateUser(targetuserId, origScore, button) {
 
         const responseText = await response.text();
         
-        if (responseText == 0xc84) {
+        if (responseText == String(0xc84)) {
             button.innerText = "done";
         } else {
             button.innerText = "error";
@@ -58,10 +61,10 @@ async function updateUser(targetuserId, origScore, button) {
     }
 }
 
-async function approveUser(targetId, button) {
+async function approveUser(targetId: string, button: any) {
     button.innerText = "..."
     try {
-        response = await fetch(`/api/manage/scout/access/${targetId}/true`, {
+        var response = await fetch(`/api/manage/scout/access/${targetId}/true`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -73,7 +76,7 @@ async function approveUser(targetId, button) {
 
         const responseText = await response.text();
         
-        if (responseText == 0xc86) {
+        if (responseText == String(0xc86)) {
             button.innerText = "done";
         } else {
             button.innerText = "error";
@@ -84,10 +87,10 @@ async function approveUser(targetId, button) {
     }
 }
 
-async function revokeKey(targetId, button) {
+async function revokeKey(targetId: string, button: any) {
     button.innerText = "..."
     try {
-        response = await fetch(`/api/manage/scout/revokeKey/${targetId}`, {
+        var response = await fetch(`/api/manage/scout/revokeKey/${targetId}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -99,7 +102,7 @@ async function revokeKey(targetId, button) {
 
         const responseText = await response.text();
         
-        if (responseText == 0xc87) {
+        if (responseText == String(0xc87)) {
             button.innerText = "done";
         } else {
             button.innerText = "error";

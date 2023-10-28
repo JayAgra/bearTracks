@@ -1,6 +1,3 @@
-function goToHome() {
-    history.back();
-}
 async function getTeamRanks() {
     document.getElementById("viewScoutsButton").innerHTML = "Requesting Data...";
     const xhr = new XMLHttpRequest();
@@ -20,7 +17,7 @@ async function getTeamRanks() {
             document.getElementById("preInsert").insertAdjacentHTML("afterend", htmltable)
             document.getElementById("eventCodeDisplay").innerHTML = `Top scouts`;
             document.getElementById("viewScoutsButton").innerHTML = "Reload Data";
-        } else if (xhr.status === 204 && xhr.responseText == 0xcc1) {
+        } else if (xhr.status === 204 && xhr.responseText == String(0xcc1)) {
             document.getElementById("viewScoutsButton").innerHTML = "no results";
         } else if (xhr.status === 401 || xhr.status === 403) {
             window.location.href = "/login";

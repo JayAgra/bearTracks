@@ -1,7 +1,3 @@
-function goToHome() {
-    history.back();
-}
-
 async function getData() {
     var response, listRes;
     try {

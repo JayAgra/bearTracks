@@ -1,9 +1,9 @@
-var numberInput = document.getElementById("number"),
-    eventCode = document.getElementById("event"),
-    error = document.getElementById("errorTxt"),
-    searchBtn = document.getElementById("searchBtn");
+var numberInput = document.getElementById("number") as HTMLInputElement,
+    eventCode = document.getElementById("event") as HTMLInputElement,
+    error = document.getElementById("errorTxt") as HTMLHeadingElement,
+    searchBtn = document.getElementById("searchBtn") as HTMLButtonElement;
 
-function eV(value) {
+function eV(value: string): string {
     if (value == "true") {
         return "✅";
     } else {
@@ -11,20 +11,61 @@ function eV(value) {
     }
 }
 
-function callSearch() {
-    search(Number(numberInput.value), eventCode.value, document.getElementById("type").value)
+function callSearch(): void {
+    search(Number(numberInput.value), eventCode.value, (document.getElementById("type") as HTMLInputElement).value)
 }
 
-async function search(num, eCode, searchType = "team") {
+type mainFormResponse = {
+	"id": string,
+	"event": string,
+	"season": number,
+	"team": number,
+	"match": number,
+	"level": string,
+	"game1": string,
+	"game2": string,
+	"game3": string,
+	"game4": string,
+	"game5": string,
+	"game6": string,
+	"game7": string,
+	"game8": string,
+	"game9": string,
+	"game10": string,
+	"game11": string,
+	"game12": string,
+	"game13": string,
+	"game14": string,
+	"game15": string,
+	"game16": string,
+	"game17": string,
+	"game18": string,
+	"game19": string,
+	"game20": string,
+	"game21": string,
+	"game22": string,
+	"game23": string,
+	"game24": string,
+	"game25": string,
+	"defend": string,
+	"driving": string,
+	"overall": string,
+	"userId": string,
+	"name": string,
+	"weight": string,
+	"analysis": string,
+}
+
+async function search(num: number, eCode: string, searchType: string = "team"): Promise<void> {
     if (num < 0 || isNaN(num)) {
         numberInput.style.borderColor = "var(--cancelColor)";
         return;
     }
-    var response, 
-        listRes, 
-        fetchEndpoint, 
-        type, 
-        htmlTable = "";
+    var response: Response,
+        listRes: Array<mainFormResponse>,
+        fetchEndpoint: string,
+        type: string,
+        htmlTable: string = "";
     if (searchType === "team") {
         fetchEndpoint = `/api/data/current/team/${eCode}/${num}`;
         type = "team";
@@ -53,7 +94,7 @@ async function search(num, eCode, searchType = "team") {
 
         listRes = await response.json();
         if (type === "team") {
-            var avg = {
+            let avg: {[index: string]:any} = {
                 "auto_charge": 0,
                 "teleop_charge": 0,
                 "grid": 0,
@@ -69,25 +110,25 @@ async function search(num, eCode, searchType = "team") {
                 "mid": 0,
                 "high": 0
             };
-            var max = {
+            let max: {[index: string]:any} = {
                 "auto_charge": 0,
                 "teleop_charge": 0,
                 "grid": 0,
                 "cycle": 0,
                 "perf_score": 0
             };
-            var min = {
+            let min: {[index: string]:any} = {
                 "auto_charge": Number.MAX_SAFE_INTEGER,
                 "teleop_charge": Number.MAX_SAFE_INTEGER,
                 "grid": Number.MAX_SAFE_INTEGER,
                 "cycle": Number.MAX_SAFE_INTEGER,
                 "perf_score": Number.MAX_SAFE_INTEGER
             };
-            function setIfHigher(property, value) {
+            function setIfHigher(property: any, value: number): void {
                 if (max[property] < value) max[property] = value;
             }
             
-            function setIfLower(property, value) {
+            function setIfLower(property: any, value: number): void {
                 if (min[property] > value) min[property] = value;
             }
             for (var i = 0; i < listRes.length; i++) {
@@ -118,16 +159,16 @@ async function search(num, eCode, searchType = "team") {
                 avg.mid += Number(listRes[i].game19);
                 avg.high += Number(listRes[i].game20);
 
-                setIfHigher("auto_charge", listRes[i].game5);
-                setIfHigher("teleop_charge", listRes[i].game10);
-                setIfHigher("grid", listRes[i].game25);
-                setIfHigher("cycle", listRes[i].game11);
+                setIfHigher("auto_charge", Number(listRes[i].game5));
+                setIfHigher("teleop_charge", Number(listRes[i].game10));
+                setIfHigher("grid", Number(listRes[i].game25));
+                setIfHigher("cycle", Number(listRes[i].game11));
                 setIfHigher("perf_score", Number(listRes[i].weight.split(",")[0]));
 
-                setIfLower("auto_charge", listRes[i].game5);
-                setIfLower("teleop_charge", listRes[i].game10);
-                setIfLower("grid", listRes[i].game25);
-                setIfLower("cycle", listRes[i].game11);
+                setIfLower("auto_charge", Number(listRes[i].game5));
+                setIfLower("teleop_charge", Number(listRes[i].game10));
+                setIfLower("grid", Number(listRes[i].game25));
+                setIfLower("cycle", Number(listRes[i].game11));
                 setIfLower("perf_score", Number(listRes[i].weight.split(",")[0]));
             }
 
@@ -152,7 +193,7 @@ async function search(num, eCode, searchType = "team") {
                     `<td>${avg.perf_score.toFixed(2)} (${min.perf_score.toFixed(2)} - ${max.perf_score.toFixed(2)})</td></tr>`; // standard mps
             
         } else {
-            var avg = {
+            let avg: {[index: string]:any} = {
                 "auto_charge": 0,
                 "teleop_charge": 0,
                 "grid": 0,
@@ -175,9 +216,9 @@ async function search(num, eCode, searchType = "team") {
 
             htmlTable += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
         }
-        document.getElementById("subheadings").insertAdjacentHTML("afterend", htmlTable);
-        document.getElementById("search").style.display = "none";
-        document.getElementById("results").style.display = "flex";
+        (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
+        (document.getElementById("search") as HTMLElement).style.display = "none";
+        (document.getElementById("results") as HTMLElement).style.display = "flex";
     } catch (err) {
         searchBtn.innerText = "error";
         error.innerText = "no results";
@@ -191,7 +232,7 @@ async function searchOnLoad() {
     const userId = urlParams.get("userId");
     if (userId) {
         try {
-            response = await fetch(`/api/data/current/scout/${userId}`, {
+            var response = await fetch(`/api/data/current/scout/${userId}`, {
                 method: "GET",
                 credentials: "include",
                 redirect: "follow",
@@ -207,8 +248,8 @@ async function searchOnLoad() {
                 error.style.display = "unset";
             }
 
-            listRes = await response.json();
-            var avg = {
+            var listRes = await response.json();
+            var avg: {[index: string]:any} = {
                 "auto_charge": 0,
                 "teleop_charge": 0,
                 "grid": 0,
@@ -231,9 +272,9 @@ async function searchOnLoad() {
             }
 
             htmlTable += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
-            document.getElementById("subheadings").insertAdjacentHTML("afterend", htmlTable);
-            document.getElementById("search").style.display = "none";
-            document.getElementById("results").style.display = "flex";
+            (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
+            (document.getElementById("search") as HTMLElement).style.display = "none";
+            (document.getElementById("results") as HTMLElement).style.display = "flex";
         } catch (err) {
             searchBtn.innerText = "error";
             error.innerText = "no results";
@@ -242,25 +283,21 @@ async function searchOnLoad() {
         }
     } else {
         if (urlParams.get("number") && urlParams.get("event") && urlParams.get("type")) {
-            search(urlParams.get("number"), urlParams.get("event"), urlParams.get("type"));
+            search(Number(urlParams.get("number")), urlParams.get("event") as string, urlParams.get("type") as string);
         }
     }
 }
 
-document.getElementById("number").addEventListener("keyup", (e) => {
-    if (e.target.value !== "") {
-        document.getElementById("number").style.borderColor = "var(--defaultInputColor)";
+(document.getElementById("number") as HTMLInputElement).addEventListener("keyup", (e) => {
+    if ((e.target as HTMLInputElement).value !== "") {
+        (document.getElementById("number") as HTMLInputElement).style.borderColor = "var(--defaultInputColor)";
     }
 })
 
 window.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        if (document.getElementById("results").style.display === "none") {
+        if ((document.getElementById("results") as HTMLElement).style.display === "none") {
             callSearch();
         }
     }
 })
-
-function goToHome() {
-    history.back();
-}
