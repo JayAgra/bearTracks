@@ -4,14 +4,9 @@ import expressWs from "express-ws";
 
 const suits: Array<string> = ['h', 'd', 'c', 's'];
 const values: Array<string> = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-const dealerValues: Array<string> = ['2', '3', '4', '5', '6', '7', '8', '9', 'A'];
 
 function newCard(): { "suit": string, "value": string } {
     return { "suit": suits[Math.floor(Math.random() * 4)], "value": values[Math.floor(Math.random() * 13)] };
-}
-
-function newDealerCard(): { "suit": string, "value": string } {
-    return { "suit": suits[Math.floor(Math.random() * 4)], "value": dealerValues[Math.floor(Math.random() * 9)] };
 }
 
 type keysDb = {
@@ -90,7 +85,7 @@ export async function blackjackSocket(ws: expressWs.RouterLike, req: express.Req
     function populateCard(hand: Array<{ "suit": string, "value": string }>, score: number, target: string, rigged: boolean): number {
         var card: { "suit": string, "value": string };
         if (rigged) {
-            card = newDealerCard();
+            card = newCard();
         } else {
             card = newCard();
         }
