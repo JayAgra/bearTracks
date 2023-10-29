@@ -4,14 +4,9 @@ import expressWs from "express-ws";
 
 const suits: Array<string> = ['h', 'd', 'c', 's'];
 const values: Array<string> = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-const dealerValues: Array<string> = ['2', '3', '4', '5', '6', '7', '8', '9', 'A'];
 
 function newCard(): { "suit": string, "value": string } {
     return { "suit": suits[Math.floor(Math.random() * 4)], "value": values[Math.floor(Math.random() * 13)] };
-}
-
-function newDealerCard(): { "suit": string, "value": string } {
-    return { "suit": suits[Math.floor(Math.random() * 4)], "value": dealerValues[Math.floor(Math.random() * 9)] };
 }
 
 type keysDb = {
@@ -57,9 +52,9 @@ export async function blackjackSocket(ws: expressWs.RouterLike, req: express.Req
                     authDb.run("UPDATE users SET score = score - 10 WHERE id=?", [user.id], (err) => {});
                     transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1502, -10], (err) => {});
                     ws.send(JSON.stringify({ "status": 0x91 }));
-                    game.player.score = populateCard(game.player.hand, game.player.score, "player1", false);
-                    game.player.score = populateCard(game.player.hand, game.player.score, "player2", false);
-                    game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, "dealer1", true);
+                    game.player.score = populateCard(game.player.hand, game.player.score, "player1");
+                    game.player.score = populateCard(game.player.hand, game.player.score, "player2");
+                    game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, "dealer1");
                     if (game.player.score > 21) endGame();
                 }
             });
@@ -87,13 +82,9 @@ export async function blackjackSocket(ws: expressWs.RouterLike, req: express.Req
         return score;
     }
 
-    function populateCard(hand: Array<{ "suit": string, "value": string }>, score: number, target: string, rigged: boolean): number {
+    function populateCard(hand: Array<{ "suit": string, "value": string }>, score: number, target: string): number {
         var card: { "suit": string, "value": string };
-        if (rigged) {
-            card = newDealerCard();
-        } else {
-            card = newCard();
-        }
+        card = newCard();
         hand.push(card);
         score = getScore(hand);
         ws.send(JSON.stringify({ card, score, target }));
@@ -101,17 +92,17 @@ export async function blackjackSocket(ws: expressWs.RouterLike, req: express.Req
     }
 
     function creditWin() {
-        authDb.run("UPDATE users SET score = score + 20 WHERE id=?", [user.id], (err) => {});
-        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1503, 20], (err) => {});
+        authDb.run("UPDATE users SET score = score + 20 WHERE id=?", [user.id]);
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1503, 20]);
     }
 
     function creditTie() {
-        authDb.run("UPDATE users SET score = score + 10 WHERE id=?", [user.id], (err) => {});
-        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1504, 10], (err) => {});
+        authDb.run("UPDATE users SET score = score + 10 WHERE id=?", [user.id]);
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1504, 10]);
     }
 
     function creditLoss() {
-        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1505, 0], (err) => {});
+        transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [user.id, 0x1505, 0]);
     }
 
     function endGame() {
@@ -140,14 +131,14 @@ export async function blackjackSocket(ws: expressWs.RouterLike, req: express.Req
     ws.on('message', (message: any) => {
         if (message == 0x30) {
             // hit
-            game.player.score = populateCard(game.player.hand, game.player.score, `player${game.player.hand.length + 1}`, false);
+            game.player.score = populateCard(game.player.hand, game.player.score, `player${game.player.hand.length + 1}`);
             if (game.player.score > 21) {
                 endGame();
             }
         } else if (message == 0x31) {
             // stand
             while (game.dealer.score < 17) {
-                game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, `dealer${game.dealer.hand.length + 1}`, true);
+                game.dealer.score = populateCard(game.dealer.hand, game.dealer.score, `dealer${game.dealer.hand.length + 1}`);
             }
             endGame();
         }
