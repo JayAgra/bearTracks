@@ -590,7 +590,7 @@ app.get("/api/manage/teams/updateKey/:keyId/:newKey", apiCheckAuth, async (req: 
 });
 
 import { createTeamKey } from "./routes/api/manage/teams/createKey";
-app.get("/api/manage/teams/createKey/:keyId/:tean", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
+app.get("/api/manage/teams/createKey/:keyId/:team", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
     createTeamKey(req, res, authDb);
 });
 
