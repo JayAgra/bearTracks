@@ -1,9 +1,20 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
 import { parse } from "qs";
-import { createHash } from "crypto";
+import { randomBytes } from "crypto";
+import * as Bun from "bun";
+
+function escapeHTML(htmlStr: string): string {
+    return String(htmlStr)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
 
 type createAccountForm = {
+    "access": string,
     "email": string,
     "fullName": string,
     "nickName": string,
@@ -25,9 +36,24 @@ export async function createAccount(req: express.Request, res: express.Response,
                 return res.redirect("/create?err=0");
             }
             if (result.length === 0) {
-                if (accountData.password.length >= 12) {
-                    const stmt = "INSERT INTO users (email, fullName, nickName, passHash, admin, accessOk, recentAttempts, lastLogin, score) VALUES (?, ?, ?, ?, 'false', 'false', 0, ?, 0)";
-                    const values = [accountData.email, accountData.fullName, accountData.nickName, createHash('sha256').update(accountData.password).digest('hex'), String(Date.now())];
+                if (accountData.password.length >= 8) {
+                    var targetTeam: number = 0;
+                    authDb.get("SELECT team FROM accessKeys WHERE key=?", (err: any, result: {"team": number} | undefined) => {
+                        if (err || !result) return res.redirect("/create?err=3");
+                        targetTeam = result.team
+                    })
+                    while (targetTeam === 0) {}
+                    const salt = randomBytes(32).toString("hex");
+                    const stmt = "INSERT INTO users (email, fullName, nickName, team, passHash, salt, admin, teamAdmin, accessOk, recentAttempts, lastLogin, score) VALUES (?, ?, ?, ?, ?, ?, 'false', 0, 'false', 0, ?, 0)";
+                    const values = [
+                        escapeHTML(accountData.email),
+                        escapeHTML(accountData.fullName),
+                        escapeHTML(accountData.nickName),
+                        targetTeam,
+                        Bun.password.hash(accountData.password + salt),
+                        salt,
+                        String(Date.now()),
+                    ];
                     authDb.run(stmt, values, (err: any) => {
                         if (err) {
                             // res.status(500).send("" + 0x1f42);

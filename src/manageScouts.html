@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
         <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
         <link rel="stylesheet" href="css/table.css" type="text/css">
-        <script src="js/form.min.js"></script>
+        <script src="js/form/form.min.js"></script>
     </head>
     <body class="dark-mode" onload="getData()">
         <script>themeHandle()</script>
@@ -26,13 +26,20 @@
                     <option value="8194">0x2002 - comp reset</option>
                 </select><br><br>
                 <div style="overflow-x: auto; width: 95vw;">
+                    <h2>Scouts</h2>
                     <table>
                         <tr id="tableHeader"><th>Scout</th><th>Points</th><th></th></tr>
+                    </table>
+                </div>
+                <div style="overflow-x: auto; width: 95vw;">
+                    <h2>Teams</h2>
+                    <table>
+                        <tr id="teamsTableHead"><th>Team</th><th>Code</th></tr>
                     </table>
                 </div>
                 <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
             </div>
         </div>
-        <script src="js/manageScouts_client.min.js" type="text/javascript"></script>
+        <!--<script src="js/manageScouts/manageScouts.min.js" type="text/javascript"></script>-->
     </body>
 </html>

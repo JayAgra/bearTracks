@@ -12,11 +12,11 @@
         <meta name="apple-mobile-web-app-title" content="Scouting">
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
         <link rel="stylesheet" href="css/grid.min.css" type="text/css">
-        <script src="js/form.min.js"></script>
+        <script src="js/form/form.min.js"></script>
     </head>
     <body class="dark-mode" onload="checkLogin()">
         <script>themeHandle()</script>
-        <form action="/submit" target="_self" method="POST" name="mainForm" id="mainFormHTML">
+        <form id="mainFormHTML">
             <input type="text" value="main" name="formType" hidden>
             <h1 class="w3">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1><br>
             <h2 class="gameflair1">Pre-Match</h2>
@@ -47,7 +47,7 @@
             <p id="landscapeReminder" style="display: none; color: red;">Consider turning your device for the grid</p>
             <p>Select only grid squares that the robot you are scouting fills.</p>
             <fieldset>
-                <input value="000000000000000000000000000" type="number" name="game12" id="griddata" hidden>
+                <input value="000000000000000000000000000" type="text" name="game12" id="griddata" hidden>
                 <br><label><strong class="vstrong">During AUTO, the robot...</strong></label>
                 <fieldset><br>
                     <input value="true" type="checkbox" name="game1" class="checkbig"><span>&emsp;Completely left COMMUNITY<br></span><br>
@@ -137,10 +137,10 @@
             </fieldset>
             <br>
             <p style="text-align:center">
-                <button type="submit" class="uiButton actionButton" id="submitButton">Submit</button><br>
+                <button type="button" class="uiButton actionButton" onclick="uploadForm()" id="submitButton">Submit</button><br>
                 <button type="button" class="uiButton cancelButton" onclick="window.location.href = '/'">Back</button><br><br>
             </p>
         </form>
-        <script src="js/main_form_client.min.js" type="text/javascript"></script>
+        <script src="js/main_form/main_form.min.js" type="text/javascript"></script>
     </body>
 </html>

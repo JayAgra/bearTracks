@@ -20,17 +20,17 @@ const season = new Date().getFullYear();
 // sqlite database
 import * as sqlite3 from "sqlite3";
 const db: sqlite3.Database = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    console.log(err);
+    console.error(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
 
 const transactions: sqlite3.Database = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    console.log(err);
+    console.error(err);
 });
 transactions.run("PRAGMA journal_mode = WAL;");
 
 const authDb: sqlite3.Database = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    console.log(err);
+    console.error(err);
 });
 authDb.run("PRAGMA journal_mode = WAL;");
 
@@ -44,7 +44,6 @@ import lusca from "lusca";
 import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
-import * as nodeCrypto from "crypto";
 import { EventEmitter } from "events";
 const options = {
     key: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`),
@@ -58,9 +57,11 @@ const certsizes = {
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
 const app: express.Express = express();
-var server;
-if (!(Number(certsizes.key) <= 100) && !(Number(certsizes.cert) <= 100)) {
+var server: https.Server;
+if (!(Number(certsizes.key) <= 1) && !(Number(certsizes.cert) <= 1)) {
     server = https.createServer(options, app).listen(443);
+} else {
+    throw new Error("no ssl");
 }
 const { app: wsApp } = expressWs(app, server);
 
@@ -104,19 +105,6 @@ app.use(
 );
 app.use(limiter);
 
-// image uploading
-import multer from "multer";
-const mulstorage: multer.StorageEngine = multer.diskStorage({
-    destination: "./images/",
-    filename: (req: express.Request, file, cb) => {
-        cb(
-            null,
-            nodeCrypto.randomBytes(12).toString("hex") + (file.originalname).replace(/[^a-z0-9]/gi, '_').toLowerCase()
-        );
-    },
-});
-const upload: multer.Multer = multer({ storage: mulstorage });
-
 //////////////////////////////////
 //////////////////////////////////
 //////      HELPER FNS      //////
@@ -137,9 +125,11 @@ type keysDb = {
     "key": string,
     "userId": number,
     "name": string,
+    "team": number,
     "created": string,
     "expires": string,
-    "admin": string
+    "admin": string,
+    "teamAdmin": number
 }
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -150,17 +140,21 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
                 req.user = {
                     "id": 0,
                     "name": "",
+                    "team": 0,
                     "admin": "",
                     "key": "",
                     "expires": "",
+                    "teamAdmin": 0
                 };
             } else {
                 req.user = {
                     "id": result.userId,
                     "name": result.name,
+                    "team": result.team,
                     "admin": result.admin,
                     "key": result.key,
                     "expires": result.expires,
+                    "teamAdmin": result.teamAdmin
                 }
             }
             return next();
@@ -169,9 +163,11 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
         req.user = {
             "id": 0,
             "name": "",
+            "team": 0,
             "admin": "",
             "key": "",
             "expires": "",
+            "teamAdmin": 0
         };
         return next();
     }
@@ -280,20 +276,6 @@ app.post("/submit", checkAuth, async (req: express.Request, res: express.Respons
     submitForm(req, res, db, transactions, authDb, __dirname, season);
 });
 
-// use this thing to do the pit form image thing
-const imageUploads = upload.fields([
-    { name: "image1", maxCount: 1 },
-    { name: "image2", maxCount: 1 },
-    { name: "image3", maxCount: 1 },
-    { name: "image4", maxCount: 1 },
-    { name: "image5", maxCount: 1 },
-]);
-
-import { submitPit } from "./routes/submitPit";
-app.post("/submitPit", checkAuth, imageUploads, async (req: express.Request, res: express.Response) => {
-    submitPit(req, res, db, transactions, authDb, __dirname, season);
-});
-
 
 //////////////////////////////////
 //////////////////////////////////
@@ -311,12 +293,6 @@ app.get("/", checkAuth, async (req: express.Request, res: express.Response) => {
 app.get("/main", checkAuth, async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/main.html", { root: __dirname });
-});
-
-// pit form
-app.get("/pit", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/pit.html", { root: __dirname });
 });
 
 // login page
@@ -360,6 +336,15 @@ app.get("/manage", checkAuth, async (req: express.Request, res: express.Response
 
 app.get("/manageScouts", checkAuth, async (req: express.Request, res: express.Response) => {
     if (req.user.admin == "true") {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/manageScouts.html", { root: __dirname });
+    } else {
+        res.redirect("/denied");
+    }
+});
+
+app.get("/manageTeam", checkAuth, async (req: express.Request, res: express.Response) => {
+    if (req.user.teamAdmin !== 0) {
         res.set("Cache-control", "public, max-age=23328000");
         res.sendFile("src/manageScouts.html", { root: __dirname });
     } else {
@@ -433,18 +418,6 @@ app.get("/points", checkAuth, async (req: express.Request, res: express.Response
     res.sendFile("src/points.html", { root: __dirname });
 });
 
-// teams left to pit scout (data with XHR request)
-app.get("/topitscout", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/topitscout.html", { root: __dirname });
-});
-
-// notes feature
-app.get("/notes", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/notes.html", { root: __dirname });
-});
-
 // per-scout profile
 app.get("/profile", checkAuth, async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -455,12 +428,6 @@ app.get("/profile", checkAuth, async (req: express.Request, res: express.Respons
 app.get("/pointRecords", checkAuth, async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/pointRecords.html", { root: __dirname });
-});
-
-// get images from pit scouting. images are located in scouting-app/images
-app.get("/pitimages", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/pitimg.html", { root: __dirname });
 });
 
 // page with fake blue banners for future use
@@ -527,12 +494,6 @@ app.get("/api/data/:season/scout/:userId", apiCheckAuth, async (req: express.Req
     getScoutResponses(req, res, db, selectSeason(req));
 });
 
-// get pit scouting data
-import { pit } from "./routes/api/data/pit";
-app.get("/api/pit/:season/:event/:team", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    pit(req, res, db, selectSeason(req));
-});
-
 // get detailed data by query
 import { detailBySpecs } from "./routes/api/data/detail";
 app.get("/api/data/:season/detail/query/:event/:team/:page", apiCheckAuth, async (req: express.Request<{event: string, team: string, page: string}>, res: express.Response) => {
@@ -553,12 +514,6 @@ app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request<{id
 import { teams } from "./routes/api/teams/teams";
 app.get("/api/teams/:season/:event", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
     teams(req, res, db,selectSeason(req));
-});
-
-// pit scouted team list
-import { pitScoutedTeams } from "./routes/api/teams/pitScoutedTeams";
-app.get("/api/teams/:season/:event/pitscoutedteams", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    pitScoutedTeams(req, res, db, selectSeason(req));
 });
 
 // other ways to get weight - not used by app, but for external use
@@ -605,28 +560,58 @@ app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request<{use
 //
 
 import { listSubmissions } from "./routes/api/manage/list";
-app.get("/api/manage/:database/list", checkAuth, async (req: express.Request<{database: string}>, res: express.Response) => {
+app.get("/api/manage/:database/list", apiCheckAuth, async (req: express.Request<{database: string}>, res: express.Response) => {
     listSubmissions(req, res, db);
 });
 
 import { deleteSubmission } from "./routes/api/manage/delete";
-app.get("/api/manage/:database/:submissionId/delete", checkAuth, async (req: express.Request<{database: string, submissionId: string}>, res: express.Response) => {
+app.get("/api/manage/:database/:submissionId/delete", apiCheckAuth, async (req: express.Request<{database: string, submissionId: string}>, res: express.Response) => {
     deleteSubmission(req, res, db, transactions, authDb);
 });
 
 import { updateScout } from "./routes/api/manage/user/points";
-app.get("/api/manage/scout/points/:userId/:modify/:reason", checkAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
+app.get("/api/manage/scout/points/:userId/:modify/:reason", apiCheckAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
     updateScout(req, res, transactions, authDb);
 });
 
 import { updateAccess } from "./routes/api/manage/user/access";
-app.get("/api/manage/scout/access/:id/:accessOk", checkAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
+app.get("/api/manage/scout/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
     updateAccess(req, res, authDb);
 });
 
 import { revokeKey } from "./routes/api/manage/user/revokeKey";
-app.get("/api/manage/scout/revokeKey/:id", checkAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+app.get("/api/manage/scout/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     revokeKey(req, res, authDb);
+});
+
+import { updateTeamKey } from "./routes/api/manage/teams/updateKey";
+app.get("/api/manage/teams/updateKey/:keyId/:newKey", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
+    updateTeamKey(req, res, authDb);
+});
+
+import { createTeamKey } from "./routes/api/manage/teams/createKey";
+app.get("/api/manage/teams/createKey/:keyId/:tean", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
+    createTeamKey(req, res, authDb);
+});
+
+import { revokeTeamKey } from "./routes/api/manage/teams/revokeKey";
+app.get("/api/manage/teams/deleteKey/:keyId", apiCheckAuth, async (req: express.Request<{keyId: string}>, res: express.Response) => {
+    revokeTeamKey(req, res, authDb);
+});
+
+import { listTeams } from "./routes/api/manage/teams/list";
+app.get("/api/manage/teams/list", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
+    listTeams(req, res, authDb);
+});
+
+import { teamScouts } from "./routes/api/manage/team/list";
+app.get("/api/manage/team/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+    teamScouts(req, res, authDb);
+});
+
+import { manageTeamUser } from "./routes/api/manage/team/scouts/access";
+app.get("/api/manage/team/scouts/access/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
+    manageTeamUser(req, res, authDb);
 });
 
 //
@@ -648,28 +633,6 @@ app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req: 
 import { blackjackSocket } from "./routes/api/casino/blackjack/blackjackSocket";
 wsApp.ws('/api/casino/blackjack/blackjackSocket', function(ws: any, req: express.Request) {
     blackjackSocket(ws, req, transactions, authDb);
-});
-
-//
-// notes
-//
-
-// get note for team
-import { getNotes } from "./routes/api/notes/getNotes";
-app.get("/api/notes/:event/:team/getNotes", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    getNotes(req, res, db, season);
-});
-
-// create the notes
-import { createNote } from "./routes/api/notes/createNote";
-app.get("/api/notes/:event/:team/createNote", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    createNote(req, res, db, season);
-});
-
-// save the note
-import { updateNotes } from "./routes/api/notes/updateNotes";
-app.post("/api/notes/:event/:team/updateNotes", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    updateNotes(req, res, db, season);
 });
 
 //
@@ -752,18 +715,10 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
     res.redirect("/login");
 });
 
-if (Number(certsizes.key) <= 100 || Number(certsizes.cert) <= 100) {
-    app.listen(80);
-} else {
-    const httpRedirect = express();
-    httpRedirect.all("*", (req: express.Request, res: express.Response) =>
-        res.redirect(`https://${req.hostname}${req.url}`)
-    );
-    const httpServer = http.createServer(httpRedirect);
-    httpServer.listen(80, () =>
-        console.log(`HTTP server listening: http://localhost`)
-    );
-}
+const httpRedirect = express();
+httpRedirect.all("*", (req: express.Request, res: express.Response) => res.redirect(`https://${req.hostname}${req.url}`));
+const httpServer = http.createServer(httpRedirect);
+httpServer.listen(80, () => console.info(`http redirect server ready`));
 
 // server created and ready for a request
-console.log("Ready!");
+console.info("scouting app ready");
