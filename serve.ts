@@ -590,7 +590,7 @@ app.get("/api/manage/teams/updateKey/:keyId/:newKey", apiCheckAuth, async (req: 
 });
 
 import { createTeamKey } from "./routes/api/manage/teams/createKey";
-app.get("/api/manage/teams/createKey/:keyId/:team", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
+app.get("/api/manage/teams/createKey/:key/:team", apiCheckAuth, async (req: express.Request<{key: string, team: string}>, res: express.Response) => {
     createTeamKey(req, res, authDb);
 });
 
@@ -600,7 +600,7 @@ app.get("/api/manage/teams/deleteKey/:keyId", apiCheckAuth, async (req: express.
 });
 
 import { listTeams } from "./routes/api/manage/teams/list";
-app.get("/api/manage/teams/list", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
+app.get("/api/manage/teams/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
     listTeams(req, res, authDb);
 });
 
