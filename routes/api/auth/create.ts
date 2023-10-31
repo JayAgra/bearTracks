@@ -29,7 +29,6 @@ export async function createAccount(req: express.Request, res: express.Response,
     });
 
     req.on("end", async () => {
-        console.log("got form")
         let accountData: createAccountForm = parse(body) as unknown as createAccountForm;
         authDb.all("SELECT id FROM users WHERE email=?", [accountData.email], (err: any, result: Array<Object>) => {
             if (err) {
@@ -39,15 +38,11 @@ export async function createAccount(req: express.Request, res: express.Response,
             if (result.length === 0) {
                 if (accountData.password.length >= 8) {
                     var targetTeam: number = 0;
-                    authDb.get("SELECT team FROM accessKeys WHERE key=?", (err: any, result: {"team": number} | undefined) => {
+                    authDb.get("SELECT team FROM accessKeys WHERE key=?", [Number(accountData.access)], (err: any, result: {"team": number} | undefined) => {
                         if (err || !result) {
-                            console.log("error");
-                            console.log(err);
-                            console.log(result);
                             return res.redirect("/create?err=3");
                         } else {
                             targetTeam = result.team;
-                            console.log("got team " + targetTeam);
                         }
                     });
                     if (targetTeam !== 0) {
