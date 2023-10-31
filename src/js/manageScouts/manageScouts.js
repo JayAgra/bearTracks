@@ -13,10 +13,10 @@ async function getData() {
         var listHTML = "";
         for (var i = 0; i < listRes.length; i++) {
             if (listRes[i].accessOk == "true") {
-                listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td>${listRes[i].score}</td><td><div class="inlineInput"><input type="tel" id="${listRes[i].id}_input" value="${listRes[i].score}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateUser('${listRes[i].id}', ${listRes[i].score}, this)">save</button><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">logout</button></div></td></tr>`;
+                listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td>${listRes[i].score}</td><td><div class="inlineInput"><input type="tel" id="${listRes[i].id}_input" value="${listRes[i].score}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateUser('${listRes[i].id}', ${listRes[i].score}, this)">save</button><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">logout</button></div></td></tr>`;
             }
             else {
-                listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td>${listRes[i].score}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
+                listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td>${listRes[i].score}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
             }
         }
         document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);
@@ -25,6 +25,7 @@ async function getData() {
         console.log("failure");
         window.location.href = "/login";
     }
+    await getTeamData();
 }
 async function getTeamData() {
     var response, listRes;

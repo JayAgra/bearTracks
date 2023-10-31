@@ -42,7 +42,7 @@ export async function checkLogIn(req: express.Request, res: express.Response, au
                     } else {
                         if (Bun.password.verifySync(loginData.password + result.salt, result.passHash)) {
                             const key = randomBytes(96).toString("hex");
-                            const keyStmt: string = "INSERT INTO keys (key, userId, name, team, created, expires, admin, teamAdmin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                            const keyStmt: string = "INSERT INTO keys (key, userId, name, team, created, expires, admin, teamAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                             const keyValues: Array<any> = [
                                 key,
                                 result.id,
