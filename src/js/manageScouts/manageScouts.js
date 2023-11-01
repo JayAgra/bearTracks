@@ -24,7 +24,7 @@ async function getData() {
                 }
             }
             else {
-                listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td></td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
+                listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td></td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button><button class="uiButton cancelButton" onclick="deleteUser('${listRes[i].id}', this)">delete user</button></div></td></tr>`;
             }
         }
         document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);
@@ -63,6 +63,30 @@ async function approveUser(targetId, button) {
     button.innerText = "...";
     try {
         var response = await fetch(`/api/manage/user/access/${targetId}/true`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+        const responseText = await response.text();
+        if (responseText == String(0xc86)) {
+            button.innerText = "done";
+        }
+        else {
+            button.innerText = "error";
+        }
+    }
+    catch (error) {
+        console.log("failure");
+        window.location.href = "/login";
+    }
+}
+async function deleteUser(targetId, button) {
+    button.innerText = "...";
+    try {
+        var response = await fetch(`/api/manage/user/delete/${targetId}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
