@@ -4,6 +4,8 @@ type scoutsData = {
     "nickName": string;
     "team": number;
     "accessOk": string;
+    "admin": string;
+    "teamAdmin": number;
 };
 
 async function getData() {
@@ -23,7 +25,13 @@ async function getData() {
         var listHTML = "";
         for (var i = 0; i < listRes.length; i++) {
             if (listRes[i].accessOk == "true") {
-                listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td>${listRes[i].score}</td><td><div class="inlineInput"><input type="tel" id="${listRes[i].id}_input" value="${listRes[i].score}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateUser('${listRes[i].id}', ${listRes[i].score}, this)">save</button><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">logout</button></div></td></tr>`;
+                if (listRes[i].admin == "true") {
+                    listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td>${listRes[i].score}<div class="inlineInput"><input type="tel" id="${listRes[i].id}_input" value="${listRes[i].score}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateUser('${listRes[i].id}', ${listRes[i].score}, this)">save</button></td><td><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">logout</button><button class="uiButton cancelButton" onclick="removeAdmin('${listRes[i].id}', this)">remove admin</button></div></td></tr>`;
+                } else if (listRes[i].teamAdmin !== 0) {
+                    listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td>${listRes[i].score}<div class="inlineInput"><input type="tel" id="${listRes[i].id}_input" value="${listRes[i].score}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateUser('${listRes[i].id}', ${listRes[i].score}, this)">save</button></td><td><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">logout</button><button class="uiButton cancelButton" onclick="removeTeamAdmin('${listRes[i].id}', this)">remove team admin</button><button class="uiButton cancelButton" onclick="makeAdmin('${listRes[i].id}', this)">make admin</button></div></td></tr>`;
+                } else {
+                    listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td>${listRes[i].score}<div class="inlineInput"><input type="tel" id="${listRes[i].id}_input" value="${listRes[i].score}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateUser('${listRes[i].id}', ${listRes[i].score}, this)">save</button></td><td><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">logout</button><button class="uiButton cancelButton" onclick="makeTeamAdmin('${listRes[i].id}', '${listRes[i].team}', this)">make team admin</button><button class="uiButton cancelButton" onclick="makeAdmin('${listRes[i].id}', this)">make admin</button></div></td></tr>`;
+                }
             } else {
                 listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td>${listRes[i].score}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
             }
@@ -39,7 +47,7 @@ async function updateUser(targetuserId: string, origScore: string, button: any) 
     button.innerText = "..."
     const modifyAmt = Number((document.getElementById(`${targetuserId}_input`) as HTMLInputElement).value) - Number(origScore);
     try {
-        var response = await fetch(`/api/manage/scout/points/${targetuserId}/${modifyAmt}/${Number((document.getElementById("reason") as HTMLInputElement).value)}`, {
+        var response = await fetch(`/api/manage/user/points/${targetuserId}/${modifyAmt}/${Number((document.getElementById("reason") as HTMLInputElement).value)}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -65,7 +73,7 @@ async function updateUser(targetuserId: string, origScore: string, button: any) 
 async function approveUser(targetId: string, button: any) {
     button.innerText = "..."
     try {
-        var response = await fetch(`/api/manage/scout/access/${targetId}/true`, {
+        var response = await fetch(`/api/manage/user/access/${targetId}/true`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -91,7 +99,7 @@ async function approveUser(targetId: string, button: any) {
 async function revokeKey(targetId: string, button: any) {
     button.innerText = "..."
     try {
-        var response = await fetch(`/api/manage/scout/revokeKey/${targetId}`, {
+        var response = await fetch(`/api/manage/user/revokeKey/${targetId}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -110,6 +118,110 @@ async function revokeKey(targetId: string, button: any) {
         }
     } catch (error) {
         console.log("failure")
+        window.location.href = "/login";
+    }
+}
+
+async function makeAdmin(userId: string, button: any) {
+    button.innerText = "...";
+    try {
+        var response = await fetch(`/api/manage/user/updateAdmin/${userId}/true`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+
+        const responseText = await response.text();
+
+        if (responseText == String(0xc87)) {
+            button.innerText = "done";
+        } else {
+            button.innerText = "error";
+        }
+    } catch (error) {
+        console.log("failure");
+        window.location.href = "/login";
+    }
+}
+
+async function removeAdmin(userId: string, button: any) {
+    button.innerText = "...";
+    try {
+        var response = await fetch(`/api/manage/user/updateAdmin/${userId}/false`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+
+        const responseText = await response.text();
+
+        if (responseText == String(0xc87)) {
+            button.innerText = "done";
+        } else {
+            button.innerText = "error";
+        }
+    } catch (error) {
+        console.log("failure");
+        window.location.href = "/login";
+    }
+}
+
+async function makeTeamAdmin(userId: string, targetTeam: string, button: any) {
+    button.innerText = "...";
+    try {
+        var response = await fetch(`/api/manage/user/updateTeamAdmin/${userId}/${targetTeam}`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+
+        const responseText = await response.text();
+
+        if (responseText == String(0xc87)) {
+            button.innerText = "done";
+        } else {
+            button.innerText = "error";
+        }
+    } catch (error) {
+        console.log("failure");
+        window.location.href = "/login";
+    }
+}
+
+async function removeTeamAdmin(userId: string, button: any) {
+    button.innerText = "...";
+    try {
+        var response = await fetch(`/api/manage/user/updateTeamAdmin/${userId}/0`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+
+        const responseText = await response.text();
+
+        if (responseText == String(0xc87)) {
+            button.innerText = "done";
+        } else {
+            button.innerText = "error";
+        }
+    } catch (error) {
+        console.log("failure");
         window.location.href = "/login";
     }
 }

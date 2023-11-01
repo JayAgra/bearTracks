@@ -69,6 +69,17 @@ document.getElementById('validateLength').addEventListener('input', (): void => 
         (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
 });
+
+Array.from(document.querySelectorAll("[required]")).forEach((element) => {
+    element.addEventListener('input', (event): void => {
+        if (String((event.target as HTMLInputElement).value).length > 0) {
+            (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
+        } else {
+            (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+        }
+    })
+})
+
 //end data validation
 
 //grid orientation reminder

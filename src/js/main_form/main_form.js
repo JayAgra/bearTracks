@@ -70,6 +70,16 @@ document.getElementById('validateLength').addEventListener('input', () => {
         document.getElementById('submitButton').setAttribute("disabled", "disabled");
     }
 });
+Array.from(document.querySelectorAll("[required]")).forEach((element) => {
+    element.addEventListener('input', (event) => {
+        if (String(event.target.value).length > 0) {
+            document.getElementById("submitButton").removeAttribute("disabled");
+        }
+        else {
+            document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        }
+    });
+});
 //end data validation
 //grid orientation reminder
 if (window.innerHeight > window.innerWidth) {
@@ -236,10 +246,12 @@ async function uploadForm() {
     document.getElementById("mainFormHTML").style.display = "none";
     document.getElementById("submitUi").style.display = "unset";
     document.getElementById("reSubmitButton").style.display = "none";
+    await new Promise((res) => setTimeout(res, 250));
     post("/submit", responses).then(async (response) => {
         const r = response;
         console.log(r.id);
         document.getElementById("submitText_d").innerText = "Verifying...";
+        await new Promise((res) => setTimeout(res, 250));
         try {
             const verifyResp = await fetch(`/api/data/exists/${r.id}`, {
                 method: "GET",

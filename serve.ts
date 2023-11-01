@@ -589,18 +589,28 @@ app.get("/api/manage/:submissionId/delete", apiCheckAuth, async (req: express.Re
 // scout management
 
 import { updateScout } from "./routes/api/manage/user/points";
-app.get("/api/manage/scout/points/:userId/:modify/:reason", apiCheckAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
+app.get("/api/manage/user/points/:userId/:modify/:reason", apiCheckAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
     updateScout(req, res, transactions, authDb);
 });
 
 import { updateAccess } from "./routes/api/manage/user/access";
-app.get("/api/manage/scout/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
+app.get("/api/manage/user/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
     updateAccess(req, res, authDb);
 });
 
 import { revokeKey } from "./routes/api/manage/user/revokeKey";
-app.get("/api/manage/scout/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+app.get("/api/manage/user/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     revokeKey(req, res, authDb);
+});
+
+import { updateAdmin } from "./routes/api/manage/user/updateAdmin";
+app.get("/api/manage/user/updateAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+    updateAdmin(req, res, authDb);
+});
+
+import { updateTeamAdmin } from "./routes/api/manage/user/updateTeamAdmin";
+app.get("/api/manage/user/updateAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+    updateTeamAdmin(req, res, authDb);
 });
 
 // team management endpoints
