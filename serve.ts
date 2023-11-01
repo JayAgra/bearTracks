@@ -361,15 +361,6 @@ app.get("/manageTeams", checkAuth, async (req: express.Request, res: express.Res
     }
 });
 
-app.get("/manageScoutDetails", checkAuth, async (req: express.Request, res: express.Response) => {
-    if (req.user.admin == "true") {
-        res.set("Cache-control", "public, max-age=23328000");
-        res.sendFile("src/manageScoutDetails.html", { root: __dirname });
-    } else {
-        res.redirect("/denied");
-    }
-});
-
 // CSS (should be unused in favor of minified css)
 app.get("/float.css", async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");

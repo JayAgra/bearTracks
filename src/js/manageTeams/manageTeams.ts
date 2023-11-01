@@ -20,7 +20,7 @@ async function getTeamData() {
         listRes = await response.json();
         var listHTML = "";
         for (var i = 0; i < listRes.length; i++) {
-            listHTML += `<tr class="padded"><td>${listRes[i].team}</td><td>${listRes[i].key}</td><td><div class="inlineInput"><input type="tel" id="${listRes[i].id}_key_input" value="${listRes[i].key}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateKey(${listRes[i].id}, "${listRes[i].id}_key_input", this)">save</button><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">delete</button></div></td></tr>`;
+            listHTML += `<tr class="padded"><td>${listRes[i].team}</td><td><div class="inlineInput">${listRes[i].key}&emsp;<input type="tel" id="${listRes[i].id}_key_input" value="${listRes[i].key}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateKey(${listRes[i].id}, "${listRes[i].id}_key_input", this)">save</button><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">delete</button></div></td></tr>`;
         }
         document.getElementById("teamsTableHead").insertAdjacentHTML("afterend", listHTML);  
     } catch (error) {
