@@ -45,7 +45,7 @@ async function getData() {
 async function getTeamData() {
     var response, listRes: Array<teamsData>;
     try {
-        response = await fetch(`/routes/api/manage/teams/list`, {
+        response = await fetch(`/api/manage/teams/list`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
