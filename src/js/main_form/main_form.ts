@@ -33,13 +33,13 @@ async function loadMatches(): Promise<string | void> {
         }
 
         if (response.status === 204 || !response.ok) {
-            (document.getElementById("badEvent") as HTMLSpanElement).innerText = "no results";
+            (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
             (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
         }
 
         eventMatches = await response.json();
     } catch (err: any) {
-        (document.getElementById("badEvent") as HTMLSpanElement).innerText = "no results";
+        (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
         (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
     }
 }
@@ -75,22 +75,24 @@ function setOption(element: HTMLOptionElement, value: number) {
 }
 
 function matchNumberChange(event: any) {
-    const errorElement = document.getElementById("badMatchNum") as HTMLSpanElement;
-    if (Number((event.target as HTMLInputElement).value) > 0 && Number((event.target as HTMLInputElement).value) <= eventMatches.Schedule.length) {
-        errorElement.style.display = "none";
-        (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
-        const matchTeams: Array<frcApiTeam> = eventMatches.Schedule[Number((event.target as HTMLInputElement).value) - 1].teams;
-        const teamSelectOpts: Array<HTMLOptionElement> = Array.from(document.getElementsByClassName("teamNumOption")) as Array<HTMLOptionElement>;
-        setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
-        setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
-        setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
-        setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
-        setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
-        setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
-    } else {
-        errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
-        errorElement.style.display = "unset";
-        (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+    if (eventMatches.Schedule) {
+        const errorElement = document.getElementById("badMatchNum") as HTMLSpanElement;
+        if (Number((event.target as HTMLInputElement).value) > 0 && Number((event.target as HTMLInputElement).value) <= eventMatches.Schedule.length) {
+            errorElement.style.display = "none";
+            (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
+            const matchTeams: Array<frcApiTeam> = eventMatches.Schedule[Number((event.target as HTMLInputElement).value) - 1].teams;
+            const teamSelectOpts: Array<HTMLOptionElement> = Array.from(document.getElementsByClassName("teamNumOption")) as Array<HTMLOptionElement>;
+            setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
+            setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
+            setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
+            setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
+            setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
+            setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
+        } else {
+            errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
+            errorElement.style.display = "unset";
+            (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+        }
     }
 }
 

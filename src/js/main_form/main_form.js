@@ -10,13 +10,13 @@ async function loadMatches() {
             return window.location.href = "/login";
         }
         if (response.status === 204 || !response.ok) {
-            document.getElementById("badEvent").innerText = "no results";
+            document.getElementById("badEvent").innerHTML = "&emsp;no results";
             document.getElementById("badEvent").style.display = "unset";
         }
         eventMatches = await response.json();
     }
     catch (err) {
-        document.getElementById("badEvent").innerText = "no results";
+        document.getElementById("badEvent").innerHTML = "&emsp;no results";
         document.getElementById("badEvent").style.display = "unset";
     }
 }
@@ -48,23 +48,25 @@ function setOption(element, value) {
     element.innerText = String(value);
 }
 function matchNumberChange(event) {
-    const errorElement = document.getElementById("badMatchNum");
-    if (Number(event.target.value) > 0 && Number(event.target.value) <= eventMatches.Schedule.length) {
-        errorElement.style.display = "none";
-        document.getElementById("submitButton").removeAttribute("disabled");
-        const matchTeams = eventMatches.Schedule[Number(event.target.value) - 1].teams;
-        const teamSelectOpts = Array.from(document.getElementsByClassName("teamNumOption"));
-        setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
-        setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
-        setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
-        setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
-        setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
-        setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
-    }
-    else {
-        errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
-        errorElement.style.display = "unset";
-        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+    if (eventMatches.Schedule) {
+        const errorElement = document.getElementById("badMatchNum");
+        if (Number(event.target.value) > 0 && Number(event.target.value) <= eventMatches.Schedule.length) {
+            errorElement.style.display = "none";
+            document.getElementById("submitButton").removeAttribute("disabled");
+            const matchTeams = eventMatches.Schedule[Number(event.target.value) - 1].teams;
+            const teamSelectOpts = Array.from(document.getElementsByClassName("teamNumOption"));
+            setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
+            setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
+            setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
+            setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
+            setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
+            setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
+        }
+        else {
+            errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
+            errorElement.style.display = "unset";
+            document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        }
     }
 }
 document.getElementById('matchNumberInput').addEventListener('input', (event) => {
