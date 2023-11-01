@@ -637,7 +637,7 @@ app.get("/api/manage/myTeam/list", apiCheckAuth, async (req: express.Request, re
 });
 
 import { manageTeamUser } from "./routes/api/manage/myTeam/scouts/access";
-app.get("/api/manage/myTeam/scouts/access/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
+app.get("/api/manage/myTeam/scouts/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
     manageTeamUser(req, res, authDb);
 });
 
