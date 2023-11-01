@@ -67,7 +67,6 @@ async function checkLogin(): Promise<void> {
 
 loadMatches();
 validateLengthFn();
-matchNumberChange({"target": document.getElementById('matchNumberInput')});
 
 document.getElementById('eventCode').addEventListener('change', async (): Promise<void> => {
     await loadMatches();
@@ -99,6 +98,7 @@ function matchNumberChange(event: any) {
         }
     } else {
         window.setTimeout((event: any) => { matchNumberChange(event) }, 1000);
+        (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
 }
 

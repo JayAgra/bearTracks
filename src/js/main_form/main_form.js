@@ -43,7 +43,6 @@ async function checkLogin() {
 }
 loadMatches();
 validateLengthFn();
-matchNumberChange({ "target": document.getElementById('matchNumberInput') });
 document.getElementById('eventCode').addEventListener('change', async () => {
     await loadMatches();
 });
@@ -74,6 +73,7 @@ function matchNumberChange(event) {
     }
     else {
         window.setTimeout((event) => { matchNumberChange(event); }, 1000);
+        document.getElementById('submitButton').setAttribute("disabled", "disabled");
     }
 }
 document.getElementById('matchNumberInput').addEventListener('input', (event) => {
