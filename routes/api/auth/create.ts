@@ -3,15 +3,7 @@ import * as sqlite3 from "sqlite3";
 import { parse } from "qs";
 import { randomBytes } from "crypto";
 import * as Bun from "bun";
-
-function escapeHTML(htmlStr: string): string {
-    return String(htmlStr)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
+import { escapeHTML } from "../../../src/escape";
 
 type createAccountForm = {
     "access": string,

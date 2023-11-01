@@ -38,7 +38,7 @@ async function updateUser(targetuserId, origScore, button) {
     button.innerText = "...";
     const modifyAmt = Number(document.getElementById(`${targetuserId}_input`).value) - Number(origScore);
     try {
-        var response = await fetch(`/api/manage/user/points/${targetuserId}/${modifyAmt}/${Number(document.getElementById("reason").value)}`, {
+        var response = await fetch(`/api/manage/user/points/${targetuserId}/${modifyAmt}/6553`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",

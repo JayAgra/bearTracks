@@ -1,14 +1,6 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
-
-function escapeHTML(htmlStr: string): string {
-    return String(htmlStr)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-}
+import { escapeHTML } from "../src/escape";
 
 type mainFormIncoming = {
 	"event": string,

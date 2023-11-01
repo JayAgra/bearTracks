@@ -1,28 +1,47 @@
 //data validation
-var allTeams: Array<number> = [];
+type frcApiTeam = {
+    "station": string,
+    "surrogate": boolean,
+    "teamNumber": number
+}
 
-async function getEventTeams(): Promise<void> {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/events/current/${(document.getElementById('eventCode') as HTMLInputElement).value}/teams`, true);
-    xhr.withCredentials = true;
+type frcApiMatch = {
+    "description": string,
+    "field": string,
+    "matchNumber": number,
+    "startTime": string,
+    "teams": Array<frcApiTeam>,
+    "tournamentLevel": string
+}
 
-    xhr.onreadystatechange = async () => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            allTeams = (xhr.responseText).split(",").map((e) => Number(e));
-        } else if (xhr.status === 401) {
-            window.location.href = "/login";
-        } else if (xhr.status === 400) {
-            document.getElementById("viewNoteButton").innerHTML = "bad request";
-        } else if (xhr.status === 500) {
-            document.getElementById("viewNoteButton").innerHTML = "internal server error";
-        } else if (xhr.status === 403) {
-            document.getElementById("viewNoteButton").innerHTML = "access denied";
-        } else {
-            console.log("awaiting response")
+type frcApiMatches = {
+    "Schedule": Array<frcApiMatch>
+}
+
+var eventMatches: frcApiMatches;
+
+async function loadMatches(): Promise<string | void> {
+    try {
+        const response = await fetch(`/api/matches/current/${(document.getElementById('eventCode') as HTMLInputElement).value}/qual/all`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            return window.location.href = "/login";
         }
-    }
 
-    xhr.send()
+        if (response.status === 204 || !response.ok) {
+            (document.getElementById("badEvent") as HTMLSpanElement).innerText = "no results";
+            (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
+        }
+
+        eventMatches = await response.json();
+    } catch (err: any) {
+        (document.getElementById("badEvent") as HTMLSpanElement).innerText = "no results";
+        (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
+    }
 }
 
 // check session
@@ -42,24 +61,44 @@ async function checkLogin(): Promise<void> {
     }
 }
 
-getEventTeams()
+loadMatches();
+validateLengthFn();
+matchNumberChange({"target": document.getElementById('matchNumberInput')});
 
-document.getElementById('eventCode').addEventListener('change', async function(): Promise<void> {
-    console.log(getEventTeams()); console.log(allTeams)
+document.getElementById('eventCode').addEventListener('change', async (): Promise<void> => {
+    await loadMatches();
 });
 
-document.getElementById('validateTeamInput').addEventListener('input', function(): void {
-    console.log("event!")
-    if (allTeams.includes(Number((document.getElementById('validateTeamInput') as HTMLInputElement).value))) {
-        document.getElementById('invalidTeamInput').style.display = "none";
-        (document.getElementById('submitButton') as HTMLButtonElement).removeAttribute("disabled");
+function setOption(element: HTMLOptionElement, value: number) {
+    element.value = String(value);
+    element.innerText = String(value);
+}
+
+function matchNumberChange(event: any) {
+    const errorElement = document.getElementById("badMatchNum") as HTMLSpanElement;
+    if (Number((event.target as HTMLInputElement).value) > 0 && Number((event.target as HTMLInputElement).value) <= eventMatches.Schedule.length) {
+        errorElement.style.display = "none";
+        (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
+        const matchTeams: Array<frcApiTeam> = eventMatches.Schedule[Number((event.target as HTMLInputElement).value) - 1].teams;
+        const teamSelectOpts: Array<HTMLOptionElement> = Array.from(document.getElementsByClassName("teamNumOption")) as Array<HTMLOptionElement>;
+        setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
+        setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
+        setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
+        setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
+        setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
+        setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
     } else {
-        document.getElementById('invalidTeamInput').style.display = "inherit";
+        errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
+        errorElement.style.display = "unset";
         (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
+}
+
+document.getElementById('matchNumberInput').addEventListener('input', (event: any): void => {
+    matchNumberChange(event);
 });
 
-document.getElementById('validateLength').addEventListener('input', (): void => {
+function validateLengthFn() {
     let currentVal: string = (document.getElementById("validateLength") as HTMLInputElement).value;
     if (Number(currentVal) <= 120 && Number(currentVal) >= 0) {
         document.getElementById('tooLong').style.display = "none";
@@ -68,15 +107,23 @@ document.getElementById('validateLength').addEventListener('input', (): void => 
         document.getElementById('tooLong').style.display = "inherit";
         (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
+}
+
+document.getElementById('validateLength').addEventListener('input', (): void => {
+    validateLengthFn();
 });
 
+function requiredFormFields(event: any) {
+    if (String((event.target as HTMLInputElement).value).length > 0) {
+        (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
+    } else {
+        (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+    }
+}
+
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
-    element.addEventListener('input', (event): void => {
-        if (String((event.target as HTMLInputElement).value).length > 0) {
-            (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
-        } else {
-            (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
-        }
+    element.addEventListener('input', (event: any): void => {
+        requiredFormFields(event);
     })
 })
 

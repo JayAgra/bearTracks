@@ -74,7 +74,6 @@ app.use(
 );
 app.use("/js", express.static("src/js"));
 app.use("/css", express.static("src/css"));
-app.use("/images", express.static("images"));
 // all cards by Lydia Honerkamp (https://github.com/1yd1a)
 app.use(
     "/assets",
@@ -137,15 +136,7 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err: any, result: keysDb | null) => {
             if (err || !result || Number(result.expires) < Date.now()) {
                 res.clearCookie("key");
-                req.user = {
-                    "id": 0,
-                    "name": "",
-                    "team": 0,
-                    "admin": "",
-                    "key": "",
-                    "expires": "",
-                    "teamAdmin": 0
-                };
+                req.user.id = 0;
             } else {
                 req.user = {
                     "id": result.userId,
@@ -673,20 +664,14 @@ wsApp.ws('/api/casino/blackjack/blackjackSocket', function(ws: any, req: express
 
 // team list for events
 app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req: express.Request<{event: string, level: string, all: string, season: string}>, res: express.Response) => {
-    if (req.params.event !== "CCCC") {
-        var teamNumParam = "";
-        if (req.params.all === "all") {
-            teamNumParam = "&start=&end=";
-        } else {
-            teamNumParam = `&teamNumber=${myteam}`;
-        }
-        res.set("Cache-control", "public, max-age=23328000");
-        forwardFRCAPIdata(`/v3.0/${req.params.season}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res);
+    var teamNumParam = "";
+    if (req.params.all === "all") {
+        teamNumParam = "&start=&end=";
     } else {
-        res.header("Content-Type", "application/json");
-        res.set("Cache-control", "public, max-age=23328000");
-        res.sendFile("src/js/CCCC.json", { root: __dirname });
+        teamNumParam = `&teamNumber=${myteam}`;
     }
+    res.set("Cache-control", "public, max-age=23328000");
+    forwardFRCAPIdata(`/v3.0/${selectSeason(req)}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res);
 });
 
 // frc api team list

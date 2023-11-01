@@ -10,6 +10,9 @@ function eV(value) {
 function callSearch() {
     search(Number(numberInput.value), eventCode.value, document.getElementById("type").value);
 }
+function generateSmallAvgRow(avg) {
+    return `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
+}
 async function search(num, eCode, searchType = "team") {
     if (num < 0 || isNaN(num)) {
         numberInput.style.borderColor = "var(--cancelColor)";
@@ -154,7 +157,7 @@ async function search(num, eCode, searchType = "team") {
             for (let key in avg) {
                 avg[key] /= listRes.length;
             }
-            htmlTable += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
+            htmlTable += generateSmallAvgRow(avg);
         }
         document.getElementById("subheadings").insertAdjacentHTML("afterend", htmlTable);
         document.getElementById("search").style.display = "none";
@@ -205,7 +208,7 @@ async function searchOnLoad() {
             for (let key in avg) {
                 avg[key] /= listRes.length;
             }
-            htmlTable += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
+            htmlTable += generateSmallAvgRow(avg);
             document.getElementById("subheadings").insertAdjacentHTML("afterend", htmlTable);
             document.getElementById("search").style.display = "none";
             document.getElementById("results").style.display = "flex";

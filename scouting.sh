@@ -34,22 +34,6 @@ if [ "$1" ]; then
         zip data.zip data.db data.db-shm data.db-wal data_transact.db data_transact.db-shm data_transact.db-wal data_auth.db data_auth.db-shm data_auth.db-wal
         rm backups/data.zip
         mv data.zip backups/data_$(date +%s).zip
-    elif [ "$1" = "savedb" ]; then
-        # save database file to the /images directory for backups
-        if [ "$2" = "auth"]; then
-            rm data.zip
-            zip data.zip data.db data.db-shm data.db-wal data_transact.db data_transact.db-shm data_transact.db-wal data_auth.db data_auth.db-shm data_auth.db-wal
-            rm images/data.zip
-            mv data.zip images/data.zip
-        else
-            rm data.zip
-            zip data.zip data.db data.db-shm data.db-wal data_transact.db data_transact.db-shm data_transact.db-wal
-            rm images/data.zip
-            mv data.zip images/data.zip
-        fi
-    elif [ "$1" = "clearbackup" ]; then
-        rm images/data.zip
-        rm data.zip
     elif [ "$1" = "hardresetpoints" ]; then
         sqlite3 data_transact.db "DELETE FROM transactions;"
         sqlite3 data_auth.db "UPDATE users SET score = 0;"
@@ -80,8 +64,6 @@ if [ "$1" ]; then
         printf "ssl\t\t\tgets a new ssl certificate\n"
         printf "renewssl\t\trenews an existing ssl certificate\n"
         printf "backup\t\t\tbacks up entire database to backups dir\n"
-        printf "savedb\t\t\tzips db and makes it available in the images directory\n"
-        printf "clearbackup\t\tdeletes db backup from images directory\n"
         printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"
         printf "deltransactions\t\tpurges the transactions database\n"
         printf "grantadmin\t\tgrant admin access to specified email address\n"
@@ -98,8 +80,6 @@ else
     printf "ssl\t\t\tgets a new ssl certificate\n"
     printf "renewssl\t\trenews an existing ssl certificate\n"
     printf "backup\t\t\tbacks up entire database to backups dir\n"
-    printf "savedb\t\t\tzips db and makes it available in the images directory\n"
-    printf "clearbackup\t\tdeletes db backup from images directory\n"
     printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"
     printf "deltransactions\t\tpurges the transactions database\n"
     printf "grantadmin\t\tgrant admin access to specified email address\n"

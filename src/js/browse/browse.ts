@@ -57,6 +57,10 @@ type mainFormResponse = {
 	"analysis": string,
 }
 
+function generateSmallAvgRow(avg: any): string {
+    return `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
+}
+
 async function search(num: number, eCode: string, searchType: string = "team"): Promise<void> {
     if (num < 0 || isNaN(num)) {
         numberInput.style.borderColor = "var(--cancelColor)";
@@ -215,7 +219,7 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
                 avg[key] /= listRes.length;
             }
 
-            htmlTable += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
+            htmlTable += generateSmallAvgRow(avg);
         }
         (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
         (document.getElementById("search") as HTMLElement).style.display = "none";
@@ -272,7 +276,7 @@ async function searchOnLoad() {
                 avg[key] /= listRes.length;
             }
 
-            htmlTable += `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
+            htmlTable += generateSmallAvgRow(avg);
             (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
             (document.getElementById("search") as HTMLElement).style.display = "none";
             (document.getElementById("results") as HTMLElement).style.display = "flex";

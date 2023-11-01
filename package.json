@@ -1,6 +1,6 @@
 {
   "name": "scouting-app",
-  "version": "2023.2.0.0",
+  "version": "2023.3.0.0",
   "main": "serve.js",
   "dependencies": {
     "cookie-parser": "^1.4.6",
