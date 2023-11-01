@@ -299,6 +299,12 @@ app.get("/create", async (req: express.Request, res: express.Response) => {
     res.sendFile("src/create.html", { root: __dirname });
 });
 
+// charts page
+app.get("/charts", async (req: express.Request, res: express.Response) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/charts.html", { root: __dirname });
+});
+
 // webmanifest for PWAs
 app.get("/app.webmanifest", async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");

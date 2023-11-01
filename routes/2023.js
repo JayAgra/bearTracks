@@ -28,12 +28,12 @@ function boolToNum(val) {
 // game5 is INT 0/8/12 no dock or engage/dock no engage/dock and engage
 
 
-//TELEOP
-// game 6 is BOOL bottom row score
-// game 7 is BOOL middle row score
-// game 8 is BOOL top row score
-// game 9 is BOOL coop bonus (alliance)
-// game 10 is INT 0/2/6/10
+// TELEOP
+// game6 is BOOL bottom row score
+// game7 is BOOL middle row score
+// game8 is BOOL top row score
+// game9 is BOOL coop bonus (alliance)
+// game10 is INT 0/2/6/10
 
 // AFTER MATCH
 // game11 is INT est cycle time
