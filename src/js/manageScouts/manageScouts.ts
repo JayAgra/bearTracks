@@ -60,7 +60,7 @@ async function getTeamData() {
         for (var i = 0; i < listRes.length; i++) {
             listHTML += `<tr class="padded"><td>${listRes[i].team}</td><td>${listRes[i].key}</td><td><div class="inlineInput"><input type="tel" id="${listRes[i].id}_key_input" value="${listRes[i].key}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateKey(${listRes[i].id}, "${listRes[i].id}_key_input", this)">save</button><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">delete</button></div></td></tr>`;
         }
-        document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);  
+        document.getElementById("teamsTableHead").insertAdjacentHTML("afterend", listHTML);  
     } catch (error) {
         console.log("failure")
         window.location.href = "/login";
