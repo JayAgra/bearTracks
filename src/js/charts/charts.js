@@ -20,7 +20,7 @@ function createChartConfig(type, data, name) {
             "responsive": true,
             "scales": {
                 "yAxes": [{
-                        "stacked": true
+                        "min": 0
                     }]
             },
             "plugins": {
@@ -96,20 +96,20 @@ async function constructGraphs() {
         processedMatches.forEach((matchData) => {
             allMatches.autoCharge.push(matchData.autoCharge);
             allMatches.teleopCharge.push(matchData.teleopCharge);
-            allMatches.cycle.push(matchData.cycle); //
+            allMatches.cycle.push(matchData.cycle);
             allMatches.lowCubes.push(matchData.lowCubes);
             allMatches.lowCones.push(matchData.lowCones);
             allMatches.midCubes.push(matchData.midCubes);
             allMatches.midCones.push(matchData.midCones);
             allMatches.highCubes.push(matchData.highCubes);
             allMatches.highCones.push(matchData.highCones);
-            allMatches.lowPcs.push(matchData.lowPcs); //
-            allMatches.midPcs.push(matchData.midPcs); //
-            allMatches.highPcs.push(matchData.highPcs); //
-            allMatches.cubes.push(matchData.cubes); //
-            allMatches.cones.push(matchData.cones); //
-            allMatches.grid.push(matchData.grid); //
-            allMatches.weight.push(matchData.weight); //
+            allMatches.lowPcs.push(matchData.lowPcs);
+            allMatches.midPcs.push(matchData.midPcs);
+            allMatches.highPcs.push(matchData.highPcs);
+            allMatches.cubes.push(matchData.cubes);
+            allMatches.cones.push(matchData.cones);
+            allMatches.grid.push(matchData.grid);
+            allMatches.weight.push(matchData.weight);
         });
         const weightChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("PERFORMANCE SCORE", "#8ec07c", allMatches.weight)]), "Match Performance Score");
         const gridPtsChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("GRID POINTS", "#8ec07c", allMatches.grid)]), "Grid Points");
@@ -129,6 +129,9 @@ async function constructGraphs() {
         const lowConeCubeChart = new Chart(document.getElementById("lowConeCubeChart"), lowConeCubeChartCfg);
         const midConeCubeChart = new Chart(document.getElementById("midConeCubeChart"), midConeCubeChartCfg);
         const highConeCubeChart = new Chart(document.getElementById("highConeCubeChart"), highConeCubeChartCfg);
+        document.getElementById("teamAtEvent").innerText = document.getElementById("teamNum").value;
+        document.getElementById("search").style.display = "none";
+        document.getElementById("results").style.display = "flex";
     }
     catch (err) {
         document.getElementById("error").innerHTML = "&emsp;no results";

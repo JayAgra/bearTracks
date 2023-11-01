@@ -52,7 +52,7 @@ type chartJsData = {
 type chartJsOptions = {
     "indexAxis": string,
     "responsive": boolean,
-    "scales": {"yAxes": Array<{"stacked": boolean}>},
+    "scales": {"yAxes": Array<{"min": number}>},
     "plugins": {"title": {"display": boolean, "text": string}}
 }
 
@@ -90,7 +90,7 @@ function createChartConfig(type: string, data: chartJsData, name: string): chart
             "responsive": true,
             "scales": {
                 "yAxes": [{
-                    "stacked": true
+                    "min": 0
                 }]
             },
             "plugins": {
