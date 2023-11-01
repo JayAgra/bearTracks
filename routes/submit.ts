@@ -1,6 +1,5 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
-import { parse } from "qs";
 
 function escapeHTML(htmlStr: string): string {
     return String(htmlStr)
@@ -61,7 +60,7 @@ export async function submitForm(req: express.Request, res: express.Response, db
     req.on("end", async () => {
         // server has all data!
         // parse form
-        let formData: mainFormIncoming = parse(body) as unknown as mainFormIncoming;
+        let formData: mainFormIncoming = JSON.parse(body) as unknown as mainFormIncoming;
         // change score based on response length
         var formscoresdj = 0;
         if (formData.overall.length >= 150 && !(formData.overall.length >= 10e19)) {

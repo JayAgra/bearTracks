@@ -53,7 +53,7 @@ async function approveUser(targetId, button) {
 async function disown(targetId, button) {
     button.innerText = "...";
     try {
-        var response = await fetch(`/api/manage/team/scouts/access/${targetId}/false`, {
+        var response = await fetch(`/api/manage/myTeam/scouts/access/${targetId}/false`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",

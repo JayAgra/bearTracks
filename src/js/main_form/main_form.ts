@@ -230,10 +230,46 @@ async function uploadForm() {
         "id": number;
     }
     
-    post("/submit", responses).then((response: object) => {
+    (document.getElementById("mainFormHTML") as HTMLFormElement).style.display = "none";
+    (document.getElementById("submitUi") as HTMLDivElement).style.display = "unset";
+    (document.getElementById("reSubmitButton") as HTMLButtonElement).style.display = "none";
+
+    post("/submit", responses).then(async (response: object) => {
         const r = response as unknown as response;
         console.log(r.id);
+        (document.getElementById("submitText_d") as HTMLHeadingElement).innerText = "Verifying...";
+        try {
+            const verifyResp = await fetch(`/api/data/exists/${r.id}`, {
+                method: "GET",
+                cache: "no-cache",
+                credentials: "include",
+                redirect: "follow",
+            });
+
+            if (verifyResp.status === 401 || verifyResp.status === 403) {
+                window.location.href = "/login";
+            }
+
+            const checkRemote = await verifyResp.json();
+            if (checkRemote.team == responses.team && checkRemote.match == responses.match) {
+                (document.getElementById("submitText_d") as HTMLHeadingElement).innerText = "Done!";
+                (document.getElementById("submitProgress_d") as HTMLProgressElement).value = 100;
+                (document.getElementById("submitProgress_d") as HTMLProgressElement).max = 100;
+                await new Promise((res) => setTimeout(res, 1500));
+                window.location.href = "/";
+            } else {
+                (document.getElementById("submitText_d") as HTMLHeadingElement).innerText = "Possible Error";
+                (document.getElementById("submitProgress_d") as HTMLProgressElement).value = 0;
+                (document.getElementById("reSubmitButton") as HTMLButtonElement).style.display = "unset";
+            }
+        } catch (err: any) {
+            console.log("failure");
+            window.location.href = "/login";
+        }
     }).catch((error: any) => {
+        (document.getElementById("submitText_d") as HTMLHeadingElement).innerText = "ERROR!!!";
+        (document.getElementById("submitProgress_d") as HTMLProgressElement).value = 0;
+        (document.getElementById("reSubmitButton") as HTMLButtonElement).style.display = "unset";
         console.error(error);
     });
 }

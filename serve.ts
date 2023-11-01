@@ -515,6 +515,12 @@ app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request<{id
     detailByID(req, res, db);
 });
 
+// see if submission with id exists
+import { submissionExists } from "./routes/api/data/exists";
+app.get("/api/data/exists/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+    submissionExists(req, res, db);
+});
+
 //
 // team listings
 //
