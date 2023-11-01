@@ -19,6 +19,7 @@ type frcApiMatches = {
 }
 
 var eventMatches: frcApiMatches;
+var matchesOk: boolean = false;
 
 async function loadMatches(): Promise<string | void> {
     try {
@@ -38,9 +39,11 @@ async function loadMatches(): Promise<string | void> {
         }
 
         eventMatches = await response.json();
+        matchesOk = true;
     } catch (err: any) {
         (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
         (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
+        matchesOk = false;
     }
 }
 
@@ -75,7 +78,7 @@ function setOption(element: HTMLOptionElement, value: number) {
 }
 
 function matchNumberChange(event: any) {
-    if (eventMatches.Schedule) {
+    if (matchesOk) {
         const errorElement = document.getElementById("badMatchNum") as HTMLSpanElement;
         if (Number((event.target as HTMLInputElement).value) > 0 && Number((event.target as HTMLInputElement).value) <= eventMatches.Schedule.length) {
             errorElement.style.display = "none";
@@ -93,6 +96,8 @@ function matchNumberChange(event: any) {
             errorElement.style.display = "unset";
             (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
         }
+    } else {
+        window.setTimeout((event: any) => { matchNumberChange(event) }, 1000);
     }
 }
 

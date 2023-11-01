@@ -1,4 +1,5 @@
 var eventMatches;
+var matchesOk = false;
 async function loadMatches() {
     try {
         const response = await fetch(`/api/matches/current/${document.getElementById('eventCode').value}/qual/all`, {
@@ -14,10 +15,12 @@ async function loadMatches() {
             document.getElementById("badEvent").style.display = "unset";
         }
         eventMatches = await response.json();
+        matchesOk = true;
     }
     catch (err) {
         document.getElementById("badEvent").innerHTML = "&emsp;no results";
         document.getElementById("badEvent").style.display = "unset";
+        matchesOk = false;
     }
 }
 // check session
@@ -48,7 +51,7 @@ function setOption(element, value) {
     element.innerText = String(value);
 }
 function matchNumberChange(event) {
-    if (eventMatches.Schedule) {
+    if (matchesOk) {
         const errorElement = document.getElementById("badMatchNum");
         if (Number(event.target.value) > 0 && Number(event.target.value) <= eventMatches.Schedule.length) {
             errorElement.style.display = "none";
@@ -67,6 +70,9 @@ function matchNumberChange(event) {
             errorElement.style.display = "unset";
             document.getElementById('submitButton').setAttribute("disabled", "disabled");
         }
+    }
+    else {
+        window.setTimeout((event) => { matchNumberChange(event); }, 1000);
     }
 }
 document.getElementById('matchNumberInput').addEventListener('input', (event) => {
