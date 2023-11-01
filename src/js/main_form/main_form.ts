@@ -40,6 +40,7 @@ async function loadMatches(): Promise<string | void> {
 
         eventMatches = await response.json();
         matchesOk = true;
+        (document.getElementById("badEvent") as HTMLSpanElement).style.display = "none";
     } catch (err: any) {
         (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
         (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";

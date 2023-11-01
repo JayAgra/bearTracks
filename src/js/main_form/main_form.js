@@ -16,6 +16,7 @@ async function loadMatches() {
         }
         eventMatches = await response.json();
         matchesOk = true;
+        document.getElementById("badEvent").style.display = "none";
     }
     catch (err) {
         document.getElementById("badEvent").innerHTML = "&emsp;no results";
