@@ -32,7 +32,7 @@ async function loadMatches(): Promise<string | void> {
             return window.location.href = "/login";
         }
 
-        if (response.status === 204) {
+        if (response.status === 204 || !response.ok) {
             (document.getElementById("badEvent") as HTMLSpanElement).innerText = "no results";
             (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
         }
@@ -61,7 +61,9 @@ async function checkLogin(): Promise<void> {
     }
 }
 
-loadMatches()
+loadMatches();
+validateLengthFn();
+matchNumberChange({"target": document.getElementById('matchNumberInput')});
 
 document.getElementById('eventCode').addEventListener('change', async (): Promise<void> => {
     await loadMatches();
@@ -72,7 +74,7 @@ function setOption(element: HTMLOptionElement, value: number) {
     element.innerText = String(value);
 }
 
-document.getElementById('matchNumberInput').addEventListener('input', (event: any): void => {
+function matchNumberChange(event: any) {
     const errorElement = document.getElementById("badMatchNum") as HTMLSpanElement;
     if (Number((event.target as HTMLInputElement).value) > 0 && Number((event.target as HTMLInputElement).value) <= eventMatches.Schedule.length) {
         errorElement.style.display = "none";
@@ -90,9 +92,13 @@ document.getElementById('matchNumberInput').addEventListener('input', (event: an
         errorElement.style.display = "unset";
         (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
+}
+
+document.getElementById('matchNumberInput').addEventListener('input', (event: any): void => {
+    matchNumberChange(event);
 });
 
-document.getElementById('validateLength').addEventListener('input', (): void => {
+function validateLengthFn() {
     let currentVal: string = (document.getElementById("validateLength") as HTMLInputElement).value;
     if (Number(currentVal) <= 120 && Number(currentVal) >= 0) {
         document.getElementById('tooLong').style.display = "none";
@@ -101,15 +107,23 @@ document.getElementById('validateLength').addEventListener('input', (): void => 
         document.getElementById('tooLong').style.display = "inherit";
         (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
+}
+
+document.getElementById('validateLength').addEventListener('input', (): void => {
+    validateLengthFn();
 });
 
+function requiredFormFields(event: any) {
+    if (String((event.target as HTMLInputElement).value).length > 0) {
+        (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
+    } else {
+        (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+    }
+}
+
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
-    element.addEventListener('input', (event): void => {
-        if (String((event.target as HTMLInputElement).value).length > 0) {
-            (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
-        } else {
-            (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
-        }
+    element.addEventListener('input', (event: any): void => {
+        requiredFormFields(event);
     })
 })
 

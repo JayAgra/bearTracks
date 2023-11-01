@@ -9,7 +9,7 @@ async function loadMatches() {
         if (response.status === 401 || response.status === 403) {
             return window.location.href = "/login";
         }
-        if (response.status === 204) {
+        if (response.status === 204 || !response.ok) {
             document.getElementById("badEvent").innerText = "no results";
             document.getElementById("badEvent").style.display = "unset";
         }
@@ -38,6 +38,8 @@ async function checkLogin() {
     }
 }
 loadMatches();
+validateLengthFn();
+matchNumberChange({ "target": document.getElementById('matchNumberInput') });
 document.getElementById('eventCode').addEventListener('change', async () => {
     await loadMatches();
 });
@@ -45,7 +47,7 @@ function setOption(element, value) {
     element.value = String(value);
     element.innerText = String(value);
 }
-document.getElementById('matchNumberInput').addEventListener('input', (event) => {
+function matchNumberChange(event) {
     const errorElement = document.getElementById("badMatchNum");
     if (Number(event.target.value) > 0 && Number(event.target.value) <= eventMatches.Schedule.length) {
         errorElement.style.display = "none";
@@ -64,8 +66,11 @@ document.getElementById('matchNumberInput').addEventListener('input', (event) =>
         errorElement.style.display = "unset";
         document.getElementById('submitButton').setAttribute("disabled", "disabled");
     }
+}
+document.getElementById('matchNumberInput').addEventListener('input', (event) => {
+    matchNumberChange(event);
 });
-document.getElementById('validateLength').addEventListener('input', () => {
+function validateLengthFn() {
     let currentVal = document.getElementById("validateLength").value;
     if (Number(currentVal) <= 120 && Number(currentVal) >= 0) {
         document.getElementById('tooLong').style.display = "none";
@@ -75,15 +80,21 @@ document.getElementById('validateLength').addEventListener('input', () => {
         document.getElementById('tooLong').style.display = "inherit";
         document.getElementById('submitButton').setAttribute("disabled", "disabled");
     }
+}
+document.getElementById('validateLength').addEventListener('input', () => {
+    validateLengthFn();
 });
+function requiredFormFields(event) {
+    if (String(event.target.value).length > 0) {
+        document.getElementById("submitButton").removeAttribute("disabled");
+    }
+    else {
+        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+    }
+}
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
     element.addEventListener('input', (event) => {
-        if (String(event.target.value).length > 0) {
-            document.getElementById("submitButton").removeAttribute("disabled");
-        }
-        else {
-            document.getElementById('submitButton').setAttribute("disabled", "disabled");
-        }
+        requiredFormFields(event);
     });
 });
 //end data validation
