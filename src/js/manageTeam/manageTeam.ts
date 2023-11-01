@@ -8,7 +8,7 @@ type scoutsData = {
 async function getData() {
     var response, listRes: Array<scoutsData>;
     try {
-        response = await fetch(`/api/manage/team/list`, {
+        response = await fetch(`/api/manage/myTeam/list`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -37,7 +37,7 @@ async function getData() {
 async function approveUser(targetId: string, button: any) {
     button.innerText = "..."
     try {
-        var response = await fetch(`/api/manage/team/scouts/access/${targetId}/true`, {
+        var response = await fetch(`/api/manage/myTeam/scouts/access/${targetId}/true`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",

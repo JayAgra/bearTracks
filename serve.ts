@@ -20,17 +20,17 @@ const season = new Date().getFullYear();
 // sqlite database
 import * as sqlite3 from "sqlite3";
 const db: sqlite3.Database = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    console.error(err);
+    if (err) console.error(err);
 });
 db.run("PRAGMA journal_mode = WAL;");
 
 const transactions: sqlite3.Database = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    console.error(err);
+    if (err) console.error(err);
 });
 transactions.run("PRAGMA journal_mode = WAL;");
 
 const authDb: sqlite3.Database = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    console.error(err);
+    if (err) console.error(err);
 });
 authDb.run("PRAGMA journal_mode = WAL;");
 
@@ -562,12 +562,12 @@ app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request<{use
 // data management
 
 import { listSubmissions } from "./routes/api/manage/list";
-app.get("/api/manage/:database/list", apiCheckAuth, async (req: express.Request<{database: string}>, res: express.Response) => {
+app.get("/api/manage/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
     listSubmissions(req, res, db);
 });
 
 import { deleteSubmission } from "./routes/api/manage/delete";
-app.get("/api/manage/:database/:submissionId/delete", apiCheckAuth, async (req: express.Request<{database: string, submissionId: string}>, res: express.Response) => {
+app.get("/api/manage/:submissionId/delete", apiCheckAuth, async (req: express.Request<{submissionId: string}>, res: express.Response) => {
     deleteSubmission(req, res, db, transactions, authDb);
 });
 
@@ -612,13 +612,13 @@ app.get("/api/manage/teams/list", apiCheckAuth, async (req: express.Request, res
 
 // individual team endpoints
 
-import { teamScouts } from "./routes/api/manage/team/list";
-app.get("/api/manage/team/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+import { teamScouts } from "./routes/api/manage/myTeam/list";
+app.get("/api/manage/myTeam/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
     teamScouts(req, res, authDb);
 });
 
-import { manageTeamUser } from "./routes/api/manage/team/scouts/access";
-app.get("/api/manage/team/scouts/access/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
+import { manageTeamUser } from "./routes/api/manage/myTeam/scouts/access";
+app.get("/api/manage/myTeam/scouts/access/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
     manageTeamUser(req, res, authDb);
 });
 
