@@ -427,12 +427,6 @@ app.get("/points", checkAuth, async (req: express.Request, res: express.Response
     res.sendFile("src/points.html", { root: __dirname });
 });
 
-// per-scout profile
-app.get("/profile", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/profile.html", { root: __dirname });
-});
-
 // scout point transactions
 app.get("/pointRecords", checkAuth, async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -609,7 +603,7 @@ app.get("/api/manage/user/updateAdmin/:id/:admin", apiCheckAuth, async (req: exp
 });
 
 import { updateTeamAdmin } from "./routes/api/manage/user/updateTeamAdmin";
-app.get("/api/manage/user/updateAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+app.get("/api/manage/user/updateTeamAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     updateTeamAdmin(req, res, authDb);
 });
 

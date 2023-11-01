@@ -23,8 +23,4 @@ function themeHandle() {
     }
 }
 
-function goToHome() {
-    history.back();
-}
-
 const waitMs = (ms: number) => new Promise((res) => setTimeout(res, ms));

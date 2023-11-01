@@ -83,7 +83,7 @@ async function revokeTeamKey(id: number, button: any) {
 
 function setupTeamKeyCreate() {
     (document.getElementById("mainsect") as HTMLDivElement).style.display = "none";
-    (document.getElementById("createKey") as HTMLDivElement).style.display = "inherit";
+    (document.getElementById("createKey") as HTMLDivElement).style.display = "flex";
 }
 
 async function createTeamKey() {
