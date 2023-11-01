@@ -36,11 +36,14 @@ async function loadMatches(): Promise<string | void> {
         if (response.status === 204 || !response.ok) {
             (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
             (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
+            matchesOk = false;
+            return;
         }
 
         eventMatches = await response.json();
         matchesOk = true;
         (document.getElementById("badEvent") as HTMLSpanElement).style.display = "none";
+        matchNumberChange({"target": document.getElementById("matchNumberInput")});
     } catch (err: any) {
         (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
         (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";

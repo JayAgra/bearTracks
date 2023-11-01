@@ -13,10 +13,13 @@ async function loadMatches() {
         if (response.status === 204 || !response.ok) {
             document.getElementById("badEvent").innerHTML = "&emsp;no results";
             document.getElementById("badEvent").style.display = "unset";
+            matchesOk = false;
+            return;
         }
         eventMatches = await response.json();
         matchesOk = true;
         document.getElementById("badEvent").style.display = "none";
+        matchNumberChange({ "target": document.getElementById("matchNumberInput") });
     }
     catch (err) {
         document.getElementById("badEvent").innerHTML = "&emsp;no results";
