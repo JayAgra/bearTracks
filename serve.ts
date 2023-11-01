@@ -559,6 +559,8 @@ app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request<{use
 // management
 //
 
+// data management
+
 import { listSubmissions } from "./routes/api/manage/list";
 app.get("/api/manage/:database/list", apiCheckAuth, async (req: express.Request<{database: string}>, res: express.Response) => {
     listSubmissions(req, res, db);
@@ -568,6 +570,8 @@ import { deleteSubmission } from "./routes/api/manage/delete";
 app.get("/api/manage/:database/:submissionId/delete", apiCheckAuth, async (req: express.Request<{database: string, submissionId: string}>, res: express.Response) => {
     deleteSubmission(req, res, db, transactions, authDb);
 });
+
+// scout management
 
 import { updateScout } from "./routes/api/manage/user/points";
 app.get("/api/manage/scout/points/:userId/:modify/:reason", apiCheckAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
@@ -583,6 +587,8 @@ import { revokeKey } from "./routes/api/manage/user/revokeKey";
 app.get("/api/manage/scout/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     revokeKey(req, res, authDb);
 });
+
+// team management endpoints
 
 import { updateTeamKey } from "./routes/api/manage/teams/updateKey";
 app.get("/api/manage/teams/updateKey/:keyId/:newKey", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
@@ -603,6 +609,8 @@ import { listTeams } from "./routes/api/manage/teams/list";
 app.get("/api/manage/teams/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
     listTeams(req, res, authDb);
 });
+
+// individual team endpoints
 
 import { teamScouts } from "./routes/api/manage/team/list";
 app.get("/api/manage/team/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
