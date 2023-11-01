@@ -72,10 +72,6 @@ function boolToNum(val) {
 // attended is INT how many other events has team attended
 // overall is STRING overall thoughts
 
-// UNUSED VALUES
-// game1 - game20 is INT (0)
-// formType is STRING the form that was submitted and is not entered into db
-
 function weightScores(submissionID, db) {
     db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
         if (result && !err) {

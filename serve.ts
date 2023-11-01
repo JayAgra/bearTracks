@@ -520,7 +520,7 @@ app.get("/api/teams/:season/:event", apiCheckAuth, async (req: express.Request<{
 import { teamsByEvent } from "./routes/api/teams/eventWeight";
 app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     teamsByEvent(req, res, db, selectSeason(req));
- });
+});
 
 import { teamsBySeason } from "./routes/api/teams/seasonWeight";
 app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: express.Request<{team: string}>, res: express.Response) => {

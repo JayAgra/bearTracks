@@ -23,7 +23,7 @@ var matchesOk: boolean = false;
 
 async function loadMatches(): Promise<string | void> {
     try {
-        const response = await fetch(`/api/matches/current/${(document.getElementById('eventCode') as HTMLInputElement).value}/qual/all`, {
+        const response = await fetch(`/api/matches/current/${(document.getElementById("eventCode") as HTMLInputElement).value}/qual/all`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -71,7 +71,7 @@ async function checkLogin(): Promise<void> {
 loadMatches();
 validateLengthFn();
 
-document.getElementById('eventCode').addEventListener('change', async (): Promise<void> => {
+document.getElementById("eventCode").addEventListener("change", async (): Promise<void> => {
     await loadMatches();
 });
 
@@ -97,30 +97,30 @@ function matchNumberChange(event: any) {
         } else {
             errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
             errorElement.style.display = "unset";
-            (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+            (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
         }
     } else {
         window.setTimeout((event: any) => { matchNumberChange(event) }, 1000);
-        (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+        (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
 }
 
-document.getElementById('matchNumberInput').addEventListener('input', (event: any): void => {
+document.getElementById("matchNumberInput").addEventListener("input", (event: any): void => {
     matchNumberChange(event);
 });
 
 function validateLengthFn() {
     let currentVal: string = (document.getElementById("validateLength") as HTMLInputElement).value;
     if (Number(currentVal) <= 120 && Number(currentVal) >= 0) {
-        document.getElementById('tooLong').style.display = "none";
+        document.getElementById("tooLong").style.display = "none";
         (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
     } else {
-        document.getElementById('tooLong').style.display = "inherit";
-        (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+        document.getElementById("tooLong").style.display = "inherit";
+        (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
 }
 
-document.getElementById('validateLength').addEventListener('input', (): void => {
+document.getElementById("validateLength").addEventListener("input", (): void => {
     validateLengthFn();
 });
 
@@ -128,12 +128,12 @@ function requiredFormFields(event: any) {
     if (String((event.target as HTMLInputElement).value).length > 0) {
         (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
     } else {
-        (document.getElementById('submitButton') as HTMLButtonElement).setAttribute("disabled", "disabled");
+        (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
 }
 
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
-    element.addEventListener('input', (event: any): void => {
+    element.addEventListener("input", (event: any): void => {
         requiredFormFields(event);
     })
 })
@@ -142,14 +142,14 @@ Array.from(document.querySelectorAll("[required]")).forEach((element) => {
 
 //grid orientation reminder
 if (window.innerHeight > window.innerWidth) {
-    document.getElementById('landscapeReminder').style.display = "inline";
+    document.getElementById("landscapeReminder").style.display = "inline";
 }
 
-window.addEventListener('resize', function(): void {
+window.addEventListener("resize", function(): void {
     if(window.innerHeight > window.innerWidth){
-        document.getElementById('landscapeReminder').style.display = "inline";
+        document.getElementById("landscapeReminder").style.display = "inline";
     } else {
-        document.getElementById('landscapeReminder').style.display = "none";
+        document.getElementById("landscapeReminder").style.display = "none";
     }
 });
 //end grid orientation reminder
@@ -159,7 +159,7 @@ function getAllCells(): Array<HTMLElement> {
     var cells: Array<HTMLElement> = [];
     for(let j = 1; j < 4; j++) {
         for(let i = 1; i < 10; i++) {
-            cells.push(document.getElementById('sgc_' + j + '_' + i) as HTMLElement);
+            cells.push(document.getElementById("sgc_" + j + "_" + i) as HTMLElement);
         }
     }
     return cells;
@@ -172,8 +172,8 @@ var sgCellStatus: Array<number> = [
 const allCells = getAllCells();
 function processCellClick(dataNum, numset): void {
     sgCellStatus[Number(dataNum)] = numset;
-    (document.getElementById('griddata') as HTMLInputElement).value = sgCellStatus.join('');
-    console.log((document.getElementById('griddata') as HTMLInputElement).value);
+    (document.getElementById("griddata") as HTMLInputElement).value = sgCellStatus.join("");
+    console.log((document.getElementById("griddata") as HTMLInputElement).value);
 }
 function setGray(that: HTMLElement): void {
     that.innerText = "";
@@ -212,7 +212,7 @@ function setDoubleCone(that: HTMLElement): void {
     processCellClick(that.getAttribute("data-num"), 4);
 }
 for (var i = 0; i < allCells.length; i += 1) {
-    allCells[i].addEventListener('click', function (): void {
+    allCells[i].addEventListener("click", function (): void {
         if (this.getAttribute("data-gp") === "cube") {
             if (this.getAttribute("data-state") === "0") {
                 setSingleCube(this);
