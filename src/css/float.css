@@ -207,6 +207,10 @@ label {
     background-color: var(--gameFlairColor);
     border-color: var(--gameFlairColor);
 }
+.actionButton:disabled {
+    background-color: color-mix(in srgb, var(--gameFlairColor) 15%, var(--bodyColor));
+    border-color: color-mix(in srgb, var(--gameFlairColor) 15%, var(--bodyColor));
+}
 form {
     width: 95%;
 }

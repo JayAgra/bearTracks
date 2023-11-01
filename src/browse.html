@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
         <link rel="stylesheet" href="css/table.min.css" type="text/css">
         <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
-        <script src="js/form.min.js"></script>
+        <script src="js/form/form.min.js"></script>
     </head>
     <body class="dark-mode" onload="searchOnLoad()">
         <script>themeHandle()</script>
@@ -37,11 +37,9 @@
                         </select>
                     </fieldset>
                     <button type="button" class="uiButton actionButton" onclick="callSearch()" id="searchBtn">Search</button><br>
-                    <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
+                    <button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Back</button>
                 </fieldset>
-                <small style="text-align: center;">To see all teams ranked by weighted score <a href="teams" style="all: unset; color: var(--gameFlairColor);">here</a></small><br>
-                <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: var(--gameFlairColor);">here</a></small><br>
-                <small style="text-align: center;">Team notes can be accessed  <a href="notes" style="all: unset; color: var(--gameFlairColor);">here</a></small>
+                <small style="text-align: center;"><a href="teams" style="all: unset; color: var(--gameFlairColor);">teams by performance score</a></small><br>
             </form>
             <br><br>
         </div>
@@ -80,11 +78,10 @@
                         </tr>
                     </table>
                 </div>
-                <button type="button" class="uiButton returnButton" onclick="window.location.href = window.location.pathname;">New Search</button>&emsp;<button type="button" class="uiButton returnButton" onclick="window.location.href = '/'">Home</button>
+                <button type="button" class="uiButton returnButton" onclick="window.location.href = window.location.pathname;">New Search</button>&emsp;<button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Home</button>
                 <br><br>
-                <small style="text-align: center;">To see robot images from pit scouting, go <a href="pitimages" style="all: unset; color: var(--gameFlairColor);">here</a></small>
             </div>
         </div>
-        <script src="js/browse_client.min.js" type="text/javascript"></script>
+        <script src="js/browse/browse.min.js" type="text/javascript"></script>
     </body>
 </html>

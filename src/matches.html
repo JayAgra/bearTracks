@@ -11,7 +11,7 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="Scouting">
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
-        <script src="js/form.min.js"></script>
+        <script src="js/form/form.min.js"></script>
         <style>a,a:visited{text-align:center;text-decoration:none;font-size:6vh;border-bottom:#fff;color:inherit}body{text-align:center;}</style>
     </head>
     <body class="dark-mode">
@@ -29,16 +29,16 @@
                     </select><br><br>
                     <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
                     <button type="button" class="uiButton actionButton" id="viewMatchButton" onclick="getMatches()">View</button><br>
-                    <button type="button" class="uiButton returnButton" onclick="goToHome()" type="button">Back</button>
+                    <button type="button" class="uiButton returnButton" onclick="window.location.href='/'" type="button">Back</button>
                 </fieldset>
             </div>
         </div>
         <div class="container" id="results" style="display: none;">
             <div class="dummy">
                 <h1 style="font-family: 'raleway-300'" id="matchHeader">2023 Matches<br><span class="gametitle">CHARGED UP</span></h1><br><br>
-                <button class="uiButton actionButton" onclick='goToHome()'>Back</button><br>
+                <button class="uiButton actionButton" onclick="window.location.href='/'">Back</button><br>
             </div>
         </div>
-        <script src="js/matches_client.min.js" type="text/javascript"></script>
+        <script src="js/matches/matches.min.js" type="text/javascript"></script>
     </body>
 </html>

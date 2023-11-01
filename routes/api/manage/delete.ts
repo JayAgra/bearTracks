@@ -1,13 +1,9 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
 
-function getSafeDbName(input: string): string {
-    return input === "pit" ? "pit" : "main";
-}
-
 export async function deleteSubmission(req: express.Request, res: express.Response, db: sqlite3.Database, transactions: sqlite3.Database, authDb: sqlite3.Database) {
     if (req.user.admin == "true") {
-        const stmt: string = `SELECT userId FROM ${getSafeDbName(req.params.database)} WHERE id=?`;
+        const stmt: string = `SELECT userId FROM main WHERE id=?`;
         const values: Array<any> = [req.params.submissionId];
         db.get(stmt, values, (err: any, result: {"userId": string} | undefined) => {
             if (err || !result) {
@@ -26,7 +22,7 @@ export async function deleteSubmission(req: express.Request, res: express.Respon
                 }
             });
         });
-        const deleteStmt: string = `DELETE FROM ${getSafeDbName(req.params.database)} WHERE id=?`;
+        const deleteStmt: string = `DELETE FROM main WHERE id=?`;
         db.run(deleteStmt, values, (err) => {
             if (err) {
                 return res.status(500).send("" + 0x1f42);

@@ -12,7 +12,7 @@
         <meta name="apple-mobile-web-app-title" content="Scouting">
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
         <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
-        <script src="js/form.min.js"></script>
+        <script src="js/form/form.min.js"></script>
     </head>
     <body class="dark-mode" onload="loadData()">
         <script>themeHandle()</script>
@@ -27,10 +27,10 @@
                         <h5>Match Number: <span id="resultMatchNum"></span> | Event: <span id="resultEventCode"></span></h5>
                         <p style="text-align: left" id="resultText"></p>
                     </fieldset><br>
-                    <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
+                    <button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Back</button>
                 </fieldset>
             </div>
         </div>
-        <script src="js/detail_client.min.js" type="text/javascript"></script>
+        <script src="js/detail/detail.min.js" type="text/javascript"></script>
     </body>
 </html>
