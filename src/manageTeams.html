@@ -15,22 +15,12 @@
         <link rel="stylesheet" href="css/table.css" type="text/css">
         <script src="js/form/form.min.js"></script>
     </head>
-    <body class="dark-mode" onload="getData()">
+    <body class="dark-mode" onload="getTeamData()">
         <script>themeHandle()</script>
         <div class="container" style="display: flex;">
             <div class="dummy">
                 <h1 class="w3">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1>
-                <h4>Manage Scouts</h4>
-                <select id="reason">
-                    <option value="6553">0x1999 - unspecified admin action</option>
-                    <option value="8194">0x2002 - comp reset</option>
-                </select><br><br>
-                <div style="overflow-x: auto; width: 95vw;">
-                    <h2>Scouts</h2>
-                    <table>
-                        <tr id="tableHeader"><th>Scout</th><th>Points</th><th></th></tr>
-                    </table>
-                </div>
+                <h4>Manage Teams</h4>
                 <div style="overflow-x: auto; width: 95vw;">
                     <h2>Teams</h2>
                     <table>
@@ -40,6 +30,6 @@
                 <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
             </div>
         </div>
-        <script src="js/manageScouts/manageScouts.min.js" type="text/javascript"></script>
+        <script src="js/manageTeams/manageTeams.min.js" type="text/javascript"></script>
     </body>
 </html>
