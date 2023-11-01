@@ -346,7 +346,7 @@ app.get("/manageScouts", checkAuth, async (req: express.Request, res: express.Re
 app.get("/manageTeam", checkAuth, async (req: express.Request, res: express.Response) => {
     if (req.user.teamAdmin !== 0) {
         res.set("Cache-control", "public, max-age=23328000");
-        res.sendFile("src/manageScouts.html", { root: __dirname });
+        res.sendFile("src/manageTeam.html", { root: __dirname });
     } else {
         res.redirect("/denied");
     }

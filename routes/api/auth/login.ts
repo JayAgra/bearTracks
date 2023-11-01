@@ -72,7 +72,7 @@ export async function checkLogIn(req: express.Request, res: express.Response, au
                                             httpOnly: false,
                                         });
                                     }
-                                    if (result.teamAdmin != 0) {
+                                    if (result.teamAdmin !== 0) {
                                         res.cookie("childTeamLead", "true", {
                                             expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
                                             sameSite: "lax",
