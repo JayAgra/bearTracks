@@ -233,11 +233,12 @@ async function uploadForm() {
     (document.getElementById("mainFormHTML") as HTMLFormElement).style.display = "none";
     (document.getElementById("submitUi") as HTMLDivElement).style.display = "unset";
     (document.getElementById("reSubmitButton") as HTMLButtonElement).style.display = "none";
-
+    await new Promise((res) => setTimeout(res, 250));
     post("/submit", responses).then(async (response: object) => {
         const r = response as unknown as response;
         console.log(r.id);
         (document.getElementById("submitText_d") as HTMLHeadingElement).innerText = "Verifying...";
+        await new Promise((res) => setTimeout(res, 250));
         try {
             const verifyResp = await fetch(`/api/data/exists/${r.id}`, {
                 method: "GET",
