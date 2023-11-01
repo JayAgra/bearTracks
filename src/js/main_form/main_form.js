@@ -1,30 +1,24 @@
-//data validation
-var allTeams = [];
-async function getEventTeams() {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", `/api/events/current/${document.getElementById('eventCode').value}/teams`, true);
-    xhr.withCredentials = true;
-    xhr.onreadystatechange = async () => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            allTeams = (xhr.responseText).split(",").map((e) => Number(e));
+var eventMatches;
+async function loadMatches() {
+    try {
+        const response = await fetch(`/api/matches/current/${document.getElementById('eventCode').value}/qual/all`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+        if (response.status === 401 || response.status === 403) {
+            return window.location.href = "/login";
         }
-        else if (xhr.status === 401) {
-            window.location.href = "/login";
+        if (response.status === 204) {
+            document.getElementById("badEvent").innerText = "no results";
+            document.getElementById("badEvent").style.display = "unset";
         }
-        else if (xhr.status === 400) {
-            document.getElementById("viewNoteButton").innerHTML = "bad request";
-        }
-        else if (xhr.status === 500) {
-            document.getElementById("viewNoteButton").innerHTML = "internal server error";
-        }
-        else if (xhr.status === 403) {
-            document.getElementById("viewNoteButton").innerHTML = "access denied";
-        }
-        else {
-            console.log("awaiting response");
-        }
-    };
-    xhr.send();
+        eventMatches = await response.json();
+    }
+    catch (err) {
+        document.getElementById("badEvent").innerText = "no results";
+        document.getElementById("badEvent").style.display = "unset";
+    }
 }
 // check session
 async function checkLogin() {
@@ -43,19 +37,31 @@ async function checkLogin() {
         window.location.href = "/login";
     }
 }
-getEventTeams();
-document.getElementById('eventCode').addEventListener('change', async function () {
-    console.log(getEventTeams());
-    console.log(allTeams);
+loadMatches();
+document.getElementById('eventCode').addEventListener('change', async () => {
+    await loadMatches();
 });
-document.getElementById('validateTeamInput').addEventListener('input', function () {
-    console.log("event!");
-    if (allTeams.includes(Number(document.getElementById('validateTeamInput').value))) {
-        document.getElementById('invalidTeamInput').style.display = "none";
-        document.getElementById('submitButton').removeAttribute("disabled");
+function setOption(element, value) {
+    element.value = String(value);
+    element.innerText = String(value);
+}
+document.getElementById('matchNumberInput').addEventListener('input', (event) => {
+    const errorElement = document.getElementById("badMatchNum");
+    if (Number(event.target.value) > 0 && Number(event.target.value) <= eventMatches.Schedule.length) {
+        errorElement.style.display = "none";
+        document.getElementById("submitButton").removeAttribute("disabled");
+        const matchTeams = eventMatches.Schedule[Number(event.target.value) - 1].teams;
+        const teamSelectOpts = Array.from(document.getElementsByClassName("teamNumOption"));
+        setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
+        setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
+        setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
+        setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
+        setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
+        setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
     }
     else {
-        document.getElementById('invalidTeamInput').style.display = "inherit";
+        errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
+        errorElement.style.display = "unset";
         document.getElementById('submitButton').setAttribute("disabled", "disabled");
     }
 });
