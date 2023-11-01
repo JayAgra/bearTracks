@@ -33,7 +33,7 @@ async function getData() {
                     listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td><div class="inlineInput"><input type="tel" id="${listRes[i].id}_input" value="${listRes[i].score}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateUser('${listRes[i].id}', ${listRes[i].score}, this)">save</button></div></td><td><div class="inlineInput"><button class="uiButton cancelButton" onclick="revokeKey('${listRes[i].id}', this)">logout</button><button class="uiButton cancelButton" onclick="makeTeamAdmin('${listRes[i].id}', '${listRes[i].team}', this)">make team admin</button><button class="uiButton cancelButton" onclick="makeAdmin('${listRes[i].id}', this)">make admin</button></div></td></tr>`;
                 }
             } else {
-                listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td></td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
+                listHTML += `<tr class="padded"><td>${listRes[i].nickName} (${listRes[i].team})</td><td></td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button><button class="uiButton cancelButton" onclick="deleteUser('${listRes[i].id}', this)">delete user</button></div></td></tr>`;
             }
         }
         document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);  
@@ -92,6 +92,32 @@ async function approveUser(targetId: string, button: any) {
         }
     } catch (error) {
         console.log("failure")
+        window.location.href = "/login";
+    }
+}
+
+async function deleteUser(targetId: string, button: any) {
+    button.innerText = "...";
+    try {
+        var response = await fetch(`/api/manage/user/delete/${targetId}`, {
+            method: "GET",
+            credentials: "include",
+            redirect: "follow",
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/login";
+        }
+
+        const responseText = await response.text();
+
+        if (responseText == String(0xc86)) {
+            button.innerText = "done";
+        } else {
+            button.innerText = "error";
+        }
+    } catch (error) {
+        console.log("failure");
         window.location.href = "/login";
     }
 }

@@ -592,6 +592,11 @@ app.get("/api/manage/user/access/:id/:accessOk", apiCheckAuth, async (req: expre
     updateAccess(req, res, authDb);
 });
 
+import { deleteUser } from "./routes/api/manage/user/delete";
+app.get("/api/manage/user/delete/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+    deleteUser(req, res, authDb);
+});
+
 import { revokeKey } from "./routes/api/manage/user/revokeKey";
 app.get("/api/manage/user/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     revokeKey(req, res, authDb);
