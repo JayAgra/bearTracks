@@ -55,7 +55,7 @@ async function updateKey(id: string, eleId: string, button: any) {
     }
 }
 
-async function revokeTeamKey(id: number, eleId: string, button: any) {
+async function revokeTeamKey(id: number, button: any) {
     button.innerText = "...";
     try {
         var response = await fetch(`/api/manage/teams/deleteKey/${id}`, {

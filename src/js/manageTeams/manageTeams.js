@@ -45,7 +45,7 @@ async function updateKey(id, eleId, button) {
         window.location.href = "/login";
     }
 }
-async function revokeTeamKey(id, eleId, button) {
+async function revokeTeamKey(id, button) {
     button.innerText = "...";
     try {
         var response = await fetch(`/api/manage/teams/deleteKey/${id}`, {
