@@ -54,7 +54,7 @@ type chartJsData = {
 type chartJsOptions = {
     "indexAxis": string,
     "responsive": boolean,
-    "scales": {"yAxes": Array<{"min": number}>},
+    "scales": {"yAxes": Array<{"ticks": {"min": number, "max": number}}>},
     "plugins": {"title": {"display": boolean, "text": string}}
 }
 
@@ -85,7 +85,7 @@ function createChartData(labels: Array<string>, datasets: Array<chartJsDataset>)
     }
 }
 
-function createChartConfig(type: string, data: chartJsData, name: string): chartJsChart {
+function createChartConfig(type: string, data: chartJsData, name: string, max: number): chartJsChart {
     return {
         "type": type,
         "data": data,
@@ -94,7 +94,10 @@ function createChartConfig(type: string, data: chartJsData, name: string): chart
             "responsive": true,
             "scales": {
                 "yAxes": [{
-                    "min": 0
+                    "ticks": {
+                        "min": 0,
+                        "max": max
+                    }
                 }]
             },
             "plugins": {
@@ -196,15 +199,15 @@ async function constructGraphs(): Promise<void> {
             allMatches.weight.push(matchData.weight);
         });
 
-        const weightChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("PERFORMANCE SCORE", "#8ec07c", allMatches.weight)]), "Match Performance Score");
-        const gridPtsChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("GRID POINTS", "#8ec07c", allMatches.grid)]), "Grid Points");
-        const allConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.cones), createChartDataset("CUBES", "#a216a2", allMatches.cubes)]), "Cones & Cubes");
-        const chargeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("AUTO", "#b8bb26", allMatches.autoCharge), createChartDataset("TELEOP", "#83a598", allMatches.teleopCharge)]), "Auto & Teleop Charging");
-        const cycleTimeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CYCLE TIME", "#8ec07c", allMatches.cycle)]), "Cycle Time");
-        const allLevelsChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("LOW", "#b8bb26", allMatches.lowPcs), createChartDataset("MID", "#fabd2f", allMatches.midPcs), createChartDataset("HIGH", "#83a598", allMatches.highPcs)]), "Scoring Levels");
-        const lowConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.lowCones), createChartDataset("CUBES", "#a216a2", allMatches.lowCubes)]), "Low Cones & Cubes");
-        const midConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.midCones), createChartDataset("CUBES", "#a216a2", allMatches.midCubes)]), "Mid Cones & Cubes");
-        const highConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.highCones), createChartDataset("CUBES", "#a216a2", allMatches.highCubes)]), "High Cones & Cubes");
+        const weightChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("PERFORMANCE SCORE", "#8ec07c", allMatches.weight)]), "Match Performance Score", 170);
+        const gridPtsChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("GRID POINTS", "#8ec07c", allMatches.grid)]), "Grid Points", 170);
+        const allConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.cones), createChartDataset("CUBES", "#a216a2", allMatches.cubes)]), "Cones & Cubes", 15);
+        const chargeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("AUTO", "#b8bb26", allMatches.autoCharge), createChartDataset("TELEOP", "#83a598", allMatches.teleopCharge)]), "Auto & Teleop Charging", 15);
+        const cycleTimeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CYCLE TIME", "#8ec07c", allMatches.cycle)]), "Cycle Time", 120);
+        const allLevelsChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("LOW", "#b8bb26", allMatches.lowPcs), createChartDataset("MID", "#fabd2f", allMatches.midPcs), createChartDataset("HIGH", "#83a598", allMatches.highPcs)]), "Scoring Levels", 10);
+        const lowConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.lowCones), createChartDataset("CUBES", "#a216a2", allMatches.lowCubes)]), "Low Cones & Cubes", 10);
+        const midConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.midCones), createChartDataset("CUBES", "#a216a2", allMatches.midCubes)]), "Mid Cones & Cubes", 10);
+        const highConeCubeChartCfg = createChartConfig("line", createChartData(chartLabels, [createChartDataset("CONES", "#ff0", allMatches.highCones), createChartDataset("CUBES", "#a216a2", allMatches.highCubes)]), "High Cones & Cubes", 10);
 
         const weightChart = new Chart(document.getElementById("weightChart"), weightChartCfg);
         const gridPtsChart = new Chart(document.getElementById("gridPtsChart"), gridPtsChartCfg);
