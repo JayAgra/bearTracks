@@ -49,7 +49,7 @@ export async function createAccount(req: express.Request, res: express.Response,
                                 ];
                                 authDb.run(stmt, values, (err: any) => {
                                     if (err) {
-                                        // res.status(500).send("" + 0x1f42);
+                                        // res.status(500).json({ "status": 0x1f42 });
                                         return res.redirect("/create?err=0");
                                     } else {
                                         // res.status(200).send("" + 0xc85);

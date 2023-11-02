@@ -23,15 +23,15 @@ export async function spinWheel(req: express.Request, res: express.Response, aut
     let pointValues: Array<number> = [spins[spin], req.user.id];
     authDb.run(pointStmt, pointValues, (err: any) => {
         if (err) {
-            return res.status(500).send("" + 0x1f42);
+            return res.status(500).json({ "status": 0x1f42 });
         } else {
             transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1500, spins[spin]], (err) => {
                 if (err) {
-                    return res.status(500).send("" + 0x1f42);
+                    return res.status(500).json({ "status": 0x1f42 });
                 }
             });
         }
     });
 
-    return res.status(200).json(`{"spin": ${spin}}`);
+    return res.status(200).json({ "spin": spin });
 }

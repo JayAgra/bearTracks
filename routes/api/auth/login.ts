@@ -32,7 +32,7 @@ export async function checkLogIn(req: express.Request, res: express.Response, au
         let loginData: loginDataForm = parse(body) as unknown as loginDataForm;
         authDb.get("SELECT id, fullName, team, passHash, salt, accessOk, admin, teamAdmin FROM users WHERE email=?", [loginData.email], async (err: any, result: authData | undefined) => {
             if (err) {
-                // res.status(500).send("" + 0x1f42);
+                // res.status(500).json({ "status": 0x1f42 });
                 return res.redirect("/login?err=0");
             } else {
                 if (typeof result !== "undefined") {

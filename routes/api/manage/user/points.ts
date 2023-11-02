@@ -7,16 +7,16 @@ export async function updateScout(req: express.Request, res: express.Response, t
         const setUserScoreVals: Array<any> = [Number(req.params.modify), req.params.userId];
         authDb.run(setUserScoreStmt, setUserScoreVals, (err: any) => {
             if (err) {
-                return res.status(500).send("" + 0x1f42);
+                return res.status(500).json({ "status": 0x1f42 });
             }
         });
         transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.params.userId, Number(req.params.reason), Number(req.params.modify)], (err) => {
             if (err) {
-                return res.status(500).send("" + 0x1f42);
+                return res.status(500).json({ "status": 0x1f42 });
             }
         });
-        return res.status(200).send("" + 0xc84);
+        return res.status(200).json({ "status": 0xc84 });
     } else {
-        return res.status(403).send("" + 0x1931);
+        return res.status(403).json({ "status": 0x1931 });
     }
 }

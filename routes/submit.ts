@@ -67,12 +67,12 @@ export async function submitForm(req: express.Request, res: express.Response, db
         let pointValues: Array<number> = [formscoresdj, req.user.id];
         authDb.run(pointStmt, pointValues, (err) => {
             if (err) {
-                return res.status(500).send("" + 0x1f42);
+                return res.status(500).json({ "status": 0x1f42 });
             }
         });
         transactions.run("INSERT INTO transactions (userId, type, amount) VALUES (?, ?, ?)", [req.user.id, 0x1000, formscoresdj], (err: any) => {
             if (err) {
-                return res.status(500).send("" + 0x1f42);
+                return res.status(500).json({ "status": 0x1f42 });
             }
         });
 
@@ -122,7 +122,7 @@ export async function submitForm(req: express.Request, res: express.Response, db
         db.run(stmt, values, function(err: any) {
             if (err) {
                 console.error(err);
-                return res.status(500).send("" + 0x1f42);
+                return res.status(500).json({ "status": 0x1f42 });
             }
             require(`./${season}.js`).weightScores(this.lastID, db);
             return res.status(200).json({ "id": this.lastID });
