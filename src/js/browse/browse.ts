@@ -16,6 +16,7 @@ function eV(value: string): string {
 function callSearch(): void {
     search(Number(numberInput.value), eventCode.value, (document.getElementById("type") as HTMLInputElement).value)
 }
+(window as any).callSearch = callSearch;
 
 type mainFormResponse = {
 	"id": string,

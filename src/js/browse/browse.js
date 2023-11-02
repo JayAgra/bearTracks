@@ -11,6 +11,7 @@ function eV(value) {
 function callSearch() {
     search(Number(numberInput.value), eventCode.value, document.getElementById("type").value);
 }
+window.callSearch = callSearch;
 function generateSmallAvgRow(avg) {
     return `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
 }
