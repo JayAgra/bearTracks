@@ -40,8 +40,10 @@ type match = {
 
 type chartJsDataset = {
     "label": string,
-    "backgroundColor": string,
-    "data": Array<number>
+    "data": Array<number>,
+    "fill": boolean,
+    "borderColor": string,
+    "tension": number
 }
 
 type chartJsData = {
@@ -69,8 +71,10 @@ declare class Chart {
 function createChartDataset(label: string, backgroundColor: string, data: Array<number>): chartJsDataset {
     return {
         "label": label,
-        "backgroundColor": backgroundColor,
-        "data": data
+        "data": data,
+        "fill": true,
+        "borderColor": backgroundColor,
+        "tension": 0.1
     }
 }
 

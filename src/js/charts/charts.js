@@ -1,8 +1,10 @@
 function createChartDataset(label, backgroundColor, data) {
     return {
         "label": label,
-        "backgroundColor": backgroundColor,
-        "data": data
+        "data": data,
+        "fill": true,
+        "borderColor": backgroundColor,
+        "tension": 0.1
     };
 }
 function createChartData(labels, datasets) {
