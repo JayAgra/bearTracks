@@ -25,3 +25,7 @@ export async function deleteSubmission(submission: string, linkID: string) {
         }
     });
 }
+
+(window as any).newSearch = newSearch;
+(window as any).getSubmissionData = getSubmissionData;
+(window as any).deleteSubmission = deleteSubmission;
