@@ -55,7 +55,6 @@ async function constructGraphs() {
             if (completeMatches.includes(matchData.match)) { }
             else {
                 completeMatches.push(matchData.match);
-                chartLabels.push(String(matchData.match));
                 processedMatches.push({
                     "match": matchData.match,
                     "autoCharge": Number(matchData.game5),
@@ -95,8 +94,9 @@ async function constructGraphs() {
             "grid": [],
             "weight": []
         };
-        processedMatches.sort((a, b) => a[0] - b[0]);
+        processedMatches.sort((a, b) => a.match - b.match);
         processedMatches.forEach((matchData) => {
+            chartLabels.push(String(matchData.match));
             allMatches.autoCharge.push(matchData.autoCharge);
             allMatches.teleopCharge.push(matchData.teleopCharge);
             allMatches.cycle.push(matchData.cycle);
