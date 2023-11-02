@@ -13,7 +13,6 @@
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
         <link rel="stylesheet" href="css/supplement.min.css" type="text/css">
         <script src="js/form/form.min.js"></script>
-        <script src="js/_modules/get/get.js" type="module"></script>
     </head>
     <body class="dark-mode">
         <script>themeHandle()</script>
@@ -21,7 +20,7 @@
             <form>
                 <h1 class="w3">bearTracks<br><span class="gametitle">manage data</span></h1>
                 <fieldset>
-                    <button type="button" class="uiButton actionButton" onclick="getData()" id="viewData">View Data</button><br>
+                    <button type="button" class="uiButton actionButton" onclick="getSubmissionData()" id="viewData">View Data</button><br>
                     <button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Back</button>
                 </fieldset>
                 <small style="text-align: center;"><a href="manageScouts" style="all: unset; color: var(--gameFlairColor);">manage scouts</a></small><br>
@@ -37,6 +36,7 @@
                 <br><br>
             </div>
         </div>
+        <script src="js/_modules/get/get.js" type="module"></script>
         <script src="js/manage/manage.min.js"></script>
     </body>
 </html>

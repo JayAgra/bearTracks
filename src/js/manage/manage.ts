@@ -4,7 +4,7 @@ function newSearch() {
     location.reload();
 }
 
-async function getData() {
+async function getSubmissionData() {
     document.getElementById("viewData").innerHTML = "requesting...";
     _get("/api/manage/list", "viewData").then((response: Array<{ "id": number }>) => {
         var listHTML = "";
