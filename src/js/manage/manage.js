@@ -1,8 +1,8 @@
 import { _get } from "../_modules/get/get.min.js";
-function newSearch() {
+export function newSearch() {
     location.reload();
 }
-async function getSubmissionData() {
+export async function getSubmissionData() {
     document.getElementById("viewData").innerHTML = "requesting...";
     _get("/api/manage/list", "viewData").then((response) => {
         var listHTML = "";
@@ -14,7 +14,7 @@ async function getSubmissionData() {
         document.getElementById("results").style.display = "flex";
     });
 }
-async function deleteSubmission(submission, linkID) {
+export async function deleteSubmission(submission, linkID) {
     document.getElementById(linkID).innerHTML = "deleting...";
     _get(`/api/manage/${submission}/delete}`, linkID).then((response) => {
         if (response.status === 0xc83) {

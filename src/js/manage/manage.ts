@@ -1,10 +1,10 @@
 import { _get } from "../_modules/get/get.min.js"
 
-function newSearch() {
+export function newSearch() {
     location.reload();
 }
 
-async function getSubmissionData() {
+export async function getSubmissionData() {
     document.getElementById("viewData").innerHTML = "requesting...";
     _get("/api/manage/list", "viewData").then((response: Array<{ "id": number }>) => {
         var listHTML = "";
@@ -17,7 +17,7 @@ async function getSubmissionData() {
     });
 }
 
-async function deleteSubmission(submission: string, linkID: string) {
+export async function deleteSubmission(submission: string, linkID: string) {
     document.getElementById(linkID).innerHTML = "deleting...";
     _get(`/api/manage/${submission}/delete}`, linkID).then((response: { "status": number }) => {
         if (response.status === 0xc83) {
