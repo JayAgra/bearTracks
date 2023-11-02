@@ -1,3 +1,4 @@
+import { _get } from "../_modules/get/get.min.js";
 var numberInput = document.getElementById("number"), eventCode = document.getElementById("event"), error = document.getElementById("errorTxt"), searchBtn = document.getElementById("searchBtn");
 function eV(value) {
     if (value == "true") {
@@ -10,6 +11,7 @@ function eV(value) {
 function callSearch() {
     search(Number(numberInput.value), eventCode.value, document.getElementById("type").value);
 }
+window.callSearch = callSearch;
 function generateSmallAvgRow(avg) {
     return `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
 }
@@ -18,7 +20,7 @@ async function search(num, eCode, searchType = "team") {
         numberInput.style.borderColor = "var(--cancelColor)";
         return;
     }
-    var response, listRes, fetchEndpoint, type, htmlTable = "";
+    var fetchEndpoint, type, htmlTable = "";
     if (searchType === "team") {
         fetchEndpoint = `/api/data/current/team/${eCode}/${num}`;
         type = "team";
@@ -28,21 +30,7 @@ async function search(num, eCode, searchType = "team") {
         type = "match";
     }
     searchBtn.innerText = "requesting...";
-    try {
-        response = await fetch(fetchEndpoint, {
-            method: "GET",
-            credentials: "include",
-            redirect: "follow",
-        });
-        if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
-            return;
-        }
-        if (response.status === 204) {
-            error.innerText = "no results";
-            error.style.display = "unset";
-        }
-        listRes = await response.json();
+    _get(fetchEndpoint, searchBtn.id).then((listRes) => {
         if (type === "team") {
             let avg = {
                 "auto_charge": 0,
@@ -162,33 +150,13 @@ async function search(num, eCode, searchType = "team") {
         document.getElementById("subheadings").insertAdjacentHTML("afterend", htmlTable);
         document.getElementById("search").style.display = "none";
         document.getElementById("results").style.display = "flex";
-    }
-    catch (err) {
-        searchBtn.innerText = "error";
-        error.innerText = "no results";
-        error.style.display = "unset";
-        console.error(err);
-    }
+    }).catch((err) => console.log(err));
 }
 async function searchOnLoad() {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("userId");
     if (userId) {
-        try {
-            var response = await fetch(`/api/data/current/scout/${userId}`, {
-                method: "GET",
-                credentials: "include",
-                redirect: "follow",
-            });
-            if (response.status === 401 || response.status === 403) {
-                window.location.href = "/login";
-                return;
-            }
-            if (response.status === 204) {
-                error.innerText = "no results";
-                error.style.display = "unset";
-            }
-            var listRes = await response.json();
+        _get(`/api/data/current/scout/${userId}`, error.id).then((listRes) => {
             var avg = {
                 "auto_charge": 0,
                 "teleop_charge": 0,
@@ -212,13 +180,7 @@ async function searchOnLoad() {
             document.getElementById("subheadings").insertAdjacentHTML("afterend", htmlTable);
             document.getElementById("search").style.display = "none";
             document.getElementById("results").style.display = "flex";
-        }
-        catch (err) {
-            searchBtn.innerText = "error";
-            error.innerText = "no results";
-            error.style.display = "unset";
-            console.error(err);
-        }
+        }).catch((err) => console.log(err));
     }
     else {
         if (urlParams.get("number") && urlParams.get("event") && urlParams.get("type")) {
@@ -226,6 +188,8 @@ async function searchOnLoad() {
         }
     }
 }
+window.searchOnLoad = searchOnLoad;
+window.search = search;
 document.getElementById("number").addEventListener("keyup", (e) => {
     if (e.target.value !== "") {
         document.getElementById("number").style.borderColor = "var(--defaultInputColor)";

@@ -11,7 +11,7 @@ export async function pitScoutedTeams(req: express.Request, res: express.Respons
     const values: Array<any> = [req.params.event, season];
     db.all(stmt, values, (err: any, dbQueryResult: Array<teamOnlyPitDb> | undefined) => {
         if (err) {
-            return res.status(500).send("" + 0x1f41);
+            return res.status(500).json({ "status": 0x1f41 });
         } else {
             if (typeof dbQueryResult == "undefined") {
                 return res.status(200).setHeader("Content-type", "text/plain").send("");

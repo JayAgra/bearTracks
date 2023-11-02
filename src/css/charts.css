@@ -1,0 +1,23 @@
+.canvasWrap {
+    width: 90vw;
+}
+
+.canvasWrap:after {
+    content: "";
+}
+
+.tocCont {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+.tocItemCont {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 94vw;
+}

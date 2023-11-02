@@ -6,10 +6,10 @@ export async function getAllEventData(req: express.Request, res: express.Respons
     const values: Array<any> = [season, req.params.event];
     db.all(stmt, values, (error: any, result: Array<Object> | undefined) => {
         if (error || typeof result == "undefined") {
-            return res.status(500).send("" + 0x1f41);
+            return res.status(500).json({ "status": 0x1f41 });
         } else {
             if (result.length === 0) {
-                return res.status(204).send("" + 0xcc1);
+                return res.status(204).json({ "status": 0xcc1 });
             } else {
                 return res.status(200).json(result);
             }

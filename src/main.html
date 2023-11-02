@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Match Scouting - 766 Scouting</title>
+        <title>Match Scouting - bearTracks</title>
         <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#121212" id="themeMeta">
@@ -14,14 +14,14 @@
         <link rel="stylesheet" href="css/grid.min.css" type="text/css">
         <script src="js/form/form.min.js"></script>
     </head>
-    <body class="dark-mode" onload="checkLogin()" style="width: 99vw;">
+    <body class="dark-mode" onload="checkLogin()" style="width: 100vw;">
         <script>themeHandle()</script>
         <form id="mainFormHTML">
             <input type="text" value="main" name="formType" hidden>
-            <h1 class="w3">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1><br>
+            <h1 class="w3">bearTracks<br><span class="gametitle">match scouting</span></h1><br>
             <h2 class="gameflair1">Pre-Match</h2>
             <fieldset>
-                <label>Event Code<span id="badEvent" style="color: red; display: none;">&emsp;no event match data found!</span><br></label>
+                <label>Event Code<span id="badEvent" style="color: red; display: none;"></span><br></label>
                 <select name="event" id="eventCode">
                     <option value="CADA">CADA - Sacramento Regional</option>
                     <option value="CASJ">CASJ - Silicon Valley Regional</option>
@@ -33,10 +33,10 @@
                 <label>Match Number<span id="badMatchNum" style="color: red; display: none;"></span><br></label>
                 <input type="tel" name="match" class="smallerInput" id="matchNumberInput" required>
                 <select name="level" class="lowerSelect">
-                    <option value="Practice">Practice</option>
+                    <option value="Practice" disabled>Practice</option>
                     <option value="Qualification" selected>Qual</option>
-                    <option value="Upper">Upper</option>
-                    <option value="Lower">Lower</option>
+                    <option value="Upper" disabled>Upper</option>
+                    <option value="Lower" disabled>Lower</option>
                 </select>
             </fieldset>
             <fieldset>
@@ -158,6 +158,6 @@
             <br>
             <button type="button" class="uiButton actionButton" onclick="uploadForm()" id="reSubmitButton" style="display: none;">retry</button><br>
         </div>
-        <script src="js/main_form/main_form.min.js" type="text/javascript"></script>
+        <script type="module" src="js/main_form/main_form.min.js"></script>
     </body>
 </html>

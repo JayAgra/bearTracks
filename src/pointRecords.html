@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Point Records - 766 Scouting</title>
+        <title>Point Records - bearTracks</title>
         <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#121212" id="themeMeta">
@@ -15,14 +15,13 @@
         <link rel="stylesheet" href="css/table.min.css" type="text/css">
         <script src="js/form/form.min.js"></script>
     </head>
-    <body class="dark-mode" onload="getData()">
+    <body class="dark-mode" onload="getPointsData()">
         <script>themeHandle()</script>
         <div class="container" id="results" style="display: flex;">
             <div class="dummy">
-                <h1 class="w3">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1>
+                <h1 class="w3">bearTracks<br><span class="gametitle">point records</span></h1>
                 <fieldset>
                     <fieldset>
-                        <h3 id="eventCodeDisplay">Point Transactions</h3>
                         <table>
                             <tr id="preInsert"><th>Description</th><th>Amount</th><th>Timestamp</th></tr>
                         </table>
@@ -32,6 +31,6 @@
                 </fieldset>
             </div>
         </div>
-        <script src="js/pointRecords/pointRecords.min.js" type="text/javascript"></script>
+        <script type="module" src="js/pointRecords/pointRecords.min.js"></script>
     </body>
 </html>

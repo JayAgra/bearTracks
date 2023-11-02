@@ -5,12 +5,12 @@ export function listTeams(req: express.Request, res: express.Response, authDb: s
     if (req.user.admin == "true") {
         authDb.all("SELECT key, team FROM accessKeys", (err: any, dbQueryResult: Array<Object> | undefined) => {
             if (err || typeof dbQueryResult == "undefined") {
-                return res.status(500).send("" + 0x1f41);
+                return res.status(500).json({ "status": 0x1f41 });
             } else {
                 return res.status(200).json(dbQueryResult);
             }
         });
     } else {
-        return res.status(403).send("" + 0x1931);
+        return res.status(403).json({ "status": 0x1931 });
     }
 }

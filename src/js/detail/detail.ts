@@ -1,3 +1,5 @@
+import { _get } from "../_modules/get/get.min.js"
+
 const errElement: HTMLElement = document.getElementById("errorTxt") as HTMLElement;
 
 function emojiValue(value: string): string {
@@ -9,15 +11,15 @@ function emojiValue(value: string): string {
 }
 
 function toIcons(str: string): string {
-    var step1 = str.replaceAll("0", "⬜");
-    var step2 = step1.replaceAll("1", "🟪");
-    var step3 = step2.replaceAll("2", "🟨");
-    var step4 = step3.replaceAll("3", "❷");
+    let step1 = str.replaceAll("0", "⬜");
+    let step2 = step1.replaceAll("1", "🟪");
+    let step3 = step2.replaceAll("2", "🟨");
+    let step4 = step3.replaceAll("3", "❷");
     return step4.replaceAll("4", "❷");
 }
 
 function fullGridString(str: string, sep: string): string {
-    var strings = str.match(/.{1,9}/g);
+    let strings = str.match(/.{1,9}/g);
     var iconStrings = [];
     iconStrings.push(toIcons(strings[0]));
     iconStrings.push(toIcons(strings[1]));
@@ -28,25 +30,8 @@ function fullGridString(str: string, sep: string): string {
 async function loadData() {
     const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
     const submissionID: string = urlParams.get("id") as string;
-
-    try {
-        var response = await fetch(`/api/data/detail/id/${submissionID}`, {
-            method: "GET",
-            credentials: "include",
-            redirect: "follow",
-        });
-
-        if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
-            return;
-        }
-
-        if (response.status === 204) {
-            errElement.innerText = "no results";
-            errElement.style.display = "unset";
-        }
-
-        const listRes = await response.json();
+    errElement.innerText = "deleting...";
+    _get(`/api/data/detail/id/${submissionID}`, errElement.id).then((listRes) => {
         var text = `<b>Author:</b> ${listRes.name} (from team ${listRes.fromTeam})<br><br>` +
                 `<b>AUTO: <br>Taxi: </b>${emojiValue(listRes.game1)}<br>` +
                 `<b>Score B/M/T: </b>${emojiValue(listRes.game2)}${emojiValue(listRes.game3)}${emojiValue(listRes.game4)}<br>` +
@@ -63,9 +48,7 @@ async function loadData() {
         (document.getElementById("resultMatchNum") as HTMLElement).innerText = listRes.match;
         (document.getElementById("resultEventCode") as HTMLElement).innerText = listRes.event;
         (document.getElementById("resultText") as HTMLElement).innerHTML = text;
-    } catch (err: any) {
-        errElement.innerText = "no results";
-        errElement.style.display = "unset";
-        console.error(err);
-    }
+    }).catch((err) => console.log(err));
 }
+
+(window as any).loadData = loadData;

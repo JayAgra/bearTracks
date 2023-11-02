@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Manage Scouts - 766 Scouting</title>
+        <title>Manage Scouts - bearTracks</title>
         <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#121212" id="themeMeta">
@@ -15,12 +15,11 @@
         <link rel="stylesheet" href="css/table.min.css" type="text/css">
         <script src="js/form/form.min.js"></script>
     </head>
-    <body class="dark-mode" onload="getData()">
+    <body class="dark-mode" onload="getScoutsDataMgmt()">
         <script>themeHandle()</script>
         <div class="container" style="display: flex;">
             <div class="dummy">
-                <h1 class="w3">2023 Scouting<br><span class="gametitle">CHARGED UP</span></h1>
-                <h4>Manage Scouts</h4>
+                <h1 class="w3">bearTracks<br><span class="gametitle">manage scouts</span></h1>
                 <div style="overflow-x: auto; width: 95vw;">
                     <table>
                         <tr id="tableHeader"><th>Scout</th><th>Points</th><th></th></tr>
@@ -29,6 +28,6 @@
                 <button type="button" class="uiButton returnButton" onclick="window.location.href='/manage'">Back</button>
             </div>
         </div>
-        <script src="js/manageScouts/manageScouts.min.js" type="text/javascript"></script>
+        <script type="module" src="js/manageScouts/manageScouts.min.js"></script>
     </body>
 </html>

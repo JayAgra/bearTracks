@@ -6,7 +6,7 @@ export async function detailBySpecs(req: express.Request, res: express.Response,
     const values: Array<any> = [req.params.team, req.params.event, season, req.params.page];
     db.get(stmt, values, (err: any, dbQueryResult: Object | undefined) => {
         if (err || typeof dbQueryResult == "undefined") {
-            return res.status(500).send("" + 0x1f41);
+            return res.status(500).json({ "status": 0x1f41 });
         } else {
             return res.status(200).json(dbQueryResult);
         }

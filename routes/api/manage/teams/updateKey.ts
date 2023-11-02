@@ -7,11 +7,11 @@ export async function updateTeamKey(req: express.Request, res: express.Response,
         const updateKeyVals: Array<any> = [req.params.keyId, Number(req.params.newKey)];
         authDb.run(updateKeyStmt, updateKeyVals, (err: any) => {
             if (err) {
-                return res.status(500).send("" + 0x1f42);
+                return res.status(500).json({ "status": 0x1f42 });
             }
         });
-        return res.status(200).send("" + 0xc87);
+        return res.status(200).json({ "status": 0xc87 });
     } else {
-        return res.status(403).send("" + 0x1931);
+        return res.status(403).json({ "status": 0x1931 });
     }
 }

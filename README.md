@@ -1,5 +1,6 @@
-# Scouting App
-![GitHub](https://img.shields.io/github/license/JayAgra/scouting-app) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/scouting-app) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/scouting-app) [![Maintainability](https://api.codeclimate.com/v1/badges/4acfda318fd3f3eb7fc9/maintainability)](https://codeclimate.com/github/JayAgra/scouting-app/maintainability)<br>
+# bearTracks
+a webapp for frc scouting<br><br>
+![GitHub](https://img.shields.io/github/license/JayAgra/bearTracks) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/bearTracks) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/bearTracks) [![Maintainability](https://api.codeclimate.com/v1/badges/f9b5e7ac1b0ab70425e5/maintainability)](https://codeclimate.com/github/JayAgra/bearTracks/maintainability)<br>
 
 ## Setup
 ### config.json

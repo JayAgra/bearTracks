@@ -1,4 +1,4 @@
-# 2023 Scouting
+# bearTracks
 ## Match Scouting
 - Grid
   - Mark only grid squares that the team you are scouting fills

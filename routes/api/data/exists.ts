@@ -6,7 +6,7 @@ export async function submissionExists(req: express.Request, res: express.Respon
     const values: Array<any> = [req.params.id];
     db.get(stmt, values, (err: any, dbQueryResult: Object | undefined) => {
         if (err || typeof dbQueryResult == "undefined") {
-            return res.status(500).send("" + 0x1f41);
+            return res.status(500).json({ "status": 0x1f41 });
         } else {
             return res.status(200).json(dbQueryResult);
         }

@@ -6,7 +6,7 @@ export async function teamsBySeason(req: express.Request, res: express.Response,
     const values: Array<any> = [req.params.team, season];
     db.all(stmt, values, (err: any, dbQueryResult: Array<Object> | undefined) => {
         if (err) {
-            return res.status(500).send("" + 0x1f41);
+            return res.status(500).json({ "status": 0x1f41 });
         } else {
             return res.status(200).json(dbQueryResult);
         }

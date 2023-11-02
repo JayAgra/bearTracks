@@ -299,6 +299,12 @@ app.get("/create", async (req: express.Request, res: express.Response) => {
     res.sendFile("src/create.html", { root: __dirname });
 });
 
+// charts page
+app.get("/charts", async (req: express.Request, res: express.Response) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/charts.html", { root: __dirname });
+});
+
 // webmanifest for PWAs
 app.get("/app.webmanifest", async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -520,7 +526,7 @@ app.get("/api/teams/:season/:event", apiCheckAuth, async (req: express.Request<{
 import { teamsByEvent } from "./routes/api/teams/eventWeight";
 app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
     teamsByEvent(req, res, db, selectSeason(req));
- });
+});
 
 import { teamsBySeason } from "./routes/api/teams/seasonWeight";
 app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: express.Request<{team: string}>, res: express.Response) => {

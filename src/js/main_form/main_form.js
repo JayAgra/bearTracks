@@ -1,46 +1,49 @@
+import { _get } from "../_modules/get/get.min.js";
 var eventMatches;
+var matchesOk = false;
+function setBadEvent() {
+    document.getElementById("badEvent").innerHTML = "&emsp;no results";
+    document.getElementById("badEvent").style.display = "unset";
+    matchesOk = false;
+}
+function toLogin(response) {
+    if (response.status === 401 || response.status === 403) {
+        window.location.href = "/login";
+        return;
+    }
+    else {
+        return;
+    }
+}
 async function loadMatches() {
     try {
-        const response = await fetch(`/api/matches/current/${document.getElementById('eventCode').value}/qual/all`, {
+        const response = await fetch(`/api/matches/current/${document.getElementById("eventCode").value}/qual/all`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
         });
-        if (response.status === 401 || response.status === 403) {
-            return window.location.href = "/login";
-        }
+        toLogin(response);
         if (response.status === 204 || !response.ok) {
-            document.getElementById("badEvent").innerText = "no results";
-            document.getElementById("badEvent").style.display = "unset";
+            setBadEvent();
+            return;
         }
         eventMatches = await response.json();
+        matchesOk = true;
+        document.getElementById("badEvent").style.display = "none";
+        matchNumberChange({ "target": document.getElementById("matchNumberInput") });
     }
     catch (err) {
-        document.getElementById("badEvent").innerText = "no results";
-        document.getElementById("badEvent").style.display = "unset";
+        setBadEvent();
     }
 }
 // check session
 async function checkLogin() {
-    try {
-        var response = await fetch(`/api/whoami`, {
-            method: "GET",
-            credentials: "include",
-            redirect: "follow",
-        });
-        if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
-        }
-    }
-    catch (error) {
-        console.log("failure");
-        window.location.href = "/login";
-    }
+    _get(`/api/whoami`, null).then((response) => { console.log(response); }).catch((err) => console.log(err));
 }
+window.checkLogin = checkLogin;
 loadMatches();
 validateLengthFn();
-matchNumberChange({ "target": document.getElementById('matchNumberInput') });
-document.getElementById('eventCode').addEventListener('change', async () => {
+document.getElementById("eventCode").addEventListener("change", async () => {
     await loadMatches();
 });
 function setOption(element, value) {
@@ -48,40 +51,46 @@ function setOption(element, value) {
     element.innerText = String(value);
 }
 function matchNumberChange(event) {
-    const errorElement = document.getElementById("badMatchNum");
-    if (Number(event.target.value) > 0 && Number(event.target.value) <= eventMatches.Schedule.length) {
-        errorElement.style.display = "none";
-        document.getElementById("submitButton").removeAttribute("disabled");
-        const matchTeams = eventMatches.Schedule[Number(event.target.value) - 1].teams;
-        const teamSelectOpts = Array.from(document.getElementsByClassName("teamNumOption"));
-        setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
-        setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
-        setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
-        setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
-        setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
-        setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
+    if (matchesOk) {
+        const errorElement = document.getElementById("badMatchNum");
+        if (Number(event.target.value) > 0 && Number(event.target.value) <= eventMatches.Schedule.length) {
+            errorElement.style.display = "none";
+            document.getElementById("submitButton").removeAttribute("disabled");
+            const matchTeams = eventMatches.Schedule[Number(event.target.value) - 1].teams;
+            const teamSelectOpts = Array.from(document.getElementsByClassName("teamNumOption"));
+            setOption(teamSelectOpts[3], matchTeams[0].teamNumber);
+            setOption(teamSelectOpts[4], matchTeams[1].teamNumber);
+            setOption(teamSelectOpts[5], matchTeams[2].teamNumber);
+            setOption(teamSelectOpts[0], matchTeams[3].teamNumber);
+            setOption(teamSelectOpts[1], matchTeams[4].teamNumber);
+            setOption(teamSelectOpts[2], matchTeams[5].teamNumber);
+        }
+        else {
+            errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
+            errorElement.style.display = "unset";
+            document.getElementById("submitButton").setAttribute("disabled", "disabled");
+        }
     }
     else {
-        errorElement.innerHTML = "&emsp;match number must be between 1 and " + eventMatches.Schedule.length;
-        errorElement.style.display = "unset";
-        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        window.setTimeout((event) => { matchNumberChange(event); }, 1000);
+        document.getElementById("submitButton").setAttribute("disabled", "disabled");
     }
 }
-document.getElementById('matchNumberInput').addEventListener('input', (event) => {
+document.getElementById("matchNumberInput").addEventListener("input", (event) => {
     matchNumberChange(event);
 });
 function validateLengthFn() {
     let currentVal = document.getElementById("validateLength").value;
     if (Number(currentVal) <= 120 && Number(currentVal) >= 0) {
-        document.getElementById('tooLong').style.display = "none";
+        document.getElementById("tooLong").style.display = "none";
         document.getElementById("submitButton").removeAttribute("disabled");
     }
     else {
-        document.getElementById('tooLong').style.display = "inherit";
-        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        document.getElementById("tooLong").style.display = "inherit";
+        document.getElementById("submitButton").setAttribute("disabled", "disabled");
     }
 }
-document.getElementById('validateLength').addEventListener('input', () => {
+document.getElementById("validateLength").addEventListener("input", () => {
     validateLengthFn();
 });
 function requiredFormFields(event) {
@@ -89,34 +98,30 @@ function requiredFormFields(event) {
         document.getElementById("submitButton").removeAttribute("disabled");
     }
     else {
-        document.getElementById('submitButton').setAttribute("disabled", "disabled");
+        document.getElementById("submitButton").setAttribute("disabled", "disabled");
     }
 }
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
-    element.addEventListener('input', (event) => {
+    element.addEventListener("input", (event) => {
         requiredFormFields(event);
     });
 });
 //end data validation
-//grid orientation reminder
-if (window.innerHeight > window.innerWidth) {
-    document.getElementById('landscapeReminder').style.display = "inline";
-}
-window.addEventListener('resize', function () {
+function landscapeReminder() {
     if (window.innerHeight > window.innerWidth) {
-        document.getElementById('landscapeReminder').style.display = "inline";
+        document.getElementById("landscapeReminder").style.display = "inline";
     }
     else {
-        document.getElementById('landscapeReminder').style.display = "none";
+        document.getElementById("landscapeReminder").style.display = "none";
     }
-});
-//end grid orientation reminder
+}
+window.addEventListener("resize", landscapeReminder);
 //grid script
 function getAllCells() {
     var cells = [];
     for (let j = 1; j < 4; j++) {
         for (let i = 1; i < 10; i++) {
-            cells.push(document.getElementById('sgc_' + j + '_' + i));
+            cells.push(document.getElementById("sgc_" + j + "_" + i));
         }
     }
     return cells;
@@ -129,8 +134,8 @@ var sgCellStatus = [
 const allCells = getAllCells();
 function processCellClick(dataNum, numset) {
     sgCellStatus[Number(dataNum)] = numset;
-    document.getElementById('griddata').value = sgCellStatus.join('');
-    console.log(document.getElementById('griddata').value);
+    document.getElementById("griddata").value = sgCellStatus.join("");
+    console.log(document.getElementById("griddata").value);
 }
 function setGray(that) {
     that.innerText = "";
@@ -143,34 +148,27 @@ function setGray(that) {
     that.setAttribute("data-state", "0");
     processCellClick(that.getAttribute("data-num"), 0);
 }
+function setThat(that, backgroundHex, textContent, stateAttr, value, color) {
+    that.style.background = backgroundHex;
+    that.style.color = color;
+    that.innerText = textContent;
+    that.setAttribute("data-state", stateAttr);
+    processCellClick(that.getAttribute("data-num"), value);
+}
 function setSingleCube(that) {
-    that.style.background = "#a216a2";
-    that.innerText = "";
-    that.setAttribute("data-state", "1");
-    processCellClick(that.getAttribute("data-num"), 1);
+    setThat(that, "#a216a2", "", "1", 1, "#ff0");
 }
 function setSingleCone(that) {
-    that.style.background = "#ff0";
-    that.innerText = "";
-    that.setAttribute("data-state", "2");
-    processCellClick(that.getAttribute("data-num"), 2);
+    setThat(that, "#ff0", "", "2", 2, "#a216a2");
 }
 function setDoubleCube(that) {
-    that.style.background = "#a216a2";
-    that.style.color = "#ff0";
-    that.innerText = "2";
-    that.setAttribute("data-state", "3");
-    processCellClick(that.getAttribute("data-num"), 3);
+    setThat(that, "#a216a2", "2", "3", 3, "#ff0");
 }
 function setDoubleCone(that) {
-    that.style.background = "#ff0";
-    that.style.color = "#a216a2";
-    that.innerText = "2";
-    that.setAttribute("data-state", "5");
-    processCellClick(that.getAttribute("data-num"), 4);
+    setThat(that, "#ff0", "2", "5", 4, "#a216a2");
 }
 for (var i = 0; i < allCells.length; i += 1) {
-    allCells[i].addEventListener('click', function () {
+    allCells[i].addEventListener("click", function () {
         if (this.getAttribute("data-gp") === "cube") {
             if (this.getAttribute("data-state") === "0") {
                 setSingleCube(this);
@@ -304,3 +302,4 @@ async function uploadForm() {
         console.error(error);
     });
 }
+window.uploadForm = uploadForm;
