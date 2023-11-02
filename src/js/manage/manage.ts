@@ -1,4 +1,4 @@
-import { _get } from "js/_modules/get/get"
+import { _get } from "../_modules/get/get.min.js"
 
 function newSearch() {
     location.reload();
