@@ -16,7 +16,7 @@ async function getData() {
                 listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td><div class="inlineInput"><button class="uiButton cancelButton" onclick="disown('${listRes[i].id}', this)">disown user</button></div></td></tr>`;
             }
             else {
-                listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
+                listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveTeamUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
             }
         }
         document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);
@@ -26,7 +26,7 @@ async function getData() {
         window.location.href = "/login";
     }
 }
-async function approveUser(targetId, button) {
+async function approveTeamUser(targetId, button) {
     button.innerText = "...";
     try {
         var response = await fetch(`/api/manage/myTeam/scouts/access/${targetId}/true`, {

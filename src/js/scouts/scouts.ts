@@ -1,4 +1,4 @@
-async function getTeamRanks() {
+async function getScoutRanks() {
     document.getElementById("viewScoutsButton").innerHTML = "Requesting Data...";
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `/api/scouts`, true);

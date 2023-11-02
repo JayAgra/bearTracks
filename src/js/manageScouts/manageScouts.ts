@@ -8,7 +8,7 @@ type scoutsData = {
     "teamAdmin": number;
 };
 
-async function getData() {
+async function getScoutsDataMgmt() {
     var response, listRes: Array<scoutsData>;
     try {
         response = await fetch(`/api/scouts`, {

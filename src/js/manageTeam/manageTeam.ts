@@ -1,4 +1,4 @@
-type scoutsData = {
+type scoutData = {
     "id": number;
     "score": number;
     "nickName": string;
@@ -6,7 +6,7 @@ type scoutsData = {
 };
 
 async function getData() {
-    var response, listRes: Array<scoutsData>;
+    var response, listRes: Array<scoutData>;
     try {
         response = await fetch(`/api/manage/myTeam/list`, {
             method: "GET",
@@ -24,7 +24,7 @@ async function getData() {
             if (listRes[i].accessOk == "true") {
                 listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td><div class="inlineInput"><button class="uiButton cancelButton" onclick="disown('${listRes[i].id}', this)">disown user</button></div></td></tr>`;
             } else {
-                listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
+                listHTML += `<tr class="padded"><td>${listRes[i].nickName}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveTeamUser('${listRes[i].id}', this)">approve user</button></div></td></tr>`;
             }
         }
         document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);  
@@ -34,7 +34,7 @@ async function getData() {
     }
 }
 
-async function approveUser(targetId: string, button: any) {
+async function approveTeamUser(targetId: string, button: any) {
     button.innerText = "..."
     try {
         var response = await fetch(`/api/manage/myTeam/scouts/access/${targetId}/true`, {

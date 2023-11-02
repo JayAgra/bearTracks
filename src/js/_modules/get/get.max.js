@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports._get = void 0;
-async function _get(url, errorElementId) {
+export async function _get(url, errorElementId) {
     const response = await fetch(url, {
         method: "GET",
         cache: "no-cache",
@@ -23,4 +20,3 @@ async function _get(url, errorElementId) {
     }
     return response.json();
 }
-exports._get = _get;

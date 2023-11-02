@@ -1,4 +1,4 @@
-function displayErrors() {
+function displayCreateErrors() {
     const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
     const error: string = urlParams.get("err");
     const errorEl: HTMLElement = document.getElementById("error") as HTMLElement;

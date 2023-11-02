@@ -1,4 +1,4 @@
-function displayErrors() {
+function displayLoginErrors() {
     const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
     const error: string = urlParams.get("err") as string;
     const errorEl: HTMLElement = (document.getElementById("error") as HTMLElement)

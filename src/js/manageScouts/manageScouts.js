@@ -1,4 +1,4 @@
-async function getData() {
+async function getScoutsDataMgmt() {
     var response, listRes;
     try {
         response = await fetch(`/api/scouts`, {
