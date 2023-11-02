@@ -90,7 +90,7 @@ function createChartConfig(type: string, data: chartJsData, name: string): chart
         "type": type,
         "data": data,
         "options": {
-            "indexAxis": "y",
+            "indexAxis": "x",
             "responsive": true,
             "scales": {
                 "yAxes": [{

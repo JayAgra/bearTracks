@@ -18,7 +18,7 @@ function createChartConfig(type, data, name) {
         "type": type,
         "data": data,
         "options": {
-            "indexAxis": "y",
+            "indexAxis": "x",
             "responsive": true,
             "scales": {
                 "yAxes": [{
