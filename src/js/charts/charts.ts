@@ -54,7 +54,7 @@ type chartJsData = {
 type chartJsOptions = {
     "indexAxis": string,
     "responsive": boolean,
-    "scales": {"yAxes": Array<{"ticks": {"min": number, "max": number}}>},
+    "scales": {"y": {"min": number, "max": number}},
     "plugins": {"title": {"display": boolean, "text": string}}
 }
 
@@ -93,12 +93,10 @@ function createChartConfig(type: string, data: chartJsData, name: string, max: n
             "indexAxis": "x",
             "responsive": true,
             "scales": {
-                "yAxes": [{
-                    "ticks": {
-                        "min": 0,
-                        "max": max
-                    }
-                }]
+                "y": {
+                    "min": 0,
+                    "max": max
+                }
             },
             "plugins": {
                 "title": {

@@ -21,12 +21,10 @@ function createChartConfig(type, data, name, max) {
             "indexAxis": "x",
             "responsive": true,
             "scales": {
-                "yAxes": [{
-                        "ticks": {
-                            "min": 0,
-                            "max": max
-                        }
-                    }]
+                "y": {
+                    "min": 0,
+                    "max": max
+                }
             },
             "plugins": {
                 "title": {
