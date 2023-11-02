@@ -21,6 +21,21 @@ type frcApiMatches = {
 var eventMatches: frcApiMatches;
 var matchesOk: boolean = false;
 
+function setBadEvent() {
+    (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
+    (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
+    matchesOk = false;
+}
+
+function toLogin(response: Response): void {
+    if (response.status === 401 || response.status === 403) {
+        window.location.href = "/login";
+        return;
+    } else {
+        return;
+    }
+}
+
 async function loadMatches(): Promise<string | void> {
     try {
         const response = await fetch(`/api/matches/current/${(document.getElementById("eventCode") as HTMLInputElement).value}/qual/all`, {
@@ -29,14 +44,10 @@ async function loadMatches(): Promise<string | void> {
             redirect: "follow",
         });
 
-        if (response.status === 401 || response.status === 403) {
-            return window.location.href = "/login";
-        }
+        toLogin(response);
 
         if (response.status === 204 || !response.ok) {
-            (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
-            (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
-            matchesOk = false;
+            setBadEvent();
             return;
         }
 
@@ -45,9 +56,7 @@ async function loadMatches(): Promise<string | void> {
         (document.getElementById("badEvent") as HTMLSpanElement).style.display = "none";
         matchNumberChange({"target": document.getElementById("matchNumberInput")});
     } catch (err: any) {
-        (document.getElementById("badEvent") as HTMLSpanElement).innerHTML = "&emsp;no results";
-        (document.getElementById("badEvent") as HTMLSpanElement).style.display = "unset";
-        matchesOk = false;
+        setBadEvent();
     }
 }
 
@@ -59,9 +68,7 @@ async function checkLogin(): Promise<void> {
             credentials: "include",
             redirect: "follow",
         });
-        if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
-        }
+        toLogin(response);
     } catch (error) {
         console.log("failure")
         window.location.href = "/login";
@@ -137,22 +144,17 @@ Array.from(document.querySelectorAll("[required]")).forEach((element) => {
         requiredFormFields(event);
     })
 })
-
 //end data validation
 
-//grid orientation reminder
-if (window.innerHeight > window.innerWidth) {
-    document.getElementById("landscapeReminder").style.display = "inline";
-}
-
-window.addEventListener("resize", function(): void {
-    if(window.innerHeight > window.innerWidth){
+function landscapeReminder() {
+    if (window.innerHeight > window.innerWidth) {
         document.getElementById("landscapeReminder").style.display = "inline";
     } else {
         document.getElementById("landscapeReminder").style.display = "none";
     }
-});
-//end grid orientation reminder
+}
+
+window.addEventListener("resize", landscapeReminder);
 
 //grid script
 function getAllCells(): Array<HTMLElement> {
@@ -185,34 +187,29 @@ function setGray(that: HTMLElement): void {
     that.setAttribute("data-state", "0")
     processCellClick(that.getAttribute("data-num"), 0);
 }
+function setThat(that: HTMLElement, backgroundHex: string, textContent: string, stateAttr: string, value: number, color: string) {
+    that.style.background = backgroundHex;
+    that.style.color = color;
+    that.innerText = textContent;
+    that.setAttribute("data-state", stateAttr);
+    processCellClick(that.getAttribute("data-num"), value)
+}
 function setSingleCube(that: HTMLElement): void {
-    that.style.background = "#a216a2";
-    that.innerText = "";
-    that.setAttribute("data-state", "1")
-    processCellClick(that.getAttribute("data-num"), 1);
+    setThat(that, "#a216a2", "", "1", 1, "#ff0");
 }
 function setSingleCone(that: HTMLElement): void {
-    that.style.background = "#ff0";
-    that.innerText = "";
-    that.setAttribute("data-state", "2")
-    processCellClick(that.getAttribute("data-num"), 2);
+    setThat(that, "#ff0", "", "2", 2, "#a216a2");
 }
 function setDoubleCube(that: HTMLElement): void {
-    that.style.background = "#a216a2";
-    that.style.color = "#ff0";
-    that.innerText = "2";
-    that.setAttribute("data-state", "3")
-    processCellClick(that.getAttribute("data-num"), 3);
+    setThat(that, "#a216a2", "2", "3", 3, "#ff0");
 }
 function setDoubleCone(that: HTMLElement): void {
-    that.style.background = "#ff0";
-    that.style.color = "#a216a2";
-    that.innerText = "2";
-    that.setAttribute("data-state", "5")
-    processCellClick(that.getAttribute("data-num"), 4);
+    setThat(that, "#ff0", "2", "5", 4, "#a216a2");
 }
+
+
 for (var i = 0; i < allCells.length; i += 1) {
-    allCells[i].addEventListener("click", function (): void {
+    allCells[i].addEventListener("click", function(): void {
         if (this.getAttribute("data-gp") === "cube") {
             if (this.getAttribute("data-state") === "0") {
                 setSingleCube(this);
