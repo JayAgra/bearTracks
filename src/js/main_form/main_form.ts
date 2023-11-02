@@ -1,3 +1,5 @@
+import { _get } from "../_modules/get/get.min.js"
+
 //data validation
 type frcApiTeam = {
     "station": string,
@@ -62,18 +64,9 @@ async function loadMatches(): Promise<string | void> {
 
 // check session
 async function checkLogin(): Promise<void> {
-    try {
-        var response = await fetch(`/api/whoami`, {
-            method: "GET",
-            credentials: "include",
-            redirect: "follow",
-        });
-        toLogin(response);
-    } catch (error) {
-        console.log("failure")
-        window.location.href = "/login";
-    }
+    _get(`/api/whoami`, null).then((response: any) => {console.log(response)}).catch((err) => console.log(err));
 }
+(window as any).checkLogin = checkLogin;
 
 loadMatches();
 validateLengthFn();
@@ -340,3 +333,4 @@ async function uploadForm() {
         console.error(error);
     });
 }
+(window as any).uploadForm = uploadForm;

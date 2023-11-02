@@ -1,3 +1,4 @@
+import { _get } from "../_modules/get/get.min.js";
 var eventMatches;
 var matchesOk = false;
 function setBadEvent() {
@@ -37,19 +38,9 @@ async function loadMatches() {
 }
 // check session
 async function checkLogin() {
-    try {
-        var response = await fetch(`/api/whoami`, {
-            method: "GET",
-            credentials: "include",
-            redirect: "follow",
-        });
-        toLogin(response);
-    }
-    catch (error) {
-        console.log("failure");
-        window.location.href = "/login";
-    }
+    _get(`/api/whoami`, null).then((response) => { console.log(response); }).catch((err) => console.log(err));
 }
+window.checkLogin = checkLogin;
 loadMatches();
 validateLengthFn();
 document.getElementById("eventCode").addEventListener("change", async () => {
@@ -311,3 +302,4 @@ async function uploadForm() {
         console.error(error);
     });
 }
+window.uploadForm = uploadForm;

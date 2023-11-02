@@ -1,3 +1,5 @@
+import { _get } from "../_modules/get/get.min.js";
+
 var numberInput = document.getElementById("number") as HTMLInputElement,
     eventCode = document.getElementById("event") as HTMLInputElement,
     error = document.getElementById("errorTxt") as HTMLHeadingElement,
@@ -66,9 +68,7 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
         numberInput.style.borderColor = "var(--cancelColor)";
         return;
     }
-    var response: Response,
-        listRes: Array<mainFormResponse>,
-        fetchEndpoint: string,
+    var fetchEndpoint: string,
         type: string,
         htmlTable: string = "";
     if (searchType === "team") {
@@ -80,24 +80,7 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
     }
 
     searchBtn.innerText = "requesting...";
-    try {
-        response = await fetch(fetchEndpoint, {
-            method: "GET",
-            credentials: "include",
-            redirect: "follow",
-        });
-
-        if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
-            return;
-        }
-
-        if (response.status === 204) {
-            error.innerText = "no results";
-            error.style.display = "unset";
-        }
-
-        listRes = await response.json();
+    _get(fetchEndpoint, searchBtn.id).then((listRes: Array<mainFormResponse>) => {
         if (type === "team") {
             let avg: {[index: string]:any} = {
                 "auto_charge": 0,
@@ -224,36 +207,14 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
         (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
         (document.getElementById("search") as HTMLElement).style.display = "none";
         (document.getElementById("results") as HTMLElement).style.display = "flex";
-    } catch (err) {
-        searchBtn.innerText = "error";
-        error.innerText = "no results";
-        error.style.display = "unset";
-        console.error(err);
-    }
+    }).catch((err) => console.log(err));
 }
 
 async function searchOnLoad() {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("userId");
     if (userId) {
-        try {
-            var response = await fetch(`/api/data/current/scout/${userId}`, {
-                method: "GET",
-                credentials: "include",
-                redirect: "follow",
-            });
-
-            if (response.status === 401 || response.status === 403) {
-                window.location.href = "/login";
-                return;
-            }
-
-            if (response.status === 204) {
-                error.innerText = "no results";
-                error.style.display = "unset";
-            }
-
-            var listRes = await response.json();
+        _get(`/api/data/current/scout/${userId}`, error.id).then((listRes) => {
             var avg: {[index: string]:any} = {
                 "auto_charge": 0,
                 "teleop_charge": 0,
@@ -280,18 +241,16 @@ async function searchOnLoad() {
             (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
             (document.getElementById("search") as HTMLElement).style.display = "none";
             (document.getElementById("results") as HTMLElement).style.display = "flex";
-        } catch (err) {
-            searchBtn.innerText = "error";
-            error.innerText = "no results";
-            error.style.display = "unset";
-            console.error(err);
-        }
+        }).catch((err) => console.log(err));
     } else {
         if (urlParams.get("number") && urlParams.get("event") && urlParams.get("type")) {
             search(Number(urlParams.get("number")), urlParams.get("event") as string, urlParams.get("type") as string);
         }
     }
 }
+
+(window as any).searchOnLoad = searchOnLoad;
+(window as any).search = search;
 
 (document.getElementById("number") as HTMLInputElement).addEventListener("keyup", (e) => {
     if ((e.target as HTMLInputElement).value !== "") {

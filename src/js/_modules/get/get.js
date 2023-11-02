@@ -6,17 +6,23 @@ export async function _get(url, errorElementId) {
         redirect: "follow",
     });
     if (response.status === 403) {
-        document.getElementById(errorElementId).innerText = "access denied";
+        if (errorElementId !== null) {
+            document.getElementById(errorElementId).innerText = "access denied";
+        }
         throw new Error("access denied. terminating.");
     }
     else if (response.status === 401) {
         window.location.href = "/login";
     }
     else if (response.status === 204) {
-        document.getElementById(errorElementId).innerText = "no results";
+        if (errorElementId !== null) {
+            document.getElementById(errorElementId).innerText = "no results";
+        }
     }
     else if (!response.ok) {
-        document.getElementById(errorElementId).innerText = "unhandled error";
+        if (errorElementId !== null) {
+            document.getElementById(errorElementId).innerText = "unhandled error";
+        }
     }
     return response.json();
 }

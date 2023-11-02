@@ -1,10 +1,10 @@
 import { _get } from "../_modules/get/get.min.js"
 
-export function newSearch() {
+function newSearch() {
     location.reload();
 }
 
-export async function getSubmissionData() {
+async function getSubmissionData() {
     document.getElementById("viewData").innerHTML = "requesting...";
     _get("/api/manage/list", "viewData").then((response: Array<{ "id": number }>) => {
         var listHTML = "";
@@ -14,16 +14,16 @@ export async function getSubmissionData() {
         document.getElementById("resultsInsert").insertAdjacentHTML("afterbegin", listHTML);
         document.getElementById("search").style.display = "none";
         document.getElementById("results").style.display = "flex";
-    });
+    }).catch((err) => console.log(err));
 }
 
-export async function deleteSubmission(submission: string, linkID: string) {
+async function deleteSubmission(submission: string, linkID: string) {
     document.getElementById(linkID).innerHTML = "deleting...";
-    _get(`/api/manage/${submission}/delete}`, linkID).then((response: { "status": number }) => {
+    _get(`/api/manage/${submission}/delete`, linkID).then((response: { "status": number }) => {
         if (response.status === 0xc83) {
             document.getElementById(linkID).innerHTML = "deleted!";
         }
-    });
+    }).catch((err) => console.log(err));
 }
 
 (window as any).newSearch = newSearch;
