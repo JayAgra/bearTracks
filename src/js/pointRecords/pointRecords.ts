@@ -2,7 +2,7 @@ import { _get } from "../_modules/get/get.min.js";
 
 async function getPointsData() {
     _get("/api/scouts/transactions/me", "viewMatchButton").then((listRes: any) => {
-        if (listRes.status = 0xcc1) {
+        if (listRes.status === 0xcc1) {
             document.getElementById("preInsert").insertAdjacentHTML("afterend", '<tr class="padded"><td>no data</td><td>no data</td></tr>');  
         } else {
             const types = {

@@ -108,6 +108,11 @@ function createChartConfig(type: string, data: chartJsData, name: string, max: n
     };
 }
 
+function setNoResults(): void {
+    (document.getElementById("error") as HTMLSpanElement).innerHTML = "&emsp;no results";
+    (document.getElementById("error") as HTMLSpanElement).style.display = "unset";
+}
+
 async function constructGraphs(): Promise<void> {
     var teamGraph: Array<eventWt>,
         completeMatches = [],
@@ -126,8 +131,7 @@ async function constructGraphs(): Promise<void> {
         }
 
         if (response.status === 204 || !response.ok) {
-            (document.getElementById("error") as HTMLSpanElement).innerHTML = "&emsp;no results";
-            (document.getElementById("error") as HTMLSpanElement).style.display = "unset";
+            setNoResults();
         }
 
         teamGraph = await response.json();
@@ -221,7 +225,6 @@ async function constructGraphs(): Promise<void> {
         (document.getElementById("search") as HTMLDivElement).style.display = "none";
         (document.getElementById("results") as HTMLDivElement).style.display = "flex";
     } catch (err: any) {
-        (document.getElementById("error") as HTMLSpanElement).innerHTML = "&emsp;no results";
-        (document.getElementById("error") as HTMLSpanElement).style.display = "unset";
+        setNoResults();
     }
 }

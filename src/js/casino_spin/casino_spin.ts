@@ -2,7 +2,11 @@ import { _get } from "../_modules/get/get.min.js"
 
 (window as any).alreadySpun = false;
 const spins: Array<number> = [10, 20, 50, -15, -25, -35,  -100, -50, 100, 250, -1000, 1250]
-
+function unableToGamble() {
+    (document.getElementById("result") as HTMLHeadingElement).innerHTML = "You have a balance of under -2000 points, you cannot gamble!";
+    (document.getElementById("result") as HTMLHeadingElement).style.display = "inherit";
+    throw new Error("unable to gamble");
+}
 async function spinWheel() {
     if ((window as any).alreadySpun) {} else {
         (window as any).alreadySpun = true;
@@ -10,9 +14,7 @@ async function spinWheel() {
         (document.getElementById("backBtn") as HTMLButtonElement).style.display = "none";
         _get("/api/casino/spinner/spinWheel", null).then(async (spinAPI) => {
             if (spinAPI.status === 0x1933) {
-                (document.getElementById("result") as HTMLHeadingElement).innerHTML = "You have a balance of under -2000 points, you cannot gamble!";
-                (document.getElementById("result") as HTMLHeadingElement).style.display = "inherit";
-                throw new Error("unable to gamble");
+                unableToGamble();
             } else {
                 const spin = spinAPI.spin;
                 (document.getElementById("wheel") as HTMLImageElement).className = "spinc" + spin;
@@ -27,10 +29,8 @@ async function spinWheel() {
                 (document.getElementById("backBtn") as HTMLButtonElement).style.display = "unset";
                 (window as any).alreadySpun = false;
             }
-        }).catch((err: any) => {
-            (document.getElementById("result") as HTMLHeadingElement).innerHTML = "You have a balance of under -2000 points, you cannot gamble!";
-            (document.getElementById("result") as HTMLHeadingElement).style.display = "inherit";
-            throw new Error("unable to gamble");
+        }).catch(() => {
+            unableToGamble();
         });
     }
 }

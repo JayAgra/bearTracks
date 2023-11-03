@@ -35,6 +35,10 @@ function createChartConfig(type, data, name, max) {
         }
     };
 }
+function setNoResults() {
+    document.getElementById("error").innerHTML = "&emsp;no results";
+    document.getElementById("error").style.display = "unset";
+}
 async function constructGraphs() {
     var teamGraph, completeMatches = [], processedMatches = [], chartLabels = [];
     try {
@@ -47,8 +51,7 @@ async function constructGraphs() {
             window.location.href = "/login";
         }
         if (response.status === 204 || !response.ok) {
-            document.getElementById("error").innerHTML = "&emsp;no results";
-            document.getElementById("error").style.display = "unset";
+            setNoResults();
         }
         teamGraph = await response.json();
         teamGraph.forEach((matchData) => {
@@ -137,7 +140,6 @@ async function constructGraphs() {
         document.getElementById("results").style.display = "flex";
     }
     catch (err) {
-        document.getElementById("error").innerHTML = "&emsp;no results";
-        document.getElementById("error").style.display = "unset";
+        setNoResults();
     }
 }
