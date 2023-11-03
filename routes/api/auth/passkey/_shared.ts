@@ -1,9 +1,8 @@
-import exp from "constants";
 import express from "express";
 import * as sqlite3 from "sqlite3";
 
 export type UserModel = {
-    id: string;
+    id: number;
     username: string;
     currentChallenge?: string;
     fullName: string;
@@ -33,44 +32,44 @@ export const rpName = "bearTracks";
 export const rpID = baseURLNoPcl;
 export const origin = `https://${rpID}`;
 
-export async function getUser(req: express.Request, authDb: sqlite3.Database): Promise<any> {
-    authDb.get("SELECT * FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
-        return result;
+export function getUser(req: express.Request, authDb: sqlite3.Database): UserModel | void {
+    authDb.get("SELECT * FROM users WHERE username=?", [req.user.username], (err: any, result: any) => {
+        return result as unknown as UserModel;
     });
     return;
 }
 
-export async function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): Promise<Authenticator[]> {
+export function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): Authenticator[] {
     authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
         return result as unknown[] as Authenticator[];
     });
     return [];
 }
 
-export async function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, challenge: string): Promise<void> {
+export function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, challenge: string): void {
     authDb.run("UPDATE users SET currentChallenge=? WHERE id=?", [challenge, req.user.id]);
 }
 
-export async function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): Promise<string> {
+export function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): string {
     authDb.get("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
         return result.currentChallenge;
     });
     return "";
 }
 
-export async function writePasskey(req: express.Request, authDb: sqlite3.Database, authenticator: Authenticator): Promise<void> {
+export function writePasskey(req: express.Request, authDb: sqlite3.Database, authenticator: Authenticator): void {
     authDb.run(
         "INSERT INTO passkeys (userId, credentialID, credentialPublicKey, counter, credentialDeviceType, credentialBackedUp) VALUES (?, ?, ?, ?, ?, ?)",
         [req.user.id, authenticator.credentialID, authenticator.credentialPublicKey, authenticator.counter, authenticator.credentialDeviceType, authenticator.credentialBackedUp]
     );
 }
 
-export async function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: Uint8Array): Promise<Authenticator | void> {
+export function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: Uint8Array): Authenticator | void {
     authDb.get("SELECT * FROM passkeys WHERE credentialId=?", [id], (err, res) => {
         return res;
     });
 }
 
-export async function updateAuthenticatorCounter(authDb: sqlite3.Database, id: Uint8Array, newCounter: number): Promise<void> {
+export function updateAuthenticatorCounter(authDb: sqlite3.Database, id: Uint8Array, newCounter: number): void {
     authDb.run("UPDATE passkeys SET counter=? WHERE credentialID=?", [newCounter, id]);
 }

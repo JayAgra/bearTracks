@@ -4,14 +4,14 @@ import * as SimpleWebAuthnServer from "@simplewebauthn/server";
 import { UserModel, Authenticator, getUser, getUserAuthenticators, setCurrentChallenge, rpName, rpID } from "./_shared";
 
 export async function createPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
-    const user: UserModel = await getUser(req, authDb) as UserModel;
+    const user: UserModel = getUser(req, authDb) as UserModel;
     const userAuthenticators: Authenticator[] = await getUserAuthenticators(req, authDb);
 
     const options = await SimpleWebAuthnServer.generateRegistrationOptions({
         rpName,
         rpID,
-        userID: user.id as string,
-        userName: user.username as string,
+        userID: user.id as unknown as string,
+        userName: user.username,
         attestationType: "none",
         excludeCredentials: userAuthenticators.map((authenticator) => ({
             id: authenticator.credentialID,

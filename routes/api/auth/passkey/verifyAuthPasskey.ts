@@ -38,10 +38,11 @@ export async function verifyAuthPasskey(req: express.Request, res: express.Respo
             result = dbResult;
         });
         const key = randomBytes(96).toString("hex");
-        const keyStmt: string = "INSERT INTO keys (key, userId, name, team, created, expires, admin, teamAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        const keyStmt: string = "INSERT INTO keys (key, userId, username, name, team, created, expires, admin, teamAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         const keyValues: Array<any> = [
             key,
             result.id,
+            result.username,
             result.fullName,
             result.team,
             String(Date.now()),
