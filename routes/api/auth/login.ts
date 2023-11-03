@@ -6,7 +6,7 @@ import * as Bun from "bun";
 import { log } from "console";
 
 type loginDataForm = {
-    "email": string,
+    "username": string,
     "password": string
 }
 
@@ -30,7 +30,7 @@ export async function checkLogIn(req: express.Request, res: express.Response, au
 
     req.on("end", async () => {
         let loginData: loginDataForm = parse(body) as unknown as loginDataForm;
-        authDb.get("SELECT id, fullName, team, passHash, salt, accessOk, admin, teamAdmin FROM users WHERE email=?", [loginData.email], async (err: any, result: authData | undefined) => {
+        authDb.get("SELECT id, fullName, team, passHash, salt, accessOk, admin, teamAdmin FROM users WHERE nickName=?", [loginData.username], async (err: any, result: authData | undefined) => {
             if (err) {
                 // res.status(500).json({ "status": 0x1f42 });
                 return res.redirect("/login?err=0");
