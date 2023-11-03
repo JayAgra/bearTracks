@@ -28,7 +28,7 @@ export type Authenticator = {
     transports?: AuthenticatorTransport[];
 };
 
-const { baseURLNoPcl } = require("../../../config.json");
+const { baseURLNoPcl } = require("../../../../config.json");
 export const rpName = "bearTracks";
 export const rpID = baseURLNoPcl;
 export const origin = `https://${rpID}`;
