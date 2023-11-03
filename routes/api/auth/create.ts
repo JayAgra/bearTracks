@@ -37,15 +37,15 @@ export async function createAccount(req: express.Request, res: express.Response,
                             targetTeam = result.team;
                             if (targetTeam !== 0) {
                                 const salt = randomBytes(32).toString("hex");
-                                const stmt = "INSERT INTO users (email, fullName, nickName, team, passHash, salt, admin, teamAdmin, accessOk, recentAttempts, lastLogin, score) VALUES (?, ?, ?, ?, ?, ?, 'false', 0, 'false', 0, ?, 0)";
+                                const stmt = "INSERT INTO users (email, fullName, nickName, team, method, passHash, salt, admin, teamAdmin, accessOk, score) VALUES (?, ?, ?, ?, ?, ?, ?, 'false', 0, 'false', 0)";
                                 const values = [
                                     escapeHTML(accountData.email),
                                     escapeHTML(accountData.fullName),
                                     escapeHTML(accountData.nickName),
                                     targetTeam,
+                                    "pw",
                                     await Bun.password.hash(accountData.password + salt),
                                     salt,
-                                    String(Date.now()),
                                 ];
                                 authDb.run(stmt, values, (err: any) => {
                                     if (err) {
