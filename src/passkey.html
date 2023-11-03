@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Create Passkey - bearTracks</title>
+        <meta name="robots" content="nositelinkssearchbox, nofollow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <script src="js/form/form.min.js"></script>
+    </head>
+    <body class="dark-mode centerText" onload="displayCreateErrors()">
+        <script>themeHandle()</script>
+        <div class="container">
+            <div class="dummy">
+                <h1 class="w3">bearTracks<br><span class="gametitle">CHARGED UP</span></h1>
+                <div>
+                    <h2 style="margin-top: 0; margin-bottom: 2rem">Create Passkey</h2>
+                    <h4 style="color: var(--gameFlairColor);" id="success"></h4>
+                    <h4 style="color: var(--cancelColor);" id="error"></h4>
+                    <button id="createPk" class="uiButton actionButton">Create Passkey</button>
+                </div>
+            </div>
+        </div>
+        <script type="module" src="js/createPasskey/createPasskey.min.mjs"></script>
+    </body>
+</html>

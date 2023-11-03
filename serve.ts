@@ -460,6 +460,12 @@ app.get("/browse", checkAuth, async (req: express.Request, res: express.Response
     res.sendFile("src/browse.html", { root: __dirname });
 });
 
+// make passkey
+app.get("/createPasskey", checkAuth, async (req: express.Request, res: express.Response) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/passkey.html", { root: __dirname });
+});
+
 // data browsing tool with detail
 app.get("/detail", checkAuth, async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -734,22 +740,22 @@ app.post("/loginForm", (req: express.Request, res: express.Response) => {
 });
 
 import { createPasskey } from "./routes/api/auth/passkey/createPasskey";
-app.get("/createPasskey", checkAuth, (req: express.Request, res: express.Response) => {
+app.get("/api/auth/createPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     createPasskey(req, res, authDb);
 });
 
 import { verifyPasskey } from "./routes/api/auth/passkey/verifyPasskey";
-app.post("/verifyPasskey", checkAuth, (req: express.Request, res: express.Response) => {
+app.post("/api/auth/verifyPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     verifyPasskey(req, res, authDb);
 });
 
 import { authPasskey } from "./routes/api/auth/passkey/authPasskey";
-app.get("/authPasskey", checkAuth, (req: express.Request, res: express.Response) => {
+app.get("/api/auth/authPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     authPasskey(req, res, authDb);
 });
 
 import { verifyAuthPasskey } from "./routes/api/auth/passkey/verifyAuthPasskey";
-app.post("/verifyAuthPasskey", checkAuth, (req: express.Request, res: express.Response) => {
+app.post("/api/auth/verifyAuthPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     verifyAuthPasskey(req, res, authDb);
 });
 
