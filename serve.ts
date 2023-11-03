@@ -372,43 +372,43 @@ app.get("/manageTeams", checkAuth, async (req: express.Request, res: express.Res
 
 // CSS (should be unused in favor of minified css)
 app.get("/float.css", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/float.css", { root: __dirname });
 });
 
 // minified css
 app.get("/float.min.css", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/float.min.css", { root: __dirname });
 });
 
 // font file
 app.get("/fonts/Raleway-300.ttf", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=233280000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
 });
 
 // font file
 app.get("/fonts/Raleway-500.ttf", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=233280000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
 });
 
 // JS for form (should be unused in favor of minified js)
 app.get("/form.js", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=31104000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/form.js", { root: __dirname });
 });
 
 // minified JS for form
 app.get("/form.min.js", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=15552000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/js/form.min.js", { root: __dirname });
 });
 
 // favicon
 app.get("/favicon.ico", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=311040000");
+    res.set("Cache-control", "public, max-age=9331200000");
     res.sendFile("src/favicon.ico", { root: __dirname });
 });
 

@@ -33,9 +33,9 @@ export const rpName = "bearTracks";
 export const rpID = baseURLNoPcl;
 export const origin = `https://${rpID}`;
 
-export async function getUser(req: express.Request, authDb: sqlite3.Database): Promise<UserModel | void> {
+export async function getUser(req: express.Request, authDb: sqlite3.Database): Promise<any> {
     authDb.get("SELECT * FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
-        return result as unknown as UserModel;
+        return result;
     });
     return;
 }
