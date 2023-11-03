@@ -136,7 +136,15 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err: any, result: keysDb | null) => {
             if (err || !result || Number(result.expires) < Date.now()) {
                 res.clearCookie("key");
-                req.user.id = 0;
+                req.user = {
+                    "id": 0,
+                    "name": "",
+                    "team": 0,
+                    "admin": "",
+                    "key": "",
+                    "expires": "",
+                    "teamAdmin": 0
+                };
             } else {
                 req.user = {
                     "id": result.userId,
