@@ -4,9 +4,9 @@ import * as sqlite3 from "sqlite3";
 
 export type UserModel = {
     id: string;
+    username: string;
     currentChallenge?: string;
     fullName: string;
-    nickName: string;
     team: number;
     method: string;
     passHash?: string;

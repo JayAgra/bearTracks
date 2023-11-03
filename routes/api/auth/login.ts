@@ -12,6 +12,7 @@ type loginDataForm = {
 
 type authData = {
     "id": number,
+    "username": string,
     "fullName": string,
     "team": number,
     "passHash": string,
@@ -30,7 +31,7 @@ export async function checkLogIn(req: express.Request, res: express.Response, au
 
     req.on("end", async () => {
         let loginData: loginDataForm = parse(body) as unknown as loginDataForm;
-        authDb.get("SELECT id, fullName, team, passHash, salt, accessOk, admin, teamAdmin FROM users WHERE nickName=?", [loginData.username], async (err: any, result: authData | undefined) => {
+        authDb.get("SELECT id, username, fullName, team, passHash, salt, accessOk, admin, teamAdmin FROM users WHERE username=?", [loginData.username], async (err: any, result: authData | undefined) => {
             if (err) {
                 // res.status(500).json({ "status": 0x1f42 });
                 return res.redirect("/login?err=0");
@@ -42,10 +43,11 @@ export async function checkLogIn(req: express.Request, res: express.Response, au
                     } else {
                         if (Bun.password.verifySync(loginData.password + result.salt, result.passHash)) {
                             const key = randomBytes(96).toString("hex");
-                            const keyStmt: string = "INSERT INTO keys (key, userId, name, team, created, expires, admin, teamAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                            const keyStmt: string = "INSERT INTO keys (key, userId, username, name, team, created, expires, admin, teamAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                             const keyValues: Array<any> = [
                                 key,
                                 result.id,
+                                result.username,
                                 result.fullName,
                                 result.team,
                                 String(Date.now()),

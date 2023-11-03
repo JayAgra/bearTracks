@@ -48,7 +48,7 @@ if [ "$1" ]; then
         fi
     elif [ "$1" = "removeadmin" ]; then
         if [ "$2" ]; then
-            sqlite3 data_auth.db "UPDATE users SET admin='false' WHERE nickName = $2;"
+            sqlite3 data_auth.db "UPDATE users SET admin='false' WHERE username = $2;"
             echo "if a user with username $2 exists, they no longer have admin access"
         else
             echo "no username provided (provide username of user to remove admin access from)"

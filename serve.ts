@@ -120,16 +120,17 @@ function invalidJSON(str: string) {
 }
 
 type keysDb = {
-    "id": number,
-    "key": string,
-    "userId": number,
-    "name": string,
-    "team": number,
-    "created": string,
-    "expires": string,
-    "admin": string,
-    "teamAdmin": number
-}
+    id: number;
+    key: string;
+    userId: number;
+    username: string;
+    name: string;
+    team: number;
+    created: string;
+    expires: string;
+    admin: string;
+    teamAdmin: number;
+};
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (req.cookies.key) {
@@ -138,6 +139,7 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
                 res.clearCookie("key");
                 req.user = {
                     "id": 0,
+                    "username": "",
                     "name": "",
                     "team": 0,
                     "admin": "",
@@ -148,6 +150,7 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
             } else {
                 req.user = {
                     "id": result.userId,
+                    "username": result.username,
                     "name": result.name,
                     "team": result.team,
                     "admin": result.admin,
@@ -161,6 +164,7 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
     } else {
         req.user = {
             "id": 0,
+            "username": "",
             "name": "",
             "team": 0,
             "admin": "",
@@ -565,7 +569,7 @@ app.get("/api/scouts/transactions/me", apiCheckAuth, async (req: express.Request
 
 // scout's profile
 import { scoutByID } from "./routes/api/scouts/scoutByID";
-app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request<{userId: string}>, res: express.Response) => {
+app.get("/api/scoutByID/:username", apiCheckAuth, async (req: express.Request<{username: string}>, res: express.Response) => {
     scoutByID(req, res, db);
 });
 

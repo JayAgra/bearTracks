@@ -11,7 +11,7 @@ export async function createPasskey(req: express.Request, res: express.Response,
         rpName,
         rpID,
         userID: user.id as string,
-        userName: user.fullName as string,
+        userName: user.username as string,
         attestationType: "none",
         excludeCredentials: userAuthenticators.map((authenticator) => ({
             id: authenticator.credentialID,
