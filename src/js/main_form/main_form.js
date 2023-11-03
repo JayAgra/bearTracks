@@ -131,7 +131,7 @@ function checkFormState() {
     return true;
 }
 window.checkFormState = checkFormState;
-setInterval(checkFormState, 5000);
+setInterval(checkFormState, 2000);
 //grid script
 function getAllCells() {
     var cells = [];

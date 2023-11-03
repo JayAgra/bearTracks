@@ -165,7 +165,7 @@ function checkFormState(): boolean {
     return true;
 }
 (window as any).checkFormState = checkFormState;
-setInterval(checkFormState, 5000);
+setInterval(checkFormState, 2000);
 
 
 //grid script

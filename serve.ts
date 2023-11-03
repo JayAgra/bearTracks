@@ -721,6 +721,26 @@ app.post("/loginForm", (req: express.Request, res: express.Response) => {
     checkLogIn(req, res, authDb);
 });
 
+import { createPasskey } from "./routes/api/auth/passkey/createPasskey";
+app.get("/createPasskey", (req: express.Request, res: express.Response) => {
+    createPasskey(req, res, authDb);
+});
+
+import { verifyPasskey } from "./routes/api/auth/passkey/verifyPasskey";
+app.post("/verifyPasskey", (req: express.Request, res: express.Response) => {
+    verifyPasskey(req, res, authDb);
+});
+
+import { authPasskey } from "./routes/api/auth/passkey/authPasskey";
+app.get("/authPasskey", (req: express.Request, res: express.Response) => {
+    authPasskey(req, res, authDb);
+});
+
+import { verifyAuthPasskey } from "./routes/api/auth/passkey/verifyAuthPasskey";
+app.post("/verifyAuthPasskey", (req: express.Request, res: express.Response) => {
+    verifyAuthPasskey(req, res, authDb);
+});
+
 // clear cookies, used for debugging
 app.get("/clearCookies", (req: express.Request, res: express.Response) => {
     authDb.run("DELETE FROM keys WHERE key=?", [req.cookies.key], () => {});

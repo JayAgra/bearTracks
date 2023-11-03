@@ -30,9 +30,9 @@
             <input value="0" type="number" name="game13" hidden><input value="0" type="number" name="game14" hidden><input value="0" type="number" name="game15" hidden><input value="0" type="number" name="game16" hidden><input value="0" type="number" name="game17" hidden><input value="0" type="number" name="game18" hidden><input value="0" type="number" name="game19" hidden><input value="0" type="number" name="game20" hidden><input value="0" type="number" name="game21" hidden><input value="0" type="number" name="game22" hidden><input value="0" type="number" name="game23" hidden><input value="0" type="number" name="game24" hidden><input value="0" type="number" name="game25" hidden>
             <br><h2 class="gameflair1">Post Game</h2>
             <fieldset><label>Cycle time <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br><input type="tel" name="game11" class="smallerInput" id="validateLength" required> seconds</fieldset>
-            <fieldset><label>Did the robot play defense? Explain.<br><br></label><textarea rows="2" cols="30" name="defend"></textarea></fieldset>
-            <fieldset><label>Thoughts about driving<br><br></label><textarea rows="2" cols="30" name="driving"></textarea></fieldset>
-            <fieldset><label>Overall assessment<br><br></label><textarea rows="4" cols="30" name="overall"></textarea></fieldset><br>
+            <fieldset><label>Did the robot play defense? Explain.<br><br></label><textarea rows="2" cols="30" name="defend" required></textarea></fieldset>
+            <fieldset><label>Thoughts about driving<br><br></label><textarea rows="2" cols="30" name="driving" required></textarea></fieldset>
+            <fieldset><label>Overall assessment<br><br></label><textarea rows="4" cols="30" name="overall" required></textarea></fieldset><br>
             <p style="text-align:center"><button type="button" class="uiButton actionButton" onclick="uploadForm()" id="submitButton" disabled="disabled">Submit</button><br><br><button type="button" class="uiButton cancelButton" onclick="window.location.href='/'">Back</button><br><br></p>
         </form>
         <div class="dummy" id="submitUi" style="display: none;">
