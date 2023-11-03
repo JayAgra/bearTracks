@@ -3,8 +3,5 @@
         "target": "ES2021",
         "module": "ES6",
         "skipLibCheck": true,
-    },
-    "paths": [
-        "passkey/pk.d.ts"
-    ]
+    }
 }

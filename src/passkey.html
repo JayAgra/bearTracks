@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
         <script src="js/form/form.min.js"></script>
     </head>
-    <body class="dark-mode centerText" onload="displayCreateErrors()">
+    <body class="dark-mode centerText">
         <script>themeHandle()</script>
         <div class="container">
             <div class="dummy">
@@ -22,6 +22,7 @@
                 </div>
             </div>
         </div>
-        <script type="module" src="js/createPasskey/createPasskey.min.mjs"></script>
+        <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
+        <script type="module" src="js/createPasskey/createPasskey.min.js"></script>
     </body>
 </html>

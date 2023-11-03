@@ -1,4 +1,3 @@
-import { startRegistration } from "https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js";
 import { _get } from "../_modules/get/get.js";
 const elemBegin = document.getElementById("createPk");
 const elemSuccess = document.getElementById("success");

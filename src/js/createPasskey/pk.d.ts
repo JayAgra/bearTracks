@@ -1,1 +1,0 @@
-declare module "https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js";
