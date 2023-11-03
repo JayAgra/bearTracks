@@ -41,17 +41,17 @@ if [ "$1" ]; then
         sqlite3 data_transact.db "DELETE FROM transactions;"
     elif [ "$1" = "grantadmin" ]; then
         if [ "$2" ]; then
-            sqlite3 data_auth.db "UPDATE users SET admin='true', accessOk='true' WHERE email = $2;"
-            echo "if a user with email $2 exists, they now have admin access"
+            sqlite3 data_auth.db "UPDATE users SET admin='true', accessOk='true' WHERE username = $2;"
+            echo "if a user with username $2 exists, they now have admin access"
         else
-            echo "no email provided (provide email of user to grant admin access to)"
+            echo "no username provided (provide username of user to grant admin access to)"
         fi
     elif [ "$1" = "removeadmin" ]; then
         if [ "$2" ]; then
-            sqlite3 data_auth.db "UPDATE users SET admin='false' WHERE email = $2;"
-            echo "if a user with email $2 exists, they no longer have admin access"
+            sqlite3 data_auth.db "UPDATE users SET admin='false' WHERE nickName = $2;"
+            echo "if a user with username $2 exists, they no longer have admin access"
         else
-            echo "no email provided (provide email of user to remove admin access from)"
+            echo "no username provided (provide username of user to remove admin access from)"
         fi
     else
         echo "invalid parameter provided."
@@ -66,8 +66,8 @@ if [ "$1" ]; then
         printf "backup\t\t\tbacks up entire database to backups dir\n"
         printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"
         printf "deltransactions\t\tpurges the transactions database\n"
-        printf "grantadmin\t\tgrant admin access to specified email address\n"
-        printf "removeadmin\t\tremove admin access from specified email address\n"
+        printf "grantadmin\t\tgrant admin access to specified username\n"
+        printf "removeadmin\t\tremove admin access from specified username\n"
     fi
 else
     echo "no parameter provided."
@@ -82,6 +82,6 @@ else
     printf "backup\t\t\tbacks up entire database to backups dir\n"
     printf "hardresetpoints\t\thard reset all scout points. no records remain.\n"
     printf "deltransactions\t\tpurges the transactions database\n"
-    printf "grantadmin\t\tgrant admin access to specified email address\n"
-    printf "removeadmin\t\tremove admin access from specified email address\n"
+    printf "grantadmin\t\tgrant admin access to specified username\n"
+    printf "removeadmin\t\tremove admin access from specified username\n"
 fi

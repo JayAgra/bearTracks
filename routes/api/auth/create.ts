@@ -7,7 +7,6 @@ import { escapeHTML } from "../../../src/escape";
 
 type createAccountForm = {
     "access": string,
-    "email": string,
     "fullName": string,
     "username": string,
     "password": string
