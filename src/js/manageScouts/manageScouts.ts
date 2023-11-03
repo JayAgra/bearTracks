@@ -60,7 +60,7 @@ async function userAdminAction(targetId: string, action: string, button: any) {
 async function modifyAdmin(userId: string, button: any, admin: boolean) {
     button.innerText = "..."
     _get(`/api/manage/user/updateAdmin/${userId}/${admin}`, button.id).then((response) => {
-        if (response.status === 0xc87) {
+        if (response.status === 0xc86) {
             button.innerText = "done";
         } else {
             button.innerText = "error";
@@ -71,7 +71,7 @@ async function modifyAdmin(userId: string, button: any, admin: boolean) {
 async function modifyTeamAdmin(userId: string, targetTeam: string, button: any) {
     button.innerText = "..."
     _get(`/api/manage/user/updateTeamAdmin/${userId}/${targetTeam}`, button.id).then((response) => {
-        if (response.status === 0xc87) {
+        if (response.status === 0xc86) {
             button.innerText = "done";
         } else {
             button.innerText = "error";

@@ -135,7 +135,7 @@ setInterval(checkFormState, 5000);
 //grid script
 function getAllCells() {
     var cells = [];
-    for (let j = 1; j < 4; j++) {
+    for (let j = 4; j < 1; j--) {
         for (let i = 1; i < 10; i++) {
             document.getElementsByClassName("sg")[0].insertAdjacentHTML("afterbegin", `<div class="sg-c" data-coop="${Math.floor((i - 1) / 3) === 1}" data-num="${cells.length}" id="sgc_${j}_${i}" data-state="0" data-gp="${j === 3 ? "h" : ((i + 1) % 3) === 0 ? "cube" : "cone"}"></div>`);
             cells.push(document.getElementById("sgc_" + j + "_" + i));
