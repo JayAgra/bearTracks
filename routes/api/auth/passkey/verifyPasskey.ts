@@ -1,6 +1,6 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
-import SimpleWebAuthnServer from "@simplewebauthn/server";
+import * as SimpleWebAuthnServer from "@simplewebauthn/server";
 const { baseURLNoPcl } = require("../../../config.json");
 import { Authenticator, UserModel, getUser, origin, rpID, writePasskey } from "./_shared";
 

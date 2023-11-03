@@ -1,6 +1,6 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
-import SimpleWebAuthnServer from "@simplewebauthn/server";
+import * as SimpleWebAuthnServer from "@simplewebauthn/server";
 import { Authenticator, UserModel, getUser, getUserAuthenticators, setCurrentChallenge, rpID } from "./_shared";
 
 export async function authPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {

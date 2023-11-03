@@ -1,6 +1,6 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
-import SimpleWebAuthnServer from "@simplewebauthn/server";
+import * as SimpleWebAuthnServer from "@simplewebauthn/server";
 import { randomBytes } from "crypto";
 import { Authenticator, UserModel, getUser, getUserAuthenticator, updateAuthenticatorCounter, origin, rpID } from "./_shared";
 
