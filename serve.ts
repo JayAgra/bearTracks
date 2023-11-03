@@ -730,22 +730,22 @@ app.post("/loginForm", (req: express.Request, res: express.Response) => {
 });
 
 import { createPasskey } from "./routes/api/auth/passkey/createPasskey";
-app.get("/createPasskey", (req: express.Request, res: express.Response) => {
+app.get("/createPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     createPasskey(req, res, authDb);
 });
 
 import { verifyPasskey } from "./routes/api/auth/passkey/verifyPasskey";
-app.post("/verifyPasskey", (req: express.Request, res: express.Response) => {
+app.post("/verifyPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     verifyPasskey(req, res, authDb);
 });
 
 import { authPasskey } from "./routes/api/auth/passkey/authPasskey";
-app.get("/authPasskey", (req: express.Request, res: express.Response) => {
+app.get("/authPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     authPasskey(req, res, authDb);
 });
 
 import { verifyAuthPasskey } from "./routes/api/auth/passkey/verifyAuthPasskey";
-app.post("/verifyAuthPasskey", (req: express.Request, res: express.Response) => {
+app.post("/verifyAuthPasskey", checkAuth, (req: express.Request, res: express.Response) => {
     verifyAuthPasskey(req, res, authDb);
 });
 
