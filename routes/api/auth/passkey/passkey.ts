@@ -115,7 +115,7 @@ export async function _verifyRegistration(req: express.Request, res: express.Res
     try {
         const opts: VerifyRegistrationResponseOpts = {
             response: body,
-            expectedChallenge: `${expectedChallenge}`,
+            expectedChallenge: expectedChallenge,
             expectedOrigin: `https://${baseURLNoPcl}`,
             expectedRPID: baseURLNoPcl,
             requireUserVerification: true,
