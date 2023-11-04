@@ -7,7 +7,7 @@ async function getData() {
                 listHTML += `<tr class="padded"><td>${response[i].nickName}</td><td><div class="inlineInput"><button class="uiButton cancelButton" onclick="disown('${response[i].id}', this)">disown user</button></div></td></tr>`;
             }
             else {
-                listHTML += `<tr class="padded"><td>${response[i].nickName}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveTeamUser('${response[i].id}', this)">approve user</button></div></td></tr>`;
+                listHTML += `<tr class="padded"><td>${response[i].nickName}</td><td><div class="inlineInput"><button class="uiButton returnButton" onclick="approveTeamUser('${response[i].id}', this)">re-approve user</button></div></td></tr>`;
             }
         }
         document.getElementById("tableHeader").insertAdjacentHTML("afterend", listHTML);

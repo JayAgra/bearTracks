@@ -24,21 +24,7 @@
                         <option value="WOOD">WOOD - CalGames</option>
                         <option value="CCCC" selected>CCCC - Capital City Classic</option>
                     </select><br><br>
-                    <select name="type" id="weightType">
-                        <option value="0" selected>standard weight</option>
-                        <option value="1">grid point weight</option>
-                        <option value="2">cube weight</option>
-                        <option value="3">cone weight</option>
-                        <option value="4">bottom row weight</option>
-                        <option value="5">middle row weight</option>
-                        <option value="6">top row weight</option>
-                        <option value="7">bottom row cube weight</option>
-                        <option value="8">bottom row cone weight</option>
-                        <option value="9">middle row cube weight</option>
-                        <option value="10">middle row cone weight</option>
-                        <option value="11">top row cube weight</option>
-                        <option value="12">top row cone weight</option>
-                    </select>
+                    <select name="type" id="weightType"><option value="0" selected>standard weight</option><option value="1">grid point weight</option><option value="2">cube weight</option><option value="3">cone weight</option><option value="4">bottom row weight</option><option value="5">middle row weight</option><option value="6">top row weight</option><option value="7">bottom row cube weight</option><option value="8">bottom row cone weight</option><option value="9">middle row cube weight</option><option value="10">middle row cone weight</option><option value="11">top row cube weight</option><option value="12">top row cone weight</option></select>
                 </fieldset>
                 <button type="button" class="uiButton actionButton" id="viewTeamsButton" onclick="getTeamRanks()">View</button><br>
                 <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
@@ -51,13 +37,7 @@
                 <fieldset>
                     <fieldset>
                         <h3 id="eventCodeDisplay"></h3>
-                        <table>
-                            <tr id="preInsert">
-                                <th>Rank</th>
-                                <th>Team Number</th>
-                                <th colspan="2">Match Performance Score (Avg)</th>
-                            </tr>
-                        </table>
+                        <table><tr id="preInsert"><th>Rank</th><th>Team Number</th><th colspan="2">Match Performance Score (Avg)</th></tr></table>
                     </fieldset>
                     <button type="button" class="uiButton returnButton" onclick="window.location.href='/browse'">Back</button>
                 </fieldset>

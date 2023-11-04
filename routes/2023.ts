@@ -1,10 +1,13 @@
 /*jslint node: true*/
 /*jslint es6*/
 "use strict";
-const saModule = require("./sentiment-analysis.js");
 
-function boolToNum(val) {
-    if (val) {
+import * as sqlite3 from "sqlite3";
+
+import { analyze } from "./sentiment-analysis.js";
+
+function boolToNum(val: string): number {
+    if (Boolean(val) && val !== "undefined") {
         return 1;
     } else {
         return 0;
@@ -72,15 +75,54 @@ function boolToNum(val) {
 // attended is INT how many other events has team attended
 // overall is STRING overall thoughts
 
-function weightScores(submissionID, db) {
-    db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result) => {
+type mainFormResult = {
+    event: string;
+    season: number;
+    team: number;
+    match: number;
+    level: string;
+    game1: string;
+    game2: string;
+    game3: string;
+    game4: string;
+    game5: string;
+    game6: string;
+    game7: string;
+    game8: string;
+    game9: string;
+    game10: string;
+    game11: string;
+    game12: string;
+    game13: string;
+    game14: string;
+    game15: string;
+    game16: string;
+    game17: string;
+    game18: string;
+    game19: string;
+    game20: string;
+    game21: string;
+    game22: string;
+    game23: string;
+    game24: string;
+    game25: string;
+    defend: string;
+    driving: string;
+    overall: string;
+    userId: string;
+    name: string;
+    weight: string;
+    analysis: string;
+};
+export function weightScores(submissionID: number, db: sqlite3.Database) {
+    db.get(`SELECT * FROM main WHERE id=${submissionID} LIMIT 1`, (err, result: mainFormResult) => {
         if (result && !err) {
-            var analysisResults = [];
-            var score = 0;
+            var analysisResults: Array<number> = [];
+            var score: number = 0;
             //teleop, defend, driving, overall
-            analysisResults.push(saModule.analyze(result.defend));
-            analysisResults.push(saModule.analyze(result.driving));
-            analysisResults.push(saModule.analyze(result.overall));
+            analysisResults.push(analyze(result.defend));
+            analysisResults.push(analyze(result.driving));
+            analysisResults.push(analyze(result.overall));
             console.log(analysisResults);
 
             // MAXIMUM SCORE: 15
@@ -91,8 +133,8 @@ function weightScores(submissionID, db) {
 
             // MAXIMUM 11
             // charging pts
-            score = score + result.game5 / 2;
-            score = score + result.game10 / 2;
+            score = score + Number(result.game5) / 2;
+            score = score + Number(result.game10) / 2;
 
             // MAXIMUM 26
             // auto pts
@@ -110,22 +152,22 @@ function weightScores(submissionID, db) {
 
             // MAXIMUM 38
             // grid items
-            var cubes = 0,
-                cones = 0,
-                gridWt = 0,
-                low = 0,
-                mid = 0,
-                high = 0,
-                lowCube = 0,
-                lowCone = 0,
-                midCube = 0,
-                midCone = 0,
-                highCube = 0,
-                highCone = 0,
-                fullGrid = !result.game12.split("").includes("0");
+            var cubes: number = 0,
+                cones: number = 0,
+                gridWt: number = 0,
+                low: number = 0,
+                mid: number = 0,
+                high: number = 0,
+                lowCube: number = 0,
+                lowCone: number = 0,
+                midCube: number = 0,
+                midCone: number = 0,
+                highCube: number = 0,
+                highCone: number = 0,
+                fullGrid: boolean = !result.game12.split("").includes("0");
 
             // process content of grid
-            result.game12.split("").forEach((item, index) => {
+            result.game12.split("").forEach((item: string, index: number) => {
                 if (index <= 8 && item != "0") {
                     // high row
                     high++;
@@ -231,10 +273,10 @@ function weightScores(submissionID, db) {
             // 10 - middle row cone
             // 11 - top row cube
             // 12 - top row cone
-            const mpsScores = [score, score + 2 * gridWt, score * (cubes / 15), score * (cones / 22), score * (low / 9), score * (mid / 9), score * (high / 9), score * (lowCube / 9), score * (lowCone / 9), score * (midCube / 9), score * (midCone / 9), score * (highCube / 9), score * (highCone / 9)];
-            const updateSubmissionStmt = "UPDATE main SET weight=?, analysis=?, game21=?, game13=?, game14=?, game15=?, game16=?, game17=?, game18=?, game19=?, game20=?, game23=?, game24=?, game25=? WHERE id=?";
-            const updateSubmissionValues = [mpsScores.join(","), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, gridWt, submissionID];
-            db.run(updateSubmissionStmt, updateSubmissionValues, (err) => {
+            const mpsScores: Array<number> = [score, score + 2 * gridWt, score * (cubes / 15), score * (cones / 22), score * (low / 9), score * (mid / 9), score * (high / 9), score * (lowCube / 9), score * (lowCone / 9), score * (midCube / 9), score * (midCone / 9), score * (highCube / 9), score * (highCone / 9)];
+            const updateSubmissionStmt: string = "UPDATE main SET weight=?, analysis=?, game21=?, game13=?, game14=?, game15=?, game16=?, game17=?, game18=?, game19=?, game20=?, game23=?, game24=?, game25=? WHERE id=?";
+            const updateSubmissionValues: Array<any> = [mpsScores.join(","), analysisResults.toString(), lowCube, lowCone, midCube, midCone, highCube, highCone, low, mid, high, cubes, cones, gridWt, submissionID];
+            db.run(updateSubmissionStmt, updateSubmissionValues, (err: any) => {
                 if (err) {
                     console.log("Error updating DB!");
                 }
@@ -244,7 +286,3 @@ function weightScores(submissionID, db) {
         }
     });
 }
-
-module.exports = {
-    weightScores
-};

@@ -35,6 +35,7 @@ nextBtn.addEventListener("click", async () => {
             passwordLoginButton.classList.add("nextStepPw");
             createAccountButton.classList.add("moveDown");
             infoInput.id = "pwLoginButton";
+            infoInput.reset();
             isPkBtn = true;
         }
     } else {
