@@ -128,3 +128,8 @@
     top: 102px;
     right: -18px;
 }
+
+.gruvboxBlackjack {
+    background-image: url(../assets/gruvcards/honerkamp-bkg.jpeg);
+    background-repeat: repeat-y;
+}

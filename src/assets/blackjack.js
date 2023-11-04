@@ -104,6 +104,9 @@ function setupBoard() {
     document.getElementsByClassName("dealer2")[0].src = `${document.getElementById("deck").value}card_back.png`;
     document.getElementsByClassName("player1")[0].src = `${document.getElementById("deck").value}card_back.png`;
     document.getElementsByClassName("player2")[0].src = `${document.getElementById("deck").value}card_back.png`;
+    if (document.getElementById("deck").value === "assets/gruvcards/") {
+        document.body.classList.add("gruvboxBlackjack");
+    }
 }
 function drawCard(src, card) {
     document.getElementsByClassName(card)[0].src = src;

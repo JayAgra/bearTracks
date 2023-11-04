@@ -98,6 +98,10 @@ function setupBoard() {
     (document.getElementsByClassName("dealer2")[0] as HTMLImageElement).src = `${(document.getElementById("deck") as HTMLInputElement).value}card_back.png`;
     (document.getElementsByClassName("player1")[0] as HTMLImageElement).src = `${(document.getElementById("deck") as HTMLInputElement).value}card_back.png`;
     (document.getElementsByClassName("player2")[0] as HTMLImageElement).src = `${(document.getElementById("deck") as HTMLInputElement).value}card_back.png`;
+
+    if ((document.getElementById("deck") as HTMLInputElement).value === "assets/gruvcards/") {
+        document.body.classList.add("gruvboxBlackjack");
+    }
 }
 
 function drawCard(src: string, card: string) {
