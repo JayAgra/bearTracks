@@ -5,14 +5,14 @@ import { Authenticator, getUserCurrentChallenge, origin, rpID, writePasskey } fr
 
 export async function verifyPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const expectedChallenge: string = getUserCurrentChallenge(req, authDb);
-    let verification;
 
+    let verification;
     try {
         verification = await SimpleWebAuthnServer.verifyRegistrationResponse({
-            response: req.body,
-            expectedChallenge,
+            response: JSON.parse(req.body),
+            expectedChallenge: expectedChallenge,
             expectedOrigin: origin,
-            expectedRPID: rpID
+            expectedRPID: rpID,
         });
     } catch (error: any) {
         console.error(error);
@@ -30,6 +30,6 @@ export async function verifyPasskey(req: express.Request, res: express.Response,
         credentialDeviceType: registrationInfo?.credentialDeviceType as string,
         credentialBackedUp: registrationInfo?.credentialBackedUp as boolean,
     }
-    await writePasskey(req, authDb, newAuthenticator);
+    writePasskey(req, authDb, newAuthenticator);
     return res.status(200).json({ "verified": verified });
 }

@@ -7,7 +7,7 @@ export async function authPasskey(req: express.Request, res: express.Response, a
     const userAuthenticators: Authenticator[] = getUserAuthenticators(req, authDb);
 
     const options = await SimpleWebAuthnServer.generateAuthenticationOptions({
-        rpID,
+        rpID: rpID,
         allowCredentials: userAuthenticators.map((authenticator) => ({
             id: authenticator.credentialID,
             type: "public-key",

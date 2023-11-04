@@ -15,12 +15,12 @@ export async function verifyAuthPasskey(req: express.Request, res: express.Respo
     let verification;
     try {
         verification = await SimpleWebAuthnServer.verifyAuthenticationResponse({
-            response: req.body,
-            expectedChallenge,
+            response: JSON.parse(req.body),
+            expectedChallenge: expectedChallenge,
             expectedOrigin: origin,
             expectedRPID: rpID,
-            authenticator: (authenticator as unknown as Authenticator),
-        })
+            authenticator: authenticator as unknown as Authenticator,
+        });
     } catch (error: any) {
         console.error(error);
         return res.status(400).send({ error: error.message });

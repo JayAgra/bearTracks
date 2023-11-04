@@ -7,8 +7,8 @@ export async function createPasskey(req: express.Request, res: express.Response,
     const userAuthenticators: Authenticator[] = getUserAuthenticators(req, authDb);
 
     const options = await SimpleWebAuthnServer.generateRegistrationOptions({
-        rpName,
-        rpID,
+        rpName: rpName,
+        rpID: rpID,
         userID: String(req.user.id),
         userName: req.user.username,
         attestationType: "none",
