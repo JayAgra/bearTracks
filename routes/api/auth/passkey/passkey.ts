@@ -65,6 +65,7 @@ function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, cha
 }
 
 export async function _generateRegistrationOptions(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
+    const userAuthenticators = await getUserAuthenticators(req, authDb);
     const opts: GenerateRegistrationOptionsOpts = {
         rpName: "bearTracks",
         rpID: baseURLNoPcl,
@@ -72,14 +73,14 @@ export async function _generateRegistrationOptions(req: express.Request, res: ex
         userName: req.user.username,
         timeout: 60000,
         attestationType: "none",
-        excludeCredentials: await getUserAuthenticators(req, authDb).map((device: any) => ({
+        excludeCredentials: userAuthenticators.map((device: any) => ({
             id: device.credentialID,
             type: "public-key",
         })),
         authenticatorSelection: {
             residentKey: "discouraged",
             userVerification: "preferred",
-            authenticatorAttachment: "platform"
+            authenticatorAttachment: "platform",
         },
         supportedAlgorithmIDs: [-7, -257],
     };
