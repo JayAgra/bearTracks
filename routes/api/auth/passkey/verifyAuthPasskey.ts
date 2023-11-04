@@ -2,12 +2,11 @@ import express from "express";
 import * as sqlite3 from "sqlite3";
 import * as SimpleWebAuthnServer from "@simplewebauthn/server";
 import { randomBytes } from "crypto";
-import { Authenticator, UserModel, getUser, getUserAuthenticator, updateAuthenticatorCounter, origin, rpID } from "./_shared";
+import { Authenticator, getUserCurrentChallenge, getUserAuthenticator, updateAuthenticatorCounter, origin, rpID } from "./_shared";
 
 export async function verifyAuthPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
-    const user: UserModel = await getUser(req, authDb) as UserModel;
-    const expectedChallenge: string = user.currentChallenge as string;
-    const authenticator = await getUserAuthenticator(req, authDb, JSON.parse(req.body).id);
+    const expectedChallenge: string = getUserCurrentChallenge(req, authDb);
+    const authenticator = getUserAuthenticator(req, authDb, JSON.parse(req.body).id);
 
     if (!authenticator) {
         return res.status(400).end();

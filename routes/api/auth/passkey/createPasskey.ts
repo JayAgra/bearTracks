@@ -1,7 +1,7 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
 import * as SimpleWebAuthnServer from "@simplewebauthn/server";
-import { UserModel, Authenticator, getUser, getUserAuthenticators, setCurrentChallenge, rpName, rpID } from "./_shared";
+import { Authenticator, getUserAuthenticators, setCurrentChallenge, rpName, rpID } from "./_shared";
 
 export async function createPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const userAuthenticators: Authenticator[] = getUserAuthenticators(req, authDb);
