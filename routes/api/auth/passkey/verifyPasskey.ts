@@ -5,7 +5,7 @@ import { Authenticator, getUserCurrentChallenge, origin, rpID, writePasskey } fr
 
 export async function verifyPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const expectedChallenge: string = getUserCurrentChallenge(req, authDb);
-
+    console.log(expectedChallenge);
     let verification;
     try {
         verification = await SimpleWebAuthnServer.verifyRegistrationResponse({

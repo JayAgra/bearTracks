@@ -32,22 +32,20 @@ export const rpName = "bearTracks";
 export const rpID = baseURLNoPcl;
 export const origin = `https://${rpID}`;
 
-export function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): Authenticator[] {
+export function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): any {
     authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
         return result as unknown[] as Authenticator[];
     });
-    return [];
 }
 
 export function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, challenge: string): void {
     authDb.run("UPDATE users SET currentChallenge=? WHERE id=?", [challenge, req.user.id]);
 }
 
-export function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): string {
-    authDb.get("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
+export function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): any {
+    authDb.get("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: { currentChallenge: string }) => {
         return result.currentChallenge;
     });
-    return "";
 }
 
 export function writePasskey(req: express.Request, authDb: sqlite3.Database, authenticator: Authenticator): void {
