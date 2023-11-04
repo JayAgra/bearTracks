@@ -10,7 +10,7 @@ const nextBtn = document.getElementById("next"),
     createAccountButton = document.getElementById("createAct"),
     errorElement = document.getElementById("errorElement");
 
-nextBtn.onclick = async () => {
+nextBtn.addEventListener("click", async () => {
     errorElement.innerText = "";
     if (!isPkBtn) {
         if (infoInput.value.length === 0) {
@@ -33,11 +33,12 @@ nextBtn.onclick = async () => {
             passwordLoginButton.style.display = "";
             passwordLoginButton.classList.add("nextStepPw");
             createAccountButton.classList.add("moveDown");
+            infoInput.id = "pwLoginButton";
             isPkBtn = true;
         }
     } else {
         let attResp;
-        _get("/api/auth/authPasskey", "error").then(async (response) => {
+        await _get("/api/auth/authPasskey", "error").then(async (response) => {
             attResp = await SimpleWebAuthnBrowser.startAuthentication(response);
         }).catch((error) => {
             errorElement.innerText = "unknown error getting challenge"
@@ -59,7 +60,7 @@ nextBtn.onclick = async () => {
             window.location.reload();
         }
     }
-}
+});
 
 passwordLoginButton.onclick = () => {
     document.getElementById("artUsername").value = setUsername;

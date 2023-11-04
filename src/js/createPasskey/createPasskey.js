@@ -6,7 +6,7 @@ elemBegin.addEventListener("click", async () => {
     elemSuccess.innerHTML = "";
     elemError.innerHTML = "";
     let attResp;
-    _get("/api/auth/createPasskey", "error").then(async (response) => {
+    await _get("/api/auth/createPasskey", "error").then(async (response) => {
         attResp = await SimpleWebAuthnBrowser.startRegistration(response);
     }).catch((error) => {
         if (error.name === "InvalidStateError") {
