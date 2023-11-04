@@ -4,7 +4,7 @@ import * as SimpleWebAuthnServer from "@simplewebauthn/server";
 import { Authenticator, getUserCurrentChallenge, origin, rpID, writePasskey } from "./_shared";
 
 export async function verifyPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
-    const expectedChallenge: string = getUserCurrentChallenge(req, authDb);
+    const expectedChallenge: string = await getUserCurrentChallenge(req, authDb);
     console.log(expectedChallenge);
     let verification;
     try {

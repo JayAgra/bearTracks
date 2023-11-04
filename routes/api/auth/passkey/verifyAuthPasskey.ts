@@ -5,8 +5,8 @@ import { randomBytes } from "crypto";
 import { Authenticator, getUserCurrentChallenge, getUserAuthenticator, updateAuthenticatorCounter, origin, rpID } from "./_shared";
 
 export async function verifyAuthPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
-    const expectedChallenge: string = getUserCurrentChallenge(req, authDb);
-    const authenticator = getUserAuthenticator(req, authDb, JSON.parse(req.body).id);
+    const expectedChallenge: string = await getUserCurrentChallenge(req, authDb);
+    const authenticator = await getUserAuthenticator(req, authDb, JSON.parse(req.body).id);
 
     if (!authenticator) {
         return res.status(400).end();

@@ -33,10 +33,15 @@ export const rpID = baseURLNoPcl;
 export const origin = `https://${rpID}`;
 
 export function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): any {
-    authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
-        return result as unknown[] as Authenticator[];
+    return new Promise((resolve, reject) => {
+        authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(result as unknown[] as Authenticator[]);
+            }
+        });
     });
-    return [];
 }
 
 export function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, challenge: string): void {
@@ -44,8 +49,14 @@ export function setCurrentChallenge(req: express.Request, authDb: sqlite3.Databa
 }
 
 export function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): any {
-    authDb.get("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: { currentChallenge: string }) => {
-        return result.currentChallenge;
+    return new Promise((resolve, reject) => {
+        authDb.all("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(result.currentChallenge);
+            }
+        });
     });
 }
 
@@ -56,9 +67,15 @@ export function writePasskey(req: express.Request, authDb: sqlite3.Database, aut
     );
 }
 
-export function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: Uint8Array): Authenticator | void {
-    authDb.get("SELECT * FROM passkeys WHERE credentialId=?", [id], (err, res) => {
-        return res;
+export function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: Uint8Array): any {
+    return new Promise((resolve, reject) => {
+        authDb.all("SELECT * FROM passkeys WHERE credentialId=?", [id], (err: any, result: any) => {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(result);
+            }
+        });
     });
 }
 

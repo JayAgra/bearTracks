@@ -1,10 +1,10 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
 import * as SimpleWebAuthnServer from "@simplewebauthn/server";
-import { Authenticator, UserModel, getUserAuthenticators, setCurrentChallenge, rpID } from "./_shared";
+import { Authenticator, getUserAuthenticators, setCurrentChallenge, rpID } from "./_shared";
 
 export async function authPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
-    const userAuthenticators: Authenticator[] = getUserAuthenticators(req, authDb);
+    const userAuthenticators: Authenticator[] = await getUserAuthenticators(req, authDb);
 
     const options = await SimpleWebAuthnServer.generateAuthenticationOptions({
         rpID: rpID,
