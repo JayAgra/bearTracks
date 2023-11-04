@@ -1,6 +1,6 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
-import * as SimpleWebAuthnServer from "@simplewebauthn/server";
+import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { randomBytes } from "crypto";
 import { Authenticator, getUserCurrentChallenge, getUserAuthenticator, updateAuthenticatorCounter, origin, rpID } from "./_shared";
 
@@ -14,7 +14,7 @@ export async function verifyAuthPasskey(req: express.Request, res: express.Respo
 
     let verification;
     try {
-        verification = await SimpleWebAuthnServer.verifyAuthenticationResponse({
+        verification = await verifyAuthenticationResponse({
             response: req.body,
             expectedChallenge: expectedChallenge,
             expectedOrigin: origin,

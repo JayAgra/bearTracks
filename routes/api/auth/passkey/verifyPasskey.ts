@@ -1,6 +1,6 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
-import * as SimpleWebAuthnServer from "@simplewebauthn/server";
+import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import { Authenticator, getUserCurrentChallenge, origin, rpID, writePasskey } from "./_shared";
 
 export async function verifyPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
@@ -8,11 +8,12 @@ export async function verifyPasskey(req: express.Request, res: express.Response,
     console.log(expectedChallenge);
     let verification;
     try {
-        verification = await SimpleWebAuthnServer.verifyRegistrationResponse({
+        verification = await verifyRegistrationResponse({
             response: req.body,
             expectedChallenge: expectedChallenge,
             expectedOrigin: origin,
             expectedRPID: rpID,
+            supportedAlgorithmIDs: [-8, -7, -257]
         });
     } catch (error: any) {
         console.error(error);
