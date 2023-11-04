@@ -739,24 +739,24 @@ app.post("/loginForm", (req: express.Request, res: express.Response) => {
     checkLogIn(req, res, authDb);
 });
 
-import { createPasskey } from "./routes/api/auth/passkey/createPasskey";
+import { _generateRegistrationOptions } from "./routes/api/auth/passkey/passkey";
 app.get("/api/auth/createPasskey", checkAuth, (req: express.Request, res: express.Response) => {
-    createPasskey(req, res, authDb);
+    _generateRegistrationOptions(req, res, authDb);
 });
 
-import { verifyPasskey } from "./routes/api/auth/passkey/verifyPasskey";
+import { _verifyRegistration } from "./routes/api/auth/passkey/passkey";
 app.post("/api/auth/verifyPasskey", checkAuth, (req: express.Request, res: express.Response) => {
-    verifyPasskey(req, res, authDb);
+    _verifyRegistration(req, res, authDb);
 });
 
-import { authPasskey } from "./routes/api/auth/passkey/authPasskey";
+import { _generateAuthenticationOptions } from "./routes/api/auth/passkey/passkey";
 app.get("/api/auth/authPasskey", checkAuth, (req: express.Request, res: express.Response) => {
-    authPasskey(req, res, authDb);
+    _generateAuthenticationOptions(req, res, authDb);
 });
 
-import { verifyAuthPasskey } from "./routes/api/auth/passkey/verifyAuthPasskey";
+import { _verifyAuthenticationResponse } from "./routes/api/auth/passkey/passkey";
 app.post("/api/auth/verifyAuthPasskey", checkAuth, (req: express.Request, res: express.Response) => {
-    verifyAuthPasskey(req, res, authDb);
+    _verifyAuthenticationResponse(req, res, authDb);
 });
 
 // clear cookies, used for debugging
