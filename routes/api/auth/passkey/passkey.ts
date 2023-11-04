@@ -145,8 +145,6 @@ export async function _verifyRegistration(req: express.Request, res: express.Res
         }
     }
 
-    setCurrentChallenge(req, authDb, "");
-
     res.send({ verified });
 }
 
@@ -224,8 +222,6 @@ export async function _verifyAuthenticationResponse(req: express.Request, res: e
     if (verified) {
         updateAuthenticatorCounter(authDb, isoBase64URL.toBuffer(body.rawId), authenticationInfo.newCounter);
     }
-
-    setCurrentChallenge(req, authDb, "");
 
     res.send({ verified });
 }
