@@ -36,6 +36,7 @@ export function getUserAuthenticators(req: express.Request, authDb: sqlite3.Data
     authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
         return result as unknown[] as Authenticator[];
     });
+    return [];
 }
 
 export function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, challenge: string): void {
