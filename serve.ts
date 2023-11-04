@@ -751,12 +751,12 @@ app.post("/api/auth/verifyPasskey", checkAuth, (req: express.Request, res: expre
 });
 
 import { _generateAuthenticationOptions } from "./routes/api/auth/passkey/passkey";
-app.get("/api/auth/authPasskey/:username", checkAuth, (req: express.Request, res: express.Response) => {
+app.get("/api/auth/authPasskey/:username", (req: express.Request, res: express.Response) => {
     _generateAuthenticationOptions(req, res, authDb);
 });
 
 import { _verifyAuthenticationResponse } from "./routes/api/auth/passkey/passkey";
-app.post("/api/auth/verifyAuthPasskey", checkAuth, (req: express.Request, res: express.Response) => {
+app.post("/api/auth/verifyAuthPasskey", (req: express.Request, res: express.Response) => {
     _verifyAuthenticationResponse(req, res, authDb);
 });
 
