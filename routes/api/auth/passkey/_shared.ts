@@ -32,13 +32,6 @@ export const rpName = "bearTracks";
 export const rpID = baseURLNoPcl;
 export const origin = `https://${rpID}`;
 
-export function getUser(req: express.Request, authDb: sqlite3.Database): UserModel | void {
-    authDb.get("SELECT * FROM users WHERE username=?", [req.user.username], (err: any, result: any) => {
-        return result as unknown as UserModel;
-    });
-    return;
-}
-
 export function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): Authenticator[] {
     authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
         return result as unknown[] as Authenticator[];

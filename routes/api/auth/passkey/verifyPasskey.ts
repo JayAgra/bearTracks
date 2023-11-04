@@ -1,11 +1,10 @@
 import express from "express";
 import * as sqlite3 from "sqlite3";
 import * as SimpleWebAuthnServer from "@simplewebauthn/server";
-import { Authenticator, UserModel, getUser, origin, rpID, writePasskey } from "./_shared";
+import { Authenticator, getUserCurrentChallenge, origin, rpID, writePasskey } from "./_shared";
 
 export async function verifyPasskey(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
-    const user: UserModel = (await getUser(req, authDb)) as UserModel;
-    const expectedChallenge: string = user.currentChallenge as string;
+    const expectedChallenge: string = getUserCurrentChallenge(req, authDb);
     let verification;
 
     try {
