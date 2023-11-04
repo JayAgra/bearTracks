@@ -203,9 +203,9 @@ export async function _generateAuthenticationOptions(req: express.Request, res: 
     res.send(options);
 }
 
-function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: string): Promise<dbAuthenticator> {
+function getUserAuthenticator(authDb: sqlite3.Database, id: string): Promise<dbAuthenticator> {
     return new Promise((resolve, reject) => {
-        authDb.all("SELECT * FROM passkeys WHERE credentialId=?", [id], (err: any, result: dbAuthenticator) => {
+        authDb.all("SELECT * FROM passkeys WHERE credentialID=?", [id], (err: any, result: dbAuthenticator) => {
             if (err) {
                 return reject(err);
             } else {
@@ -222,7 +222,7 @@ function updateAuthenticatorCounter(authDb: sqlite3.Database, id: string, newCou
 export async function _verifyAuthenticationResponse(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const body: AuthenticationResponseJSON = req.body;
     const expectedChallenge = await getAnyUserAuthenticators(req, authDb, req.params.username);
-    const authenticator: dbAuthenticator = await getUserAuthenticator(req, authDb, body.rawId).catch((err: any) => {
+    const authenticator: dbAuthenticator = await getUserAuthenticator(authDb, body.id).catch((err: any) => {
         return res.status(400).send({ error: "invalid authenticator" })
     }) as unknown as dbAuthenticator;
     if (!authenticator.credentialID) {
