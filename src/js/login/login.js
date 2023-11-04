@@ -38,7 +38,7 @@ nextBtn.addEventListener("click", async () => {
         }
     } else {
         let attResp;
-        await _get("/api/auth/authPasskey", "error").then(async (response) => {
+        await _get("/api/auth/authPasskey/" + setUsername, "error").then(async (response) => {
             attResp = await SimpleWebAuthnBrowser.startAuthentication(response);
         }).catch((error) => {
             errorElement.innerText = "unknown error getting challenge"

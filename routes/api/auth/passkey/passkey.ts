@@ -20,6 +20,7 @@ import type {
     AuthenticatorDevice,
     RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
+import { randomBytes } from "crypto";
 const { baseURLNoPcl } = require("../../../../config.json");
 
 type UserModel = {
@@ -177,7 +178,7 @@ export async function _generateAuthenticationOptions(req: express.Request, res: 
     res.send(options);
 }
 
-function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: Uint8Array): any {
+function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: string): any {
     return new Promise((resolve, reject) => {
         authDb.all("SELECT * FROM passkeys WHERE credentialId=?", [id], (err: any, result: any) => {
             if (err) {
@@ -189,14 +190,14 @@ function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id
     });
 }
 
-function updateAuthenticatorCounter(authDb: sqlite3.Database, id: Uint8Array, newCounter: number): void {
+function updateAuthenticatorCounter(authDb: sqlite3.Database, id: string, newCounter: number): void {
     authDb.run("UPDATE passkeys SET counter=? WHERE credentialID=?", [newCounter, id]);
 }
 
 export async function _verifyAuthenticationResponse(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const body: AuthenticationResponseJSON = req.body;
     const expectedChallenge = await getUserCurrentChallenge(req, authDb);
-    const authenticator = await getUserAuthenticator(req, authDb, isoBase64URL.toBuffer(body.rawId)).catch((err: any) => {
+    const authenticator = await getUserAuthenticator(req, authDb, body.id).catch((err: any) => {
         return res.status(400).send({ error: "invalid authenticator" })
     });
 
@@ -220,8 +221,63 @@ export async function _verifyAuthenticationResponse(req: express.Request, res: e
     const { verified, authenticationInfo } = verification;
 
     if (verified) {
-        updateAuthenticatorCounter(authDb, isoBase64URL.toBuffer(body.rawId), authenticationInfo.newCounter);
+        updateAuthenticatorCounter(authDb, body.id, authenticationInfo.newCounter);
+        const authenticatedUserId = authenticator.userId;
+        authDb.get("SELECT id, username, fullName, team, accessOk, admin, teamAdmin FROM users WHERE id=?", [authenticatedUserId], async (err: any, result: any) => {
+            if (err) {
+                res.status(500).json({ error: "internal server error (session key)" });
+            } else {
+                if (typeof result !== "undefined") {
+                    if (result.accessOk === "false") {
+                        res.status(500).json({ error: "account awaiting access approval" });
+                    } else {
+                        const key = randomBytes(96).toString("hex");
+                        const keyStmt: string = "INSERT INTO keys (key, userId, username, name, team, created, expires, admin, teamAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        const keyValues: Array<any> = [
+                            key,
+                            result.id,
+                            result.username,
+                            result.fullName,
+                            result.team,
+                            String(Date.now()),
+                            String(Date.now() + 24 * 60 * 60 * 1000),
+                            result.admin,
+                            result.teamAdmin
+                        ];
+                        authDb.run(keyStmt, keyValues, (err) => {
+                            if (err) {
+                                res.status(500).json({ error: "session key creation error" });
+                            } else {
+                                res.cookie("key", key, {
+                                    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                                    sameSite: "lax",
+                                    secure: true,
+                                    httpOnly: true,
+                                });
+                                if (result.admin == "true") {
+                                    res.cookie("lead", "true", {
+                                        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                                        sameSite: "lax",
+                                        secure: true,
+                                        httpOnly: false,
+                                    });
+                                }
+                                if (result.teamAdmin !== 0) {
+                                    res.cookie("childTeamLead", "true", {
+                                        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                                        sameSite: "lax",
+                                        secure: true,
+                                        httpOnly: false,
+                                    });
+                                }
+                                res.status(200).json({ verified });
+                            }
+                        });
+                    }
+                } else {
+                    res.status(500).json({ error: "user account does not exist" });
+                }
+            }
+        });
     }
-
-    res.send({ verified });
 }
