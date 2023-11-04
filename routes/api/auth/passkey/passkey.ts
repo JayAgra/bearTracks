@@ -6,7 +6,7 @@ import {
     verifyAuthenticationResponse,
     verifyRegistrationResponse,
 } from "@simplewebauthn/server";
-import { isoBase64URL, isoUint8Array } from "@simplewebauthn/server/helpers";
+import { cose, isoBase64URL, isoUint8Array } from "@simplewebauthn/server/helpers";
 import type {
     GenerateAuthenticationOptionsOpts,
     GenerateRegistrationOptionsOpts,
@@ -185,6 +185,19 @@ function getAnyUserAuthenticators(req: express.Request, authDb: sqlite3.Database
     });
 }
 
+function getAnyUserChallenge(req: express.Request, authDb: sqlite3.Database, username: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+        const userId = await getUserIdByName(username, authDb);
+        authDb.all("SELECT currentChallenge FROM users WHERE id=?", [userId], (err: any, result: any) => {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(result.currentChallenge);
+            }
+        });
+    });
+}
+
 export async function _generateAuthenticationOptions(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const userDevices = await getAnyUserAuthenticators(req, authDb, req.params.username);
     const opts: GenerateAuthenticationOptionsOpts = {
@@ -205,7 +218,7 @@ export async function _generateAuthenticationOptions(req: express.Request, res: 
 
 function getUserAuthenticator(authDb: sqlite3.Database, id: string): Promise<dbAuthenticator> {
     return new Promise((resolve, reject) => {
-        authDb.all("SELECT * FROM passkeys WHERE credentialID=?", [id], (err: any, result: any) => {
+        authDb.get("SELECT * FROM passkeys WHERE credentialID=?", [id], (err: any, result: any) => {
             if (err) {
                 return reject(err);
             } else {
@@ -221,14 +234,15 @@ function updateAuthenticatorCounter(authDb: sqlite3.Database, id: string, newCou
 
 export async function _verifyAuthenticationResponse(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const body: AuthenticationResponseJSON = req.body;
-    const expectedChallenge = await getAnyUserAuthenticators(req, authDb, req.params.username);
+    const expectedChallenge = await getAnyUserChallenge(req, authDb, req.params.username);
     const authenticator: dbAuthenticator = await getUserAuthenticator(authDb, body.id).catch((err: any) => {
         if (err) {
             console.error(err);
             return res.status(400).send({ error: "invalid authenticator" })
         }
     }) as unknown as dbAuthenticator;
-    if (!Object.hasOwn(authenticator, "credentialID") && typeof authenticator.credentialID !== "undefined") {
+    if (!Object.hasOwn(authenticator, "counter") && typeof authenticator.counter === "undefined") {
+        console.log(authenticator);
         return res.status(400).send({ error: "invalid authenticator" });
     }
     let verification: VerifiedAuthenticationResponse;
