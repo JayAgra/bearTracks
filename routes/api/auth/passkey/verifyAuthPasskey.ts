@@ -15,7 +15,7 @@ export async function verifyAuthPasskey(req: express.Request, res: express.Respo
     let verification;
     try {
         verification = await SimpleWebAuthnServer.verifyAuthenticationResponse({
-            response: JSON.parse(req.body),
+            response: req.body,
             expectedChallenge: expectedChallenge,
             expectedOrigin: origin,
             expectedRPID: rpID,

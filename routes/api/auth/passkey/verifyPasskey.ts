@@ -9,7 +9,7 @@ export async function verifyPasskey(req: express.Request, res: express.Response,
     let verification;
     try {
         verification = await SimpleWebAuthnServer.verifyRegistrationResponse({
-            response: JSON.parse(req.body),
+            response: req.body,
             expectedChallenge: expectedChallenge,
             expectedOrigin: origin,
             expectedRPID: rpID,
