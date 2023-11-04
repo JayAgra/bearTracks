@@ -1,4 +1,5 @@
-import { _get } from "../_modules/get/get.js";
+import { _get } from "../_modules/get/get.min.js";
+import { _dErr } from "../_modules/dErr/dErr.min.js";
 
 var isPkBtn = false,
     setUsername = "";
@@ -67,3 +68,8 @@ passwordLoginButton.onclick = () => {
     document.getElementById("artPassword").value = infoInput.value;
     document.getElementById("artForm").submit();
 }
+
+function displayErrors() {
+    _dErr(["500 internal server error", "invalid credentials", "account not yet approved", ""]);
+}
+window.displayErrors = displayErrors;
