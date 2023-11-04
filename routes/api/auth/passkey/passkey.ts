@@ -131,8 +131,8 @@ export async function _verifyRegistration(req: express.Request, res: express.Res
 
     if (verified && registrationInfo) {
         const { credentialPublicKey, credentialID, counter } = registrationInfo;
-
-        const existingDevice = await getUserAuthenticators(req, authDb).find((device: any) => isoUint8Array.areEqual(device.credentialID, credentialID));
+        const _userAuthenticators = await getUserAuthenticators(req, authDb);
+        const existingDevice = _userAuthenticators.find((device: any) => isoUint8Array.areEqual(device.credentialID, credentialID));
 
         if (!existingDevice) {
             const newDevice: AuthenticatorDevice = {
