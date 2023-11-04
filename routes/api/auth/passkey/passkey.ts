@@ -18,6 +18,7 @@ import type {
 import type {
     AuthenticationResponseJSON,
     AuthenticatorDevice,
+    AuthenticatorTransportFuture,
     RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
 import { randomBytes } from "crypto";
@@ -86,6 +87,7 @@ export async function _generateRegistrationOptions(req: express.Request, res: ex
         excludeCredentials: userAuthenticators.map((device: dbAuthenticator) => ({
             id: isoBase64URL.toBuffer(device.credentialID),
             type: "public-key",
+            transports: device.transports.split(",") as unknown[] as AuthenticatorTransportFuture[],
         })),
         authenticatorSelection: {
             residentKey: "discouraged",
@@ -220,7 +222,7 @@ function updateAuthenticatorCounter(authDb: sqlite3.Database, id: string, newCou
 export async function _verifyAuthenticationResponse(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const body: AuthenticationResponseJSON = req.body;
     const expectedChallenge = await getAnyUserAuthenticators(req, authDb, req.params.username);
-    const authenticator: dbAuthenticator = await getUserAuthenticator(req, authDb, body.id).catch((err: any) => {
+    const authenticator: dbAuthenticator = await getUserAuthenticator(req, authDb, body.rawId).catch((err: any) => {
         return res.status(400).send({ error: "invalid authenticator" })
     }) as unknown as dbAuthenticator;
     if (!authenticator.credentialID) {
