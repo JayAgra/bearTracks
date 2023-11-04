@@ -21,8 +21,6 @@ import type {
     RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
 import { randomBytes } from "crypto";
-import { resolve } from "dns";
-import { rejects } from "assert";
 const { baseURLNoPcl } = require("../../../../config.json");
 
 type UserModel = {
@@ -221,7 +219,7 @@ function updateAuthenticatorCounter(authDb: sqlite3.Database, id: string, newCou
 
 export async function _verifyAuthenticationResponse(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const body: AuthenticationResponseJSON = req.body;
-    const expectedChallenge = await getUserCurrentChallenge(req, authDb);
+    const expectedChallenge = await getAnyUserAuthenticators(req, authDb, req.params.username);
     const authenticator: dbAuthenticator = await getUserAuthenticator(req, authDb, body.id).catch((err: any) => {
         return res.status(400).send({ error: "invalid authenticator" })
     }) as unknown as dbAuthenticator;

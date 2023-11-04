@@ -756,7 +756,7 @@ app.get("/api/auth/authPasskey/:username", (req: express.Request, res: express.R
 });
 
 import { _verifyAuthenticationResponse } from "./routes/api/auth/passkey/passkey";
-app.post("/api/auth/verifyAuthPasskey", (req: express.Request, res: express.Response) => {
+app.post("/api/auth/verifyAuthPasskey/:username", (req: express.Request, res: express.Response) => {
     _verifyAuthenticationResponse(req, res, authDb);
 });
 

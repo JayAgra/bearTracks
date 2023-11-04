@@ -45,7 +45,7 @@ nextBtn.addEventListener("click", async () => {
             errorElement.innerText = "unknown error getting challenge"
             throw new Error("unhandled error 😭");
         });
-        const verificationResp = await fetch("/api/auth/verifyAuthPasskey", {
+        const verificationResp = await fetch("/api/auth/verifyAuthPasskey" + setUsername, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
