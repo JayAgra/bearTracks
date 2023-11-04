@@ -223,6 +223,9 @@ export async function _verifyAuthenticationResponse(req: express.Request, res: e
     const authenticator: dbAuthenticator = await getUserAuthenticator(req, authDb, body.id).catch((err: any) => {
         return res.status(400).send({ error: "invalid authenticator" })
     }) as unknown as dbAuthenticator;
+    if (!authenticator.credentialID) {
+        return res.status(400).send({ error: "invalid authenticator" });
+    }
     let verification: VerifiedAuthenticationResponse;
     try {
         const opts: VerifyAuthenticationResponseOpts = {
