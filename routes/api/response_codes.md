@@ -29,7 +29,7 @@
 `0x1933`&emsp;`6451`&emsp;`not enough money to gamble`<br>
 ### 409 conflict
 `0x1990`&emsp;`6544`&emsp;`conflict`<br>
-`0x1991`&emsp;`6545`&emsp;`email used`<br>
+`0x1991`&emsp;`6545`&emsp;`username used`<br>
 `0x1992`&emsp;`6546`&emsp;`bad credentials`<br>
 ## 500s
 ### 500 internal server error

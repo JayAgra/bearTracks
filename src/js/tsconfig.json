@@ -2,6 +2,6 @@
     "compilerOptions": {
         "target": "ES2021",
         "module": "ES6",
-        "skipLibCheck": true
+        "skipLibCheck": true,
     }
 }

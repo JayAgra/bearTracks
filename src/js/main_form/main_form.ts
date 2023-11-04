@@ -116,7 +116,6 @@ function validateLengthFn() {
         (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
     } else {
         document.getElementById("tooLong").style.display = "inherit";
-        (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
 }
 
@@ -127,8 +126,6 @@ document.getElementById("validateLength").addEventListener("input", (): void => 
 function requiredFormFields(event: any) {
     if (String((event.target as HTMLInputElement).value).length > 0) {
         (document.getElementById("submitButton") as HTMLButtonElement).removeAttribute("disabled");
-    } else {
-        (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
     }
 }
 
@@ -149,11 +146,34 @@ function landscapeReminder() {
 
 window.addEventListener("resize", landscapeReminder);
 
+function checkFormState(): boolean {
+    Array.from(document.querySelectorAll("[required]")).forEach((element) => {
+        if ((element as HTMLInputElement).value.length <= 0) {
+            (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
+            return false;
+        }
+    });
+    const currentVal = (document.getElementById("validateLength") as HTMLInputElement);
+    if (Number(currentVal) > 120 && Number(currentVal) < 0) {
+        (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
+        return false;
+    }
+    if ((document.getElementById("teamNumber") as HTMLInputElement).value === "") {
+        (document.getElementById("submitButton") as HTMLButtonElement).setAttribute("disabled", "disabled");
+        return false;
+    }
+    return true;
+}
+(window as any).checkFormState = checkFormState;
+setInterval(checkFormState, 2000);
+
+
 //grid script
 function getAllCells(): Array<HTMLElement> {
     var cells: Array<HTMLElement> = [];
-    for(let j = 1; j < 4; j++) {
-        for(let i = 1; i < 10; i++) {
+    for (let j = 3; j > 0; j--) {
+        for (let i = 9; i > 0; i--) {
+            document.getElementsByClassName("sg")[0].insertAdjacentHTML("afterbegin", `<div class="sg-c" data-coop="${Math.floor((i - 1) / 3) === 1}" data-num="${26 - cells.length}" id="sgc_${j}_${i}" data-state="0" data-gp="${j === 3 ? "h" : ((i + 1) % 3) === 0 ? "cube" : "cone"}"></div>`);
             cells.push(document.getElementById("sgc_" + j + "_" + i) as HTMLElement);
         }
     }
@@ -250,6 +270,10 @@ async function post(url: string, data: object) {
 }
 
 async function uploadForm() {
+    if (!checkFormState()) {
+        alert("there are issues with your form");
+        return;
+    }
     const responses = {
         "event": (document.getElementsByName("event")[0] as HTMLInputElement).value,
         "match": Number((document.getElementsByName("match")[0] as HTMLInputElement).value),

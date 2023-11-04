@@ -3,33 +3,34 @@
     <head>
         <meta charset="utf-8">
         <title>Login - bearTracks</title>
-        <meta name="robots" content="noindex, nofollow">
+        <meta name="robots" content="nositelinkssearchbox, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#121212" id="themeMeta">
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        <meta name="apple-mobile-web-app-title" content="Scouting">
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/login.min.css" type="text/css">
         <link rel="apple-touch-startup-image" href="public/launch.png">
         <script src="js/form/form.min.js"></script>
     </head>
-    <body class="dark-mode centerText" onload="displayLoginErrors()">
+    <body class="dark-mode centerText" onload="displayErrors()">
         <script>themeHandle()</script>
         <div class="container">
             <div class="dummy">
                 <h1 class="w3">bearTracks<br><span class="gametitle">CHARGED UP</span></h1>
-                <form action="/loginForm" target="_self" method="POST">
-                    <h2 style="margin-top: 0; margin-bottom: 2rem">Log In</h2>
-                    <h4 style="color: var(--cancelColor); display: none;" id="error"></h4>
-                    <label for="email">Email</label><br><input type="email" name="email" autocomplete="email" class="credInput" required><br><br>
-                    <label for="password">Password</label><br><input type="password" name="password" autocomplete="password" class="credInput" required><br><br><br>
-                    <button type="submit" class="uiButton actionButton">Log In</button>
-                </form>
+                <div class="login">
+                    <div id="currentUsername"><p class="unField">welcome back to hell</p><h2 class="unValue">please log in</h2></div>
+                    <h3 id="error" style="color: var(--cancelColor);"></h3>
+                    <input type="text" id="inputInfo" autocomplete="username" placeholder="username" class="ci">
+                    <div class="buttonCont">
+                        <button id="pw" class="uiButton actionButton nextButton submitButton" style="display: none;"></button>
+                        <button id="next" class="uiButton returnButton nextButton"></button>
+                    </div>
+                </div>
                 <br><br>
-                <small style="text-align: center;"><a href="create" class="actLink">create account</a></small><br>
+                <small style="text-align: center;" id="createAct"><a href="create" class="actLink">create account</a></small><br>
+                <form style="display: none;" action="/loginForm" target="_self" method="POST" id="artForm"><input name="username" id="artUsername" hidden><input name="password" id="artPassword" hidden></form>
             </div>
         </div>
+        <script src="https://unpkg.com/@simplewebauthn/browser@8.3.4/dist/bundle/index.umd.min.js" integrity="sha384-7FvcOpf85HsGS89sLrvOOHZYqgaEqbfUi87HhpbqbndTSFw+XpzbDMK5ZcxD28fe" crossorigin="anonymous"></script>
         <script type="module" src="js/login/login.min.js"></script>
     </body>
 </html>

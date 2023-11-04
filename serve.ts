@@ -103,6 +103,7 @@ app.use(
     })
 );
 app.use(limiter);
+app.use(express.json());
 
 //////////////////////////////////
 //////////////////////////////////
@@ -120,26 +121,37 @@ function invalidJSON(str: string) {
 }
 
 type keysDb = {
-    "id": number,
-    "key": string,
-    "userId": number,
-    "name": string,
-    "team": number,
-    "created": string,
-    "expires": string,
-    "admin": string,
-    "teamAdmin": number
-}
+    id: number;
+    key: string;
+    userId: number;
+    username: string;
+    name: string;
+    team: number;
+    created: string;
+    expires: string;
+    admin: string;
+    teamAdmin: number;
+};
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     if (req.cookies.key) {
         authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err: any, result: keysDb | null) => {
             if (err || !result || Number(result.expires) < Date.now()) {
                 res.clearCookie("key");
-                req.user.id = 0;
+                req.user = {
+                    "id": 0,
+                    "username": "",
+                    "name": "",
+                    "team": 0,
+                    "admin": "",
+                    "key": "",
+                    "expires": "",
+                    "teamAdmin": 0
+                };
             } else {
                 req.user = {
                     "id": result.userId,
+                    "username": result.username,
                     "name": result.name,
                     "team": result.team,
                     "admin": result.admin,
@@ -153,6 +165,7 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
     } else {
         req.user = {
             "id": 0,
+            "username": "",
             "name": "",
             "team": 0,
             "admin": "",
@@ -360,43 +373,43 @@ app.get("/manageTeams", checkAuth, async (req: express.Request, res: express.Res
 
 // CSS (should be unused in favor of minified css)
 app.get("/float.css", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/float.css", { root: __dirname });
 });
 
 // minified css
 app.get("/float.min.css", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/float.min.css", { root: __dirname });
 });
 
 // font file
 app.get("/fonts/Raleway-300.ttf", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=233280000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
 });
 
 // font file
 app.get("/fonts/Raleway-500.ttf", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=233280000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
 });
 
 // JS for form (should be unused in favor of minified js)
 app.get("/form.js", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=31104000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/form.js", { root: __dirname });
 });
 
 // minified JS for form
 app.get("/form.min.js", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=15552000");
+    res.set("Cache-control", "public, max-age=933120000");
     res.sendFile("./src/js/form.min.js", { root: __dirname });
 });
 
 // favicon
 app.get("/favicon.ico", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=311040000");
+    res.set("Cache-control", "public, max-age=9331200000");
     res.sendFile("src/favicon.ico", { root: __dirname });
 });
 
@@ -446,6 +459,12 @@ app.get("/matches", checkAuth, async (req: express.Request, res: express.Respons
 app.get("/browse", checkAuth, async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
     res.sendFile("src/browse.html", { root: __dirname });
+});
+
+// make passkey
+app.get("/createPasskey", checkAuth, async (req: express.Request, res: express.Response) => {
+    res.set("Cache-control", "public, max-age=23328000");
+    res.sendFile("src/passkey.html", { root: __dirname });
 });
 
 // data browsing tool with detail
@@ -557,7 +576,7 @@ app.get("/api/scouts/transactions/me", apiCheckAuth, async (req: express.Request
 
 // scout's profile
 import { scoutByID } from "./routes/api/scouts/scoutByID";
-app.get("/api/scoutByID/:userId", apiCheckAuth, async (req: express.Request<{userId: string}>, res: express.Response) => {
+app.get("/api/scoutByID/:username", apiCheckAuth, async (req: express.Request<{username: string}>, res: express.Response) => {
     scoutByID(req, res, db);
 });
 
@@ -719,6 +738,26 @@ app.post("/createAccount", (req: express.Request, res: express.Response) => {
 import { checkLogIn } from "./routes/api/auth/login";
 app.post("/loginForm", (req: express.Request, res: express.Response) => {
     checkLogIn(req, res, authDb);
+});
+
+import { _generateRegistrationOptions } from "./routes/api/auth/passkey/passkey";
+app.get("/api/auth/createPasskey", checkAuth, (req: express.Request, res: express.Response) => {
+    _generateRegistrationOptions(req, res, authDb);
+});
+
+import { _verifyRegistration } from "./routes/api/auth/passkey/passkey";
+app.post("/api/auth/verifyPasskey", checkAuth, (req: express.Request, res: express.Response) => {
+    _verifyRegistration(req, res, authDb);
+});
+
+import { _generateAuthenticationOptions } from "./routes/api/auth/passkey/passkey";
+app.get("/api/auth/authPasskey/:username", (req: express.Request, res: express.Response) => {
+    _generateAuthenticationOptions(req, res, authDb);
+});
+
+import { _verifyAuthenticationResponse } from "./routes/api/auth/passkey/passkey";
+app.post("/api/auth/verifyAuthPasskey/:username", (req: express.Request, res: express.Response) => {
+    _verifyAuthenticationResponse(req, res, authDb);
 });
 
 // clear cookies, used for debugging

@@ -87,7 +87,6 @@ function validateLengthFn() {
     }
     else {
         document.getElementById("tooLong").style.display = "inherit";
-        document.getElementById("submitButton").setAttribute("disabled", "disabled");
     }
 }
 document.getElementById("validateLength").addEventListener("input", () => {
@@ -96,9 +95,6 @@ document.getElementById("validateLength").addEventListener("input", () => {
 function requiredFormFields(event) {
     if (String(event.target.value).length > 0) {
         document.getElementById("submitButton").removeAttribute("disabled");
-    }
-    else {
-        document.getElementById("submitButton").setAttribute("disabled", "disabled");
     }
 }
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
@@ -116,11 +112,32 @@ function landscapeReminder() {
     }
 }
 window.addEventListener("resize", landscapeReminder);
+function checkFormState() {
+    Array.from(document.querySelectorAll("[required]")).forEach((element) => {
+        if (element.value.length <= 0) {
+            document.getElementById("submitButton").setAttribute("disabled", "disabled");
+            return false;
+        }
+    });
+    const currentVal = document.getElementById("validateLength");
+    if (Number(currentVal) > 120 && Number(currentVal) < 0) {
+        document.getElementById("submitButton").setAttribute("disabled", "disabled");
+        return false;
+    }
+    if (document.getElementById("teamNumber").value === "") {
+        document.getElementById("submitButton").setAttribute("disabled", "disabled");
+        return false;
+    }
+    return true;
+}
+window.checkFormState = checkFormState;
+setInterval(checkFormState, 2000);
 //grid script
 function getAllCells() {
     var cells = [];
-    for (let j = 1; j < 4; j++) {
-        for (let i = 1; i < 10; i++) {
+    for (let j = 3; j > 0; j--) {
+        for (let i = 9; i > 0; i--) {
+            document.getElementsByClassName("sg")[0].insertAdjacentHTML("afterbegin", `<div class="sg-c" data-coop="${Math.floor((i - 1) / 3) === 1}" data-num="${26 - cells.length}" id="sgc_${j}_${i}" data-state="0" data-gp="${j === 3 ? "h" : ((i + 1) % 3) === 0 ? "cube" : "cone"}"></div>`);
             cells.push(document.getElementById("sgc_" + j + "_" + i));
         }
     }
@@ -224,6 +241,10 @@ async function post(url, data) {
     return response.json();
 }
 async function uploadForm() {
+    if (!checkFormState()) {
+        alert("there are issues with your form");
+        return;
+    }
     const responses = {
         "event": document.getElementsByName("event")[0].value,
         "match": Number(document.getElementsByName("match")[0].value),
