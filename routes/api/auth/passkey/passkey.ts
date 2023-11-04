@@ -91,7 +91,7 @@ export async function _generateRegistrationOptions(req: express.Request, res: ex
 
 function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): any {
     return new Promise((resolve, reject) => {
-        authDb.all("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
+        authDb.get("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
             if (err) {
                 return reject(err);
             } else {
