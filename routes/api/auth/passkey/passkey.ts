@@ -202,6 +202,14 @@ function getAnyUserChallenge(authDb: sqlite3.Database, username: string): Promis
     });
 }
 
+function setCurrentChallengeByUsername(user: string, authDb: sqlite3.Database, challenge: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        authDb.run("UPDATE users SET currentChallenge=? WHERE username=?", [challenge, user], () => {
+            resolve();
+        });
+    });
+}
+
 export async function _generateAuthenticationOptions(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const userDevices = await getAnyUserAuthenticators(req, authDb, req.params.username);
     const opts: GenerateAuthenticationOptionsOpts = {
@@ -216,7 +224,7 @@ export async function _generateAuthenticationOptions(req: express.Request, res: 
 
     const options = await generateAuthenticationOptions(opts);
 
-    await setCurrentChallenge(req, authDb, options.challenge);
+    await setCurrentChallengeByUsername(req.params.username, authDb, options.challenge);
     res.send(options);
 }
 
