@@ -14,7 +14,7 @@ const nextBtn = document.getElementById("next"),
 nextBtn.addEventListener("click", async () => {
     errorElement.innerText = "";
     if (!isPkBtn) {
-        if (infoInput.value.length === 0) {
+        if (infoInput.value.length === 0 && setUsername === "") {
             infoInput.classList.add("shakeInput");
             await new Promise((res) => setTimeout(res, 500));
             infoInput.classList.remove("shakeInput");

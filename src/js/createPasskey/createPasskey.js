@@ -21,7 +21,7 @@ elemBegin.addEventListener("click", async () => {
         attResp = await SimpleWebAuthnBrowser.startRegistration(await resp.json());
     } catch (error) {
         if (error.name === "InvalidStateError") {
-            elemError.innerText = "Error: Authenticator was probably already registered by user";
+            elemError.innerText = "you probably already registered this authenticator";
         } else {
             elemError.innerText = error;
         }
@@ -38,6 +38,7 @@ elemBegin.addEventListener("click", async () => {
     const verificationJSON = await verificationResp.json();
     if (verificationJSON && verificationJSON.verified) {
         elemSuccess.innerHTML = "success";
+        alert("passkey successfully registered");
     }
     else {
         elemSuccess.innerHTML = `error<br><br><pre>${JSON.stringify(verificationJSON)}</pre>`;

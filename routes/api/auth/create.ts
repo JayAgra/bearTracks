@@ -36,7 +36,7 @@ export async function createAccount(req: express.Request, res: express.Response,
                             targetTeam = result.team;
                             if (targetTeam !== 0) {
                                 const salt = randomBytes(32).toString("hex");
-                                const stmt = "INSERT INTO users (fullName, username, team, method, passHash, salt, admin, teamAdmin, accessOk, score) VALUES (?, ?, ?, ?, ?, ?, 'false', 0, 'false', 0)";
+                                const stmt = "INSERT INTO users (fullName, username, team, method, passHash, salt, admin, teamAdmin, accessOk, score) VALUES (?, ?, ?, ?, ?, ?, 'false', 0, 'true', 0)";
                                 const values = [
                                     escapeHTML(accountData.fullName),
                                     escapeHTML(accountData.username),
