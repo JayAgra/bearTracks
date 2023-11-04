@@ -21,6 +21,8 @@ import type {
     RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
 import { randomBytes } from "crypto";
+import { resolve } from "dns";
+import { rejects } from "assert";
 const { baseURLNoPcl } = require("../../../../config.json");
 
 type UserModel = {
@@ -49,13 +51,22 @@ type Authenticator = {
     transports?: AuthenticatorTransport[];
 };
 
-function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): any {
+type dbAuthenticator = {
+    id: number;
+    userId: number;
+    credentialID: string;
+    credentialPublicKey: string;
+    counter: number;
+    transports: string;
+}
+
+function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): Promise<dbAuthenticator[]> {
     return new Promise((resolve, reject) => {
         authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
             if (err) {
                 return reject(err);
             } else {
-                resolve(result as unknown[] as Authenticator[]);
+                resolve(result as unknown[] as dbAuthenticator[]);
             }
         });
     });
@@ -74,8 +85,8 @@ export async function _generateRegistrationOptions(req: express.Request, res: ex
         userName: req.user.username,
         timeout: 60000,
         attestationType: "none",
-        excludeCredentials: userAuthenticators.map((device: any) => ({
-            id: device.credentialID,
+        excludeCredentials: userAuthenticators.map((device: dbAuthenticator) => ({
+            id: isoBase64URL.toBuffer(device.credentialID),
             type: "public-key",
         })),
         authenticatorSelection: {
@@ -90,7 +101,7 @@ export async function _generateRegistrationOptions(req: express.Request, res: ex
     res.send(options);
 }
 
-function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): any {
+function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): Promise<string> {
     return new Promise((resolve, reject) => {
         authDb.get("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
             if (err) {
@@ -105,7 +116,7 @@ function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database)
 function writePasskey(req: express.Request, authDb: sqlite3.Database, authenticator: AuthenticatorDevice): void {
     authDb.run(
         "INSERT INTO passkeys (userId, credentialID, credentialPublicKey, counter, transports) VALUES (?, ?, ?, ?, ?)",
-        [req.user.id, authenticator.credentialID, authenticator.credentialPublicKey, authenticator.counter, authenticator.transports]
+        [req.user.id, isoBase64URL.fromBuffer(authenticator.credentialID), isoBase64URL.fromBuffer(authenticator.credentialPublicKey), authenticator.counter, authenticator.transports?.join(",")]
     );
 }
 
@@ -133,7 +144,7 @@ export async function _verifyRegistration(req: express.Request, res: express.Res
     if (verified && registrationInfo) {
         const { credentialPublicKey, credentialID, counter } = registrationInfo;
         const _userAuthenticators = await getUserAuthenticators(req, authDb);
-        const existingDevice = _userAuthenticators.find((device: any) => isoUint8Array.areEqual(device.credentialID, credentialID));
+        const existingDevice = _userAuthenticators.find((device: any) => isoUint8Array.areEqual(isoBase64URL.toBuffer(device.credentialID), credentialID));
 
         if (!existingDevice) {
             const newDevice: AuthenticatorDevice = {
@@ -149,23 +160,37 @@ export async function _verifyRegistration(req: express.Request, res: express.Res
     res.send({ verified });
 }
 
-function getAnyUserAuthenticators(req: express.Request, authDb: sqlite3.Database, username: string): any {
+function getUserIdByName(username: string, authDb: sqlite3.Database) {
     return new Promise((resolve, reject) => {
-        authDb.all("SELECT * FROM passkeys WHERE username=?", [username], (err: any, result: any) => {
+        authDb.get("SELECT id FROM users WHERE username=?", [username], (err: any, result: any) => {
             if (err) {
                 return reject(err);
             } else {
-                resolve(result as unknown[] as Authenticator[]);
+                resolve(result.id);
+            }
+        })
+    })
+}
+
+function getAnyUserAuthenticators(req: express.Request, authDb: sqlite3.Database, username: string): Promise<dbAuthenticator[]> {
+    return new Promise(async (resolve, reject) => {
+        const userId = await getUserIdByName(username, authDb);
+        authDb.all("SELECT * FROM passkeys WHERE userId=?", [userId], (err: any, result: any) => {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(result as unknown[] as dbAuthenticator[]);
             }
         });
     });
 }
 
 export async function _generateAuthenticationOptions(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
+    const userDevices = await getAnyUserAuthenticators(req, authDb, req.params.username);
     const opts: GenerateAuthenticationOptionsOpts = {
         timeout: 60000,
-        allowCredentials: await getAnyUserAuthenticators(req, authDb, req.params.username).devices.map((device: any) => ({
-            id: device.credentialID,
+        allowCredentials: userDevices.map((device: dbAuthenticator) => ({
+            id: isoBase64URL.toBuffer(device.credentialID),
             type: "public-key",
         })),
         userVerification: "required",
@@ -178,13 +203,13 @@ export async function _generateAuthenticationOptions(req: express.Request, res: 
     res.send(options);
 }
 
-function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: string): any {
+function getUserAuthenticator(req: express.Request, authDb: sqlite3.Database, id: string): Promise<dbAuthenticator> {
     return new Promise((resolve, reject) => {
-        authDb.all("SELECT * FROM passkeys WHERE credentialId=?", [id], (err: any, result: any) => {
+        authDb.all("SELECT * FROM passkeys WHERE credentialId=?", [id], (err: any, result: dbAuthenticator) => {
             if (err) {
                 return reject(err);
             } else {
-                resolve(result);
+                resolve(result as unknown as dbAuthenticator);
             }
         });
     });
@@ -197,10 +222,9 @@ function updateAuthenticatorCounter(authDb: sqlite3.Database, id: string, newCou
 export async function _verifyAuthenticationResponse(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const body: AuthenticationResponseJSON = req.body;
     const expectedChallenge = await getUserCurrentChallenge(req, authDb);
-    const authenticator = await getUserAuthenticator(req, authDb, body.id).catch((err: any) => {
+    const authenticator: dbAuthenticator = await getUserAuthenticator(req, authDb, body.id).catch((err: any) => {
         return res.status(400).send({ error: "invalid authenticator" })
-    });
-
+    }) as unknown as dbAuthenticator;
     let verification: VerifiedAuthenticationResponse;
     try {
         const opts: VerifyAuthenticationResponseOpts = {
@@ -208,7 +232,11 @@ export async function _verifyAuthenticationResponse(req: express.Request, res: e
             expectedChallenge: `${expectedChallenge}`,
             expectedOrigin: `https://${baseURLNoPcl}`,
             expectedRPID: baseURLNoPcl,
-            authenticator: authenticator,
+            authenticator: {
+                credentialID: isoBase64URL.toBuffer(authenticator.credentialID),
+                credentialPublicKey: isoBase64URL.toBuffer(authenticator.credentialPublicKey),
+                counter: authenticator.counter
+            },
             requireUserVerification: true,
         };
         verification = await verifyAuthenticationResponse(opts);
