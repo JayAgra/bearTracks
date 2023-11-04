@@ -9,7 +9,7 @@ const nextBtn = document.getElementById("next"),
     currentUsernameInd = document.getElementById("currentUsername"),
     passwordLoginButton = document.getElementById("pw"),
     createAccountButton = document.getElementById("createAct"),
-    errorElement = document.getElementById("errorElement");
+    errorElement = document.getElementById("error");
 
 nextBtn.addEventListener("click", async () => {
     errorElement.innerText = "";
