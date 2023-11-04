@@ -71,8 +71,12 @@ function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): 
     });
 }
 
-function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, challenge: string): void {
-    authDb.run("UPDATE users SET currentChallenge=? WHERE id=?", [challenge, req.user.id]);
+function setCurrentChallenge(req: express.Request, authDb: sqlite3.Database, challenge: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        authDb.run("UPDATE users SET currentChallenge=? WHERE id=?", [challenge, req.user.id], () => {
+            resolve();
+        });
+    });
 }
 
 export async function _generateRegistrationOptions(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
@@ -97,7 +101,7 @@ export async function _generateRegistrationOptions(req: express.Request, res: ex
         supportedAlgorithmIDs: [-7, -257],
     };
     const options = await generateRegistrationOptions(opts);
-    setCurrentChallenge(req, authDb, options.challenge);
+    await setCurrentChallenge(req, authDb, options.challenge);
     res.send(options);
 }
 
@@ -185,7 +189,7 @@ function getAnyUserAuthenticators(req: express.Request, authDb: sqlite3.Database
     });
 }
 
-function getAnyUserChallenge(req: express.Request, authDb: sqlite3.Database, username: string): Promise<string> {
+function getAnyUserChallenge(authDb: sqlite3.Database, username: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
         const userId = await getUserIdByName(username, authDb);
         authDb.get("SELECT currentChallenge FROM users WHERE id=?", [userId], (err: any, result: any) => {
@@ -212,7 +216,7 @@ export async function _generateAuthenticationOptions(req: express.Request, res: 
 
     const options = await generateAuthenticationOptions(opts);
 
-    setCurrentChallenge(req, authDb, options.challenge);
+    await setCurrentChallenge(req, authDb, options.challenge);
     res.send(options);
 }
 
@@ -234,7 +238,7 @@ function updateAuthenticatorCounter(authDb: sqlite3.Database, id: string, newCou
 
 export async function _verifyAuthenticationResponse(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     const body: AuthenticationResponseJSON = req.body;
-    const expectedChallenge = await getAnyUserChallenge(req, authDb, req.params.username);
+    const expectedChallenge = await getAnyUserChallenge(authDb, req.params.username);
     const authenticator: dbAuthenticator = await getUserAuthenticator(authDb, body.id).catch((err: any) => {
         if (err) {
             console.error(err);
