@@ -106,6 +106,7 @@ function setupBoard() {
     document.getElementsByClassName("player2")[0].src = `${document.getElementById("deck").value}card_back.png`;
     if (document.getElementById("deck").value === "assets/gruvcards/") {
         document.body.classList.add("gruvboxBlackjack");
+        document.getElementById("themeMeta").content = "#10131d";
     }
 }
 function drawCard(src, card) {

@@ -101,6 +101,7 @@ function setupBoard() {
 
     if ((document.getElementById("deck") as HTMLInputElement).value === "assets/gruvcards/") {
         document.body.classList.add("gruvboxBlackjack");
+        (document.getElementById("themeMeta") as HTMLMetaElement).content = "#10131d";
     }
 }
 
