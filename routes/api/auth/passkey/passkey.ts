@@ -188,7 +188,7 @@ function getAnyUserAuthenticators(req: express.Request, authDb: sqlite3.Database
 function getAnyUserChallenge(req: express.Request, authDb: sqlite3.Database, username: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
         const userId = await getUserIdByName(username, authDb);
-        authDb.all("SELECT currentChallenge FROM users WHERE id=?", [userId], (err: any, result: any) => {
+        authDb.get("SELECT currentChallenge FROM users WHERE id=?", [userId], (err: any, result: any) => {
             if (err) {
                 return reject(err);
             } else {
