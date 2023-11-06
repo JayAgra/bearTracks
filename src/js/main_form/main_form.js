@@ -1,4 +1,5 @@
 import { _get } from "../_modules/get/get.min.js";
+import { _post } from "../_modules/post/post.min.js";
 var eventMatches;
 var matchesOk = false;
 function setBadEvent() {
@@ -240,6 +241,11 @@ async function post(url, data) {
     });
     return response.json();
 }
+function errorSubmit() {
+    document.getElementById("submitText_d").innerText = "ERROR!!!";
+    document.getElementById("submitProgress_d").value = 0;
+    document.getElementById("reSubmitButton").style.display = "unset";
+}
 async function uploadForm() {
     if (!checkFormState()) {
         alert("there are issues with your form");
@@ -283,22 +289,11 @@ async function uploadForm() {
     document.getElementById("submitUi").style.display = "unset";
     document.getElementById("reSubmitButton").style.display = "none";
     await new Promise((res) => setTimeout(res, 250));
-    post("/submit", responses).then(async (response) => {
-        const r = response;
+    _post("/submit", document.getElementById("submitText_d"), responses).then(async (r) => {
         console.log(r.id);
         document.getElementById("submitText_d").innerText = "Verifying...";
         await new Promise((res) => setTimeout(res, 250));
-        try {
-            const verifyResp = await fetch(`/api/data/exists/${r.id}`, {
-                method: "GET",
-                cache: "no-cache",
-                credentials: "include",
-                redirect: "follow",
-            });
-            if (verifyResp.status === 401 || verifyResp.status === 403) {
-                window.location.href = "/login";
-            }
-            const checkRemote = await verifyResp.json();
+        _get(`/api/data/exists/${r.id}`, document.getElementById("submitText_d")).then(async (checkRemote) => {
             if (checkRemote.team == responses.team && checkRemote.match == responses.match) {
                 document.getElementById("submitText_d").innerText = "Done!";
                 document.getElementById("submitProgress_d").value = 100;
@@ -311,15 +306,12 @@ async function uploadForm() {
                 document.getElementById("submitProgress_d").value = 0;
                 document.getElementById("reSubmitButton").style.display = "unset";
             }
-        }
-        catch (err) {
-            console.log("failure");
-            window.location.href = "/login";
-        }
+        }).catch((error) => {
+            errorSubmit();
+            console.error(error);
+        });
     }).catch((error) => {
-        document.getElementById("submitText_d").innerText = "ERROR!!!";
-        document.getElementById("submitProgress_d").value = 0;
-        document.getElementById("reSubmitButton").style.display = "unset";
+        errorSubmit();
         console.error(error);
     });
 }

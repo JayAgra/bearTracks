@@ -1,4 +1,7 @@
+import { _delete } from "../_modules/delete/delete.min.js";
 import { _get } from "../_modules/get/get.min.js";
+import { _patch } from "../_modules/patch/patch.min.js";
+import { _post } from "../_modules/post/post.min.js";
 
 type teamsData = {
     "id": number;
@@ -19,7 +22,7 @@ async function getTeamData() {
 
 async function updateKey(id: string, eleId: string, button: any) {
     button.innerText = "..."
-    _get(`/api/manage/teams/updateKey/${id}/${(document.getElementById(eleId) as HTMLInputElement).value}`, button.id).then((response) => {
+    _patch(`/api/manage/teams/updateKey/${id}/${(document.getElementById(eleId) as HTMLInputElement).value}`, button.id).then((response) => {
         if (response.status === 0xc87) {
             button.innerText = "done";
         } else {
@@ -31,7 +34,7 @@ async function updateKey(id: string, eleId: string, button: any) {
 
 async function revokeTeamKey(id: number, button: any) {
     button.innerText = "..."
-    _get(`/api/manage/teams/deleteKey/${id}`, button.id).then((response) => {
+    _delete(`/api/manage/teams/deleteKey/${id}`, button.id).then((response) => {
         if (response.status === 0xc87) {
             button.innerText = "done";
         } else {
@@ -43,7 +46,7 @@ async function revokeTeamKey(id: number, button: any) {
 
 function setupTeamKeyCreate() {
     (document.getElementById("mainsect") as HTMLDivElement).style.display = "none";
-    (document.getElementById("createKey") as HTMLDivElement).style.display = "flex";
+    (document.getElementById("createKey") as HTMLDivElement).style.display = "unset";
 }
 (window as any).setupTeamKeyCreate = setupTeamKeyCreate;
 
@@ -52,7 +55,7 @@ async function createTeamKey() {
     const key = Number((document.getElementById("newTeamKey_key") as HTMLInputElement).value);
     const team = Number((document.getElementById("newTeamKey_team") as HTMLInputElement).value);
     button.innerText = "..."
-    _get(`/api/manage/teams/createKey/${key}/${team}`, button.id).then(async (response: { "status": number }) => {
+    _post(`/api/manage/teams/createKey/${key}/${team}`, button.id, {}).then(async (response: { "status": number }) => {
         if (response.status === 0xc87) {
             button.innerText = "done!";
             await new Promise((res) => setTimeout(res, 250));

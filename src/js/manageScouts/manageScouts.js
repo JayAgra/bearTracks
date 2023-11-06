@@ -1,4 +1,6 @@
+import { _delete } from "../_modules/delete/delete.min.js";
 import { _get } from "../_modules/get/get.min.js";
+import { _patch } from "../_modules/patch/patch.min.js";
 async function getScoutsDataMgmt() {
     _get("/api/scouts", null).then((response) => {
         var listHTML = "";
@@ -24,7 +26,7 @@ async function getScoutsDataMgmt() {
 async function updateUser(targetuserId, origScore, button) {
     button.innerText = "...";
     const modifyAmt = Number(document.getElementById(`${targetuserId}_input`).value) - Number(origScore);
-    _get(`/api/manage/user/points/${targetuserId}/${modifyAmt}/6553`, button.id).then((response) => {
+    _patch(`/api/manage/user/points/${targetuserId}/${modifyAmt}/6553`, button.id).then((response) => {
         if (response.status === 0xc84) {
             button.innerText = "done";
         }
@@ -39,18 +41,30 @@ async function updateUser(targetuserId, origScore, button) {
 //   revokeKey
 async function userAdminAction(targetId, action, button) {
     button.innerText = "...";
-    _get(`/api/manage/user/${action}/${targetId}`, button.id).then((response) => {
-        if (response.status === 0xc86 || response.status === 0xc87) {
-            button.innerText = "done";
-        }
-        else {
-            button.innerText = "error";
-        }
-    }).catch((err) => console.log(err));
+    if (action === "access") {
+        _patch(`/api/manage/user/access/${targetId}`, button.id).then((response) => {
+            if (response.status === 0xc86 || response.status === 0xc87) {
+                button.innerText = "done";
+            }
+            else {
+                button.innerText = "error";
+            }
+        }).catch((err) => console.log(err));
+    }
+    else {
+        _delete(`/api/manage/user/${action}/${targetId}`, button.id).then((response) => {
+            if (response.status === 0xc86 || response.status === 0xc87) {
+                button.innerText = "done";
+            }
+            else {
+                button.innerText = "error";
+            }
+        }).catch((err) => console.log(err));
+    }
 }
 async function modifyAdmin(userId, button, admin) {
     button.innerText = "...";
-    _get(`/api/manage/user/updateAdmin/${userId}/${admin}`, button.id).then((response) => {
+    _patch(`/api/manage/user/updateAdmin/${userId}/${admin}`, button.id).then((response) => {
         if (response.status === 0xc86) {
             button.innerText = "done";
         }
@@ -61,7 +75,7 @@ async function modifyAdmin(userId, button, admin) {
 }
 async function modifyTeamAdmin(userId, targetTeam, button) {
     button.innerText = "...";
-    _get(`/api/manage/user/updateTeamAdmin/${userId}/${targetTeam}`, button.id).then((response) => {
+    _patch(`/api/manage/user/updateTeamAdmin/${userId}/${targetTeam}`, button.id).then((response) => {
         if (response.status === 0xc86) {
             button.innerText = "done";
         }

@@ -461,12 +461,6 @@ app.get("/browse", checkAuth, async (req: express.Request, res: express.Response
     res.sendFile("src/browse.html", { root: __dirname });
 });
 
-// make passkey
-app.get("/createPasskey", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/passkey.html", { root: __dirname });
-});
-
 // data browsing tool with detail
 app.get("/detail", checkAuth, async (req: express.Request, res: express.Response) => {
     res.set("Cache-control", "public, max-age=23328000");
@@ -592,56 +586,56 @@ app.get("/api/manage/list", apiCheckAuth, async (req: express.Request, res: expr
 });
 
 import { deleteSubmission } from "./routes/api/manage/delete";
-app.get("/api/manage/:submissionId/delete", apiCheckAuth, async (req: express.Request<{submissionId: string}>, res: express.Response) => {
+app.delete("/api/manage/:submissionId/delete", apiCheckAuth, async (req: express.Request<{submissionId: string}>, res: express.Response) => {
     deleteSubmission(req, res, db, transactions, authDb);
 });
 
 // scout management
 
 import { updateScout } from "./routes/api/manage/user/points";
-app.get("/api/manage/user/points/:userId/:modify/:reason", apiCheckAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
+app.patch("/api/manage/user/points/:userId/:modify/:reason", apiCheckAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
     updateScout(req, res, transactions, authDb);
 });
 
 import { updateAccess } from "./routes/api/manage/user/access";
-app.get("/api/manage/user/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
+app.patch("/api/manage/user/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
     updateAccess(req, res, authDb);
 });
 
 import { deleteUser } from "./routes/api/manage/user/delete";
-app.get("/api/manage/user/delete/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+app.delete("/api/manage/user/delete/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     deleteUser(req, res, authDb);
 });
 
 import { revokeKey } from "./routes/api/manage/user/revokeKey";
-app.get("/api/manage/user/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+app.delete("/api/manage/user/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     revokeKey(req, res, authDb);
 });
 
 import { updateAdmin } from "./routes/api/manage/user/updateAdmin";
-app.get("/api/manage/user/updateAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+app.patch("/api/manage/user/updateAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     updateAdmin(req, res, authDb);
 });
 
 import { updateTeamAdmin } from "./routes/api/manage/user/updateTeamAdmin";
-app.get("/api/manage/user/updateTeamAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
+app.patch("/api/manage/user/updateTeamAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
     updateTeamAdmin(req, res, authDb);
 });
 
 // team management endpoints
 
 import { updateTeamKey } from "./routes/api/manage/teams/updateKey";
-app.get("/api/manage/teams/updateKey/:keyId/:newKey", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
+app.patch("/api/manage/teams/updateKey/:keyId/:newKey", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
     updateTeamKey(req, res, authDb);
 });
 
 import { createTeamKey } from "./routes/api/manage/teams/createKey";
-app.get("/api/manage/teams/createKey/:key/:team", apiCheckAuth, async (req: express.Request<{key: string, team: string}>, res: express.Response) => {
+app.post("/api/manage/teams/createKey/:key/:team", apiCheckAuth, async (req: express.Request<{key: string, team: string}>, res: express.Response) => {
     createTeamKey(req, res, authDb);
 });
 
 import { revokeTeamKey } from "./routes/api/manage/teams/revokeKey";
-app.get("/api/manage/teams/deleteKey/:keyId", apiCheckAuth, async (req: express.Request<{keyId: string}>, res: express.Response) => {
+app.delete("/api/manage/teams/deleteKey/:keyId", apiCheckAuth, async (req: express.Request<{keyId: string}>, res: express.Response) => {
     revokeTeamKey(req, res, authDb);
 });
 
@@ -658,7 +652,7 @@ app.get("/api/manage/myTeam/list", apiCheckAuth, async (req: express.Request, re
 });
 
 import { manageTeamUser } from "./routes/api/manage/myTeam/scouts/access";
-app.get("/api/manage/myTeam/scouts/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
+app.patch("/api/manage/myTeam/scouts/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
     manageTeamUser(req, res, authDb);
 });
 
@@ -724,6 +718,11 @@ app.get("/api/whoami", apiCheckAuth, (req: express.Request, res: express.Respons
     res.send("" + req.user.id);
 });
 
+import { changePassword } from "./routes/api/auth/passwordAuth";
+app.patch("/api/auth/passwordAuth/:new", apiCheckAuth, (req: express.Request, res: express.Response) => {
+    changePassword(req, res, authDb);
+});
+
 //////////////////////////////////
 //////////////////////////////////
 //////     AUTH & SERVER    //////
@@ -776,6 +775,11 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
     res.clearCookie("lead");
     res.redirect("/login");
 });
+
+// if the endpoint doesn't exist
+app.all("*", (req, res) => {
+    res.status(404).json({ "status": 404, "details": `${req.method}_${req.path}` });
+}); 
 
 const httpRedirect = express();
 httpRedirect.all("*", (req: express.Request, res: express.Response) => res.redirect(`https://${req.hostname}${req.url}`));
