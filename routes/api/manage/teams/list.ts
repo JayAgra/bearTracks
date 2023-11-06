@@ -3,7 +3,7 @@ import * as sqlite3 from "sqlite3";
 
 export function listTeams(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     if (req.user.admin == "true") {
-        authDb.all("SELECT key, team FROM accessKeys", (err: any, dbQueryResult: Array<Object> | undefined) => {
+        authDb.all("SELECT id, key, team FROM accessKeys", (err: any, dbQueryResult: Array<Object> | undefined) => {
             if (err || typeof dbQueryResult == "undefined") {
                 return res.status(500).json({ "status": 0x1f41 });
             } else {

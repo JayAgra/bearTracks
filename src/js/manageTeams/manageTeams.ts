@@ -32,7 +32,7 @@ async function updateKey(id: string, eleId: string, button: any) {
 }
 (window as any).updateKey = updateKey;
 
-async function revokeTeamKey(id: number, button: any) {
+async function revokeTeamKey(id: string, button: any) {
     button.innerText = "..."
     _delete(`/api/manage/teams/deleteKey/${id}`, button.id).then((response) => {
         if (response.status === 0xc87) {
