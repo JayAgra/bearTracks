@@ -776,11 +776,6 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
     res.redirect("/login");
 });
 
-// if the endpoint doesn't exist
-app.all("*", (req, res) => {
-    res.status(404).json({ "status": 404, "details": `${req.method}_${req.path}` });
-}); 
-
 const httpRedirect = express();
 httpRedirect.all("*", (req: express.Request, res: express.Response) => res.redirect(`https://${req.hostname}${req.url}`));
 const httpServer = http.createServer(httpRedirect);
