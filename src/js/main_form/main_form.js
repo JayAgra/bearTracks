@@ -1,4 +1,5 @@
 import { _get } from "../_modules/get/get.min.js";
+import { _post } from "../_modules/post/post.min.js";
 var eventMatches;
 var matchesOk = false;
 function setBadEvent() {
@@ -240,6 +241,12 @@ async function post(url, data) {
     });
     return response.json();
 }
+function mainFormError(error) {
+    document.getElementById("submitText_d").innerText = "ERROR!!!";
+    document.getElementById("submitProgress_d").value = 0;
+    document.getElementById("reSubmitButton").style.display = "unset";
+    console.error(error);
+}
 async function uploadForm() {
     if (!checkFormState()) {
         alert("there are issues with your form");
@@ -282,45 +289,28 @@ async function uploadForm() {
     document.getElementById("mainFormHTML").style.display = "none";
     document.getElementById("submitUi").style.display = "unset";
     document.getElementById("reSubmitButton").style.display = "none";
+    const submitText_d = document.getElementById("submitText_d"), submitProgress_d = document.getElementById("submitProgress_d");
     await new Promise((res) => setTimeout(res, 250));
-    post("/submit", responses).then(async (response) => {
-        const r = response;
-        console.log(r.id);
-        document.getElementById("submitText_d").innerText = "Verifying...";
+    _post("/submit", submitText_d.id, responses).then(async (res) => {
+        console.log(res.id);
+        submitText_d.innerText = "Verifying...";
         await new Promise((res) => setTimeout(res, 250));
-        try {
-            const verifyResp = await fetch(`/api/data/exists/${r.id}`, {
-                method: "GET",
-                cache: "no-cache",
-                credentials: "include",
-                redirect: "follow",
-            });
-            if (verifyResp.status === 401 || verifyResp.status === 403) {
-                window.location.href = "/login";
-            }
-            const checkRemote = await verifyResp.json();
+        _get(`/api/data/exists/${res.id}`, document.getElementById("submitText_d")).then(async (checkRemote) => {
             if (checkRemote.team == responses.team && checkRemote.match == responses.match) {
-                document.getElementById("submitText_d").innerText = "Done!";
-                document.getElementById("submitProgress_d").value = 100;
-                document.getElementById("submitProgress_d").max = 100;
+                submitText_d.innerText = "Done!";
+                submitProgress_d.value = 100;
+                submitProgress_d.max = 100;
                 await new Promise((res) => setTimeout(res, 1500));
                 window.location.href = "/";
             }
             else {
-                document.getElementById("submitText_d").innerText = "Possible Error";
-                document.getElementById("submitProgress_d").value = 0;
-                document.getElementById("reSubmitButton").style.display = "unset";
+                mainFormError("data mismatch");
             }
-        }
-        catch (err) {
-            console.log("failure");
-            window.location.href = "/login";
-        }
+        }).catch((error) => {
+            mainFormError(error);
+        });
     }).catch((error) => {
-        document.getElementById("submitText_d").innerText = "ERROR!!!";
-        document.getElementById("submitProgress_d").value = 0;
-        document.getElementById("reSubmitButton").style.display = "unset";
-        console.error(error);
+        mainFormError(error);
     });
 }
 window.uploadForm = uploadForm;
