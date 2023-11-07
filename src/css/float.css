@@ -61,7 +61,7 @@ body.gruvbox {
 }
 body,
 html {
-    font-family: 'raleway-300';
+    font-family: 'raleway-300', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 body {
     background-color: var(--bodyColor);
@@ -78,7 +78,7 @@ fieldset {
 }
 h1 {
     text-align: center;
-    font-family: 'raleway-500';
+    font-family: 'raleway-500', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 .container {
     justify-content: center;
@@ -142,7 +142,7 @@ label {
 }
 .gametitle {
     color: var(--inputColorSelected);
-    font-family: 'raleway-500';
+    font-family: 'raleway-500', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 .gameflair1 {
     color: var(--gameFlairColor);
