@@ -18,16 +18,14 @@
                 <h3 style="color: var(--cancelColor); display: none;" id="error"></h3>
                 <fieldset id="searchFset">
                     <label>Team</label><br>
-                    <input type="tel" id="teamNum" required><br>
-                    <fieldset><br>
+                    <input type="tel" id="teamNum" required><br><br>
                         <label>Event Code: </label><br>
                         <select id="eventCode">
                             <option value="CADA">CADA - Sacramento Regional</option>
                             <option value="CASJ">CASJ - Silicon Valley Regional</option>
                             <option value="WOOD">WOOD - CalGames</option>
                             <option value="CCCC" selected>CCCC - Capital City Classic</option>
-                        </select>
-                    </fieldset>
+                        </select><br><br>
                     <button type="button" class="uiButton actionButton" onclick="constructGraphs()" id="searchBtn">Search</button><br>
                     <button type="button" class="uiButton returnButton" onclick="window.location.href='/browse'">Back</button>
                 </fieldset>

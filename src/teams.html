@@ -16,16 +16,14 @@
         <div class="container" id="search" style="display: flex;">
             <form>
                 <h1 class="w3">bearTracks<br><span class="gametitle">performance ranks</span></h1>
-                <fieldset>
-                    <label>Event Code: </label><br>
-                    <select name="event" id="eventCode">
-                        <option value="CADA">CADA - Sacramento Regional</option>
-                        <option value="CASJ">CASJ - Silicon Valley Regional</option>
-                        <option value="WOOD">WOOD - CalGames</option>
-                        <option value="CCCC" selected>CCCC - Capital City Classic</option>
-                    </select><br><br>
-                    <select name="type" id="weightType"><option value="0" selected>standard weight</option><option value="1">grid point weight</option><option value="2">cube weight</option><option value="3">cone weight</option><option value="4">bottom row weight</option><option value="5">middle row weight</option><option value="6">top row weight</option><option value="7">bottom row cube weight</option><option value="8">bottom row cone weight</option><option value="9">middle row cube weight</option><option value="10">middle row cone weight</option><option value="11">top row cube weight</option><option value="12">top row cone weight</option></select>
-                </fieldset>
+                <label>Event Code: </label><br>
+                <select name="event" id="eventCode">
+                    <option value="CADA">CADA - Sacramento Regional</option>
+                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                    <option value="WOOD">WOOD - CalGames</option>
+                    <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                </select><br>
+                <select name="type" id="weightType"><option value="0" selected>standard weight</option><option value="1">grid point weight</option><option value="2">cube weight</option><option value="3">cone weight</option><option value="4">bottom row weight</option><option value="5">middle row weight</option><option value="6">top row weight</option><option value="7">bottom row cube weight</option><option value="8">bottom row cone weight</option><option value="9">middle row cube weight</option><option value="10">middle row cone weight</option><option value="11">top row cube weight</option><option value="12">top row cone weight</option></select><br><br>
                 <button type="button" class="uiButton actionButton" id="viewTeamsButton" onclick="getTeamRanks()">View</button><br>
                 <button type="button" class="uiButton returnButton" onclick="goToHome()">Back</button>
             </form>

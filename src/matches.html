@@ -15,18 +15,16 @@
         <div class="container" id="search" style="display: flex;">
             <div class="maincontent">
                 <h1 class="w3">bearTracks<br><span class="gametitle">Matches</span></h1><br><br>
-                <fieldset>
-                    <label>Event Code: </label><br>
-                    <select name="event" id="eventCode">
-                        <option value="CADA">CADA - Sacramento Regional</option>
-                        <option value="CASJ">CASJ - Silicon Valley Regional</option>
-                        <option value="WOOD">WOOD - CalGames</option>
-                        <option value="CCCC" selected>CCCC - Capital City Classic</option>
-                    </select><br><br>
-                    <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
-                    <button type="button" class="uiButton actionButton" id="viewMatchButton" onclick="getMatches()">View</button><br>
-                    <button type="button" class="uiButton returnButton" onclick="window.location.href='/'" type="button">Back</button>
-                </fieldset>
+                <label>Event Code: </label><br>
+                <select name="event" id="eventCode">
+                    <option value="CADA">CADA - Sacramento Regional</option>
+                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                    <option value="WOOD">WOOD - CalGames</option>
+                    <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                </select><br><br>
+                <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
+                <button type="button" class="uiButton actionButton" id="viewMatchButton" onclick="getMatches()">View</button><br>
+                <button type="button" class="uiButton returnButton" onclick="window.location.href='/'" type="button">Back</button>
             </div>
         </div>
         <div class="container" id="results" style="display: none;">
