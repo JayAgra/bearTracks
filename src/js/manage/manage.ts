@@ -1,4 +1,5 @@
 import { _get } from "../_modules/get/get.min.js"
+import { _delete } from "../_modules/delete/delete.min.js";
 
 function newSearch() {
     location.reload();
@@ -19,7 +20,7 @@ async function getSubmissionData() {
 
 async function deleteSubmission(submission: string, linkID: string) {
     document.getElementById(linkID).innerHTML = "deleting...";
-    _get(`/api/manage/${submission}/delete`, linkID).then((response: { "status": number }) => {
+    _delete(`/api/manage/${submission}/delete`, linkID).then((response: { "status": number }) => {
         if (response.status === 0xc83) {
             document.getElementById(linkID).innerHTML = "deleted!";
         }

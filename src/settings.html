@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#121212" id="themeMeta">
         <link rel="stylesheet" href="css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="css/settings.css" type="text/css">
         <script src="js/form/form.min.js"></script>
     </head>
     <body class="dark-mode centerText">
@@ -14,15 +15,16 @@
         <div class="container">
             <div class="dummy" style="min-width: 250px;">
                 <h1 class="w3">bearTracks<br><span class="gametitle">settings</span></h1>
-                <button style="background-color: transparent; border: 1px solid var(--gameFlairColor); color: var(--gameFlairColor); border-radius: 10px; padding: 1px; font-weight: 500; width: 75%;" onclick="changeTheme()"><p>Switch Theme</p></button><br><br>
-                <button style="background-color: transparent; border: 1px solid var(--gameFlairColor); color: var(--gameFlairColor); border-radius: 10px; padding: 1px; font-weight: 500; width: 75%;" id="createPk"><p>Create Passkey</p></button><br><br>
-                <button style="background-color: transparent; border: 1px solid var(--cancelColor); color: var(--cancelColor); border-radius: 10px; padding: 1px; font-weight: 500; width: 75%;" onclick="window.location.href='logout'"><p>Log Out</p></button>
-                <button style="background-color: transparent; border: none; color: var(--cancelColor); padding: 0px; width: 75%;" onclick="window.location.href='clearCookies'"><p>Reset Cookies</p></button><br>
-                <button style="background-color: transparent; border: 1px solid var(--textColor); color: var(--textColor); border-radius: 10px; padding: 1px; font-weight: 500; width: 75%;" onclick="window.location.href='/'"><p>Back</p></button>
+                <button class="settingOpt std" id="changeTheme"><p>Switch Theme</p></button><br><br>
+                <button class="settingOpt std" id="createPk"><p>Create Passkey</p></button><br><br>
+                <button class="settingOpt danger" id="disablePw"><p>Disable Password Auth</p></button><br><br>
+                <button class="settingOpt danger" onclick="window.location.href='logout'"><p>Log Out</p></button>
+                <button class="settingOpt danger noBdr" onclick="window.location.href='clearCookies'"><p>Reset Cookies</p></button><br>
+                <button class="settingOpt plain" onclick="window.location.href='/'"><p>Back</p></button>
                 <h4 style="color: var(--gameFlairColor);" id="success"></h4><h4 style="color: var(--cancelColor);" id="error"></h4>
             </div>
         </div>
-        <script src="js/settings/settings.min.js" type="text/javascript"></script>
+        <script type="module" src="js/settings/settings.js"></script>
         <script src="https://unpkg.com/@simplewebauthn/browser@8.3.4/dist/bundle/index.umd.min.js" integrity="sha384-7FvcOpf85HsGS89sLrvOOHZYqgaEqbfUi87HhpbqbndTSFw+XpzbDMK5ZcxD28fe" crossorigin="anonymous"></script>
         <script src="js/createPasskey/createPasskey.min.js"></script>
     </body>

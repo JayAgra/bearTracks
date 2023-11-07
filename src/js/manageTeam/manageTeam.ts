@@ -1,4 +1,5 @@
 import { _get } from "../_modules/get/get.min.js"
+import { _patch } from "../_modules/patch/patch.min.js";
 
 type scoutData = {
     "id": number;
@@ -24,7 +25,7 @@ async function getData() {
 
 async function approveTeamUser(targetId: string, button: any) {
     button.innerText = "..."
-    _get(`/api/manage/myTeam/scouts/access/${targetId}/true`, button.id).then((response) => {
+    _patch(`/api/manage/myTeam/scouts/access/${targetId}/true`, button.id).then((response) => {
         if (response.status === 0xc86) {
             button.innerText = "approved user";
         } else {
@@ -36,7 +37,7 @@ async function approveTeamUser(targetId: string, button: any) {
 
 async function disown(targetId: string, button: any) {
     button.innerText = "..."
-    _get(`/api/manage/myTeam/scouts/access/${targetId}/false`, button.id).then((response) => {
+    _patch(`/api/manage/myTeam/scouts/access/${targetId}/false`, button.id).then((response) => {
         if (response.status === 0xc86) {
             button.innerText = "disowned";
         } else {

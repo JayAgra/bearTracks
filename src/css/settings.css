@@ -1,0 +1,28 @@
+.settingOpt {
+    background-color: transparent;
+    border: 1px solid var(--gameFlairColor);
+    color: var(--gameFlairColor);
+    border-radius: 10px;
+    padding: 1px;
+    font-weight: 500;
+    width: 75%;
+}
+
+.settingOpt.std {
+    border-color: var(--gameFlairColor);
+    color: var(--gameFlairColor);
+}
+
+.settingOpt.danger {
+    border-color: var(--cancelColor);
+    color: var(--cancelColor);
+}
+
+.settingOpt.danger.noBdr {
+    border: none;
+}
+
+.settingOpt.plain {
+    border-color: var(--textColor);
+    color: var(--textColor);
+}
