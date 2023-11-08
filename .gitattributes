@@ -1,2 +1,3 @@
-src/js/*/*.js linguist-vendored
-src/assets/*.js linguist-vendored
+src/js/*/*.js       linguist-vendored
+src/assets/*.js     linguist-vendored
+tsconfig.json       linguist-language=JSON-with-Comments

@@ -133,49 +133,25 @@ type keysDb = {
     teamAdmin: number;
 };
 
-app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (req.cookies.key) {
-        authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err: any, result: keysDb | null) => {
-            if (err || !result || Number(result.expires) < Date.now()) {
-                res.clearCookie("key");
-                req.user = {
-                    "id": 0,
-                    "username": "",
-                    "name": "",
-                    "team": 0,
-                    "admin": "",
-                    "key": "",
-                    "expires": "",
-                    "teamAdmin": 0
-                };
-            } else {
-                req.user = {
-                    "id": result.userId,
-                    "username": result.username,
-                    "name": result.name,
-                    "team": result.team,
-                    "admin": result.admin,
-                    "key": result.key,
-                    "expires": result.expires,
-                    "teamAdmin": result.teamAdmin
-                }
-            }
-            return next();
-        });
-    } else {
-        req.user = {
-            "id": 0,
-            "username": "",
-            "name": "",
-            "team": 0,
-            "admin": "",
-            "key": "",
-            "expires": "",
-            "teamAdmin": 0
-        };
-        return next();
-    }
-});
+/*
+ * i present to you: the "circle" of unmaintainable shit
+ * hey maybe this is security by obscurity
+ */
+
+                    app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+            if (req.cookies.key) {                                      authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1",
+        [req.cookies.key],                                                  (err: any, result: keysDb | null) => {
+    if (err || !result ||                                                       Number(result.expires) < Date.now()) {
+res.clearCookie("key");                                                             req.user = {"id": 0, "username": "", 
+"name": "","team": 0,                                                                   "admin": "", "key": "", "expires": "",
+"teamAdmin": 0 }; }                                                                         else { req.user = {
+"id": result.userId, "username": result.username,                                       "name": result.name, "team": result.team,
+"admin": result.admin, "key": result.key,                                           "expires": result.expires,
+    "teamAdmin": result.teamAdmin                                               }}return next();});
+        } else {req.user = {                                                "id": 0, "username": "",
+            "name": "",                                                 "team": 0,
+                "admin": "","key": "","expires": "","teamAdmin": 0};return next();}});
+
 
 // check the authentication and server membership
 function checkAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
