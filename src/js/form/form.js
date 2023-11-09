@@ -1,9 +1,9 @@
 "use strict";
-window.getThemeCookie = () => {
+function getThemeCookie() {
     var cookieString = RegExp("4c454a5b1bedf6a1" + "=[^;]+").exec(document.cookie);
     return decodeURIComponent(!!cookieString ? cookieString.toString().replace(/^[^=]+./, "") : "");
 }
-window.themeHandle = () => {
+function themeHandle() {
     let theme = getThemeCookie();
     switch (theme) {
         case "light":
@@ -22,4 +22,4 @@ window.themeHandle = () => {
             break;
     }
 }
-window.waitMs = (ms) => new Promise((res) => setTimeout(res, ms));
+const waitMs = (ms) => new Promise((res) => setTimeout(res, ms));

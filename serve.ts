@@ -139,18 +139,18 @@ type keysDb = {
  */
 
                     app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-            if (req.cookies.key) {                                      authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1",
+                if (!req.headers.authorization) {                       if (req.cookies.key) {authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1",
         [req.cookies.key],                                                  (err: any, result: keysDb | null) => {
     if (err || !result ||                                                       Number(result.expires) < Date.now()) {
-res.clearCookie("key");                                                             req.user = {"id": 0, "username": "", 
+res.clearCookie("key");                                                             req.user = {"id": 0, "username": "",
 "name": "","team": 0,                                                                   "admin": "", "key": "", "expires": "",
 "teamAdmin": 0 }; }                                                                         else { req.user = {
-"id": result.userId, "username": result.username,                                       "name": result.name, "team": result.team,
-"admin": result.admin, "key": result.key,                                           "expires": result.expires,
-    "teamAdmin": result.teamAdmin                                               }}return next();});
-        } else {req.user = {                                                "id": 0, "username": "",
-            "name": "",                                                 "team": 0,
-                "admin": "","key": "","expires": "","teamAdmin": 0};return next();}});
+"id": result.userId,                                                                    "username": result.username,"name": result.name,
+"team": result.team,                                                                "admin": result.admin, "key": result.key,
+    "expires": result.expires,                                                  "teamAdmin": result.teamAdmin
+        }}return next();});} else                                           {req.user = {"id": 0,
+            "username": "","name": "",                                  "team": 0,
+                "admin": "","key": "","expires": "","teamAdmin": 0};return next();}}});
 
 
 // check the authentication and server membership
@@ -530,6 +530,11 @@ app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: expr
 import { scouts } from "./routes/api/scouts/scouts";
 app.get("/api/scouts", apiCheckAuth, async (req: express.Request, res: express.Response) => {
     scouts(req, res, authDb);
+});
+
+import { myPoints } from "./routes/api/scouts/myPoints";
+app.get("/api/scouts/myPoints", apiCheckAuth, async (req: express.Request, res: express.Response) => {
+    myPoints(req, res, authDb);
 });
 
 // scout's profile (submitted forms)
