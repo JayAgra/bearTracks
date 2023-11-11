@@ -47,7 +47,7 @@ export async function checkLogIn(req: express.Request, res: express.Response, au
                             result.teamAdmin
                         ];
                         authDb.run(keyStmt, keyValues, (err) => {
-                            if (err) {
+                            if (err || !result) {
                                 // res.status(500).send("" + 0x1f42 + " internal server error (500)");
                                 return res.redirect("/login?err=0");
                             } else {

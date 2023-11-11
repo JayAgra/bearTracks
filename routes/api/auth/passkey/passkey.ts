@@ -62,7 +62,7 @@ type dbAuthenticator = {
 function getUserAuthenticators(req: express.Request, authDb: sqlite3.Database): Promise<dbAuthenticator[]> {
     return new Promise((resolve, reject) => {
         authDb.all("SELECT * FROM passkeys WHERE userId=?", [req.user.id], (err: any, result: any) => {
-            if (err) {
+            if (err || !result) {
                 return reject(err);
             } else {
                 resolve(result as unknown[] as dbAuthenticator[]);
@@ -108,7 +108,7 @@ export async function _generateRegistrationOptions(req: express.Request, res: ex
 function getUserCurrentChallenge(req: express.Request, authDb: sqlite3.Database): Promise<string> {
     return new Promise((resolve, reject) => {
         authDb.get("SELECT currentChallenge FROM users WHERE id=?", [req.user.id], (err: any, result: any) => {
-            if (err) {
+            if (err || !result) {
                 return reject(err);
             } else {
                 resolve(result.currentChallenge);
@@ -167,7 +167,7 @@ export async function _verifyRegistration(req: express.Request, res: express.Res
 function getUserIdByName(username: string, authDb: sqlite3.Database) {
     return new Promise((resolve, reject) => {
         authDb.get("SELECT id FROM users WHERE username=?", [username], (err: any, result: any) => {
-            if (err) {
+            if (err || !result) {
                 return reject(err);
             } else {
                 resolve(result.id);
@@ -180,7 +180,7 @@ function getAnyUserAuthenticators(req: express.Request, authDb: sqlite3.Database
     return new Promise(async (resolve, reject) => {
         const userId = await getUserIdByName(username, authDb);
         authDb.all("SELECT * FROM passkeys WHERE userId=?", [userId], (err: any, result: any) => {
-            if (err) {
+            if (err || !result) {
                 return reject(err);
             } else {
                 resolve(result as unknown[] as dbAuthenticator[]);
@@ -193,7 +193,7 @@ function getAnyUserChallenge(authDb: sqlite3.Database, username: string): Promis
     return new Promise(async (resolve, reject) => {
         const userId = await getUserIdByName(username, authDb);
         authDb.get("SELECT currentChallenge FROM users WHERE id=?", [userId], (err: any, result: any) => {
-            if (err) {
+            if (err || !result) {
                 return reject(err);
             } else {
                 resolve(result.currentChallenge);
@@ -231,7 +231,7 @@ export async function _generateAuthenticationOptions(req: express.Request, res: 
 function getUserAuthenticator(authDb: sqlite3.Database, id: string): Promise<dbAuthenticator> {
     return new Promise((resolve, reject) => {
         authDb.get("SELECT * FROM passkeys WHERE credentialID=?", [id], (err: any, result: any) => {
-            if (err) {
+            if (err || !result) {
                 return reject(err);
             } else {
                 resolve(result as unknown as dbAuthenticator);
@@ -284,7 +284,7 @@ export async function _verifyAuthenticationResponse(req: express.Request, res: e
         updateAuthenticatorCounter(authDb, body.id, authenticationInfo.newCounter);
         const authenticatedUserId = authenticator.userId;
         authDb.get("SELECT id, username, fullName, team, accessOk, admin, teamAdmin FROM users WHERE id=?", [authenticatedUserId], async (err: any, result: any) => {
-            if (err) {
+            if (err || !result) {
                 res.status(500).json({ error: "internal server error (session key)" });
             } else {
                 if (typeof result !== "undefined") {
