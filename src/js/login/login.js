@@ -9,7 +9,8 @@ const nextBtn = document.getElementById("next"),
     currentUsernameInd = document.getElementById("currentUsername"),
     passwordLoginButton = document.getElementById("pw"),
     createAccountButton = document.getElementById("createAct"),
-    errorElement = document.getElementById("error");
+    errorElement = document.getElementById("error"),
+    inputPassword = document.getElementById("inputPassword");
 
 nextBtn.addEventListener("click", async () => {
     errorElement.innerText = "";
@@ -29,12 +30,13 @@ nextBtn.addEventListener("click", async () => {
             infoInput.setAttribute("autocomplete", "current-password");
             infoInput.setAttribute("type", "password");
             setUsername = infoInput.value;
-            infoInput.value = "";
             passwordLoginButton.style.opacity = 0;
             passwordLoginButton.style.display = "";
             passwordLoginButton.classList.add("nextStepPw");
             createAccountButton.classList.add("moveDown");
-            infoInput.id = "pwLoginButton";
+            await new Promise((res) => setTimeout(res, 100));
+            infoInput.style.display = "none"
+            inputPassword.style.display = "unset";
             isPkBtn = true;
         }
     } else {
@@ -65,7 +67,7 @@ nextBtn.addEventListener("click", async () => {
 
 passwordLoginButton.onclick = () => {
     document.getElementById("artUsername").value = setUsername;
-    document.getElementById("artPassword").value = infoInput.value;
+    document.getElementById("artPassword").value = inputPassword.value;
     document.getElementById("artForm").submit();
 }
 
