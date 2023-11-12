@@ -25,9 +25,6 @@ nextBtn.addEventListener("click", async () => {
             currentUsernameInd.children[1].innerText = infoInput.value;
             nextBtn.classList.add("nextStepPk");
             infoInput.classList.add("fadeIn");
-            infoInput.placeholder = "password";
-            infoInput.setAttribute("autocomplete", "current-password");
-            infoInput.setAttribute("type", "password");
             passwordLoginButton.style.opacity = 0;
             passwordLoginButton.style.display = "";
             passwordLoginButton.classList.add("nextStepPw");
