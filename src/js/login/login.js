@@ -1,8 +1,7 @@
 import { _get } from "../_modules/get/get.min.js";
 import { _dErr } from "../_modules/dErr/dErr.min.js";
 
-var isPkBtn = false,
-    setUsername = "";
+var isPkBtn = false;
 
 const nextBtn = document.getElementById("next"),
     infoInput = document.getElementById("inputInfo"),
@@ -63,12 +62,6 @@ nextBtn.addEventListener("click", async () => {
         }
     }
 });
-
-passwordLoginButton.onclick = () => {
-    document.getElementById("artUsername").value = infoInput.value;
-    document.getElementById("artPassword").value = inputPassword.value;
-    document.getElementById("artForm").submit();
-}
 
 function displayErrors() {
     _dErr(["500 internal server error", "invalid credentials", "account not yet approved", ""]);
