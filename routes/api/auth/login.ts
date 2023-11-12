@@ -22,7 +22,7 @@ type authData = {
 
 export async function checkLogIn(req: express.Request, res: express.Response, authDb: sqlite3.Database) {
     let loginData: loginDataForm = req.body as unknown as loginDataForm;
-    console.log(loginData);
+    console.log(req.body);
     authDb.get("SELECT id, username, fullName, team, passHash, salt, accessOk, admin, teamAdmin FROM users WHERE username=?", [loginData.username], async (err: any, result: authData | undefined) => {
         if (err) {
             // res.status(500).json({ "status": 0x1f42 });
