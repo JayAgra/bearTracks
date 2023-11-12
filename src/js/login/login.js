@@ -35,6 +35,7 @@ nextBtn.addEventListener("click", async () => {
             await new Promise((res) => setTimeout(res, 100));
             infoInput.style.display = "none";
             inputPassword.style.display = "unset";
+            passwordLoginButton.removeAttribute("disabled");
             isPkBtn = true;
         }
     } else {
