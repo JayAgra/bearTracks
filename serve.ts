@@ -112,7 +112,13 @@ app.use(
   })
 );
 app.use(limiter);
-app.use(express.json());
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (req.path !== "/loginForm") {
+        express.json();
+    } else {
+        express.urlencoded();
+    }
+});
 
 //////////////////////////////////
 //////////////////////////////////
