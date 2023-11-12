@@ -29,13 +29,12 @@ nextBtn.addEventListener("click", async () => {
             infoInput.placeholder = "password";
             infoInput.setAttribute("autocomplete", "current-password");
             infoInput.setAttribute("type", "password");
-            setUsername = infoInput.value;
             passwordLoginButton.style.opacity = 0;
             passwordLoginButton.style.display = "";
             passwordLoginButton.classList.add("nextStepPw");
             createAccountButton.classList.add("moveDown");
             await new Promise((res) => setTimeout(res, 100));
-            infoInput.style.display = "none"
+            infoInput.style.display = "none";
             inputPassword.style.display = "unset";
             isPkBtn = true;
         }
@@ -66,7 +65,7 @@ nextBtn.addEventListener("click", async () => {
 });
 
 passwordLoginButton.onclick = () => {
-    document.getElementById("artUsername").value = setUsername;
+    document.getElementById("artUsername").value = infoInput.value;
     document.getElementById("artPassword").value = inputPassword.value;
     document.getElementById("artForm").submit();
 }
