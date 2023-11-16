@@ -26,7 +26,7 @@ async function getTeamRanks() {
                 addProperty(teams, e.team, Number(e.weight.split(",")[Number(weight)]));
                 addProperty(teamsCount, e.team, 1);
             });
-            for (let team in teams) {
+            for (let team in teams) 
                 teams[team] /= teamsCount[team];
             }
             var htmltable = "";

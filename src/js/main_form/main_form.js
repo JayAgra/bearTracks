@@ -295,7 +295,7 @@ async function uploadForm() {
         console.log(res.id);
         submitText_d.innerText = "Verifying...";
         await new Promise((res) => setTimeout(res, 250));
-        _get(`/api/data/exists/${res.id}`, document.getElementById("submitText_d")).then(async (checkRemote) => {
+        _get(`/api/data/exists/${res.id}`, document.getElementById("submitText_d").id).then(async (checkRemote) => {
             if (checkRemote.team == responses.team && checkRemote.match == responses.match) {
                 submitText_d.innerText = "Done!";
                 submitProgress_d.value = 100;

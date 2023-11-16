@@ -98,9 +98,7 @@ var limiter = RateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req: express.Request, res: express.Response) => {
-        return req.connection.remoteAddress
-            ? req.connection.remoteAddress
-            : "0";
+        return req.connection.remoteAddress ? req.connection.remoteAddress : "0";
     },
 });
 app.use(
@@ -156,11 +154,7 @@ app.use(
                     "SELECT * FROM keys WHERE key=? LIMIT 1",
                     [req.cookies.key],
                     (err: any, result: keysDb | null) => {
-                        if (
-                            err ||
-                            !result ||
-                            Number(result.expires) < Date.now()
-                        ) {
+                        if (err || !result || Number(result.expires) < Date.now()) {
                             res.clearCookie("key");
                             req.user = {
                                 id: 0,
@@ -205,7 +199,11 @@ app.use(
 );
 
 // check the authentication and server membership
-function checkAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+function checkAuth(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) {
     if (req.user.id !== 0) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
@@ -217,7 +215,11 @@ function checkAuth(req: express.Request, res: express.Response, next: express.Ne
 }
 
 // check the authentication and server membership
-function apiCheckAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+function apiCheckAuth(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) {
     if (req.user.id !== 0) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
@@ -232,7 +234,11 @@ type scoreOnly = {
     score: number;
 };
 
-async function checkGamble(req: express.Request, res: express.Response,next: express.NextFunction) {
+async function checkGamble(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) {
     let pointStmt = `SELECT score FROM users WHERE id=?`;
     let pointValues = [req.user.id];
     authDb.get(pointStmt, pointValues, (err: any, result: scoreOnly) => {
@@ -246,7 +252,11 @@ async function checkGamble(req: express.Request, res: express.Response,next: exp
 
 // forwards FRC API data for some API endpoints
 // insert first forward 2022 pun
-async function forwardFRCAPIdata(url: string, req: express.Request,res: express.Response) {
+async function forwardFRCAPIdata(
+    url: string,
+    req: express.Request,
+    res: express.Response
+) {
     var dbody: EventEmitter = new EventEmitter();
     var options = {
         method: "GET",
@@ -747,10 +757,7 @@ import { scoutByID } from "./routes/api/scouts/scoutByID";
 app.get(
     "/api/scoutByID/:username",
     apiCheckAuth,
-    async (
-        req: express.Request<{ username: string }>,
-        res: express.Response
-    ) => {
+    async (req: express.Request<{ username: string }>, res: express.Response) => {
         scoutByID(req, res, db);
     }
 );
@@ -914,10 +921,7 @@ app.patch(
     "/api/manage/myTeam/scouts/access/:id/:accessOk",
     apiCheckAuth,
     express.json(),
-    async (
-        req: express.Request<{ accessOk: string }>,
-        res: express.Response
-    ) => {
+    async (req: express.Request<{ accessOk: string }>, res: express.Response) => {
         manageTeamUser(req, res, authDb);
     }
 );
@@ -1055,14 +1059,22 @@ app.patch(
 //////////////////////////////////
 
 import { createAccount } from "./routes/api/auth/create";
-app.post("/createAccount", express.urlencoded(), (req: express.Request, res: express.Response) => {
-    createAccount(req, res, authDb);
-});
+app.post(
+    "/createAccount",
+    express.urlencoded(),
+    (req: express.Request, res: express.Response) => {
+        createAccount(req, res, authDb);
+    }
+);
 
 import { checkLogIn } from "./routes/api/auth/login";
-app.post("/loginForm", express.urlencoded(), (req: express.Request, res: express.Response) => {
-    checkLogIn(req, res, authDb);
-});
+app.post(
+    "/loginForm",
+    express.urlencoded(),
+    (req: express.Request, res: express.Response) => {
+        checkLogIn(req, res, authDb);
+    }
+);
 
 import { _generateRegistrationOptions } from "./routes/api/auth/passkey/passkey";
 app.get(

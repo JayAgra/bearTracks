@@ -21,7 +21,7 @@ function changeTheme() {
 document.getElementById("changeTheme").onclick = changeTheme;
 function disablePassword() {
     if (confirm("If you continue, you will no longer be able to use a password to login. If you lose your authenticator (i.e. passkey), you will lose access to your account.")) {
-        _patch("/api/auth/passwordAuth/delete", document.getElementById("disablePw")).then((response) => {
+        _patch("/api/auth/passwordAuth/delete", document.getElementById("disablePw").id).then((response) => {
             if (response.status === "done") {
                 document.getElementById("disablePw").innerText = "Password Deleted.";
             }
