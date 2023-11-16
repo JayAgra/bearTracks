@@ -1,7 +1,16 @@
 import { _get } from "../_modules/get/get.min.js";
 import { _dErr } from "../_modules/dErr/dErr.min.js";
+
 var isPkBtn = false;
-const nextBtn = document.getElementById("next"), infoInput = document.getElementById("inputInfo"), currentUsernameInd = document.getElementById("currentUsername"), passwordLoginButton = document.getElementById("pw"), createAccountButton = document.getElementById("createAct"), errorElement = document.getElementById("error"), inputPassword = document.getElementById("inputPassword");
+
+const nextBtn = document.getElementById("next") as HTMLButtonElement,
+    infoInput = document.getElementById("inputInfo") as HTMLInputElement,
+    currentUsernameInd = document.getElementById("currentUsername") as HTMLDivElement,
+    passwordLoginButton = document.getElementById("pw") as HTMLButtonElement,
+    createAccountButton = document.getElementById("createAct") as HTMLSpanElement,
+    errorElement = document.getElementById("error") as HTMLHeadingElement,
+    inputPassword = document.getElementById("inputPassword") as HTMLInputElement;
+
 nextBtn.addEventListener("click", async () => {
     errorElement.innerText = "";
     if (!isPkBtn) {
@@ -10,11 +19,10 @@ nextBtn.addEventListener("click", async () => {
             await new Promise((res) => setTimeout(res, 500));
             infoInput.classList.remove("shakeInput");
             return;
-        }
-        else {
+        } else {
             infoInput.classList.add("fade");
-            currentUsernameInd.firstChild.innerText = "username";
-            currentUsernameInd.children[1].innerText = infoInput.value;
+            (currentUsernameInd.firstChild as HTMLParagraphElement).innerText = "username";
+            (currentUsernameInd.children[1] as HTMLParagraphElement).innerText = infoInput.value;
             nextBtn.classList.add("nextStepPk");
             infoInput.classList.add("fadeIn");
             passwordLoginButton.style.opacity = "0";
@@ -27,14 +35,13 @@ nextBtn.addEventListener("click", async () => {
             passwordLoginButton.removeAttribute("disabled");
             isPkBtn = true;
         }
-    }
-    else {
+    } else {
         let attResp;
-        await _get("/api/auth/authPasskey/" + infoInput.value, "error").then(async (response) => {
+        await _get("/api/auth/authPasskey/" + infoInput.value, "error").then(async (response: any) => {
             // @ts-ignore
-            attResp = await SimpleWebAuthnBrowser.startAuthentication(response);
-        }).catch((error) => {
-            errorElement.innerText = "unknown error getting challenge";
+            attResp = await (SimpleWebAuthnBrowser as any).startAuthentication(response);
+        }).catch((error: any) => {
+            errorElement.innerText = "unknown error getting challenge"
             throw new Error("unhandled error 😭");
         });
         const verificationResp = await fetch("/api/auth/verifyAuthPasskey/" + infoInput.value, {
@@ -47,15 +54,15 @@ nextBtn.addEventListener("click", async () => {
         const verificationJSON = await verificationResp.json();
         if (verificationJSON && verificationJSON.verified) {
             window.location.href = "/";
-        }
-        else {
+        } else {
             errorElement.innerText = "bad passkey";
             await new Promise((res) => setTimeout(res, 2000));
             window.location.reload();
         }
     }
 });
+
 function displayErrors() {
     _dErr(["500 internal server error", "invalid credentials", "account not yet approved", ""]);
 }
-window.displayErrors = displayErrors;
+(window as any).displayErrors = displayErrors;

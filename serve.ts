@@ -4,34 +4,39 @@
 //////////////////////////////////
 //////////////////////////////////
 
-/*jslint node: true*/
-/*jslint es6*/
-
 "use strict";
 
-const {
-    frcapi,
-    myteam,
-    baseURLNoPcl,
-} = require("./config.json");
+const { frcapi, myteam, baseURLNoPcl } = require("./config.json");
 
 const season = new Date().getFullYear();
 
 // sqlite database
 import * as sqlite3 from "sqlite3";
-const db: sqlite3.Database = new sqlite3.Database("data.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    if (err) console.error(err);
-});
+const db: sqlite3.Database = new sqlite3.Database(
+    "data.db",
+    sqlite3.OPEN_READWRITE,
+    (err: any) => {
+        if (err) console.error(err);
+    }
+);
 db.run("PRAGMA journal_mode = WAL;");
 
-const transactions: sqlite3.Database = new sqlite3.Database("data_transact.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    if (err) console.error(err);
-});
+const transactions: sqlite3.Database = new sqlite3.Database(
+    "data_transact.db",
+    sqlite3.OPEN_READWRITE,
+    (err: any) => {
+        if (err) console.error(err);
+    }
+);
 transactions.run("PRAGMA journal_mode = WAL;");
 
-const authDb: sqlite3.Database = new sqlite3.Database("data_auth.db", sqlite3.OPEN_READWRITE, (err: any) => {
-    if (err) console.error(err);
-});
+const authDb: sqlite3.Database = new sqlite3.Database(
+    "data_auth.db",
+    sqlite3.OPEN_READWRITE,
+    (err: any) => {
+        if (err) console.error(err);
+    }
+);
 authDb.run("PRAGMA journal_mode = WAL;");
 
 // server imports
@@ -47,12 +52,15 @@ import * as http from "http";
 import { EventEmitter } from "events";
 const options = {
     key: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`),
-    cert: fs.readFileSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`, "utf8"),
+    cert: fs.readFileSync(
+        `/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`,
+        "utf8"
+    ),
 };
 
 const certsizes = {
     key: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/privkey.pem`),
-    cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`)
+    cert: fs.statSync(`/etc/letsencrypt/live/${baseURLNoPcl}/cert.pem`),
 };
 
 // checks file size of ssl, if it exists (is filled), use HTTPS on port 443
@@ -83,6 +91,7 @@ app.use(
         },
     })
 );
+
 var limiter = RateLimit({
     windowMs: 10 * 60 * 1000, // 10 minutes
     max: 750,
@@ -103,7 +112,6 @@ app.use(
     })
 );
 app.use(limiter);
-app.use(express.json());
 
 //////////////////////////////////
 //////////////////////////////////
@@ -133,52 +141,69 @@ type keysDb = {
     teamAdmin: number;
 };
 
-app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (req.cookies.key) {
-        authDb.get("SELECT * FROM keys WHERE key=? LIMIT 1", [req.cookies.key], (err: any, result: keysDb | null) => {
-            if (err || !result || Number(result.expires) < Date.now()) {
-                res.clearCookie("key");
-                req.user = {
-                    "id": 0,
-                    "username": "",
-                    "name": "",
-                    "team": 0,
-                    "admin": "",
-                    "key": "",
-                    "expires": "",
-                    "teamAdmin": 0
-                };
+/*
+ * i present to you: the "circle" of unmaintainable shit
+ * hey maybe this is security by obscurity
+ */
+
+app.use(
+    (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if (!req.headers.authorization) {
+            if (req.cookies.key) {
+                authDb.get(
+                    "SELECT * FROM keys WHERE key=? LIMIT 1",
+                    [req.cookies.key],
+                    (err: any, result: keysDb | null) => {
+                        if (err || !result || Number(result.expires) < Date.now()) {
+                            res.clearCookie("key");
+                            req.user = {
+                                id: 0,
+                                username: "",
+                                name: "",
+                                team: 0,
+                                admin: "",
+                                key: "",
+                                expires: "",
+                                teamAdmin: 0,
+                            };
+                        } else {
+                            req.user = {
+                                id: result.userId,
+                                username: result.username,
+                                name: result.name,
+                                team: result.team,
+                                admin: result.admin,
+                                key: result.key,
+                                expires: result.expires,
+                                teamAdmin: result.teamAdmin,
+                            };
+                        }
+                        return next();
+                    }
+                );
             } else {
                 req.user = {
-                    "id": result.userId,
-                    "username": result.username,
-                    "name": result.name,
-                    "team": result.team,
-                    "admin": result.admin,
-                    "key": result.key,
-                    "expires": result.expires,
-                    "teamAdmin": result.teamAdmin
-                }
+                    id: 0,
+                    username: "",
+                    name: "",
+                    team: 0,
+                    admin: "",
+                    key: "",
+                    expires: "",
+                    teamAdmin: 0,
+                };
+                return next();
             }
-            return next();
-        });
-    } else {
-        req.user = {
-            "id": 0,
-            "username": "",
-            "name": "",
-            "team": 0,
-            "admin": "",
-            "key": "",
-            "expires": "",
-            "teamAdmin": 0
-        };
-        return next();
+        }
     }
-});
+);
 
 // check the authentication and server membership
-function checkAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+function checkAuth(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) {
     if (req.user.id !== 0) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
@@ -190,7 +215,11 @@ function checkAuth(req: express.Request, res: express.Response, next: express.Ne
 }
 
 // check the authentication and server membership
-function apiCheckAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+function apiCheckAuth(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) {
     if (req.user.id !== 0) {
         if (Number(req.user.expires) < Date.now()) {
             res.clearCookie("key");
@@ -202,10 +231,14 @@ function apiCheckAuth(req: express.Request, res: express.Response, next: express
 }
 
 type scoreOnly = {
-    "score": number
-}
+    score: number;
+};
 
-async function checkGamble(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function checkGamble(
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) {
     let pointStmt = `SELECT score FROM users WHERE id=?`;
     let pointValues = [req.user.id];
     authDb.get(pointStmt, pointValues, (err: any, result: scoreOnly) => {
@@ -219,7 +252,11 @@ async function checkGamble(req: express.Request, res: express.Response, next: ex
 
 // forwards FRC API data for some API endpoints
 // insert first forward 2022 pun
-async function forwardFRCAPIdata(url: string, req: express.Request, res: express.Response) {
+async function forwardFRCAPIdata(
+    url: string,
+    req: express.Request,
+    res: express.Response
+) {
     var dbody: EventEmitter = new EventEmitter();
     var options = {
         method: "GET",
@@ -267,7 +304,6 @@ function selectSeason(req: express.Request<any>) {
 console.log("Preparing...");
 app.disable("etag");
 
-
 //////////////////////////////////
 //////////////////////////////////
 ////// ACCEPT INCOMING FORM //////
@@ -276,10 +312,14 @@ app.disable("etag");
 
 // get the main form submissions
 import { submitForm } from "./routes/submit";
-app.post("/submit", checkAuth, async (req: express.Request, res: express.Response) => {
-    submitForm(req, res, db, transactions, authDb, __dirname, season);
-});
-
+app.post(
+    "/submit",
+    checkAuth,
+    express.json(),
+    async (req: express.Request, res: express.Response) => {
+        submitForm(req, res, db, transactions, authDb, __dirname, season);
+    }
+);
 
 //////////////////////////////////
 //////////////////////////////////
@@ -294,10 +334,14 @@ app.get("/", checkAuth, async (req: express.Request, res: express.Response) => {
 });
 
 // main scouting form
-app.get("/main", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/main.html", { root: __dirname });
-});
+app.get(
+    "/main",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/main.html", { root: __dirname });
+    }
+);
 
 // login page
 app.get("/login", async (req: express.Request, res: express.Response) => {
@@ -319,57 +363,84 @@ app.get("/charts", async (req: express.Request, res: express.Response) => {
 });
 
 // webmanifest for PWAs
-app.get("/app.webmanifest", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("./src/app.webmanifest", { root: __dirname });
-});
+app.get(
+    "/app.webmanifest",
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("./src/app.webmanifest", { root: __dirname });
+    }
+);
 
 // settings page
-app.get("/settings", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/settings.html", { root: __dirname });
-});
-
-app.get("/teams", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/teams.html", { root: __dirname });
-});
-
-app.get("/manage", checkAuth, async (req: express.Request, res: express.Response) => {
-    if (req.user.admin == "true") {
+app.get(
+    "/settings",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
         res.set("Cache-control", "public, max-age=23328000");
-        res.sendFile("src/manage.html", { root: __dirname });
-    } else {
-        res.redirect("/denied");
+        res.sendFile("src/settings.html", { root: __dirname });
     }
-});
+);
 
-app.get("/manageScouts", checkAuth, async (req: express.Request, res: express.Response) => {
-    if (req.user.admin == "true") {
+app.get(
+    "/teams",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
         res.set("Cache-control", "public, max-age=23328000");
-        res.sendFile("src/manageScouts.html", { root: __dirname });
-    } else {
-        res.redirect("/denied");
+        res.sendFile("src/teams.html", { root: __dirname });
     }
-});
+);
 
-app.get("/manageTeam", checkAuth, async (req: express.Request, res: express.Response) => {
-    if (req.user.teamAdmin !== 0) {
-        res.set("Cache-control", "public, max-age=23328000");
-        res.sendFile("src/manageTeam.html", { root: __dirname });
-    } else {
-        res.redirect("/denied");
+app.get(
+    "/manage",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        if (req.user.admin == "true") {
+            res.set("Cache-control", "public, max-age=23328000");
+            res.sendFile("src/manage.html", { root: __dirname });
+        } else {
+            res.redirect("/denied");
+        }
     }
-});
+);
 
-app.get("/manageTeams", checkAuth, async (req: express.Request, res: express.Response) => {
-    if (req.user.admin == "true") {
-        res.set("Cache-control", "public, max-age=23328000");
-        res.sendFile("src/manageTeams.html", { root: __dirname });
-    } else {
-        res.redirect("/denied");
+app.get(
+    "/manageScouts",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        if (req.user.admin == "true") {
+            res.set("Cache-control", "public, max-age=23328000");
+            res.sendFile("src/manageScouts.html", { root: __dirname });
+        } else {
+            res.redirect("/denied");
+        }
     }
-});
+);
+
+app.get(
+    "/manageTeam",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        if (req.user.teamAdmin !== 0) {
+            res.set("Cache-control", "public, max-age=23328000");
+            res.sendFile("src/manageTeam.html", { root: __dirname });
+        } else {
+            res.redirect("/denied");
+        }
+    }
+);
+
+app.get(
+    "/manageTeams",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        if (req.user.admin == "true") {
+            res.set("Cache-control", "public, max-age=23328000");
+            res.sendFile("src/manageTeams.html", { root: __dirname });
+        } else {
+            res.redirect("/denied");
+        }
+    }
+);
 
 // CSS (should be unused in favor of minified css)
 app.get("/float.css", async (req: express.Request, res: express.Response) => {
@@ -378,22 +449,31 @@ app.get("/float.css", async (req: express.Request, res: express.Response) => {
 });
 
 // minified css
-app.get("/float.min.css", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=933120000");
-    res.sendFile("./src/float.min.css", { root: __dirname });
-});
+app.get(
+    "/float.min.css",
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=933120000");
+        res.sendFile("./src/float.min.css", { root: __dirname });
+    }
+);
 
 // font file
-app.get("/fonts/Raleway-300.ttf", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=933120000");
-    res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
-});
+app.get(
+    "/fonts/Raleway-300.ttf",
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=933120000");
+        res.sendFile("./src/css/Raleway-300.ttf", { root: __dirname });
+    }
+);
 
 // font file
-app.get("/fonts/Raleway-500.ttf", async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=933120000");
-    res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
-});
+app.get(
+    "/fonts/Raleway-500.ttf",
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=933120000");
+        res.sendFile("./src/css/Raleway-500.ttf", { root: __dirname });
+    }
+);
 
 // JS for form (should be unused in favor of minified js)
 app.get("/form.js", async (req: express.Request, res: express.Response) => {
@@ -420,58 +500,89 @@ app.get("/scouts", async (req: express.Request, res: express.Response) => {
 });
 
 // play blackjack
-app.get("/blackjack", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=259200");
-    res.sendFile("src/blackjack.html", { root: __dirname });
-});
+app.get(
+    "/blackjack",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=259200");
+        res.sendFile("src/blackjack.html", { root: __dirname });
+    }
+);
 
 // spin wheel
-app.get("/spin", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/spin.html", { root: __dirname });
-});
+app.get(
+    "/spin",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/spin.html", { root: __dirname });
+    }
+);
 
 // list of gambling opportunities
-app.get("/points", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/points.html", { root: __dirname });
-});
+app.get(
+    "/points",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/points.html", { root: __dirname });
+    }
+);
 
 // scout point transactions
-app.get("/pointRecords", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/pointRecords.html", { root: __dirname });
-});
+app.get(
+    "/pointRecords",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/pointRecords.html", { root: __dirname });
+    }
+);
 
 // page with fake blue banners for future use
-app.get("/awards", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/awards.html", { root: __dirname });
-});
+app.get(
+    "/awards",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/awards.html", { root: __dirname });
+    }
+);
 
 // match list
-app.get("/matches", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/matches.html", { root: __dirname });
-});
+app.get(
+    "/matches",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/matches.html", { root: __dirname });
+    }
+);
 
 // data browsing tool
-app.get("/browse", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/browse.html", { root: __dirname });
-});
+app.get(
+    "/browse",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/browse.html", { root: __dirname });
+    }
+);
 
 // data browsing tool with detail
-app.get("/detail", checkAuth, async (req: express.Request, res: express.Response) => {
-    res.set("Cache-control", "public, max-age=23328000");
-    res.sendFile("src/detail.html", { root: __dirname });
-});
+app.get(
+    "/detail",
+    checkAuth,
+    async (req: express.Request, res: express.Response) => {
+        res.set("Cache-control", "public, max-age=23328000");
+        res.sendFile("src/detail.html", { root: __dirname });
+    }
+);
 
 // allow people to get denied :)
 app.get("/denied", (req: express.Request, res: express.Response) => {
     res.status(400).send("access denied");
 });
-
 
 //////////////////////////////////
 //////////////////////////////////
@@ -485,45 +596,82 @@ app.get("/denied", (req: express.Request, res: express.Response) => {
 
 // get all match data (by event)
 import { getAllEventData } from "./routes/api/data/event";
-app.get("/api/data/:season/all/:event", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    getAllEventData(req, res, db, selectSeason(req));
-});
+app.get(
+    "/api/data/:season/all/:event",
+    apiCheckAuth,
+    async (req: express.Request<{ event: string }>, res: express.Response) => {
+        getAllEventData(req, res, db, selectSeason(req));
+    }
+);
 
 // get team match data (by event)
 import { getTeamEventData } from "./routes/api/data/team";
-app.get("/api/data/:season/team/:event/:team", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    getTeamEventData(req, res, db, selectSeason(req));
-});
+app.get(
+    "/api/data/:season/team/:event/:team",
+    apiCheckAuth,
+    async (
+        req: express.Request<{ event: string; team: string }>,
+        res: express.Response
+    ) => {
+        getTeamEventData(req, res, db, selectSeason(req));
+    }
+);
 
 // get match data for a match
 import { getEventMatchData } from "./routes/api/data/match";
-app.get("/api/data/:season/match/:event/:match", apiCheckAuth, async (req: express.Request<{event: string, match: string}>, res: express.Response) => {
-    getEventMatchData(req, res, db, selectSeason(req));
-});
+app.get(
+    "/api/data/:season/match/:event/:match",
+    apiCheckAuth,
+    async (
+        req: express.Request<{ event: string; match: string }>,
+        res: express.Response
+    ) => {
+        getEventMatchData(req, res, db, selectSeason(req));
+    }
+);
 
 // get all match scouting data from a scout (by season)
 import { getScoutResponses } from "./routes/api/data/scout";
-app.get("/api/data/:season/scout/:userId", apiCheckAuth, async (req: express.Request<{userId: string}>, res: express.Response) => {
-    getScoutResponses(req, res, db, selectSeason(req));
-});
+app.get(
+    "/api/data/:season/scout/:userId",
+    apiCheckAuth,
+    async (req: express.Request<{ userId: string }>, res: express.Response) => {
+        getScoutResponses(req, res, db, selectSeason(req));
+    }
+);
 
 // get detailed data by query
 import { detailBySpecs } from "./routes/api/data/detail";
-app.get("/api/data/:season/detail/query/:event/:team/:page", apiCheckAuth, async (req: express.Request<{event: string, team: string, page: string}>, res: express.Response) => {
-    detailBySpecs(req, res, db, selectSeason(req));
-});
+app.get(
+    "/api/data/:season/detail/query/:event/:team/:page",
+    apiCheckAuth,
+    async (
+        req: express.Request<{ event: string; team: string; page: string }>,
+        res: express.Response
+    ) => {
+        detailBySpecs(req, res, db, selectSeason(req));
+    }
+);
 
 // get detailed data by id
 import { detailByID } from "./routes/api/data/detailID";
-app.get("/api/data/detail/id/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    detailByID(req, res, db);
-});
+app.get(
+    "/api/data/detail/id/:id",
+    apiCheckAuth,
+    async (req: express.Request<{ id: string }>, res: express.Response) => {
+        detailByID(req, res, db);
+    }
+);
 
 // see if submission with id exists
 import { submissionExists } from "./routes/api/data/exists";
-app.get("/api/data/exists/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    submissionExists(req, res, db);
-});
+app.get(
+    "/api/data/exists/:id",
+    apiCheckAuth,
+    async (req: express.Request<{ id: string }>, res: express.Response) => {
+        submissionExists(req, res, db);
+    }
+);
 
 //
 // team listings
@@ -531,20 +679,35 @@ app.get("/api/data/exists/:id", apiCheckAuth, async (req: express.Request<{id: s
 
 // get weight for teams list page
 import { teams } from "./routes/api/teams/teams";
-app.get("/api/teams/:season/:event", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    teams(req, res, db,selectSeason(req));
-});
+app.get(
+    "/api/teams/:season/:event",
+    apiCheckAuth,
+    async (req: express.Request<{ event: string }>, res: express.Response) => {
+        teams(req, res, db, selectSeason(req));
+    }
+);
 
 // other ways to get weight - not used by app, but for external use
 import { teamsByEvent } from "./routes/api/teams/eventWeight";
-app.get("/api/teams/event/:season/:event/:team/weight", apiCheckAuth, async (req: express.Request<{event: string, team: string}>, res: express.Response) => {
-    teamsByEvent(req, res, db, selectSeason(req));
-});
+app.get(
+    "/api/teams/event/:season/:event/:team/weight",
+    apiCheckAuth,
+    async (
+        req: express.Request<{ event: string; team: string }>,
+        res: express.Response
+    ) => {
+        teamsByEvent(req, res, db, selectSeason(req));
+    }
+);
 
 import { teamsBySeason } from "./routes/api/teams/seasonWeight";
-app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: express.Request<{team: string}>, res: express.Response) => {
-    teamsBySeason(req, res, db, selectSeason(req));
-});
+app.get(
+    "/api/teams/season/:season/:team/weight",
+    apiCheckAuth,
+    async (req: express.Request<{ team: string }>, res: express.Response) => {
+        teamsBySeason(req, res, db, selectSeason(req));
+    }
+);
 
 //
 // scout listings
@@ -552,27 +715,52 @@ app.get("/api/teams/season/:season/:team/weight", apiCheckAuth, async (req: expr
 
 // list of scouts & points
 import { scouts } from "./routes/api/scouts/scouts";
-app.get("/api/scouts", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    scouts(req, res, authDb);
-});
+app.get(
+    "/api/scouts",
+    apiCheckAuth,
+    async (req: express.Request, res: express.Response) => {
+        scouts(req, res, authDb);
+    }
+);
+
+import { myPoints } from "./routes/api/scouts/myPoints";
+app.get(
+    "/api/scouts/myPoints",
+    apiCheckAuth,
+    async (req: express.Request, res: express.Response) => {
+        myPoints(req, res, authDb);
+    }
+);
 
 // scout's profile (submitted forms)
 import { profile } from "./routes/api/scouts/profile";
-app.get("/api/scouts/:scout/profile", apiCheckAuth, async (req: express.Request<{scout: string}>, res: express.Response) => {
-    profile(req, res, authDb);
-});
+app.get(
+    "/api/scouts/:scout/profile",
+    apiCheckAuth,
+    async (req: express.Request<{ scout: string }>, res: express.Response) => {
+        profile(req, res, authDb);
+    }
+);
 
 // scout's point transactions
 import { scoutTransactions } from "./routes/api/scouts/transactions";
-app.get("/api/scouts/transactions/me", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    scoutTransactions(req, res, transactions);
-});
+app.get(
+    "/api/scouts/transactions/me",
+    apiCheckAuth,
+    async (req: express.Request, res: express.Response) => {
+        scoutTransactions(req, res, transactions);
+    }
+);
 
 // scout's profile
 import { scoutByID } from "./routes/api/scouts/scoutByID";
-app.get("/api/scoutByID/:username", apiCheckAuth, async (req: express.Request<{username: string}>, res: express.Response) => {
-    scoutByID(req, res, db);
-});
+app.get(
+    "/api/scoutByID/:username",
+    apiCheckAuth,
+    async (req: express.Request<{ username: string }>, res: express.Response) => {
+        scoutByID(req, res, db);
+    }
+);
 
 //
 // management
@@ -581,80 +769,162 @@ app.get("/api/scoutByID/:username", apiCheckAuth, async (req: express.Request<{u
 // data management
 
 import { listSubmissions } from "./routes/api/manage/list";
-app.get("/api/manage/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    listSubmissions(req, res, db);
-});
+app.get(
+    "/api/manage/list",
+    apiCheckAuth,
+    async (req: express.Request, res: express.Response) => {
+        listSubmissions(req, res, db);
+    }
+);
 
 import { deleteSubmission } from "./routes/api/manage/delete";
-app.delete("/api/manage/:submissionId/delete", apiCheckAuth, async (req: express.Request<{submissionId: string}>, res: express.Response) => {
-    deleteSubmission(req, res, db, transactions, authDb);
-});
+app.delete(
+    "/api/manage/:submissionId/delete",
+    apiCheckAuth,
+    async (
+        req: express.Request<{ submissionId: string }>,
+        res: express.Response
+    ) => {
+        deleteSubmission(req, res, db, transactions, authDb);
+    }
+);
 
 // scout management
 
 import { updateScout } from "./routes/api/manage/user/points";
-app.patch("/api/manage/user/points/:userId/:modify/:reason", apiCheckAuth, async (req: express.Request<{userId: string, modify: string, reason: string}>, res: express.Response) => {
-    updateScout(req, res, transactions, authDb);
-});
+app.patch(
+    "/api/manage/user/points/:userId/:modify/:reason",
+    apiCheckAuth,
+    express.json(),
+    async (
+        req: express.Request<{
+            userId: string;
+            modify: string;
+            reason: string;
+        }>,
+        res: express.Response
+    ) => {
+        updateScout(req, res, transactions, authDb);
+    }
+);
 
 import { updateAccess } from "./routes/api/manage/user/access";
-app.patch("/api/manage/user/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{id: string, accessOk: string}>, res: express.Response) => {
-    updateAccess(req, res, authDb);
-});
+app.patch(
+    "/api/manage/user/access/:id/:accessOk",
+    apiCheckAuth,
+    express.json(),
+    async (
+        req: express.Request<{ id: string; accessOk: string }>,
+        res: express.Response
+    ) => {
+        updateAccess(req, res, authDb);
+    }
+);
 
 import { deleteUser } from "./routes/api/manage/user/delete";
-app.delete("/api/manage/user/delete/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    deleteUser(req, res, authDb);
-});
+app.delete(
+    "/api/manage/user/delete/:id",
+    apiCheckAuth,
+    async (req: express.Request<{ id: string }>, res: express.Response) => {
+        deleteUser(req, res, authDb);
+    }
+);
 
 import { revokeKey } from "./routes/api/manage/user/revokeKey";
-app.delete("/api/manage/user/revokeKey/:id", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    revokeKey(req, res, authDb);
-});
+app.delete(
+    "/api/manage/user/revokeKey/:id",
+    apiCheckAuth,
+    async (req: express.Request<{ id: string }>, res: express.Response) => {
+        revokeKey(req, res, authDb);
+    }
+);
 
 import { updateAdmin } from "./routes/api/manage/user/updateAdmin";
-app.patch("/api/manage/user/updateAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    updateAdmin(req, res, authDb);
-});
+app.patch(
+    "/api/manage/user/updateAdmin/:id/:admin",
+    apiCheckAuth,
+    express.json(),
+    async (req: express.Request<{ id: string }>, res: express.Response) => {
+        updateAdmin(req, res, authDb);
+    }
+);
 
 import { updateTeamAdmin } from "./routes/api/manage/user/updateTeamAdmin";
-app.patch("/api/manage/user/updateTeamAdmin/:id/:admin", apiCheckAuth, async (req: express.Request<{id: string}>, res: express.Response) => {
-    updateTeamAdmin(req, res, authDb);
-});
+app.patch(
+    "/api/manage/user/updateTeamAdmin/:id/:admin",
+    apiCheckAuth,
+    express.json(),
+    async (req: express.Request<{ id: string }>, res: express.Response) => {
+        updateTeamAdmin(req, res, authDb);
+    }
+);
 
 // team management endpoints
 
 import { updateTeamKey } from "./routes/api/manage/teams/updateKey";
-app.patch("/api/manage/teams/updateKey/:keyId/:newKey", apiCheckAuth, async (req: express.Request<{keyId: string, newKey: string}>, res: express.Response) => {
-    updateTeamKey(req, res, authDb);
-});
+app.patch(
+    "/api/manage/teams/updateKey/:keyId/:newKey",
+    apiCheckAuth,
+    express.json(),
+    async (
+        req: express.Request<{ keyId: string; newKey: string }>,
+        res: express.Response
+    ) => {
+        updateTeamKey(req, res, authDb);
+    }
+);
 
 import { createTeamKey } from "./routes/api/manage/teams/createKey";
-app.post("/api/manage/teams/createKey/:key/:team", apiCheckAuth, async (req: express.Request<{key: string, team: string}>, res: express.Response) => {
-    createTeamKey(req, res, authDb);
-});
+app.post(
+    "/api/manage/teams/createKey/:key/:team",
+    apiCheckAuth,
+    express.json(),
+    async (
+        req: express.Request<{ key: string; team: string }>,
+        res: express.Response
+    ) => {
+        createTeamKey(req, res, authDb);
+    }
+);
 
 import { revokeTeamKey } from "./routes/api/manage/teams/revokeKey";
-app.delete("/api/manage/teams/deleteKey/:keyId", apiCheckAuth, async (req: express.Request<{keyId: string}>, res: express.Response) => {
-    revokeTeamKey(req, res, authDb);
-});
+app.delete(
+    "/api/manage/teams/deleteKey/:keyId",
+    apiCheckAuth,
+    async (req: express.Request<{ keyId: string }>, res: express.Response) => {
+        revokeTeamKey(req, res, authDb);
+    }
+);
 
 import { listTeams } from "./routes/api/manage/teams/list";
-app.get("/api/manage/teams/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    listTeams(req, res, authDb);
-});
+app.get(
+    "/api/manage/teams/list",
+    apiCheckAuth,
+    async (req: express.Request, res: express.Response) => {
+        listTeams(req, res, authDb);
+    }
+);
 
 // individual team endpoints
 
 import { teamScouts } from "./routes/api/manage/myTeam/list";
-app.get("/api/manage/myTeam/list", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    teamScouts(req, res, authDb);
-});
+app.get(
+    "/api/manage/myTeam/list",
+    apiCheckAuth,
+    async (req: express.Request, res: express.Response) => {
+        teamScouts(req, res, authDb);
+    }
+);
 
 import { manageTeamUser } from "./routes/api/manage/myTeam/scouts/access";
-app.patch("/api/manage/myTeam/scouts/access/:id/:accessOk", apiCheckAuth, async (req: express.Request<{accessOk: string}>, res: express.Response) => {
-    manageTeamUser(req, res, authDb);
-});
+app.patch(
+    "/api/manage/myTeam/scouts/access/:id/:accessOk",
+    apiCheckAuth,
+    express.json(),
+    async (req: express.Request<{ accessOk: string }>, res: express.Response) => {
+        manageTeamUser(req, res, authDb);
+    }
+);
 
 //
 // gambling
@@ -662,66 +932,125 @@ app.patch("/api/manage/myTeam/scouts/access/:id/:accessOk", apiCheckAuth, async 
 
 // slots (unused)
 import { slotSpin } from "./routes/api/casino/slots/slotSpin";
-app.get("/api/casino/slots/slotSpin", apiCheckAuth, async (req: express.Request, res: express.Response) => {
-    slotSpin(req, res, authDb, transactions);
-});
+app.get(
+    "/api/casino/slots/slotSpin",
+    apiCheckAuth,
+    async (req: express.Request, res: express.Response) => {
+        slotSpin(req, res, authDb, transactions);
+    }
+);
 
 // spin wheel thing
 import { spinWheel } from "./routes/api/casino/spinner/spinWheel";
-app.get("/api/casino/spinner/spinWheel", apiCheckAuth, checkGamble, async (req: express.Request, res: express.Response) => {
-    spinWheel(req, res, authDb, transactions);
-});
+app.get(
+    "/api/casino/spinner/spinWheel",
+    apiCheckAuth,
+    checkGamble,
+    async (req: express.Request, res: express.Response) => {
+        spinWheel(req, res, authDb, transactions);
+    }
+);
 
 import { blackjackSocket } from "./routes/api/casino/blackjack/blackjackSocket";
-wsApp.ws('/api/casino/blackjack/blackjackSocket', function(ws: any, req: express.Request) {
-    blackjackSocket(ws, req, transactions, authDb);
-});
+wsApp.ws(
+    "/api/casino/blackjack/blackjackSocket",
+    function (ws: any, req: express.Request) {
+        blackjackSocket(ws, req, transactions, authDb);
+    }
+);
 
 //
 // frc api data forwarders
 //
 
 // team list for events
-app.get("/api/matches/:season/:event/:level/:all", apiCheckAuth, async (req: express.Request<{event: string, level: string, all: string, season: string}>, res: express.Response) => {
-    var teamNumParam = "";
-    if (req.params.all === "all") {
-        teamNumParam = "&start=&end=";
-    } else {
-        teamNumParam = `&teamNumber=${myteam}`;
+app.get(
+    "/api/matches/:season/:event/:level/:all",
+    apiCheckAuth,
+    async (
+        req: express.Request<{
+            event: string;
+            level: string;
+            all: string;
+            season: string;
+        }>,
+        res: express.Response
+    ) => {
+        var teamNumParam = "";
+        if (req.params.all === "all") {
+            teamNumParam = "&start=&end=";
+        } else {
+            teamNumParam = `&teamNumber=${myteam}`;
+        }
+        res.set("Cache-control", "public, max-age=23328000");
+        forwardFRCAPIdata(
+            `/v3.0/${selectSeason(req)}/schedule/${
+                req.params.event
+            }?tournamentLevel=${req.params.level}${teamNumParam}`,
+            req,
+            res
+        );
     }
-    res.set("Cache-control", "public, max-age=23328000");
-    forwardFRCAPIdata(`/v3.0/${selectSeason(req)}/schedule/${req.params.event}?tournamentLevel=${req.params.level}${teamNumParam}`, req, res);
-});
+);
 
 // frc api team list
 import { teamsFrcApi } from "./routes/api/events/teams";
-app.get("/api/events/:season/:event/teams", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    teamsFrcApi(req, res, frcapi, selectSeason(req));
-});
+app.get(
+    "/api/events/:season/:event/teams",
+    apiCheckAuth,
+    async (req: express.Request<{ event: string }>, res: express.Response) => {
+        teamsFrcApi(req, res, frcapi, selectSeason(req));
+    }
+);
 
 // frc api teams data
-app.get("/api/events/:event/allTeamData", apiCheckAuth, async (req: express.Request<{event: string}>, res: express.Response) => {
-    forwardFRCAPIdata(`/v3.0/${season}/teams?eventCode=${req.params.event}`, req, res);
-});
+app.get(
+    "/api/events/:event/allTeamData",
+    apiCheckAuth,
+    async (req: express.Request<{ event: string }>, res: express.Response) => {
+        forwardFRCAPIdata(
+            `/v3.0/${season}/teams?eventCode=${req.params.event}`,
+            req,
+            res
+        );
+    }
+);
 
 // frc api's data on a team
-app.get("/api/teams/teamdata/:team", apiCheckAuth, async (req: express.Request<{team: string}>, res: express.Response) => {
-    forwardFRCAPIdata(`/v3.0/${season}/teams?teamNumber=${req.params.team}`, req, res);
-});
+app.get(
+    "/api/teams/teamdata/:team",
+    apiCheckAuth,
+    async (req: express.Request<{ team: string }>, res: express.Response) => {
+        forwardFRCAPIdata(
+            `/v3.0/${season}/teams?teamNumber=${req.params.team}`,
+            req,
+            res
+        );
+    }
+);
 
 //
 // other
 //
 
 // whoami
-app.get("/api/whoami", apiCheckAuth, (req: express.Request, res: express.Response) => {
-    res.send("" + req.user.id);
-});
+app.get(
+    "/api/whoami",
+    apiCheckAuth,
+    (req: express.Request, res: express.Response) => {
+        res.send("" + req.user.id);
+    }
+);
 
 import { changePassword } from "./routes/api/auth/passwordAuth";
-app.patch("/api/auth/passwordAuth/:new", apiCheckAuth, (req: express.Request, res: express.Response) => {
-    changePassword(req, res, authDb);
-});
+app.patch(
+    "/api/auth/passwordAuth/:new",
+    apiCheckAuth,
+    express.json(),
+    (req: express.Request, res: express.Response) => {
+        changePassword(req, res, authDb);
+    }
+);
 
 //////////////////////////////////
 //////////////////////////////////
@@ -730,34 +1059,58 @@ app.patch("/api/auth/passwordAuth/:new", apiCheckAuth, (req: express.Request, re
 //////////////////////////////////
 
 import { createAccount } from "./routes/api/auth/create";
-app.post("/createAccount", (req: express.Request, res: express.Response) => {
-    createAccount(req, res, authDb);
-});
+app.post(
+    "/createAccount",
+    express.urlencoded(),
+    (req: express.Request, res: express.Response) => {
+        createAccount(req, res, authDb);
+    }
+);
 
 import { checkLogIn } from "./routes/api/auth/login";
-app.post("/loginForm", (req: express.Request, res: express.Response) => {
-    checkLogIn(req, res, authDb);
-});
+app.post(
+    "/loginForm",
+    express.urlencoded(),
+    (req: express.Request, res: express.Response) => {
+        checkLogIn(req, res, authDb);
+    }
+);
 
 import { _generateRegistrationOptions } from "./routes/api/auth/passkey/passkey";
-app.get("/api/auth/createPasskey", checkAuth, (req: express.Request, res: express.Response) => {
-    _generateRegistrationOptions(req, res, authDb);
-});
+app.get(
+    "/api/auth/createPasskey",
+    checkAuth,
+    (req: express.Request, res: express.Response) => {
+        _generateRegistrationOptions(req, res, authDb);
+    }
+);
 
 import { _verifyRegistration } from "./routes/api/auth/passkey/passkey";
-app.post("/api/auth/verifyPasskey", checkAuth, (req: express.Request, res: express.Response) => {
-    _verifyRegistration(req, res, authDb);
-});
+app.post(
+    "/api/auth/verifyPasskey",
+    checkAuth,
+    express.json(),
+    (req: express.Request, res: express.Response) => {
+        _verifyRegistration(req, res, authDb);
+    }
+);
 
 import { _generateAuthenticationOptions } from "./routes/api/auth/passkey/passkey";
-app.get("/api/auth/authPasskey/:username", (req: express.Request, res: express.Response) => {
-    _generateAuthenticationOptions(req, res, authDb);
-});
+app.get(
+    "/api/auth/authPasskey/:username",
+    (req: express.Request, res: express.Response) => {
+        _generateAuthenticationOptions(req, res, authDb);
+    }
+);
 
 import { _verifyAuthenticationResponse } from "./routes/api/auth/passkey/passkey";
-app.post("/api/auth/verifyAuthPasskey/:username", (req: express.Request, res: express.Response) => {
-    _verifyAuthenticationResponse(req, res, authDb);
-});
+app.post(
+    "/api/auth/verifyAuthPasskey/:username",
+    express.json(),
+    (req: express.Request, res: express.Response) => {
+        _verifyAuthenticationResponse(req, res, authDb);
+    }
+);
 
 // clear cookies, used for debugging
 app.get("/clearCookies", (req: express.Request, res: express.Response) => {
@@ -777,7 +1130,9 @@ app.get("/logout", (req: express.Request, res: express.Response) => {
 });
 
 const httpRedirect = express();
-httpRedirect.all("*", (req: express.Request, res: express.Response) => res.redirect(`https://${req.hostname}${req.url}`));
+httpRedirect.all("*", (req: express.Request, res: express.Response) =>
+    res.redirect(`https://${req.hostname}${req.url}`)
+);
 const httpServer = http.createServer(httpRedirect);
 httpServer.listen(80, () => console.info(`http redirect server ready`));
 
