@@ -1,5 +1,5 @@
 [package]
-name = "bearTracks"
+name = "bear_tracks"
 version = "4.0.0"
 edition = "2021"
 
