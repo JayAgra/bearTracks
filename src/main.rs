@@ -1,6 +1,7 @@
 use std::io;
 
 use actix_web::{middleware, web, App, Error as AWError, HttpResponse, HttpServer};
+use actix_files::Files;
 use r2d2_sqlite::{self, SqliteConnectionManager};
 
 mod db_main;
@@ -62,6 +63,12 @@ async fn main() -> io::Result<()> {
             .app_data(web::Data::new(auth_db_pool.clone()))
             .app_data(web::Data::new(trans_db_pool.clone()))
             .wrap(middleware::Logger::default())
+            /* src  endpoints */
+                .service(
+                    Files::new("/", "./static")
+                        .index_file("index.html")
+                        .prefer_utf8(true)
+                )
             /* auth endpoints */
             /* data endpoints */
                 .service(web::resource("/api/v1/data/detail").route(web::get().to(data_get_detailed)))
