@@ -8,7 +8,7 @@ pub struct FullMain {
     pub event: String,
     pub season: i32,
     pub team: i32,
-    pub match_num: i32, // not match because rust
+    pub match_num: i32, // not match because thats a rust keyword
     pub level: String,
     pub game: String,
     pub defend: String,
@@ -120,17 +120,17 @@ pub async fn execute_get_brief(pool: &Pool, query: MainBrief) -> Result<Vec<Main
 
 // TODO: parameterize
 fn get_brief_team(conn: Connection) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE team=766 AND season=2023 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE team=766 AND season=2023 ORDER BY id DESC")?;
     get_brief_rows(stmt)
 }
 
 fn get_brief_match(conn: Connection) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE event='CADA' AND match=1 AND season=2023 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE event='CADA' AND match=1 AND season=2023 ORDER BY id DESC")?;
     get_brief_rows(stmt)
 }
 
 fn get_brief_event(conn: Connection) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE event='CADA' AND season=2023 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE event='CADA' AND season=2023 ORDER BY id DESC")?;
     get_brief_rows(stmt)
 }
 
