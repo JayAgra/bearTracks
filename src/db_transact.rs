@@ -1,8 +1,8 @@
 use actix_web::{error, web, Error};
 use rusqlite::Statement;
-use serde::{Deserialize, Serialize};
+use serde::{Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize)]
 pub struct Transact {
     pub id: i64,
     pub user_id: String,

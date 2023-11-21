@@ -1,8 +1,9 @@
 use std::io;
 
-use actix_web::{middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer};
-use actix_files;
+use actix_web::{middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key};
+use actix_session::{SessionMiddleware, storage::CookieSessionStore, Session};
 use r2d2_sqlite::{self, SqliteConnectionManager};
+use actix_files;
 
 mod db_main;
 mod db_auth;
@@ -15,8 +16,16 @@ struct Databases {
     transact: db_transact::Pool
 }
 
+fn get_secret_key() -> Key {
+    Key::generate()
+}
+
 async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::GetDataDetailed, path).await?))
+}
+
+async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::DataExists, path).await?))
 }
 
 async fn data_get_main_brief_team(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
@@ -29,6 +38,14 @@ async fn data_get_main_brief_match(req: HttpRequest, db: web::Data<Databases>) -
 
 async fn data_get_main_brief_event(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefEvent, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), "".to_string()]).await?))
+}
+
+async fn data_get_main_brief_user(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefUser, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()]).await?))
+}
+
+async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute_insert(&db.main, data).await?))
 }
 
 async fn misc_transact_get_me(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
@@ -52,12 +69,15 @@ async fn main() -> io::Result<()> {
     let trans_db_manager = SqliteConnectionManager::file("data_transact.db");
     let trans_db_pool = db_main::Pool::new(trans_db_manager).unwrap();
 
+    let secret_key = get_secret_key();
+
     log::info!("starting bearTracks on port 8000");
 
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(Databases {main: main_db_pool.clone(), auth: auth_db_pool.clone(), transact: trans_db_pool.clone() }))
             .wrap(middleware::Logger::default())
+            .wrap(SessionMiddleware::new(CookieSessionStore::default(), secret_key.clone()))
             /* src  endpoints */
                 .route("/", web::get().to(static_files::static_index))
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
@@ -83,10 +103,15 @@ async fn main() -> io::Result<()> {
                 .service(actix_files::Files::new("/js", "./static/js"))
             /* auth endpoints */
             /* data endpoints */
+                // POST (✅)
+                .service(web::resource("/api/v1/data/submit").route(web::post().to(data_post_submit)))
+                // GET (✅)
                 .service(web::resource("/api/v1/data/detail/{id}").route(web::get().to(data_get_detailed)))
+                .service(web::resource("/api/v1/data/exists/{id}").route(web::get().to(data_get_exists)))
                 .service(web::resource("/api/v1/data/brief/team/{season}/{event}/{team}").route(web::get().to(data_get_main_brief_team)))
                 .service(web::resource("/api/v1/data/brief/match/{season}/{event}/{match_num}").route(web::get().to(data_get_main_brief_match)))
                 .service(web::resource("/api/v1/data/brief/event/{season}/{event}").route(web::get().to(data_get_main_brief_event)))
+                .service(web::resource("/api/v1/data/brief/user/{season}/{user_id}").route(web::get().to(data_get_main_brief_user)))
             /* user endpoints */
             /* points endpoints */
                 .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))

@@ -1,8 +1,8 @@
 use actix_web::{error, web, Error};
 use rusqlite::{Statement};
-use serde::{Deserialize, Serialize};
+use serde::{Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize)]
 pub struct UserPoints {
     pub id: i64,
     pub username: String,

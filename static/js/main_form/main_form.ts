@@ -287,31 +287,33 @@ async function uploadForm() {
         "match": Number((document.getElementsByName("match")[0] as HTMLInputElement).value),
         "level": (document.getElementsByName("level")[0] as HTMLInputElement).value,
         "team": Number((document.getElementsByName("team")[0] as HTMLInputElement).value),
-        "game1": (document.getElementsByName("game1")[0] as HTMLInputElement).value,
-        "game2": (document.getElementsByName("game2")[0] as HTMLInputElement).value,
-        "game3": (document.getElementsByName("game3")[0] as HTMLInputElement).value,
-        "game4": (document.getElementsByName("game4")[0] as HTMLInputElement).value,
-        "game5": (document.getElementsByName("game5")[0] as HTMLInputElement).value,
-        "game6": (document.getElementsByName("game6")[0] as HTMLInputElement).value,
-        "game7": (document.getElementsByName("game7")[0] as HTMLInputElement).value,
-        "game8": (document.getElementsByName("game8")[0] as HTMLInputElement).value,
-        "game9": (document.getElementsByName("game9")[0] as HTMLInputElement).value,
-        "game10": Number((document.getElementsByName("game10")[0] as HTMLInputElement).value),
-        "game11": (document.getElementsByName("game11")[0] as HTMLInputElement).value,
-        "game12": (document.getElementsByName("game12")[0] as HTMLInputElement).value,
-        "game13": Number((document.getElementsByName("game13")[0] as HTMLInputElement).value),
-        "game14": Number((document.getElementsByName("game14")[0] as HTMLInputElement).value),
-        "game15": Number((document.getElementsByName("game15")[0] as HTMLInputElement).value),
-        "game16": Number((document.getElementsByName("game16")[0] as HTMLInputElement).value),
-        "game17": Number((document.getElementsByName("game17")[0] as HTMLInputElement).value),
-        "game18": Number((document.getElementsByName("game18")[0] as HTMLInputElement).value),
-        "game19": Number((document.getElementsByName("game19")[0] as HTMLInputElement).value),
-        "game20": Number((document.getElementsByName("game20")[0] as HTMLInputElement).value),
-        "game21": Number((document.getElementsByName("game21")[0] as HTMLInputElement).value),
-        "game22": Number((document.getElementsByName("game22")[0] as HTMLInputElement).value),
-        "game23": Number((document.getElementsByName("game23")[0] as HTMLInputElement).value),
-        "game24": Number((document.getElementsByName("game24")[0] as HTMLInputElement).value),
-        "game25": Number((document.getElementsByName("game25")[0] as HTMLInputElement).value),
+        "game": [
+            (document.getElementsByName("game1")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game2")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game3")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game4")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game5")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game6")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game7")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game8")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game9")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game10")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game11")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game12")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game13")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game14")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game15")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game16")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game17")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game18")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game19")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game20")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game21")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game22")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game23")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game24")[0] as HTMLInputElement).value,
+            (document.getElementsByName("game25")[0] as HTMLInputElement).value,            
+        ].join(","),
         "defend": (document.getElementsByName("defend")[0] as HTMLInputElement).value,
         "driving": (document.getElementsByName("driving")[0] as HTMLInputElement).value,
         "overall": (document.getElementsByName("overall")[0] as HTMLInputElement).value,
@@ -327,11 +329,11 @@ async function uploadForm() {
     const   submitText_d = document.getElementById("submitText_d") as HTMLHeadingElement,
             submitProgress_d = document.getElementById("submitProgress_d") as HTMLProgressElement;
     await new Promise((res) => setTimeout(res, 250));
-    _post("/submit", submitText_d.id, responses).then(async (res: response) => {
+    _post("/api/v1/data/submit", submitText_d.id, responses).then(async (res: response) => {
         console.log(res.id);
         submitText_d.innerText = "Verifying...";
         await new Promise((res) => setTimeout(res, 250));
-        _get(`/api/data/exists/${res.id}`, document.getElementById("submitText_d").id).then(async (checkRemote: any) => {
+        _get(`/api/v1/data/exists/${res.id}`, document.getElementById("submitText_d").id).then(async (checkRemote: any) => {
             if (checkRemote.team == responses.team && checkRemote.match == responses.match) {
                 submitText_d.innerText = "Done!";
                 submitProgress_d.value = 100;
