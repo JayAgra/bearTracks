@@ -1,6 +1,6 @@
 use actix_files::NamedFile;
-use actix_web::{HttpRequest, Result};
-use std::path::PathBuf;
+use actix_web::{Result};
+use std::{path::PathBuf};
 
 pub async fn static_index() -> Result<NamedFile, std::io::Error> {
     let path: PathBuf = "./static/index.html".parse().unwrap();

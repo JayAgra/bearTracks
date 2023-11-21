@@ -1,14 +1,14 @@
 use actix_web::{error, web, Error};
-use rusqlite::Statement;
+use rusqlite::{Statement};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FullMain {
-    pub id: i32,
+    pub id: i64,
     pub event: String,
-    pub season: i32,
-    pub team: i32,
-    pub match_num: i32, // not match because thats a rust keyword
+    pub season: i64,
+    pub team: i64,
+    pub match_num: i64, // not match because thats a rust keyword
     pub level: String,
     pub game: String,
     pub defend: String,
@@ -16,7 +16,7 @@ pub struct FullMain {
     pub overall: String,
     pub user_id: String,
     pub name: String,
-    pub from_team: i32,
+    pub from_team: i64,
     pub weight: String,
     pub analysis: String
 }
@@ -30,7 +30,7 @@ pub enum MainData {
     GetDataDetailed,
 }
 
-pub async fn execute(pool: &Pool, query: MainData) -> Result<Vec<FullMain>, Error> {
+pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> Result<Vec<FullMain>, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -39,21 +39,22 @@ pub async fn execute(pool: &Pool, query: MainData) -> Result<Vec<FullMain>, Erro
 
     web::block(move || {
         match query {
-            MainData::GetDataDetailed => get_data_detailed(conn),
+            MainData::GetDataDetailed => get_data_detailed(conn, path),
         }
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn get_data_detailed(conn: Connection) -> QueryResult {
-    let stmt = conn.prepare("SELECT * FROM main WHERE id=1 LIMIT 1;")?;
-    get_rows(stmt)
+fn get_data_detailed(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let target_id = path.into_inner();
+    let stmt = conn.prepare("SELECT * FROM main WHERE id=:id LIMIT 1;")?;
+    get_rows(stmt, [target_id.parse::<i64>().unwrap()])
 }
 
-fn get_rows(mut statement: Statement) -> QueryResult {
+fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
     statement
-        .query_map([], |row| {
+        .query_map(params, |row| {
             Ok(FullMain { 
                 id: row.get(0)?,
                 event: row.get(1)?,
@@ -79,15 +80,15 @@ fn get_rows(mut statement: Statement) -> QueryResult {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MainDataBrief {
-    pub id: i32,
+    pub id: i64,
     pub event: String,
-    pub season: i32,
-    pub team: i32,
-    pub match_num: i32,
+    pub season: i64,
+    pub team: i64,
+    pub match_num: i64,
     pub game: String,
     pub user_id: String,
     pub name: String,
-    pub from_team: i32,
+    pub from_team: i64,
     pub weight: String
 }
 
@@ -100,7 +101,7 @@ pub enum MainBrief {
     BriefEvent,
 }
 
-pub async fn execute_get_brief(pool: &Pool, query: MainBrief) -> Result<Vec<MainDataBrief>, Error> {
+pub async fn execute_get_brief(pool: &Pool, query: MainBrief, params: [String; 3]) -> Result<Vec<MainDataBrief>, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -109,9 +110,9 @@ pub async fn execute_get_brief(pool: &Pool, query: MainBrief) -> Result<Vec<Main
 
     web::block(move || {
         match query {
-            MainBrief::BriefTeam => get_brief_team(conn),
-            MainBrief::BriefMatch => get_brief_match(conn),
-            MainBrief::BriefEvent => get_brief_event(conn)
+            MainBrief::BriefTeam => get_brief_team(conn, params),
+            MainBrief::BriefMatch => get_brief_match(conn, params),
+            MainBrief::BriefEvent => get_brief_event(conn, params)
         }
     })
     .await?
@@ -119,24 +120,24 @@ pub async fn execute_get_brief(pool: &Pool, query: MainBrief) -> Result<Vec<Main
 }
 
 // TODO: parameterize
-fn get_brief_team(conn: Connection) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE team=766 AND season=2023 ORDER BY id DESC")?;
-    get_brief_rows(stmt)
+fn get_brief_team(conn: Connection, params: [String; 3]) -> BriefQueryResult {
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, params)
 }
 
-fn get_brief_match(conn: Connection) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE event='CADA' AND match=1 AND season=2023 ORDER BY id DESC")?;
-    get_brief_rows(stmt)
+fn get_brief_match(conn: Connection, params: [String; 3]) -> BriefQueryResult {
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, params)
 }
 
-fn get_brief_event(conn: Connection) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE event='CADA' AND season=2023 ORDER BY id DESC")?;
-    get_brief_rows(stmt)
+fn get_brief_event(conn: Connection, params: [String; 3]) -> BriefQueryResult {
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND id!=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, params)
 }
 
-fn get_brief_rows(mut statement: Statement) -> BriefQueryResult {
+fn get_brief_rows(mut statement: Statement, params: [String; 3]) -> BriefQueryResult {
     statement
-        .query_map([], |row| {
+        .query_map(params, |row| {
             Ok(MainDataBrief { 
                 id: row.get(0)?,
                 event: row.get(1)?,

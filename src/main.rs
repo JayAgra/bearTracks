@@ -1,10 +1,11 @@
 use std::io;
 
-use actix_web::{middleware, web, App, Error as AWError, HttpResponse, HttpServer};
+use actix_web::{middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer};
 use actix_files;
 use r2d2_sqlite::{self, SqliteConnectionManager};
 
 mod db_main;
+mod db_auth;
 mod db_transact;
 mod static_files;
 
@@ -14,39 +15,28 @@ struct Databases {
     transact: db_transact::Pool
 }
 
-async fn data_get_detailed(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
-    let result = vec![
-        db_main::execute(&db.main, db_main::MainData::GetDataDetailed).await?,
-    ];
-    Ok(HttpResponse::Ok().json(result))
+async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::GetDataDetailed, path).await?))
 }
 
-async fn data_get_main_brief_team(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
-    let result = vec![
-        db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefTeam).await?,
-    ];
-    Ok(HttpResponse::Ok().json(result))
+async fn data_get_main_brief_team(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefTeam, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap()]).await?))
 }
 
-async fn data_get_main_brief_match(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
-    let result = vec![
-        db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefMatch).await?,
-    ];
-    Ok(HttpResponse::Ok().json(result))
+async fn data_get_main_brief_match(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefMatch, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("match_num").unwrap().parse().unwrap()]).await?))
 }
 
-async fn data_get_main_brief_event(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
-    let result = vec![
-        db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefEvent).await?,
-    ];
-    Ok(HttpResponse::Ok().json(result))
+async fn data_get_main_brief_event(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefEvent, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), "".to_string()]).await?))
 }
 
 async fn misc_transact_get_me(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
-    let result = vec![
-        db_transact::execute(&db.transact, db_transact::TransactData::GetUserTransactions).await?,
-    ];
-    Ok(HttpResponse::Ok().json(result))
+    Ok(HttpResponse::Ok().json(db_transact::execute(&db.transact, db_transact::TransactData::GetUserTransactions).await?))
+}
+
+async fn points_get_all(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?))
 }
 
 #[actix_web::main]
@@ -93,11 +83,13 @@ async fn main() -> io::Result<()> {
                 .service(actix_files::Files::new("/js", "./static/js"))
             /* auth endpoints */
             /* data endpoints */
-                .service(web::resource("/api/v1/data/detail").route(web::get().to(data_get_detailed)))
-                .service(web::resource("/api/v1/data/brief/team").route(web::get().to(data_get_main_brief_team)))
-                .service(web::resource("/api/v1/data/brief/match").route(web::get().to(data_get_main_brief_match)))
-                .service(web::resource("/api/v1/data/brief/event").route(web::get().to(data_get_main_brief_event)))
+                .service(web::resource("/api/v1/data/detail/{id}").route(web::get().to(data_get_detailed)))
+                .service(web::resource("/api/v1/data/brief/team/{season}/{event}/{team}").route(web::get().to(data_get_main_brief_team)))
+                .service(web::resource("/api/v1/data/brief/match/{season}/{event}/{match_num}").route(web::get().to(data_get_main_brief_match)))
+                .service(web::resource("/api/v1/data/brief/event/{season}/{event}").route(web::get().to(data_get_main_brief_event)))
             /* user endpoints */
+            /* points endpoints */
+                .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))
             /* misc endpoints */
                 .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_transact_get_me)))
     })

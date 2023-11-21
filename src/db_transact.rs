@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Transact {
-    pub id: i32,
+    pub id: i64,
     pub user_id: String,
-    pub trans_type: i32,
-    pub amount: i32,
+    pub trans_type: i64,
+    pub amount: i64,
     pub time: String
 }
 
