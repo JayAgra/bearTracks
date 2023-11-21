@@ -9,6 +9,7 @@ mod db_main;
 mod db_auth;
 mod db_transact;
 mod static_files;
+mod analyze;
 
 struct Databases {
     main: db_main::Pool,

@@ -21,3 +21,4 @@ rusqlite = "0.29"
 serde = { version = "1", features = ["derive"] }
 chrono = "0.4.31"
 rand = "0.8.5"
+vader_sentiment = "0.1.1"

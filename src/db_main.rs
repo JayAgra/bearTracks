@@ -2,6 +2,8 @@ use actix_web::{error, web, Error};
 use rusqlite::{Statement, params};
 use serde::{Deserialize, Serialize};
 
+use super::analyze;
+
 #[derive(Serialize)]
 pub enum FullMain {
     FullMain {
@@ -186,18 +188,18 @@ fn get_brief_rows(mut statement: Statement, params: [String; 3]) -> BriefQueryRe
 
 #[derive(Deserialize)]
 pub struct MainInsert {
-    event: String,
-    season: i64,
-    team: i64,
-    match_num: i64,
-    level: String,
-    game: String,
-    defend: String,
-    driving: String,
-    overall: String,
-    user_id: i64,
-    name: String,
-    from_team: i64,
+    pub event: String,
+    pub season: i64,
+    pub team: i64,
+    pub match_num: i64,
+    pub level: String,
+    pub game: String,
+    pub defend: String,
+    pub driving: String,
+    pub overall: String,
+    pub user_id: i64,
+    pub name: String,
+    pub from_team: i64,
 }
 
 #[derive(Serialize)]
@@ -212,18 +214,19 @@ pub async fn execute_insert(pool: &Pool, data: web::Json<MainInsert>) -> Result<
         .await?
         .map_err(error::ErrorInternalServerError)?;
     web::block(move || {
-        insert_main_data(conn, data)
+        insert_main_data(conn, &data)
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn insert_main_data(conn: Connection, data: web::Json<MainInsert>) -> Result<InsertReturn, rusqlite::Error> {
+fn insert_main_data(conn: Connection, data: &web::Json<MainInsert>) -> Result<InsertReturn, rusqlite::Error> {
+    let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2023);
     let mut inserted_row = InsertReturn {
         id: 0
     };
-    let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'not implemented', 'not implemented');")?;
-    stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, data.user_id, data.name, data.from_team])?;
+    let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
+    stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, data.user_id, data.name, data.from_team, analysis_results.weight, analysis_results.analysis])?;
     inserted_row.id = conn.last_insert_rowid();
     Ok(inserted_row)
 }
