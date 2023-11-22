@@ -1,6 +1,4 @@
-use std::ops::Deref;
-
-use actix_web::{error, web, Error};
+use actix_web::{web, Error};
 use vader_sentiment;
 
 use super::db_main;

@@ -24,13 +24,13 @@
 }
 .nextStepPk {
     animation: nextToLeft forwards 0.5s cubic-bezier(0.5, 0, 1, 1);
-    min-width: 12vw;
+    min-width: 13vw;
 }
 .nextStepPk:after {
     content: "use a passkey";
 }
 .nextStepPw {
-    transform: translate(-12vw);
+    transform: translate(-11vw);
     animation: fadeIn forwards 0.5s cubic-bezier(0.5, 0, 1, 1);
 }
 .submitButton:after {

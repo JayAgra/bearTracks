@@ -1,7 +1,9 @@
-use std::io;
+use std::{io, collections::HashMap, pin::Pin, sync::RwLock};
 
-use actix_web::{middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, web::JsonConfig, web::get, web::post};
+use actix_web::{middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, web::JsonConfig, web::get, web::post, Responder};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore, Session};
+use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
+use serde::{Serialize, Deserialize};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use actix_files;
 
@@ -10,6 +12,13 @@ mod db_auth;
 mod db_transact;
 mod static_files;
 mod analyze;
+mod auth;
+
+#[derive(Serialize, Deserialize, Default, Clone)]
+struct Sessions {
+    user_map: HashMap<String, db_auth::User>,
+    key_map: HashMap<String, db_auth::Key>,
+}
 
 struct Databases {
     main: db_main::Pool,
@@ -19,6 +28,14 @@ struct Databases {
 
 fn get_secret_key() -> Key {
     Key::generate()
+}
+
+async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Sessions>>, identity: Identity, data: web::Form<auth::LoginForm>) -> impl Responder {
+    auth::login(&db.auth, session, identity, data).await
+}
+
+async fn auth_get_logout(session: web::Data<RwLock<Sessions>>, identity: Identity) -> impl Responder {
+    auth::logout(session, identity).await
 }
 
 async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
@@ -61,6 +78,11 @@ async fn points_get_all(db: web::Data<Databases>) -> Result<HttpResponse, AWErro
 async fn main() -> io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
+    let sessions = web::Data::new(RwLock::new(Sessions {
+        user_map: HashMap::new(),
+        key_map: HashMap::new(),
+    }));
+
     let main_db_manager = SqliteConnectionManager::file("data.db");
     let main_db_pool = db_main::Pool::new(main_db_manager).unwrap();
 
@@ -77,6 +99,12 @@ async fn main() -> io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(Databases {main: main_db_pool.clone(), auth: auth_db_pool.clone(), transact: trans_db_pool.clone() }))
+            .app_data(sessions.clone())
+            .wrap(IdentityService::new(
+                CookieIdentityPolicy::new(&[0; 32])
+                    .name("bear_tracks")
+                    .secure(false),
+            ))
             .wrap(middleware::Logger::default())
             .wrap(SessionMiddleware::new(CookieSessionStore::default(), secret_key.clone()))
             /* src  endpoints */
@@ -103,6 +131,8 @@ async fn main() -> io::Result<()> {
                 .service(actix_files::Files::new("/css", "./static/css"))
                 .service(actix_files::Files::new("/js", "./static/js"))
             /* auth endpoints */
+                .service(web::resource("/login").route(web::post().to(auth_post_login)))
+                .service(web::resource("/logout").route(web::get().to(auth_get_logout)))
             /* data endpoints */
                 // POST (✅)
                 .service(web::resource("/api/v1/data/submit").route(web::post().to(data_post_submit)))
