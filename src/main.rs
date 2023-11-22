@@ -114,7 +114,7 @@ async fn misc_get_transact_me(db: web::Data<Databases>, user: db_auth::User) -> 
 }
 
 async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(user.id))
+    Ok(HttpResponse::Ok().json(db_main::MainId { id: user.id }))
 }
 
 async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
