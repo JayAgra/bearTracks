@@ -41,7 +41,7 @@ function toLogin(response: Response): void {
 
 async function loadMatches(): Promise<string | void> {
     try {
-        const response = await fetch(`/api/matches/current/${(document.getElementById("eventCode") as HTMLInputElement).value}/qual/all`, {
+        const response = await fetch(`/api/v1/events/matches/2023/${(document.getElementById("eventCode") as HTMLInputElement).value}/qual/all`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",

@@ -5,14 +5,16 @@ use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
 use serde::{Serialize, Deserialize};
 use r2d2_sqlite::{self, SqliteConnectionManager};
+use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_files;
 
-mod db_main;
-mod db_auth;
-mod db_transact;
-mod static_files;
 mod analyze;
 mod auth;
+mod db_auth;
+mod db_main;
+mod db_transact;
+mod forward;
+mod static_files;
 
 #[derive(Serialize, Deserialize, Default, Clone)]
 struct Sessions {
@@ -91,6 +93,14 @@ async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Da
     Ok(HttpResponse::Ok().json(db_main::execute_insert(&db.main, data, user).await?))
 }
 
+async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>, _user: db_auth::User) -> HttpResponse {
+    forward::forward_frc_api_event_teams(req, path).await
+}
+
+async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String, String, String)>, _user: db_auth::User) -> HttpResponse {
+    forward::forward_frc_api_event_matches(req, path).await
+}
+
 async fn manage_get_submission_ids(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::get_ids(&db.main, user).await?))
 }
@@ -130,12 +140,19 @@ async fn main() -> io::Result<()> {
 
     let secret_key = get_secret_key();
 
+    let governor_conf = GovernorConfigBuilder::default()
+        .per_second(10)
+        .burst_size(20)
+        .finish()
+        .unwrap();
+
     log::info!("starting bearTracks on port 8000");
 
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(Databases {main: main_db_pool.clone(), auth: auth_db_pool.clone(), transact: trans_db_pool.clone() }))
             .app_data(sessions.clone())
+            .wrap(Governor::new(&governor_conf))
             .wrap(IdentityService::new(
                 CookieIdentityPolicy::new(&[0; 32])
                     .name("bear_tracks")
@@ -180,6 +197,8 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/data/brief/match/{season}/{event}/{match_num}").route(web::get().to(data_get_main_brief_match)))
                 .service(web::resource("/api/v1/data/brief/event/{season}/{event}").route(web::get().to(data_get_main_brief_event)))
                 .service(web::resource("/api/v1/data/brief/user/{season}/{user_id}").route(web::get().to(data_get_main_brief_user)))
+                .service(web::resource("/api/v1/events/teams/{season}/{event}").route(web::get().to(event_get_frc_api)))
+                .service(web::resource("/api/v1/events/matches/{season}/{event}/{level}/{all}").route(web::get().to(event_get_frc_api_matches)))
             /* manage endpoints */
                 .service(web::resource("/api/v1/manage/submission_ids").route(web::get().to(manage_get_submission_ids)))
                 .service(web::resource("/api/v1/manage/delete/{id}").route(web::delete().to(manage_delete_submission)))
