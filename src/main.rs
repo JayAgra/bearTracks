@@ -145,8 +145,8 @@ async fn main() -> io::Result<()> {
     let secret_key = get_secret_key();
 
     let governor_conf = GovernorConfigBuilder::default()
-        .per_second(50)
-        .burst_size(100)
+        .per_second(100)
+        .burst_size(200)
         .finish()
         .unwrap();
 
@@ -165,6 +165,7 @@ async fn main() -> io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(SessionMiddleware::new(CookieSessionStore::default(), secret_key.clone()))
             /* src  endpoints */
+                // GET individual files
                 .route("/", web::get().to(static_files::static_index))
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
                 .route("/browse", web::get().to(static_files::static_browse))
@@ -184,16 +185,17 @@ async fn main() -> io::Result<()> {
                 .route("/settings", web::get().to(static_files::static_settings))
                 .route("/spin", web::get().to(static_files::static_spin))
                 .route("/teams", web::get().to(static_files::static_teams))
+                // GET folders
                 .service(actix_files::Files::new("/assets", "./static/assets"))
                 .service(actix_files::Files::new("/css", "./static/css"))
                 .service(actix_files::Files::new("/js", "./static/js"))
             /* auth endpoints */
-                .service(web::resource("/create").route(web::post().to(auth_post_create)))
-                .service(web::resource("/login").route(web::post().to(auth_post_login)))
+                // GET
                 .service(web::resource("/logout").route(web::get().to(auth_get_logout)))
+                // POST
+                .service(web::resource("/api/v1/auth/create").route(web::post().to(auth_post_create)))
+                .service(web::resource("/api/v1/auth/login").route(web::post().to(auth_post_login)))
             /* data endpoints */
-                // POST (✅)
-                .service(web::resource("/api/v1/data/submit").route(web::post().to(data_post_submit)))
                 // GET (✅)
                 .service(web::resource("/api/v1/data/detail/{id}").route(web::get().to(data_get_detailed)))
                 .service(web::resource("/api/v1/data/exists/{id}").route(web::get().to(data_get_exists)))
@@ -203,16 +205,23 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/data/brief/user/{season}/{user_id}").route(web::get().to(data_get_main_brief_user)))
                 .service(web::resource("/api/v1/events/teams/{season}/{event}").route(web::get().to(event_get_frc_api)))
                 .service(web::resource("/api/v1/events/matches/{season}/{event}/{level}/{all}").route(web::get().to(event_get_frc_api_matches)))
+                // POST (✅)
+                .service(web::resource("/api/v1/data/submit").route(web::post().to(data_post_submit)))
             /* manage endpoints */
+                // GET
                 .service(web::resource("/api/v1/manage/submission_ids").route(web::get().to(manage_get_submission_ids)))
+                // DELETE
                 .service(web::resource("/api/v1/manage/delete/{id}").route(web::delete().to(manage_delete_submission)))
             /* user endpoints */
             /* points endpoints */
+                // GET
                 .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))
             /* misc endpoints */
+                // GET
                 .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_get_transact_me)))
                 .service(web::resource("/api/v1/whoami").route(web::get().to(misc_get_whoami)))
             /* debug endpoints */
+                // GET
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
     })
     .bind(("127.0.0.1", 8000))?

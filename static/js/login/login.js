@@ -1,4 +1,3 @@
-import { _dErr } from "../_modules/dErr/dErr.min.js";
 var isPkBtn = false;
 const nextBtn = document.getElementById("next"), infoInput = document.getElementById("inputInfo"), currentUsernameInd = document.getElementById("currentUsername"), passwordLoginButton = document.getElementById("pw"), createAccountButton = document.getElementById("createAct"), errorElement = document.getElementById("error"), inputPassword = document.getElementById("inputPassword");
 nextBtn.addEventListener("click", async () => {
@@ -28,7 +27,4 @@ nextBtn.addEventListener("click", async () => {
         }
     }
 });
-function displayErrors() {
-    _dErr(["500 internal server error", "invalid credentials", "account not yet approved", ""]);
-}
-window.displayErrors = displayErrors;
+export {};

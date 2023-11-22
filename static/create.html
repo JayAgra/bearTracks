@@ -10,12 +10,12 @@
         <link rel="stylesheet" href="css/create.css" type="text/css">
         <script src="js/form/form.min.js"></script>
     </head>
-    <body class="dark-mode centerText" onload="displayCreateErrors()">
+    <body class="dark-mode centerText">
         <script>themeHandle()</script>
         <div class="container">
             <div class="dummy">
                 <h1 class="w3">bearTracks<br><span class="gametitle">CHARGED UP</span></h1>
-                <form action="/create" target="_self" method="POST">
+                <form action="/api/v1/auth/create" target="_self" method="POST">
                     <h2 style="margin-top: 0; margin-bottom: 2rem">Create Account</h2><h4 style="color: var(--cancelColor); display: none;" id="error"></h4><input type="hidden" name="access">
                     <label for="access">Team Join Code</label><br><div class="joinCodeBox"><input id="cB0" type="number" kind="join" maxlength="1"/><input id="cB1" type="number" kind="join" maxlength="1"/><input id="cB2" type="number" kind="join" maxlength="1"/><input id="cB3" type="number" kind="join" maxlength="1"/><input id="cB4" type="number" kind="join" maxlength="1"/></div><br><br>
                     <label for="full_name">Full Name</label><br><input type="text" name="full_name" autocomplete="name" class="credInput" required><br><br>

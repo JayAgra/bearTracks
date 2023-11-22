@@ -1,7 +1,3 @@
-import { _dErr } from "../_modules/dErr/dErr.min.js";
-function displayCreateErrors() {
-    _dErr(["500 internal server error", "username already in use", "min password length is 8", "invalid team join code"]);
-}
 const codeBoxes = document.querySelectorAll("[kind=join]");
 function codeBoxKeyUp(num, event) {
     const eventCode = event.key;
@@ -12,7 +8,7 @@ function codeBoxKeyUp(num, event) {
             }
             else {
                 event.target.blur();
-                document.querySelector("[name=access").value = codeBoxes[0].value + codeBoxes[1].value + codeBoxes[2].value + codeBoxes[3].value + codeBoxes[4].value;
+                document.querySelector("[name=access]").value = codeBoxes[0].value + codeBoxes[1].value + codeBoxes[2].value + codeBoxes[3].value + codeBoxes[4].value;
                 document.querySelector("[name=full_name]").focus();
             }
         }
@@ -37,4 +33,4 @@ codeBoxes.forEach((codeBox, index) => {
     codeBox.onkeyup = (event) => { codeBoxKeyUp(index, event); };
     codeBox.onfocus = (event) => { codeBoxFocus(index, event); };
 });
-window.displayCreateErrors = displayCreateErrors;
+export {};

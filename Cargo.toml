@@ -6,7 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix = "0.13"
 actix-http = "3.4"
 actix-web = "4.4"
 actix-files = "0.6.2"
@@ -21,8 +20,6 @@ r2d2 = "0.8"
 r2d2_sqlite = "0.22"
 rusqlite = "0.29"
 serde = { version = "1", features = ["derive"] }
-chrono = "0.4.31"
-rand = "0.8.5"
 vader_sentiment = "0.1.1"
 html-escape = "0.2.13"
 reqwest = "0.11.22"

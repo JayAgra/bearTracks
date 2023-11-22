@@ -1,5 +1,4 @@
-import { _get } from "../_modules/get/get.min.js";
-import { _dErr } from "../_modules/dErr/dErr.min.js";
+import { _post } from "../_modules/post/post.min.js"
 
 var isPkBtn = false;
 
@@ -37,8 +36,3 @@ nextBtn.addEventListener("click", async () => {
         }
     }
 });
-
-function displayErrors() {
-    _dErr(["500 internal server error", "invalid credentials", "account not yet approved", ""]);
-}
-(window as any).displayErrors = displayErrors;

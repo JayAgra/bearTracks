@@ -1,6 +1,14 @@
 use actix_web::{error, web, Error};
 use rusqlite::{Statement, params};
 use serde::{Serialize, Deserialize};
+use argon2::{
+    password_hash::{
+        rand_core::OsRng,
+        PasswordHasher,
+        SaltString
+    },
+    Argon2
+};
 
 #[derive(Serialize)]
 pub struct UserPoints {
@@ -167,7 +175,7 @@ fn get_access_key_entry(conn: Connection, key: String) -> Result<AccessKey, rusq
     })
 }
 
-pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: String, password_hash: String) -> Result<User, Error> {
+pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: String, password: String) -> Result<User, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -175,7 +183,27 @@ pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: St
         .map_err(error::ErrorInternalServerError)?;
 
     web::block(move || {
-        create_user_entry(conn, team, full_name, username, password_hash)
+        let generated_salt = SaltString::generate(&mut OsRng);
+        // argon2id v19
+        let argon2ins = Argon2::default();
+        // hash into phc string
+        let hashed_password = argon2ins.hash_password(password.as_bytes(), &generated_salt);
+        if hashed_password.is_err() {
+            return Ok(User {
+                id: 0,
+                username,
+                current_challenge: "".to_string(),
+                full_name,
+                team,
+                method: "pw".to_string(),
+                pass_hash: "".to_string(),
+                admin: "false".to_string(),
+                team_admin: 0,
+                access_ok: "true".to_string(),
+                score: 0
+            }).map_err(rusqlite::Error::NulError)
+        }
+        create_user_entry(conn, team, full_name, username, hashed_password.unwrap().to_string())
     })
     .await?
     .map_err(error::ErrorInternalServerError)

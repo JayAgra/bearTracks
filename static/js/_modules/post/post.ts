@@ -2,7 +2,7 @@ export async function _post(url: string, errorElementId: string | null, dataObje
     const response = await fetch(url, {
         method: "POST",
         cache: "no-cache",
-        credentials: "include",
+        credentials: "same-origin",
         headers: {
             "Content-Type": "application/json",
         },
@@ -20,10 +20,6 @@ export async function _post(url: string, errorElementId: string | null, dataObje
     } else if (response.status === 204) {
         if (errorElementId !== null) {
             document.getElementById(errorElementId).innerText = "no results";
-        }
-    } else if (!response.ok) {
-        if (errorElementId !== null) {
-            document.getElementById(errorElementId).innerText = "unhandled error";
         }
     }
 
