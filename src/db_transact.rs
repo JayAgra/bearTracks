@@ -2,6 +2,8 @@ use actix_web::{error, web, Error};
 use rusqlite::Statement;
 use serde::Serialize;
 
+use crate::db_auth;
+
 #[derive(Serialize)]
 pub struct Transact {
     pub id: i64,
@@ -20,7 +22,7 @@ pub enum TransactData {
     GetUserTransactions,
 }
 
-pub async fn execute(pool: &Pool, query: TransactData) -> Result<Vec<Transact>, Error> {
+pub async fn execute(pool: &Pool, query: TransactData, user: db_auth::User) -> Result<Vec<Transact>, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -29,21 +31,21 @@ pub async fn execute(pool: &Pool, query: TransactData) -> Result<Vec<Transact>, 
 
     web::block(move || {
         match query {
-            TransactData::GetUserTransactions => get_user_transact(conn),
+            TransactData::GetUserTransactions => get_user_transact(conn, user),
         }
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn get_user_transact(conn: Connection) -> TransactQuery {
-    let stmt = conn.prepare("SELECT * FROM transactions WHERE user_id=1")?;
-    get_transact_rows(stmt)
+fn get_user_transact(conn: Connection, user: db_auth::User) -> TransactQuery {
+    let stmt = conn.prepare("SELECT * FROM transactions WHERE user_id=?1")?;
+    get_transact_rows(stmt, user)
 }
 
-fn get_transact_rows(mut statement: Statement) -> TransactQuery {
+fn get_transact_rows(mut statement: Statement, user: db_auth::User) -> TransactQuery {
     statement
-        .query_map([], |row| {
+        .query_map([user.id], |row| {
             Ok(Transact {
                 id: row.get(0)?,
                 user_id: row.get(1)?,

@@ -2,6 +2,8 @@ use actix_web::{error, web, Error};
 use rusqlite::{Statement, params};
 use serde::{Deserialize, Serialize};
 
+use crate::db_auth::User;
+
 use super::analyze;
 
 #[derive(Serialize)]
@@ -207,26 +209,87 @@ pub struct InsertReturn {
     pub id: i64
 }
 
-pub async fn execute_insert(pool: &Pool, data: web::Json<MainInsert>) -> Result<InsertReturn, actix_web::Error> {
+pub async fn execute_insert(pool: &Pool, data: web::Json<MainInsert>, user: User) -> Result<InsertReturn, actix_web::Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
     web::block(move || {
-        insert_main_data(conn, &data)
+        insert_main_data(conn, &data, user)
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn insert_main_data(conn: Connection, data: &web::Json<MainInsert>) -> Result<InsertReturn, rusqlite::Error> {
+fn insert_main_data(conn: Connection, data: &web::Json<MainInsert>, user: User) -> Result<InsertReturn, rusqlite::Error> {
     let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2023);
     let mut inserted_row = InsertReturn {
         id: 0
     };
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
-    stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, data.user_id, data.name, data.from_team, analysis_results.weight, analysis_results.analysis])?;
+    stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, user.id, user.full_name, user.team, analysis_results.weight, analysis_results.analysis])?;
     inserted_row.id = conn.last_insert_rowid();
     Ok(inserted_row)
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct MainId {
+    pub id: i64
+}
+
+pub async fn get_ids(pool: &Pool, user: User) -> Result<Vec<MainId>, actix_web::Error> {
+    if user.admin == "true" {
+        let pool = pool.clone();
+
+        let conn = web::block(move || pool.get())
+            .await?
+            .map_err(error::ErrorInternalServerError)?;
+        web::block(move || {
+            get_id_rows(conn)
+        })
+        .await?
+        .map_err(error::ErrorInternalServerError)
+    } else {
+        let mut empty_res_vec = Vec::new();
+        empty_res_vec.push(MainId {
+            id: 0
+        });
+        Ok(empty_res_vec)
+    }
+}
+
+fn get_id_rows(conn: Connection) -> Result<Vec<MainId>, rusqlite::Error> {
+    let mut statement = conn.prepare("SELECT id FROM main;")?;
+    statement
+        .query_map([], |row| {
+            Ok(MainId {
+                id: row.get(0)?
+            })
+        })
+        .and_then(Iterator::collect)
+}
+
+pub async fn delete_by_id(pool: &Pool, user: User, path: web::Path<String>) -> Result<String, actix_web::Error> {
+    if user.admin == "true" {
+        let pool = pool.clone();
+
+        let conn = web::block(move || pool.get())
+            .await?
+            .map_err(error::ErrorInternalServerError)?;
+
+        web::block(move || {
+            let target_id = path.into_inner();
+            let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1")?;
+            if stmt.execute(params![target_id.parse::<i64>().unwrap()]).is_ok() {
+                Ok("{\"status\":3203}".to_string())
+            } else {
+                Ok("{\"status\":8002}".to_string())
+            }
+        })
+        .await?
+        .map_err(error::ErrorInternalServerError::<rusqlite::Error>)
+    } else {
+        Ok("{\"status\":6448}".to_string())
+    }
 }

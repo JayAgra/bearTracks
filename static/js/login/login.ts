@@ -35,30 +35,6 @@ nextBtn.addEventListener("click", async () => {
             passwordLoginButton.removeAttribute("disabled");
             isPkBtn = true;
         }
-    } else {
-        let attResp;
-        await _get("/api/auth/authPasskey/" + infoInput.value, "error").then(async (response: any) => {
-            // @ts-ignore
-            attResp = await (SimpleWebAuthnBrowser as any).startAuthentication(response);
-        }).catch((error: any) => {
-            errorElement.innerText = "unknown error getting challenge"
-            throw new Error("unhandled error 😭");
-        });
-        const verificationResp = await fetch("/api/auth/verifyAuthPasskey/" + infoInput.value, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(attResp),
-        });
-        const verificationJSON = await verificationResp.json();
-        if (verificationJSON && verificationJSON.verified) {
-            window.location.href = "/";
-        } else {
-            errorElement.innerText = "bad passkey";
-            await new Promise((res) => setTimeout(res, 2000));
-            window.location.reload();
-        }
     }
 });
 

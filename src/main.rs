@@ -1,7 +1,7 @@
 use std::{io, collections::HashMap, pin::Pin, sync::RwLock};
 
-use actix_web::{middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, web::JsonConfig, web::get, web::post, Responder};
-use actix_session::{SessionMiddleware, storage::CookieSessionStore, Session};
+use actix_web::{error, middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
+use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
 use serde::{Serialize, Deserialize};
 use r2d2_sqlite::{self, SqliteConnectionManager};
@@ -16,8 +16,29 @@ mod auth;
 
 #[derive(Serialize, Deserialize, Default, Clone)]
 struct Sessions {
-    user_map: HashMap<String, db_auth::User>,
-    key_map: HashMap<String, db_auth::Key>,
+    user_map: HashMap<String, db_auth::User>
+}
+
+impl FromRequest for db_auth::User {
+    type Error = actix_web::Error;
+    type Future = Pin<Box<dyn futures_util::Future<Output = Result<db_auth::User, Self::Error>>>>;
+
+    fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
+        let fut = Identity::from_request(req, payload);
+        let session: Option<&web::Data<RwLock<Sessions>>> = req.app_data();
+        if session.is_none() {
+            return Box::pin( async { Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}")) });
+        }
+        let session = session.unwrap().clone();
+        Box::pin(async move {
+            if let Some(identity) = fut.await?.identity() {
+                if let Some(user) = session.read().unwrap().user_map.get(&identity).map(|x| x.clone()) {
+                    return Ok(user);
+                }
+            };
+            Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+        })
+    }
 }
 
 struct Databases {
@@ -30,6 +51,10 @@ fn get_secret_key() -> Key {
     Key::generate()
 }
 
+async fn auth_post_create(db: web::Data<Databases>, data: web::Form<auth::CreateForm>) -> impl Responder {
+    auth::create_account(&db.auth, data).await
+}
+
 async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Sessions>>, identity: Identity, data: web::Form<auth::LoginForm>) -> impl Responder {
     auth::login(&db.auth, session, identity, data).await
 }
@@ -38,40 +63,52 @@ async fn auth_get_logout(session: web::Data<RwLock<Sessions>>, identity: Identit
     auth::logout(session, identity).await
 }
 
-async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::GetDataDetailed, path).await?))
 }
 
-async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::DataExists, path).await?))
 }
 
-async fn data_get_main_brief_team(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefTeam, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap()]).await?))
 }
 
-async fn data_get_main_brief_match(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_match(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefMatch, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("match_num").unwrap().parse().unwrap()]).await?))
 }
 
-async fn data_get_main_brief_event(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_event(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefEvent, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), "".to_string()]).await?))
 }
 
-async fn data_get_main_brief_user(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_user(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefUser, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()]).await?))
 }
 
-async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::execute_insert(&db.main, data).await?))
+async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute_insert(&db.main, data, user).await?))
 }
 
-async fn misc_transact_get_me(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_transact::execute(&db.transact, db_transact::TransactData::GetUserTransactions).await?))
+async fn manage_get_submission_ids(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::get_ids(&db.main, user).await?))
 }
 
-async fn points_get_all(db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().body(db_main::delete_by_id(&db.main, user, path).await?))
+}
+
+async fn misc_transact_get_me(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_transact::execute(&db.transact, db_transact::TransactData::GetUserTransactions, user).await?))
+}
+
+async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?))
+}
+
+async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(user))
 }
 
 #[actix_web::main]
@@ -80,7 +117,6 @@ async fn main() -> io::Result<()> {
 
     let sessions = web::Data::new(RwLock::new(Sessions {
         user_map: HashMap::new(),
-        key_map: HashMap::new(),
     }));
 
     let main_db_manager = SqliteConnectionManager::file("data.db");
@@ -131,6 +167,7 @@ async fn main() -> io::Result<()> {
                 .service(actix_files::Files::new("/css", "./static/css"))
                 .service(actix_files::Files::new("/js", "./static/js"))
             /* auth endpoints */
+                .service(web::resource("/create").route(web::post().to(auth_post_create)))
                 .service(web::resource("/login").route(web::post().to(auth_post_login)))
                 .service(web::resource("/logout").route(web::get().to(auth_get_logout)))
             /* data endpoints */
@@ -143,11 +180,16 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/data/brief/match/{season}/{event}/{match_num}").route(web::get().to(data_get_main_brief_match)))
                 .service(web::resource("/api/v1/data/brief/event/{season}/{event}").route(web::get().to(data_get_main_brief_event)))
                 .service(web::resource("/api/v1/data/brief/user/{season}/{user_id}").route(web::get().to(data_get_main_brief_user)))
+            /* manage endpoints */
+                .service(web::resource("/api/v1/manage/submission_ids").route(web::get().to(manage_get_submission_ids)))
+                .service(web::resource("/api/v1/manage/delete/{id}").route(web::delete().to(manage_delete_submission)))
             /* user endpoints */
             /* points endpoints */
                 .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))
             /* misc endpoints */
                 .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_transact_get_me)))
+            /* debug endpoints */
+                .service(web::resource("/api/debug/user").route(web::get().to(debug_get_user)))
     })
     .bind(("127.0.0.1", 8000))?
     .workers(2)

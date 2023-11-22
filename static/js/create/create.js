@@ -13,7 +13,7 @@ function codeBoxKeyUp(num, event) {
             else {
                 event.target.blur();
                 document.querySelector("[name=access").value = codeBoxes[0].value + codeBoxes[1].value + codeBoxes[2].value + codeBoxes[3].value + codeBoxes[4].value;
-                document.querySelector("[name=fullName]").focus();
+                document.querySelector("[name=full_name]").focus();
             }
         }
         if (eventCode === "Backspace") {

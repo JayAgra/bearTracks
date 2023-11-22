@@ -253,8 +253,9 @@ async function uploadForm() {
         return;
     }
     const responses = {
+        "season": 2023,
         "event": document.getElementsByName("event")[0].value,
-        "match": Number(document.getElementsByName("match")[0].value),
+        "match_num": Number(document.getElementsByName("match")[0].value),
         "level": document.getElementsByName("level")[0].value,
         "team": Number(document.getElementsByName("team")[0].value),
         "game": [
@@ -298,7 +299,7 @@ async function uploadForm() {
         submitText_d.innerText = "Verifying...";
         await new Promise((res) => setTimeout(res, 250));
         _get(`/api/v1/data/exists/${res.id}`, document.getElementById("submitText_d").id).then(async (checkRemote) => {
-            if (checkRemote.team == responses.team && checkRemote.match == responses.match) {
+            if (checkRemote.team == responses.team && checkRemote.match_num == responses.match_num) {
                 submitText_d.innerText = "Done!";
                 submitProgress_d.value = 100;
                 submitProgress_d.max = 100;

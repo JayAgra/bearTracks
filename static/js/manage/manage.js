@@ -5,7 +5,7 @@ function newSearch() {
 }
 async function getSubmissionData() {
     document.getElementById("viewData").innerHTML = "requesting...";
-    _get("/api/manage/list", "viewData").then((response) => {
+    _get("/api/v1/manage/submission_ids", "viewData").then((response) => {
         var listHTML = "";
         for (var i = response.length - 1; i >= 0; i--) {
             listHTML = listHTML + `<fieldset><span><span>ID:&emsp;${response[i].id}</span>&emsp;&emsp;<span><a href="/detail?id=${response[i].id}" style="all: unset; color: #2997FF; text-decoration: none;">View</a>&emsp;<span onclick="deleteSubmission(${response[i].id}, 'main${response[i].id}')" style="color: red" id="main${response[i].id}">Delete</span></span></span></fieldset>`;
@@ -17,9 +17,15 @@ async function getSubmissionData() {
 }
 async function deleteSubmission(submission, linkID) {
     document.getElementById(linkID).innerHTML = "deleting...";
-    _delete(`/api/manage/${submission}/delete`, linkID).then((response) => {
+    _delete(`/api/v1/manage/delete/${submission}`, linkID).then((response) => {
         if (response.status === 0xc83) {
             document.getElementById(linkID).innerHTML = "deleted!";
+        }
+        else if (response.status === 0x1f42) {
+            document.getElementById(linkID).innerHTML = "server error";
+        }
+        else if (response.status === 0x1930) {
+            document.getElementById(linkID).innerHTML = "forbidden";
         }
     }).catch((err) => console.log(err));
 }

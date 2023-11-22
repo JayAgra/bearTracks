@@ -15,7 +15,7 @@ function codeBoxKeyUp(num: number, event: KeyboardEvent) {
             } else {
                 (event.target as HTMLInputElement).blur();
                 (document.querySelector("[name=access") as HTMLInputElement).value = (codeBoxes[0] as HTMLInputElement).value + (codeBoxes[1] as HTMLInputElement).value + (codeBoxes[2] as HTMLInputElement).value + (codeBoxes[3] as HTMLInputElement).value + (codeBoxes[4] as HTMLInputElement).value;
-                (document.querySelector("[name=fullName]") as HTMLInputElement).focus();
+                (document.querySelector("[name=full_name]") as HTMLInputElement).focus();
             }
         }
         if (eventCode === "Backspace") {

@@ -1,10 +1,6 @@
-use std::ops::{Add, Deref};
-
 use actix_web::{error, web, Error};
 use rusqlite::{Statement, params};
 use serde::{Serialize, Deserialize};
-use chrono::prelude::*;
-use rand::distributions::{Alphanumeric, DistString};
 
 #[derive(Serialize)]
 pub struct UserPoints {
@@ -72,27 +68,14 @@ pub struct User {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct Key {
-    pub id: i64,
-    pub key: String,
-    pub user_id: i64,
-    pub username: String,
-    pub name: String,
-    pub team: i64,
-    pub created: String,
-    pub expires: String,
-    pub admin: String,
-    pub team_admin: i64
-}
-
-#[derive(Serialize, Deserialize, Clone)]
 pub struct AccessKey {
     pub id: i64,
     pub key: i64,
     pub team: i64
 }
 
-pub async fn get_key(pool: &Pool, key: String) -> Result<Key, Error> {
+// use me later ↓
+pub async fn _get_user(pool: &Pool, id: i64) -> Result<User, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -100,45 +83,13 @@ pub async fn get_key(pool: &Pool, key: String) -> Result<Key, Error> {
         .map_err(error::ErrorInternalServerError)?;
 
     web::block(move || {
-        get_key_entry(conn, key)
+        _get_user_entry(conn, id)
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn get_key_entry(conn: Connection, key: String) -> Result<Key, rusqlite::Error> {
-    let mut stmt = conn.prepare("SELECT * FROM keys WHERE key=?1")?;
-    stmt.query_row([key], |row| {
-        Ok(Key {
-            id: row.get(0)?,
-            key: row.get(1)?,
-            user_id: row.get(2)?,
-            username: row.get(3)?,
-            name: row.get(4)?,
-            team: row.get(5)?,
-            created: row.get(6)?,
-            expires: row.get(7)?,
-            admin: row.get(8)?,
-            team_admin: row.get(9)?,
-        })
-    })
-}
-
-pub async fn get_user(pool: &Pool, id: i64) -> Result<User, Error> {
-    let pool = pool.clone();
-
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-
-    web::block(move || {
-        get_user_entry(conn, id)
-    })
-    .await?
-    .map_err(error::ErrorInternalServerError)
-}
-
-fn get_user_entry(conn: Connection, id: i64) -> Result<User, rusqlite::Error> {
+fn _get_user_entry(conn: Connection, id: i64) -> Result<User, rusqlite::Error> {
     let mut stmt = conn.prepare("SELECT * FROM users WHERE id=?1")?;
     stmt.query_row([id], |row| {
         Ok(User {
@@ -156,6 +107,7 @@ fn get_user_entry(conn: Connection, id: i64) -> Result<User, rusqlite::Error> {
         })
     })
 }
+// use me later ↑
 
 pub async fn get_user_username(pool: &Pool, username: String) -> Result<User, Error> {
     let pool = pool.clone();
@@ -190,7 +142,7 @@ fn get_user_username_entry(conn: Connection, username: String) -> Result<User, r
     })
 }
 
-pub async fn get_access_key(pool: &Pool, key: i64) -> Result<AccessKey, Error> {
+pub async fn get_access_key(pool: &Pool, key: String) -> Result<AccessKey, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -204,7 +156,7 @@ pub async fn get_access_key(pool: &Pool, key: i64) -> Result<AccessKey, Error> {
     .map_err(error::ErrorInternalServerError)
 }
 
-fn get_access_key_entry(conn: Connection, key: i64) -> Result<AccessKey, rusqlite::Error> {
+fn get_access_key_entry(conn: Connection, key: String) -> Result<AccessKey, rusqlite::Error> {
     let mut stmt = conn.prepare("SELECT * FROM accessKeys WHERE key=?1")?;
     stmt.query_row([key], |row| {
         Ok(AccessKey {
@@ -215,7 +167,7 @@ fn get_access_key_entry(conn: Connection, key: i64) -> Result<AccessKey, rusqlit
     })
 }
 
-pub async fn create_key(pool: &Pool, user: User) -> Result<Key, Error> {
+pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: String, password_hash: String) -> Result<User, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -223,37 +175,33 @@ pub async fn create_key(pool: &Pool, user: User) -> Result<Key, Error> {
         .map_err(error::ErrorInternalServerError)?;
 
     web::block(move || {
-        create_key_entry(conn, user)
+        create_user_entry(conn, team, full_name, username, password_hash)
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn create_key_entry(conn: Connection, user: User) -> Result<Key, rusqlite::Error> {
-    let mut stmt = conn.prepare("INSERT INTO keys (key, user_id, username, name, team, created, expires, admin, team_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
-    let mut new_key = Key {
+fn create_user_entry(conn: Connection, team: i64, full_name: String, username: String, password_hash: String) -> Result<User, rusqlite::Error> {
+    let mut stmt = conn.prepare("INSERT INTO users (username, current_challenge, full_name, team, method, pass_hash, admin, team_admin, access_ok, score) VALUES (?, '', ?, ?, 'pw', ?, 'false', 0, 'true', 0);")?;
+    let mut new_user = User {
         id: 0,
-        key: Alphanumeric.sample_string(&mut rand::thread_rng(), 32),
-        user_id: user.id,
-        username: user.username,
-        name: user.full_name,
-        team: user.team, 
-        created: Utc::now().timestamp_millis().to_string(),
-        expires: Utc::now().timestamp_millis().add(86_400_000).to_string(),
-        admin: user.admin,
-        team_admin: user.team_admin
+        username,
+        current_challenge: "".to_string(),
+        full_name,
+        team,
+        method: "pw".to_string(),
+        pass_hash: password_hash,
+        admin: "false".to_string(),
+        team_admin: 0,
+        access_ok: "true".to_string(),
+        score: 0
     };
     stmt.execute(params![
-        new_key.key,
-        new_key.user_id,
-        new_key.username,
-        new_key.name,
-        new_key.team,
-        new_key.created,
-        new_key.expires,
-        new_key.admin,
-        new_key.team_admin
+        new_user.username,
+        new_user.full_name,
+        new_user.team,
+        new_user.pass_hash
     ])?;
-    new_key.id = conn.last_insert_rowid();
-    Ok(new_key)
+    new_user.id = conn.last_insert_rowid();
+    Ok(new_user)
 }

@@ -1,4 +1,3 @@
-import { _get } from "../_modules/get/get.min.js";
 import { _dErr } from "../_modules/dErr/dErr.min.js";
 var isPkBtn = false;
 const nextBtn = document.getElementById("next"), infoInput = document.getElementById("inputInfo"), currentUsernameInd = document.getElementById("currentUsername"), passwordLoginButton = document.getElementById("pw"), createAccountButton = document.getElementById("createAct"), errorElement = document.getElementById("error"), inputPassword = document.getElementById("inputPassword");
@@ -26,32 +25,6 @@ nextBtn.addEventListener("click", async () => {
             inputPassword.style.display = "unset";
             passwordLoginButton.removeAttribute("disabled");
             isPkBtn = true;
-        }
-    }
-    else {
-        let attResp;
-        await _get("/api/auth/authPasskey/" + infoInput.value, "error").then(async (response) => {
-            // @ts-ignore
-            attResp = await SimpleWebAuthnBrowser.startAuthentication(response);
-        }).catch((error) => {
-            errorElement.innerText = "unknown error getting challenge";
-            throw new Error("unhandled error 😭");
-        });
-        const verificationResp = await fetch("/api/auth/verifyAuthPasskey/" + infoInput.value, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(attResp),
-        });
-        const verificationJSON = await verificationResp.json();
-        if (verificationJSON && verificationJSON.verified) {
-            window.location.href = "/";
-        }
-        else {
-            errorElement.innerText = "bad passkey";
-            await new Promise((res) => setTimeout(res, 2000));
-            window.location.reload();
         }
     }
 });
