@@ -199,9 +199,6 @@ pub struct MainInsert {
     pub defend: String,
     pub driving: String,
     pub overall: String,
-    pub user_id: i64,
-    pub name: String,
-    pub from_team: i64,
 }
 
 #[derive(Serialize)]
