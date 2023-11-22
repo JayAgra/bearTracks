@@ -18,7 +18,7 @@ function toLogin(response) {
 }
 async function loadMatches() {
     try {
-        const response = await fetch(`/api/matches/current/${document.getElementById("eventCode").value}/qual/all`, {
+        const response = await fetch(`/api/v1/events/matches/2023/${document.getElementById("eventCode").value}/qual/all`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -39,7 +39,7 @@ async function loadMatches() {
 }
 // check session
 async function checkLogin() {
-    _get(`/api/whoami`, null).then((response) => { console.log(response); }).catch((err) => console.log(err));
+    _get(`/api/v1/whoami`, null).then((response) => { console.log(response); }).catch((err) => console.log(err));
 }
 window.checkLogin = checkLogin;
 loadMatches();

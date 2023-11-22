@@ -109,8 +109,12 @@ async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User,
     Ok(HttpResponse::Ok().body(db_main::delete_by_id(&db.main, user, path).await?))
 }
 
-async fn misc_transact_get_me(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn misc_get_transact_me(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_transact::execute(&db.transact, db_transact::TransactData::GetUserTransactions, user).await?))
+}
+
+async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(user.id))
 }
 
 async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
@@ -141,8 +145,8 @@ async fn main() -> io::Result<()> {
     let secret_key = get_secret_key();
 
     let governor_conf = GovernorConfigBuilder::default()
-        .per_second(10)
-        .burst_size(20)
+        .per_second(50)
+        .burst_size(100)
         .finish()
         .unwrap();
 
@@ -206,9 +210,10 @@ async fn main() -> io::Result<()> {
             /* points endpoints */
                 .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))
             /* misc endpoints */
-                .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_transact_get_me)))
+                .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_get_transact_me)))
+                .service(web::resource("/api/v1/whoami").route(web::get().to(misc_get_whoami)))
             /* debug endpoints */
-                .service(web::resource("/api/debug/user").route(web::get().to(debug_get_user)))
+                .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
     })
     .bind(("127.0.0.1", 8000))?
     .workers(2)

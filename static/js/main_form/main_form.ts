@@ -65,7 +65,7 @@ async function loadMatches(): Promise<string | void> {
 
 // check session
 async function checkLogin(): Promise<void> {
-    _get(`/api/whoami`, null).then((response: any) => {console.log(response)}).catch((err) => console.log(err));
+    _get(`/api/v1/whoami`, null).then((response: any) => {console.log(response)}).catch((err) => console.log(err));
 }
 (window as any).checkLogin = checkLogin;
 
