@@ -1,5 +1,4 @@
 use std::{io, collections::HashMap, pin::Pin, sync::RwLock};
-
 use actix_web::{error, middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
@@ -53,11 +52,11 @@ fn get_secret_key() -> Key {
     Key::generate()
 }
 
-async fn auth_post_create(db: web::Data<Databases>, data: web::Form<auth::CreateForm>) -> impl Responder {
+async fn auth_post_create(db: web::Data<Databases>, data: web::Json<auth::CreateForm>) -> impl Responder {
     auth::create_account(&db.auth, data).await
 }
 
-async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Sessions>>, identity: Identity, data: web::Form<auth::LoginForm>) -> impl Responder {
+async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Sessions>>, identity: Identity, data: web::Json<auth::LoginForm>) -> impl Responder {
     auth::login(&db.auth, session, identity, data).await
 }
 
@@ -89,8 +88,12 @@ async fn data_get_main_brief_user(req: HttpRequest, db: web::Data<Databases>, _u
     Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefUser, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()]).await?))
 }
 
+async fn data_get_main_teams(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute_get_teams(&db.main, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap()]).await?))
+}
+
 async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::execute_insert(&db.main, data, user).await?))
+    Ok(HttpResponse::Ok().json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?))
 }
 
 async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>, _user: db_auth::User) -> HttpResponse {
@@ -135,12 +138,21 @@ async fn main() -> io::Result<()> {
 
     let main_db_manager = SqliteConnectionManager::file("data.db");
     let main_db_pool = db_main::Pool::new(main_db_manager).unwrap();
+    let main_db_connection = main_db_pool.get().expect("main db: connection failed");
+    main_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("main db: WAL failed");
+    drop(main_db_connection);
 
     let auth_db_manager = SqliteConnectionManager::file("data_auth.db");
     let auth_db_pool = db_main::Pool::new(auth_db_manager).unwrap();
+    let auth_db_connection = auth_db_pool.get().expect("auth db: connection failed");
+    auth_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("auth db: WAL failed");
+    drop(auth_db_connection);
 
     let trans_db_manager = SqliteConnectionManager::file("data_transact.db");
     let trans_db_pool = db_main::Pool::new(trans_db_manager).unwrap();
+    let trans_db_connection = trans_db_pool.get().expect("trans db: connection failed");
+    trans_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("trans db: WAL failed");
+    drop(trans_db_connection);
 
     let secret_key = get_secret_key();
 
@@ -203,6 +215,7 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/data/brief/match/{season}/{event}/{match_num}").route(web::get().to(data_get_main_brief_match)))
                 .service(web::resource("/api/v1/data/brief/event/{season}/{event}").route(web::get().to(data_get_main_brief_event)))
                 .service(web::resource("/api/v1/data/brief/user/{season}/{user_id}").route(web::get().to(data_get_main_brief_user)))
+                .service(web::resource("/api/v1/data/teams/{season}/{event}").route(web::get().to(data_get_main_teams)))
                 .service(web::resource("/api/v1/events/teams/{season}/{event}").route(web::get().to(event_get_frc_api)))
                 .service(web::resource("/api/v1/events/matches/{season}/{event}/{level}/{all}").route(web::get().to(event_get_frc_api_matches)))
                 // POST (✅)

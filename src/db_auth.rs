@@ -10,6 +10,8 @@ use argon2::{
     Argon2
 };
 
+use crate::db_main;
+
 #[derive(Serialize)]
 pub struct UserPoints {
     pub id: i64,
@@ -43,7 +45,7 @@ pub async fn execute_scores(pool: &Pool, query: AuthData) -> Result<Vec<UserPoin
 }
 
 fn get_user_scores(conn: Connection) -> PointQueryResult {
-    let stmt = conn.prepare("SELECT id, username, team, score FROM users;")?;
+    let stmt = conn.prepare("SELECT id, username, team, score FROM users ORDER BY score DESC;")?;
     get_score_rows(stmt)
 }
 
@@ -54,7 +56,7 @@ fn get_score_rows(mut statement: Statement) -> PointQueryResult {
                 id: row.get(0)?,
                 username: row.get(1)?,
                 team: row.get(2)?,
-                score: row.get(4)?
+                score: row.get(3)?
             })
         })
         .and_then(Iterator::collect)
@@ -232,4 +234,10 @@ fn create_user_entry(conn: Connection, team: i64, full_name: String, username: S
     ])?;
     new_user.id = conn.last_insert_rowid();
     Ok(new_user)
+}
+
+pub fn update_points(conn: Connection, user_id: i64, inc: i64) -> Result<db_main::InsertReturn, rusqlite::Error> {
+    let mut stmt = conn.prepare("UPDATE users SET score = score + ?1 WHERE id = ?2;")?;
+    stmt.execute(params![inc, user_id])?;
+    Ok(db_main::InsertReturn { id: conn.last_insert_rowid() })
 }

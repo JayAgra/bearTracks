@@ -2,7 +2,8 @@ use actix_web::{error, web, Error};
 use rusqlite::{Statement, params};
 use serde::{Deserialize, Serialize};
 
-use crate::db_auth::User;
+use crate::db_auth::{User, self};
+use crate::db_transact;
 
 use super::analyze;
 
@@ -188,6 +189,42 @@ fn get_brief_rows(mut statement: Statement, params: [String; 3]) -> BriefQueryRe
         .and_then(Iterator::collect)
 }
 
+#[derive(Serialize)]
+pub struct MainDbTeams {
+    pub id: i64,
+    pub team: i64,
+    pub weight: String
+}
+
+type TeamsQueryResult = Result<Vec<MainDbTeams>, rusqlite::Error>;
+
+pub async fn execute_get_teams(pool: &Pool, params: [String; 2]) -> Result<Vec<MainDbTeams>, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        get_teams(conn, params)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn get_teams(conn: Connection, params: [String; 2]) -> TeamsQueryResult {
+    let mut stmt = conn.prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
+    stmt
+        .query_map(params, |row| {
+            Ok(MainDbTeams {
+                id: row.get(0)?,
+                team: row.get(1)?,
+                weight: row.get(2)?
+            })
+        })
+        .and_then(Iterator::collect)
+}
+
 #[derive(Deserialize)]
 pub struct MainInsert {
     pub event: String,
@@ -206,20 +243,31 @@ pub struct InsertReturn {
     pub id: i64
 }
 
-pub async fn execute_insert(pool: &Pool, data: web::Json<MainInsert>, user: User) -> Result<InsertReturn, actix_web::Error> {
+pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, data: web::Json<MainInsert>, user: User) -> Result<InsertReturn, actix_web::Error> {
     let pool = pool.clone();
+    let transact_pool = transact_pool.clone();
+    let auth_pool = auth_pool.clone();
 
     let conn = web::block(move || pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
+
+    let transact_conn = web::block(move || transact_pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    let auth_conn = web::block(move || auth_pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
     web::block(move || {
-        insert_main_data(conn, &data, user)
+        insert_main_data(conn, transact_conn, auth_conn, &data, user)
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn insert_main_data(conn: Connection, data: &web::Json<MainInsert>, user: User) -> Result<InsertReturn, rusqlite::Error> {
+fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: User) -> Result<InsertReturn, rusqlite::Error> {
     let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2023);
     let mut inserted_row = InsertReturn {
         id: 0
@@ -227,6 +275,8 @@ fn insert_main_data(conn: Connection, data: &web::Json<MainInsert>, user: User) 
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
     stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, user.id, user.full_name, user.team, analysis_results.weight, analysis_results.analysis])?;
     inserted_row.id = conn.last_insert_rowid();
+    let _inserted = db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: user.id, trans_type: 0x1000, amount: 25, time: "".to_string() }).expect("oop");
+    let _updated = db_auth::update_points(auth_conn, user.id, 25).expect("oop");
     Ok(inserted_row)
 }
 

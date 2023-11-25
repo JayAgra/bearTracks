@@ -36,3 +36,27 @@ nextBtn.addEventListener("click", async () => {
         }
     }
 });
+
+function setCooky(name: string) {
+    document.cookie = name + "=" + "true" + "; expires=" + new Date(Date.now() + 86400000).toUTCString() + "; path=/"
+}
+
+async function uploadForm() {
+    const errorElement = document.getElementById("error");
+    const responses = {
+        "username": (document.querySelector("[name=username]") as HTMLInputElement).value,
+        "password": (document.querySelector("[name=password]") as HTMLInputElement).value
+    }
+    _post("/api/v1/auth/login", errorElement.id, responses).then(async (response: {status: String}) => {
+        switch (response.status) {
+            case "success": { window.location.href = "/"; break; }
+            case "success_adm": { setCooky("lead"); window.location.href = "/"; break; }
+            case "success_ctl": { setCooky("childTeamLead"); window.location.href = "/"; break; }
+            case "bad": { errorElement.innerText = "bad credentials"; errorElement.style.display = "unset"; break; }
+        }
+    }).catch((error: any) => {
+        document.getElementById("error").innerText = "unknown error";
+    });
+}
+
+passwordLoginButton.onclick = uploadForm;

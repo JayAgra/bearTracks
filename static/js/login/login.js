@@ -1,3 +1,4 @@
+import { _post } from "../_modules/post/post.min.js";
 var isPkBtn = false;
 const nextBtn = document.getElementById("next"), infoInput = document.getElementById("inputInfo"), currentUsernameInd = document.getElementById("currentUsername"), passwordLoginButton = document.getElementById("pw"), createAccountButton = document.getElementById("createAct"), errorElement = document.getElementById("error"), inputPassword = document.getElementById("inputPassword");
 nextBtn.addEventListener("click", async () => {
@@ -27,4 +28,39 @@ nextBtn.addEventListener("click", async () => {
         }
     }
 });
-export {};
+function setCooky(name) {
+    document.cookie = name + "=" + "true" + "; expires=" + new Date(Date.now() + 86400000).toUTCString() + "; path=/";
+}
+async function uploadForm() {
+    const errorElement = document.getElementById("error");
+    const responses = {
+        "username": document.querySelector("[name=username]").value,
+        "password": document.querySelector("[name=password]").value
+    };
+    _post("/api/v1/auth/login", errorElement.id, responses).then(async (response) => {
+        switch (response.status) {
+            case "success": {
+                window.location.href = "/";
+                break;
+            }
+            case "success_adm": {
+                setCooky("lead");
+                window.location.href = "/";
+                break;
+            }
+            case "success_ctl": {
+                setCooky("childTeamLead");
+                window.location.href = "/";
+                break;
+            }
+            case "bad": {
+                errorElement.innerText = "bad credentials";
+                errorElement.style.display = "unset";
+                break;
+            }
+        }
+    }).catch((error) => {
+        document.getElementById("error").innerText = "unknown error";
+    });
+}
+passwordLoginButton.onclick = uploadForm;

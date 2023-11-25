@@ -23,41 +23,12 @@ type mainFormResponse = {
 	"event": string,
 	"season": number,
 	"team": number,
-	"match": number,
-	"level": string,
-	"game1": string,
-	"game2": string,
-	"game3": string,
-	"game4": string,
-	"game5": string,
-	"game6": string,
-	"game7": string,
-	"game8": string,
-	"game9": string,
-	"game10": string,
-	"game11": string,
-	"game12": string,
-	"game13": string,
-	"game14": string,
-	"game15": string,
-	"game16": string,
-	"game17": string,
-	"game18": string,
-	"game19": string,
-	"game20": string,
-	"game21": string,
-	"game22": string,
-	"game23": string,
-	"game24": string,
-	"game25": string,
-	"defend": string,
-	"driving": string,
-	"overall": string,
-	"userId": string,
+	"match_num": number,
+	"game": string,
+	"user_id": string,
 	"name": string,
-    "fromTeam": number,
+    "from_team": number,
 	"weight": string,
-	"analysis": string,
 }
 
 function generateSmallAvgRow(avg: any): string {
@@ -73,15 +44,19 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
         type: string,
         htmlTable: string = "";
     if (searchType === "team") {
-        fetchEndpoint = `/api/data/current/team/${eCode}/${num}`;
+        fetchEndpoint = `/api/v1/data/brief/team/${new Date().getFullYear()}/${eCode}/${num}`;
         type = "team";
     } else {
-        fetchEndpoint = `/api/data/current/match/${eCode}/${num}`;
+        fetchEndpoint = `/api/v1/data/brief/match/${new Date().getFullYear()}/${eCode}/${num}`;
         type = "match";
     }
 
     searchBtn.innerText = "requesting...";
     _get(fetchEndpoint, searchBtn.id).then((listRes: Array<mainFormResponse>) => {
+        if (listRes.length === 0) {
+            searchBtn.innerText = "no results";
+            return;
+        }
         if (type === "team") {
             let avg: {[index: string]:any} = {
                 "auto_charge": 0,
@@ -121,43 +96,44 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
                 if (min[property] > value) min[property] = value;
             }
             for (var i = 0; i < listRes.length; i++) {
-                htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a><br><span>${listRes[i].name} (${listRes[i].fromTeam})</span></td>` + // match link
-                        `<td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td>` + // auto score
-                        `<td>${listRes[i].game5}</td>` + // auto charge
-                        `<td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td>` + // teleop score
-                        `<td>${listRes[i].game10}</td>` + // teleop charge
-                        `<td>${listRes[i].game25}</td>` + // grid points
-                        `<td>${listRes[i].game21}</td><td>${listRes[i].game14}</td><td>${listRes[i].game16}</td>` + // cubes
-                        `<td>${listRes[i].game13}</td><td>${listRes[i].game15}</td><td>${listRes[i].game17}</td>` + // cones
-                        `<td>${listRes[i].game18}</td><td>${listRes[i].game19}</td><td>${listRes[i].game20}</td>` + // total
-                        `<td>${listRes[i].game11}</td>` + // cycle time
+                let game_data = listRes[i].game.split(",");
+                htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].match_num}</a><br><span>${listRes[i].name} (${listRes[i].from_team})</span></td>` + // match link
+                        `<td>${eV(game_data[1])}${eV(game_data[2])}${eV(game_data[3])}</td>` + // auto score
+                        `<td>${game_data[4]}</td>` + // auto charge
+                        `<td>${eV(game_data[5])}${eV(game_data[6])}${eV(game_data[7])}</td>` + // teleop score
+                        `<td>${game_data[9]}</td>` + // teleop charge
+                        `<td>${game_data[24]}</td>` + // grid points
+                        `<td>${game_data[20]}</td><td>${game_data[13]}</td><td>${game_data[15]}</td>` + // cubes
+                        `<td>${game_data[12]}</td><td>${game_data[14]}</td><td>${game_data[16]}</td>` + // cones
+                        `<td>${game_data[17]}</td><td>${game_data[18]}</td><td>${game_data[19]}</td>` + // total
+                        `<td>${game_data[10]}</td>` + // cycle time
                         `<td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`; // standard mps
                 
-                avg.auto_charge += Number(listRes[i].game5);
-                avg.teleop_charge += Number(listRes[i].game10);
-                avg.grid += Number(listRes[i].game25);
-                avg.cycle += Number(listRes[i].game11);
+                avg.auto_charge += Number(game_data[4]);
+                avg.teleop_charge += Number(game_data[9]);
+                avg.grid += Number(game_data[24]);
+                avg.cycle += Number(game_data[10]);
                 avg.perf_score += Number(listRes[i].weight.split(",")[0]);
-                avg.lowCube += Number(listRes[i].game21);
-                avg.lowCone += Number(listRes[i].game13);
-                avg.midCube += Number(listRes[i].game14);
-                avg.midCone += Number(listRes[i].game15);
-                avg.highCube += Number(listRes[i].game16);
-                avg.highCone += Number(listRes[i].game17);
-                avg.low += Number(listRes[i].game18);
-                avg.mid += Number(listRes[i].game19);
-                avg.high += Number(listRes[i].game20);
+                avg.lowCube += Number(game_data[20]);
+                avg.lowCone += Number(game_data[12]);
+                avg.midCube += Number(game_data[13]);
+                avg.midCone += Number(game_data[14]);
+                avg.highCube += Number(game_data[15]);
+                avg.highCone += Number(game_data[16]);
+                avg.low += Number(game_data[17]);
+                avg.mid += Number(game_data[18]);
+                avg.high += Number(game_data[18]);
 
-                setIfHigher("auto_charge", Number(listRes[i].game5));
-                setIfHigher("teleop_charge", Number(listRes[i].game10));
-                setIfHigher("grid", Number(listRes[i].game25));
-                setIfHigher("cycle", Number(listRes[i].game11));
+                setIfHigher("auto_charge", Number(game_data[4]));
+                setIfHigher("teleop_charge", Number(game_data[9]));
+                setIfHigher("grid", Number(game_data[24]));
+                setIfHigher("cycle", Number(game_data[10]));
                 setIfHigher("perf_score", Number(listRes[i].weight.split(",")[0]));
 
-                setIfLower("auto_charge", Number(listRes[i].game5));
-                setIfLower("teleop_charge", Number(listRes[i].game10));
-                setIfLower("grid", Number(listRes[i].game25));
-                setIfLower("cycle", Number(listRes[i].game11));
+                setIfLower("auto_charge", Number(game_data[4]));
+                setIfLower("teleop_charge", Number(game_data[9]));
+                setIfLower("grid", Number(game_data[24]));
+                setIfLower("cycle", Number(game_data[10]));
                 setIfLower("perf_score", Number(listRes[i].weight.split(",")[0]));
             }
 
@@ -191,11 +167,12 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
             };
 
             for (var i = 0; i < listRes.length; i++) {
-                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a><br><span>${listRes[i].name} (${listRes[i].team})</span></td><td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td><td>${listRes[i].game5}</td><td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td><td>${listRes[i].game10}</td><td>${listRes[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${listRes[i].game11}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
-                avg.auto_charge += Number(listRes[i].game5);
-                avg.teleop_charge += Number(listRes[i].game10);
-                avg.grid += Number(listRes[i].game25);
-                avg.cycle += Number(listRes[i].game11);
+                let game_data = listRes[i].game.split(",");
+                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].match_num}</a><br><span>${listRes[i].name} (${listRes[i].team})</span></td><td>${eV(game_data[1])}${eV(game_data[2])}${eV(game_data[3])}</td><td>${game_data[4]}</td><td>${eV(game_data[5])}${eV(game_data[6])}${eV(game_data[7])}</td><td>${game_data[9]}</td><td>${game_data[24]}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${game_data[10]}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
+                avg.auto_charge += Number(game_data[4]);
+                avg.teleop_charge += Number(game_data[9]);
+                avg.grid += Number(game_data[24]);
+                avg.cycle += Number(game_data[10]);
                 avg.perf_score += Number(listRes[i].weight.split(",")[0]);
             }
 
@@ -215,7 +192,11 @@ async function searchOnLoad() {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("userId");
     if (userId) {
-        _get(`/api/data/current/scout/${userId}`, error.id).then((listRes) => {
+        _get(`/api/v1/data/user/${new Date().getFullYear()}/${userId}`, error.id).then((listRes) => {
+            if (listRes.length === 0) {
+                searchBtn.innerText = "no results";
+                return;
+            }
             var avg: {[index: string]:any} = {
                 "auto_charge": 0,
                 "teleop_charge": 0,
@@ -226,11 +207,12 @@ async function searchOnLoad() {
 
             var htmlTable = "";
             for (var i = 0; i < listRes.length; i++) {
-                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">${listRes[i].level} ${listRes[i].match}</a></td><td>${eV(listRes[i].game2)}${eV(listRes[i].game3)}${eV(listRes[i].game4)}</td><td>${listRes[i].game5}</td><td>${eV(listRes[i].game6)}${eV(listRes[i].game7)}${eV(listRes[i].game8)}</td><td>${listRes[i].game10}</td><td>${listRes[i].game25}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${listRes[i].game11}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
-                avg.auto_charge += Number(listRes[i].game5);
-                avg.teleop_charge += Number(listRes[i].game10);
-                avg.grid += Number(listRes[i].game25);
-                avg.cycle += Number(listRes[i].game11);
+                let game_data = listRes[i].game.split(",");
+                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].match_num}</a></td><td>${eV(game_data[1])}${eV(game_data[2])}${eV(game_data[3])}</td><td>${game_data[4]}</td><td>${eV(game_data[5])}${eV(game_data[6])}${eV(game_data[7])}</td><td>${game_data[9]}</td><td>${game_data[24]}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${game_data[10]}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
+                avg.auto_charge += Number(game_data[4]);
+                avg.teleop_charge += Number(game_data[9]);
+                avg.grid += Number(game_data[24]);
+                avg.cycle += Number(game_data[10]);
                 avg.perf_score += Number(listRes[i].weight.split(",")[0]);
             }
 

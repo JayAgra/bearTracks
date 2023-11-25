@@ -15,7 +15,7 @@ async function getTeamRanks() {
     (document.getElementById("viewTeamsButton") as HTMLButtonElement).innerText = "Requesting Data...";
 
     const xhr: XMLHttpRequest = new XMLHttpRequest();
-    xhr.open("GET", `/api/teams/current/${eventCode}`, true);
+    xhr.open("GET", `/api/v1/data/teams/${new Date().getFullYear()}/${eventCode}`, true);
     xhr.withCredentials = true;
     xhr.onreadystatechange = async () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {

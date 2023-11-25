@@ -4,7 +4,6 @@ use actix_web::{web, Responder, HttpResponse};
 use actix_identity::Identity;
 use actix_files::NamedFile;
 use serde::{Serialize, Deserialize};
-use cookie::Cookie;
 use argon2::{
     password_hash::{
         PasswordHash,
@@ -31,9 +30,9 @@ pub struct CreateForm {
     password: String
 }
 
-pub async fn create_account(pool: &db_auth::Pool, create_form: web::Form<CreateForm>) -> impl Responder {
+pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateForm>) -> impl Responder {
     // check password length is between 8 and 36, inclusive
-    if create_form.password.len() >= 8 && create_form.password.len() <= 36 {
+    if create_form.password.len() >= 8 && create_form.password.len() <= 32 {
         // check if username is taken
         let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, html_escape::encode_text(&create_form.username).to_string()).await;
         if target_user_temp.is_ok() || create_form.username != html_escape::encode_text(&create_form.username).to_string() {
@@ -51,7 +50,7 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Form<CreateF
                     return HttpResponse::BadRequest().status(StatusCode::from_u16(500).unwrap()).body("{\"status\": \"creation_error\"}");
                 } else {
                     // yes. this solution is shit. give me a better one
-                    return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).body("<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=\'/login\'\"></head><body style=\"background-color: #000; color: #fff;\">redirecting...</body></html>");
+                    return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).body("{\"status\": \"success\"}");
                 }
             }
         }
@@ -60,7 +59,7 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Form<CreateF
     }
 }
 
-pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessions>>, identity: Identity, login_form: web::Form<LoginForm>) -> impl Responder {
+pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessions>>, identity: Identity, login_form: web::Json<LoginForm>) -> impl Responder {
     let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
     if !target_user_temp.is_ok() {
         return HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"bad\"}");
@@ -76,23 +75,12 @@ pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessio
             identity.remember(login_form.username.clone());
             session.write().unwrap().user_map.insert(target_user.clone().username.to_string(), target_user.clone());
             if target_user.admin == "true" {
-                let admin_cookie = Cookie::build("lead", "true")
-                                                    .secure(false)
-                                                    .http_only(false)
-                                                    .max_age(cookie::time::Duration::seconds(86_400))
-                                                    .finish();
-                return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).cookie(admin_cookie).body("<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=\'/\'\"></head><body style=\"background-color: #000; color: #fff;\">redirecting...</body></html>");
+                return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).body("{\"status\": \"success_adm\"}");
             }
             if target_user.team_admin != 0 {
-                let child_admin_cookie = Cookie::build("childTeamLead", "true")
-                                                    .secure(false)
-                                                    .http_only(false)
-                                                    .max_age(cookie::time::Duration::seconds(86_400))
-                                                    .finish();
-
-                return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).cookie(child_admin_cookie).body("<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=\'/\'\"></head><body style=\"background-color: #000; color: #fff;\">redirecting...</body></html>");
+                return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).body("{\"status\": \"success_ctl\"}");
             }
-            return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).body("<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=\'/\'\"></head><body style=\"background-color: #000; color: #fff;\">redirecting...</body></html>");
+            return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).body("{\"status\": \"success\"}");
         } else {
             return HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"bad\"}");
         }

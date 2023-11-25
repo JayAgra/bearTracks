@@ -1,7 +1,7 @@
 import { _get } from "../_modules/get/get.min.js";
 async function getPointsData() {
-    _get("/api/scouts/transactions/me", "viewMatchButton").then((listRes) => {
-        if (listRes.status === 0xcc1) {
+    _get("/api/v1/transact/me", "viewMatchButton").then((listRes) => {
+        if (listRes.length === 0) {
             document.getElementById("preInsert").insertAdjacentHTML("afterend", '<tr class="padded"><td>no data</td><td>no data</td></tr>');
         }
         else {
@@ -23,7 +23,7 @@ async function getPointsData() {
             };
             var listHTML = "";
             for (var i = 0; i < listRes.length; i++) {
-                listHTML += `<tr class="padded"><td>${types[String(listRes[i].type)]}</td><td>${listRes[i].amount}</td><td>${listRes[i].time}</td></tr>`;
+                listHTML += `<tr class="padded"><td>${types[String(listRes[i].trans_type)]}</td><td>${listRes[i].amount}</td><td>${listRes[i].time}</td></tr>`;
             }
             document.getElementById("preInsert").insertAdjacentHTML("afterend", listHTML);
         }

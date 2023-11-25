@@ -35,3 +35,26 @@ codeBoxes.forEach((codeBox: HTMLInputElement, index: number) => {
     codeBox.onkeyup = (event: KeyboardEvent) => { codeBoxKeyUp(index, event) };
     codeBox.onfocus = (event: FocusEvent) => { codeBoxFocus(index, event); };
 });
+
+async function uploadForm() {
+    const errorElement = document.getElementById("error");
+    const responses = {
+        "access": (document.querySelector("[name=access]") as HTMLInputElement).value,
+        "full_name": (document.querySelector("[name=full_name]") as HTMLInputElement).value,
+        "username": (document.querySelector("[name=username]") as HTMLInputElement).value,
+        "password": (document.querySelector("[name=password]") as HTMLInputElement).value
+    }
+    _post("/api/v1/auth/create", errorElement.id, responses).then(async (response: {status: String}) => {
+        switch (response.status) {
+            case "username_taken": { errorElement.innerText = "username taken"; errorElement.style.display = "unset"; break; }
+            case "bad_access_key": { errorElement.innerText = "bad access key"; errorElement.style.display = "unset"; break; }
+            case "password_length": { errorElement.innerText = "password length bad ( 8 <= len <= 32 )"; errorElement.style.display = "unset"; break; }
+            case "success": { window.location.href = "/login"; break; }
+            default: { errorElement.innerText = "internal server error"; errorElement.style.display = "unset"; break; }
+        }
+    }).catch((error: any) => {
+        document.getElementById("error").innerText = "unknown error";
+    });
+}
+
+(document.getElementById("create_button") as HTMLButtonElement).onclick = uploadForm;
