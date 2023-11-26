@@ -33,10 +33,7 @@ function setCooky(name) {
 }
 async function uploadForm() {
     const errorElement = document.getElementById("error");
-    const responses = {
-        "username": document.querySelector("[name=username]").value,
-        "password": document.querySelector("[name=password]").value
-    };
+    const responses = { "username": document.querySelector("[name=username]").value, "password": document.querySelector("[name=password]").value };
     _post("/api/v1/auth/login", errorElement.id, responses).then(async (response) => {
         switch (response.status) {
             case "success": {
@@ -61,8 +58,6 @@ async function uploadForm() {
                 break;
             }
         }
-    }).catch((error) => {
-        document.getElementById("error").innerText = "unknown error";
-    });
+    }).catch((error) => { document.getElementById("error").innerText = "unknown error"; });
 }
 passwordLoginButton.onclick = uploadForm;

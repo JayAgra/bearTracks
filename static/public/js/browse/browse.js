@@ -1,12 +1,7 @@
 import { _get } from "../_modules/get/get.min.js";
 var numberInput = document.getElementById("number"), eventCode = document.getElementById("event"), error = document.getElementById("errorTxt"), searchBtn = document.getElementById("searchBtn");
 function eV(value) {
-    if (value == "true") {
-        return "✅";
-    }
-    else {
-        return "❌";
-    }
+    return value == "true" ? "✅" : "❌";
 }
 function callSearch() {
     search(Number(numberInput.value), eventCode.value, document.getElementById("type").value);
@@ -20,14 +15,12 @@ async function search(num, eCode, searchType = "team") {
         numberInput.style.borderColor = "var(--cancelColor)";
         return;
     }
-    var fetchEndpoint, type, htmlTable = "";
+    var fetchEndpoint, htmlTable = "";
     if (searchType === "team") {
         fetchEndpoint = `/api/v1/data/brief/team/${new Date().getFullYear()}/${eCode}/${num}`;
-        type = "team";
     }
     else {
         fetchEndpoint = `/api/v1/data/brief/match/${new Date().getFullYear()}/${eCode}/${num}`;
-        type = "match";
     }
     searchBtn.innerText = "requesting...";
     _get(fetchEndpoint, searchBtn.id).then((listRes) => {
@@ -35,45 +28,14 @@ async function search(num, eCode, searchType = "team") {
             searchBtn.innerText = "no results";
             return;
         }
-        if (type === "team") {
-            let avg = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0,
-                "lowCube": 0,
-                "lowCone": 0,
-                "midCube": 0,
-                "midCone": 0,
-                "highCube": 0,
-                "highCone": 0,
-                "low": 0,
-                "mid": 0,
-                "high": 0
-            };
-            let max = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0
-            };
-            let min = {
-                "auto_charge": Number.MAX_SAFE_INTEGER,
-                "teleop_charge": Number.MAX_SAFE_INTEGER,
-                "grid": Number.MAX_SAFE_INTEGER,
-                "cycle": Number.MAX_SAFE_INTEGER,
-                "perf_score": Number.MAX_SAFE_INTEGER
-            };
-            function setIfHigher(property, value) {
-                if (max[property] < value)
-                    max[property] = value;
-            }
-            function setIfLower(property, value) {
-                if (min[property] > value)
-                    min[property] = value;
-            }
+        if (searchType === "team") {
+            let avg = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0, "lowCube": 0, "lowCone": 0, "midCube": 0, "midCone": 0, "highCube": 0, "highCone": 0, "low": 0, "mid": 0, "high": 0 };
+            let max = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0 };
+            let min = { "auto_charge": Number.MAX_SAFE_INTEGER, "teleop_charge": Number.MAX_SAFE_INTEGER, "grid": Number.MAX_SAFE_INTEGER, "cycle": Number.MAX_SAFE_INTEGER, "perf_score": Number.MAX_SAFE_INTEGER };
+            function setIfHigher(property, value) { if (max[property] < value)
+                max[property] = value; }
+            function setIfLower(property, value) { if (min[property] > value)
+                min[property] = value; }
             for (var i = 0; i < listRes.length; i++) {
                 let game_data = listRes[i].Brief.game.split(",");
                 htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].Brief.id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].Brief.match_num}</a><br><span>${listRes[i].Brief.name} (${listRes[i].Brief.from_team})</span></td>` + // match link
@@ -132,13 +94,7 @@ async function search(num, eCode, searchType = "team") {
                 `<td>${avg.perf_score.toFixed(2)} (${min.perf_score.toFixed(2)} - ${max.perf_score.toFixed(2)})</td></tr>`; // standard mps
         }
         else {
-            let avg = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0
-            };
+            let avg = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0 };
             for (var i = 0; i < listRes.length; i++) {
                 let game_data = listRes[i].Brief.game.split(",");
                 htmlTable += ` <tr><td><strong>Team ${listRes[i].Brief.team}</strong><br><a href="/detail?id=${listRes[i].Brief.id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].Brief.match_num}</a><br><span>${listRes[i].Brief.name} (${listRes[i].Brief.team})</span></td><td>${eV(game_data[1])}${eV(game_data[2])}${eV(game_data[3])}</td><td>${game_data[4]}</td><td>${eV(game_data[5])}${eV(game_data[6])}${eV(game_data[7])}</td><td>${game_data[9]}</td><td>${game_data[24]}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${game_data[10]}</td><td>${Number(listRes[i].Brief.weight.split(",")[0]).toFixed(2)}</td></tr>`;
@@ -167,13 +123,7 @@ async function searchOnLoad() {
                 searchBtn.innerText = "no results";
                 return;
             }
-            var avg = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0
-            };
+            var avg = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0 };
             var htmlTable = "";
             for (var i = 0; i < listRes.length; i++) {
                 let game_data = listRes[i].game.split(",");
@@ -207,9 +157,7 @@ document.getElementById("number").addEventListener("keyup", (e) => {
     }
 });
 window.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        if (document.getElementById("results").style.display === "none") {
-            callSearch();
-        }
+    if (e.key === "Enter" && document.getElementById("results").style.display === "none") {
+        callSearch();
     }
 });

@@ -1,9 +1,3 @@
-type eventWt = {
-    "match_num": number,
-    "game": string,
-    "weight": string
-}
-
 type match = {
     "match_num": number,
     "autoCharge": number,
@@ -23,75 +17,23 @@ type match = {
     "grid": number,
     "weight": number
 }
-
-type chartJsDataset = {
-    "label": string,
-    "data": Array<number>,
-    "fill": boolean,
-    "borderColor": string,
-    "tension": number
-}
-
-type chartJsData = {
-    "labels": Array<string>,
-    "datasets": Array<chartJsDataset>
-}
-
-type chartJsOptions = {
-    "indexAxis": string,
-    "responsive": boolean,
-    "scales": {"y": {"min": number, "max": number}},
-    "plugins": {"title": {"display": boolean, "text": string}}
-}
-
-type chartJsChart = {
-    "type": string,
-    "data": chartJsData,
-    "options": chartJsOptions
-}
-
-declare class Chart {
-    constructor(a: any, b: any);
-}
+type eventWt = { "match_num": number, "game": string, "weight": string }
+type chartJsDataset = { "label": string, "data": Array<number>, "fill": boolean, "borderColor": string, "tension": number }
+type chartJsData = { "labels": Array<string>, "datasets": Array<chartJsDataset> }
+type chartJsOptions = { "indexAxis": string, "responsive": boolean, "scales": {"y": {"min": number, "max": number}}, "plugins": {"title": {"display": boolean, "text": string}}}
+type chartJsChart = { "type": string, "data": chartJsData, "options": chartJsOptions }
+declare class Chart { constructor(a: any, b: any); }
 
 function createChartDataset(label: string, backgroundColor: string, data: Array<number>): chartJsDataset {
-    return {
-        "label": label,
-        "data": data,
-        "fill": true,
-        "borderColor": backgroundColor,
-        "tension": 0.1
-    }
+    return { "label": label, "data": data, "fill": true, "borderColor": backgroundColor, "tension": 0.1 }
 }
 
 function createChartData(labels: Array<string>, datasets: Array<chartJsDataset>): chartJsData {
-    return {
-        "labels": labels,
-        "datasets": datasets
-    }
+    return { "labels": labels, "datasets": datasets }
 }
 
 function createChartConfig(type: string, data: chartJsData, name: string, max: number): chartJsChart {
-    return {
-        "type": type,
-        "data": data,
-        "options": {
-            "indexAxis": "x",
-            "responsive": true,
-            "scales": {
-                "y": {
-                    "min": 0,
-                    "max": max
-                }
-            },
-            "plugins": {
-                "title": {
-                    "display": true,
-                    "text": name
-                }
-            }
-        }
-    };
+    return { "type": type, "data": data, "options": { "indexAxis": "x", "responsive": true, "scales": { "y": { "min": 0, "max": max } }, "plugins": {"title": { "display": true, "text": name } } } };
 }
 
 function setNoResults(): void {
@@ -111,17 +53,8 @@ async function constructGraphs(): Promise<void> {
             credentials: "include",
             redirect: "follow",
         });
-
-        if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
-        }
-
-        if (response.status === 204 || !response.ok) {
-            setNoResults();
-        }
-
+        if (response.status === 204 || !response.ok) setNoResults();
         teamGraph = await response.json();
-
         teamGraph.forEach((matchData) => {
             if (completeMatches.includes(matchData.match_num)) {} else {
                 completeMatches.push(matchData.match_num);

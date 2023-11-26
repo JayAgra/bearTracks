@@ -3,11 +3,7 @@ import { _get } from "../_modules/get/get.min.js";
 import { _patch } from "../_modules/patch/patch.min.js";
 import { _post } from "../_modules/post/post.min.js";
 
-type teamsData = {
-    "id": number;
-    "team": number;
-    "key": string;
-};
+type teamsData = { "id": number; "team": number; "key": string; };
 
 async function getTeamData() {
     _get("/api/v1/manage/all_access_keys", null).then((response: Array<teamsData>) => {
@@ -23,11 +19,7 @@ async function getTeamData() {
 async function updateKey(id: string, eleId: string, button: any) {
     button.innerText = "..."
     _patch(`/api/v1/manage/access_key/update/${id}/${(document.getElementById(eleId) as HTMLInputElement).value}`, button.id).then((response) => {
-        if (response.status === 0xc87) {
-            button.innerText = "done";
-        } else {
-            button.innerText = "error";
-        }
+        if (response.status === 0xc87) { button.innerText = "done"; } else { button.innerText = "error"; }
     }).catch((err: any) => console.log(err));
 }
 (window as any).updateKey = updateKey;
@@ -35,11 +27,7 @@ async function updateKey(id: string, eleId: string, button: any) {
 async function revokeTeamKey(id: string, button: any) {
     button.innerText = "..."
     _delete(`/api/v1/manage/access_key/delete/${id}`, button.id).then((response) => {
-        if (response.status === 0xc87) {
-            button.innerText = "done";
-        } else {
-            button.innerText = "error";
-        }
+        if (response.status === 0xc87) { button.innerText = "done"; } else { button.innerText = "error"; }
     }).catch((err: any) => console.log(err));
 }
 (window as any).revokeTeamKey = revokeTeamKey;

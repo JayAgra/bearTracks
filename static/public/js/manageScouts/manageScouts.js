@@ -20,8 +20,7 @@ async function getScoutsDataMgmt() {
 }
 async function updateUser(targetuserId, origScore, button) {
     button.innerText = "...";
-    const modifyAmt = Number(document.getElementById(`${targetuserId}_input`).value) - Number(origScore);
-    _patch(`/api/v1/manage/user/update_points/${targetuserId}/${modifyAmt}`, button.id).then((response) => {
+    _patch(`/api/v1/manage/user/update_points/${targetuserId}/${Number(document.getElementById(`${targetuserId}_input`).value) - Number(origScore)}`, button.id).then((response) => {
         if (response.status === 0xc86) {
             button.innerText = "done";
         }
@@ -30,10 +29,6 @@ async function updateUser(targetuserId, origScore, button) {
         }
     }).catch((err) => console.log(err));
 }
-// valid actions:
-//   access
-//   delete
-//   revokeKey
 async function userAdminAction(targetId, action, button) {
     button.innerText = "...";
     _delete(`/api/v1/manage/user/delete/${targetId}`, button.id).then((response) => {

@@ -1,12 +1,7 @@
 import { _get } from "../_modules/get/get.min.js";
 const errElement = document.getElementById("errorTxt");
 function emojiValue(value) {
-    if (value == "true") {
-        return "✅";
-    }
-    else {
-        return "❌";
-    }
+    return value == "true" ? "✅" : "❌";
 }
 function toIcons(str) {
     let step1 = str.replaceAll("0", "⬜");

@@ -1,7 +1,6 @@
 import { _post } from "../_modules/post/post.min.js"
 
 var isPkBtn = false;
-
 const nextBtn = document.getElementById("next") as HTMLButtonElement,
     infoInput = document.getElementById("inputInfo") as HTMLInputElement,
     currentUsernameInd = document.getElementById("currentUsername") as HTMLDivElement,
@@ -43,10 +42,7 @@ function setCooky(name: string) {
 
 async function uploadForm() {
     const errorElement = document.getElementById("error");
-    const responses = {
-        "username": (document.querySelector("[name=username]") as HTMLInputElement).value,
-        "password": (document.querySelector("[name=password]") as HTMLInputElement).value
-    }
+    const responses = { "username": (document.querySelector("[name=username]") as HTMLInputElement).value, "password": (document.querySelector("[name=password]") as HTMLInputElement).value }
     _post("/api/v1/auth/login", errorElement.id, responses).then(async (response: {status: String}) => {
         switch (response.status) {
             case "success": { window.location.href = "/"; break; }
@@ -54,9 +50,7 @@ async function uploadForm() {
             case "success_ctl": { setCooky("childTeamLead"); window.location.href = "/"; break; }
             case "bad": { errorElement.innerText = "bad credentials"; errorElement.style.display = "flex"; await new Promise((res) => setTimeout(res, 1000)); window.location.reload(); break; }
         }
-    }).catch((error: any) => {
-        document.getElementById("error").innerText = "unknown error";
-    });
+    }).catch((error: any) => { document.getElementById("error").innerText = "unknown error"; });
 }
 
 passwordLoginButton.onclick = uploadForm;

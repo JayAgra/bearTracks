@@ -1,39 +1,11 @@
 function createChartDataset(label, backgroundColor, data) {
-    return {
-        "label": label,
-        "data": data,
-        "fill": true,
-        "borderColor": backgroundColor,
-        "tension": 0.1
-    };
+    return { "label": label, "data": data, "fill": true, "borderColor": backgroundColor, "tension": 0.1 };
 }
 function createChartData(labels, datasets) {
-    return {
-        "labels": labels,
-        "datasets": datasets
-    };
+    return { "labels": labels, "datasets": datasets };
 }
 function createChartConfig(type, data, name, max) {
-    return {
-        "type": type,
-        "data": data,
-        "options": {
-            "indexAxis": "x",
-            "responsive": true,
-            "scales": {
-                "y": {
-                    "min": 0,
-                    "max": max
-                }
-            },
-            "plugins": {
-                "title": {
-                    "display": true,
-                    "text": name
-                }
-            }
-        }
-    };
+    return { "type": type, "data": data, "options": { "indexAxis": "x", "responsive": true, "scales": { "y": { "min": 0, "max": max } }, "plugins": { "title": { "display": true, "text": name } } } };
 }
 function setNoResults() {
     document.getElementById("error").innerHTML = "&emsp;no results";
@@ -47,12 +19,8 @@ async function constructGraphs() {
             credentials: "include",
             redirect: "follow",
         });
-        if (response.status === 401 || response.status === 403) {
-            window.location.href = "/login";
-        }
-        if (response.status === 204 || !response.ok) {
+        if (response.status === 204 || !response.ok)
             setNoResults();
-        }
         teamGraph = await response.json();
         teamGraph.forEach((matchData) => {
             if (completeMatches.includes(matchData.match_num)) { }

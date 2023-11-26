@@ -2,24 +2,9 @@ import { _get } from "../_modules/get/get.min.js"
 import { _post } from "../_modules/post/post.min.js"
 
 //data validation
-type frcApiTeam = {
-    "station": string,
-    "surrogate": boolean,
-    "teamNumber": number
-}
-
-type frcApiMatch = {
-    "description": string,
-    "field": string,
-    "matchNumber": number,
-    "startTime": string,
-    "teams": Array<frcApiTeam>,
-    "tournamentLevel": string
-}
-
-type frcApiMatches = {
-    "Schedule": Array<frcApiMatch>
-}
+type frcApiTeam = { "station": string, "surrogate": boolean, "teamNumber": number }
+type frcApiMatch = { "description": string, "field": string, "matchNumber": number, "startTime": string, "teams": Array<frcApiTeam>, "tournamentLevel": string }
+type frcApiMatches = { "Schedule": Array<frcApiMatch> }
 
 var eventMatches: frcApiMatches;
 var matchesOk: boolean = false;
@@ -31,12 +16,7 @@ function setBadEvent() {
 }
 
 function toLogin(response: Response): void {
-    if (response.status === 401 || response.status === 403) {
-        window.location.href = "/login";
-        return;
-    } else {
-        return;
-    }
+    if (response.status === 401 || response.status === 403) window.location.href = "/login";
 }
 
 async function loadMatches(): Promise<string | void> {
@@ -50,8 +30,7 @@ async function loadMatches(): Promise<string | void> {
         toLogin(response);
 
         if (response.status === 204 || !response.ok) {
-            setBadEvent();
-            return;
+            return setBadEvent();
         }
 
         eventMatches = await response.json();
@@ -106,9 +85,7 @@ function matchNumberChange(event: any) {
     }
 }
 
-document.getElementById("matchNumberInput").addEventListener("input", (event: any): void => {
-    matchNumberChange(event);
-});
+document.getElementById("matchNumberInput").addEventListener("input", (event: any): void => { matchNumberChange(event); });
 
 function validateLengthFn() {
     let currentVal: string = (document.getElementById("validateLength") as HTMLInputElement).value;
@@ -120,9 +97,7 @@ function validateLengthFn() {
     }
 }
 
-document.getElementById("validateLength").addEventListener("input", (): void => {
-    validateLengthFn();
-});
+document.getElementById("validateLength").addEventListener("input", (): void => { validateLengthFn(); });
 
 function requiredFormFields(event: any) {
     if (String((event.target as HTMLInputElement).value).length > 0) {
@@ -131,9 +106,7 @@ function requiredFormFields(event: any) {
 }
 
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
-    element.addEventListener("input", (event: any): void => {
-        requiredFormFields(event);
-    })
+    element.addEventListener("input", (event: any): void => { requiredFormFields(event); })
 })
 //end data validation
 
@@ -144,7 +117,6 @@ function landscapeReminder() {
         document.getElementById("landscapeReminder").style.display = "none";
     }
 }
-
 window.addEventListener("resize", landscapeReminder);
 
 function checkFormState(): boolean {
@@ -167,7 +139,6 @@ function checkFormState(): boolean {
 }
 (window as any).checkFormState = checkFormState;
 setInterval(checkFormState, 2000);
-
 
 //grid script
 function getAllCells(): Array<HTMLElement> {
@@ -220,7 +191,6 @@ function setDoubleCube(that: HTMLElement): void {
 function setDoubleCone(that: HTMLElement): void {
     setThat(that, "#ff0", "2", "5", 4, "#a216a2");
 }
-
 
 for (var i = 0; i < allCells.length; i += 1) {
     allCells[i].addEventListener("click", function(): void {
@@ -320,10 +290,8 @@ async function uploadForm() {
         "overall": (document.getElementsByName("overall")[0] as HTMLInputElement).value,
     }
 
-    type response = {
-        "id": number;
-    }
-    
+    type response = { "id": number; }
+
     (document.getElementById("mainFormHTML") as HTMLFormElement).style.display = "none";
     (document.getElementById("submitUi") as HTMLDivElement).style.display = "unset";
     (document.getElementById("reSubmitButton") as HTMLButtonElement).style.display = "none";

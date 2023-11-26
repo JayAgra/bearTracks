@@ -1,9 +1,7 @@
 import { _get } from "../_modules/get/get.min.js"
 import { _delete } from "../_modules/delete/delete.min.js";
 
-function newSearch() {
-    location.reload();
-}
+function newSearch() { location.reload(); }
 
 async function getSubmissionData() {
     document.getElementById("viewData").innerHTML = "requesting...";
@@ -23,10 +21,8 @@ async function deleteSubmission(submission: string, linkID: string) {
     _delete(`/api/v1/manage/delete/${submission}`, linkID).then((response: { "status": number }) => {
         if (response.status === 0xc83) {
             document.getElementById(linkID).innerHTML = "deleted!";
-        } else if (response.status === 0x1f42) {
-            document.getElementById(linkID).innerHTML = "server error";
-        } else if (response.status === 0x1930) {
-            document.getElementById(linkID).innerHTML = "forbidden";
+        } else {
+            document.getElementById(linkID).innerHTML = "error";
         }
     }).catch((err) => console.log(err));
 }

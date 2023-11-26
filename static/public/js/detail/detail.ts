@@ -3,11 +3,7 @@ import { _get } from "../_modules/get/get.min.js"
 const errElement: HTMLElement = document.getElementById("errorTxt") as HTMLElement;
 
 function emojiValue(value: string): string {
-    if (value == "true") {
-        return "✅";
-    } else {
-        return "❌";
-    }
+    return value == "true" ? "✅" : "❌"; 
 }
 
 function toIcons(str: string): string {

@@ -8,13 +8,8 @@ function setBadEvent() {
     matchesOk = false;
 }
 function toLogin(response) {
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401 || response.status === 403)
         window.location.href = "/login";
-        return;
-    }
-    else {
-        return;
-    }
 }
 async function loadMatches() {
     try {
@@ -25,8 +20,7 @@ async function loadMatches() {
         });
         toLogin(response);
         if (response.status === 204 || !response.ok) {
-            setBadEvent();
-            return;
+            return setBadEvent();
         }
         eventMatches = await response.json();
         matchesOk = true;
@@ -77,9 +71,7 @@ function matchNumberChange(event) {
         document.getElementById("submitButton").setAttribute("disabled", "disabled");
     }
 }
-document.getElementById("matchNumberInput").addEventListener("input", (event) => {
-    matchNumberChange(event);
-});
+document.getElementById("matchNumberInput").addEventListener("input", (event) => { matchNumberChange(event); });
 function validateLengthFn() {
     let currentVal = document.getElementById("validateLength").value;
     if (Number(currentVal) <= 120 && Number(currentVal) >= 0) {
@@ -90,18 +82,14 @@ function validateLengthFn() {
         document.getElementById("tooLong").style.display = "inherit";
     }
 }
-document.getElementById("validateLength").addEventListener("input", () => {
-    validateLengthFn();
-});
+document.getElementById("validateLength").addEventListener("input", () => { validateLengthFn(); });
 function requiredFormFields(event) {
     if (String(event.target.value).length > 0) {
         document.getElementById("submitButton").removeAttribute("disabled");
     }
 }
 Array.from(document.querySelectorAll("[required]")).forEach((element) => {
-    element.addEventListener("input", (event) => {
-        requiredFormFields(event);
-    });
+    element.addEventListener("input", (event) => { requiredFormFields(event); });
 });
 //end data validation
 function landscapeReminder() {

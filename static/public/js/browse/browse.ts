@@ -6,11 +6,7 @@ var numberInput = document.getElementById("number") as HTMLInputElement,
     searchBtn = document.getElementById("searchBtn") as HTMLButtonElement;
 
 function eV(value: string): string {
-    if (value == "true") {
-        return "✅";
-    } else {
-        return "❌";
-    }
+    return value == "true" ? "✅" : "❌";
 }
 
 function callSearch(): void {
@@ -18,18 +14,7 @@ function callSearch(): void {
 }
 (window as any).callSearch = callSearch;
 
-type mainFormResponse = {
-	"id": string,
-	"event": string,
-	"season": number,
-	"team": number,
-	"match_num": number,
-	"game": string,
-	"user_id": string,
-	"name": string,
-    "from_team": number,
-	"weight": string,
-}
+type mainFormResponse = { "id": string, "event": string, "season": number, "team": number, "match_num": number, "game": string, "user_id": string, "name": string, "from_team": number, "weight": string, }
 
 function generateSmallAvgRow(avg: any): string {
     return `<tr><td>avg</td><td></td><td>${Math.round(avg.auto_charge)}</td><td></td><td>${Math.round(avg.teleop_charge)}</td><td>${Math.round(avg.grid)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${Math.round(avg.cycle)}</td><td>${avg.perf_score.toFixed(2)}</td></tr>`;
@@ -37,64 +22,26 @@ function generateSmallAvgRow(avg: any): string {
 
 async function search(num: number, eCode: string, searchType: string = "team"): Promise<void> {
     if (num < 0 || isNaN(num)) {
-        numberInput.style.borderColor = "var(--cancelColor)";
-        return;
+        numberInput.style.borderColor = "var(--cancelColor)"; return;
     }
-    var fetchEndpoint: string,
-        type: string,
-        htmlTable: string = "";
+    var fetchEndpoint: string, htmlTable: string = "";
     if (searchType === "team") {
         fetchEndpoint = `/api/v1/data/brief/team/${new Date().getFullYear()}/${eCode}/${num}`;
-        type = "team";
     } else {
         fetchEndpoint = `/api/v1/data/brief/match/${new Date().getFullYear()}/${eCode}/${num}`;
-        type = "match";
     }
 
     searchBtn.innerText = "requesting...";
     _get(fetchEndpoint, searchBtn.id).then((listRes: Array<{"Brief": mainFormResponse}>) => {
         if (listRes.length === 0) {
-            searchBtn.innerText = "no results";
-            return;
+            searchBtn.innerText = "no results"; return;
         }
-        if (type === "team") {
-            let avg: {[index: string]:any} = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0,
-                "lowCube": 0,
-                "lowCone": 0,
-                "midCube": 0,
-                "midCone": 0,
-                "highCube": 0,
-                "highCone": 0,
-                "low": 0,
-                "mid": 0,
-                "high": 0
-            };
-            let max: {[index: string]:any} = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0
-            };
-            let min: {[index: string]:any} = {
-                "auto_charge": Number.MAX_SAFE_INTEGER,
-                "teleop_charge": Number.MAX_SAFE_INTEGER,
-                "grid": Number.MAX_SAFE_INTEGER,
-                "cycle": Number.MAX_SAFE_INTEGER,
-                "perf_score": Number.MAX_SAFE_INTEGER
-            };
-            function setIfHigher(property: any, value: number): void {
-                if (max[property] < value) max[property] = value;
-            }
-            
-            function setIfLower(property: any, value: number): void {
-                if (min[property] > value) min[property] = value;
-            }
+        if (searchType === "team") {
+            let avg: {[index: string]:any} = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0, "lowCube": 0, "lowCone": 0, "midCube": 0, "midCone": 0, "highCube": 0, "highCone": 0, "low": 0, "mid": 0, "high": 0 };
+            let max: {[index: string]:any} = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0 };
+            let min: {[index: string]:any} = { "auto_charge": Number.MAX_SAFE_INTEGER, "teleop_charge": Number.MAX_SAFE_INTEGER, "grid": Number.MAX_SAFE_INTEGER, "cycle": Number.MAX_SAFE_INTEGER, "perf_score": Number.MAX_SAFE_INTEGER };
+            function setIfHigher(property: any, value: number): void { if (max[property] < value) max[property] = value; }
+            function setIfLower(property: any, value: number): void { if (min[property] > value) min[property] = value; }
             for (var i = 0; i < listRes.length; i++) {
                 let game_data = listRes[i].Brief.game.split(",");
                 htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].Brief.id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].Brief.match_num}</a><br><span>${listRes[i].Brief.name} (${listRes[i].Brief.from_team})</span></td>` + // match link
@@ -158,13 +105,7 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
                     `<td>${avg.perf_score.toFixed(2)} (${min.perf_score.toFixed(2)} - ${max.perf_score.toFixed(2)})</td></tr>`; // standard mps
             
         } else {
-            let avg: {[index: string]:any} = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0
-            };
+            let avg: {[index: string]:any} = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0 };
 
             for (var i = 0; i < listRes.length; i++) {
                 let game_data = listRes[i].Brief.game.split(",");
@@ -175,11 +116,7 @@ async function search(num: number, eCode: string, searchType: string = "team"): 
                 avg.cycle += Number(game_data[10]);
                 avg.perf_score += Number(listRes[i].Brief.weight.split(",")[0]);
             }
-
-            for (let key in avg) {
-                avg[key] /= listRes.length;
-            }
-
+            for (let key in avg) { avg[key] /= listRes.length; }
             htmlTable += generateSmallAvgRow(avg);
         }
         (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
@@ -194,16 +131,9 @@ async function searchOnLoad() {
     if (userId) {
         _get(`/api/v1/data/user/${new Date().getFullYear()}/${userId}`, error.id).then((listRes) => {
             if (listRes.length === 0) {
-                searchBtn.innerText = "no results";
-                return;
+                searchBtn.innerText = "no results"; return;
             }
-            var avg: {[index: string]:any} = {
-                "auto_charge": 0,
-                "teleop_charge": 0,
-                "grid": 0,
-                "cycle": 0,
-                "perf_score": 0
-            };
+            var avg: {[index: string]:any} = { "auto_charge": 0, "teleop_charge": 0, "grid": 0, "cycle": 0, "perf_score": 0 };
 
             var htmlTable = "";
             for (var i = 0; i < listRes.length; i++) {
@@ -216,9 +146,7 @@ async function searchOnLoad() {
                 avg.perf_score += Number(listRes[i].weight.split(",")[0]);
             }
 
-            for (let key in avg) {
-                avg[key] /= listRes.length;
-            }
+            for (let key in avg) { avg[key] /= listRes.length; }
 
             htmlTable += generateSmallAvgRow(avg);
             (document.getElementById("subheadings") as HTMLElement).insertAdjacentHTML("afterend", htmlTable);
@@ -242,9 +170,5 @@ async function searchOnLoad() {
 })
 
 window.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        if ((document.getElementById("results") as HTMLElement).style.display === "none") {
-            callSearch();
-        }
-    }
+    if (e.key === "Enter" && (document.getElementById("results") as HTMLElement).style.display === "none") { callSearch(); }
 })

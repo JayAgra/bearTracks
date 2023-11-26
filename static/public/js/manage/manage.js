@@ -1,8 +1,6 @@
 import { _get } from "../_modules/get/get.min.js";
 import { _delete } from "../_modules/delete/delete.min.js";
-function newSearch() {
-    location.reload();
-}
+function newSearch() { location.reload(); }
 async function getSubmissionData() {
     document.getElementById("viewData").innerHTML = "requesting...";
     _get("/api/v1/manage/submission_ids/false", "viewData").then((response) => {
@@ -21,11 +19,8 @@ async function deleteSubmission(submission, linkID) {
         if (response.status === 0xc83) {
             document.getElementById(linkID).innerHTML = "deleted!";
         }
-        else if (response.status === 0x1f42) {
-            document.getElementById(linkID).innerHTML = "server error";
-        }
-        else if (response.status === 0x1930) {
-            document.getElementById(linkID).innerHTML = "forbidden";
+        else {
+            document.getElementById(linkID).innerHTML = "error";
         }
     }).catch((err) => console.log(err));
 }
