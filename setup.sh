@@ -14,6 +14,7 @@ chmod +x update.sh                                                      # make i
 mkdir ssl                                                               # create ssl directory for certificates
 cd bearTracks                                                           # ~/bearTracks/bearTracks (git repo)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh          # install rust
+source "$HOME/.cargo/env"                                               # source (needed if rust is newly installed)
 cargo build -r                                                          # build release
 cp target/release/bear_tracks ../bear_tracks                            # copy built object from target to bearTracks
 echo "###"                                                              #
