@@ -13,10 +13,11 @@ document.head.insertAdjacentHTML("afterbegin", styleSheet);
 var blackjackSocket: WebSocket;
 
 function startBlackjack() {
-    blackjackSocket = new WebSocket("wss://beartracks.io/api/casino/blackjack/blackjackSocket");
+    blackjackSocket = new WebSocket("wss://localhost/api/v1/casino/blackjack");
 
     blackjackSocket.addEventListener("open", () => {
         console.info("blackjack socket opened");
+        setupBoard();
     });
 
     blackjackSocket.addEventListener("close", () => {
@@ -25,15 +26,7 @@ function startBlackjack() {
 
     blackjackSocket.onmessage = async (event) => {
         const data = JSON.parse(event.data);
-        if (data.status) {
-            if (data.status === 0x90) {
-                console.info("balance too low");
-                alert("balance too low to gamble");
-            } else if (data.status === 0x91) {
-                console.info("balance ok");
-                setupBoard();
-            }
-        } else if (data.card) {
+        if (data.card) {
             console.info("new card");
             var deckType: HTMLInputElement | null = document.getElementById("deck") as HTMLInputElement;
             drawCard(`${deckType.value == null ? "static/assets/stdcards/" : deckType.value}card-${data.card.suit}_${data.card.value}.png`, data.target);

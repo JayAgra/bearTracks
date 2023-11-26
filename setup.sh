@@ -9,6 +9,8 @@ cp bearTracks/data.db data.db                                           # # #
 cp bearTracks/data_auth.db data_auth.db                                 # copy necessary files from git repo
 cp bearTracks/data_transact.db data_transact.db                         # to this root folder
 cp bearTracks/.example.env .env                                         # # #
+cp bearTracks/update.sh update.sh                                       # copy update script
+chmod +x update.sh                                                      # make it executatble
 mkdir ssl                                                               # create ssl directory for certificates
 cd bearTracks                                                           # ~/bearTracks/bearTracks (git repo)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh          # install rust

@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 function goToHome() {
     window.location.href = "/points";
 }
@@ -16,26 +7,17 @@ document.head.insertAdjacentHTML("afterbegin", styleSheet);
 window.disableInputs = false;
 var blackjackSocket;
 function startBlackjack() {
-    blackjackSocket = new WebSocket("wss://beartracks.io/api/casino/blackjack/blackjackSocket");
+    blackjackSocket = new WebSocket("wss://localhost/api/v1/casino/blackjack");
     blackjackSocket.addEventListener("open", () => {
         console.info("blackjack socket opened");
+        setupBoard();
     });
     blackjackSocket.addEventListener("close", () => {
         console.info("blackjack socket closed");
     });
-    blackjackSocket.onmessage = (event) => __awaiter(this, void 0, void 0, function* () {
+    blackjackSocket.onmessage = async (event) => {
         const data = JSON.parse(event.data);
-        if (data.status) {
-            if (data.status === 0x90) {
-                console.info("balance too low");
-                alert("balance too low to gamble");
-            }
-            else if (data.status === 0x91) {
-                console.info("balance ok");
-                setupBoard();
-            }
-        }
-        else if (data.card) {
+        if (data.card) {
             console.info("new card");
             var deckType = document.getElementById("deck");
             drawCard(`${deckType.value == null ? "static/assets/stdcards/" : deckType.value}card-${data.card.suit}_${data.card.value}.png`, data.target);
@@ -46,27 +28,27 @@ function startBlackjack() {
             switch (data.result) {
                 case "WN":
                     playSound("win");
-                    yield waitMs(2000);
+                    await waitMs(2000);
                     alert("you win");
                     break;
                 case "LS":
                     playSound("loss");
-                    yield waitMs(2000);
+                    await waitMs(2000);
                     alert("you lose");
                     break;
                 case "LB":
                     playSound("loss");
-                    yield waitMs(2000);
+                    await waitMs(2000);
                     alert("you lose (bust)");
                     break;
                 case "WD":
                     playSound("win");
-                    yield waitMs(2000);
+                    await waitMs(2000);
                     alert("you win (dealer bust)");
                     break;
                 case "DR":
                     playSound("tie");
-                    yield waitMs(2000);
+                    await waitMs(2000);
                     alert("tie");
                     break;
                 default:
@@ -74,7 +56,7 @@ function startBlackjack() {
                     break;
             }
         }
-    });
+    };
 }
 document.getElementsByClassName("hit")[0].onclick = () => {
     if (!window.disableInputs) {

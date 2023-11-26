@@ -10,11 +10,13 @@ license = "MIT"
 build = "build.rs"
 
 [dependencies]
+actix = "0.13.1"
 actix-governor = "0.5.0"
 actix-http = "3.4"
 actix-identity = "0.4.0"
 actix-session = { version = "~0.7", features = ["cookie-session"] }
 actix-web = { version = "4.4", features = ["openssl"] }
+actix-web-actors = "4.2.0"
 actix-web-static-files = "4.0.1"
 argon2 = "0.5.2"
 dotenv = "0.15.0"

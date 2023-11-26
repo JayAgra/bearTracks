@@ -362,6 +362,7 @@ async fn main() -> io::Result<()> {
             /* casino endpoints */
                 // GET
                 .service(web::resource("/api/v1/casino/spin_thing").route(web::get().to(casino_wheel)))
+                .service(web::resource("/api/v1/casino/blackjack").route(web::get().to(casino::websocket_route)))
             /* points endpoints */
                 // GET
                 .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))
