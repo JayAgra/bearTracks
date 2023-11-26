@@ -245,6 +245,7 @@ async fn main() -> io::Result<()> {
     if cfg!(debug_assertions) {
         env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     } else {
+        env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
         log::info!("starting in release mode");
     }
 
