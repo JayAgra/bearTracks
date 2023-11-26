@@ -5,6 +5,7 @@ use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_web::{error, middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
 use actix_web_static_files::ResourceFiles;
+use dotenv::dotenv;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Serialize, Deserialize};
@@ -219,6 +220,8 @@ include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
+    dotenv().ok();
+
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     let sessions = web::Data::new(RwLock::new(Sessions {
