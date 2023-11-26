@@ -1,3 +1,6 @@
+sudo apt-get update                                                     #
+sudo apt-get install libssl-dev                                         # linux build requirements
+sudo apt-get install pkg-config                                         #
 mkdir bearTracks && cd bearTracks                                       # ~/bearTracks
 git clone "https://github.com/JayAgra/bearTracks.git"                   # clone git repo
 cd bearTracks                                                           # ~/bearTracks/bearTracks (git repo)
