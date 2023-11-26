@@ -242,7 +242,11 @@ include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 async fn main() -> io::Result<()> {
     dotenv().ok();
 
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    if cfg!(debug_assertions) {
+        env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    } else {
+        log::info!("starting in release mode");
+    }
 
     let sessions = web::Data::new(RwLock::new(Sessions {
         user_map: HashMap::new(),
