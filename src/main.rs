@@ -1,10 +1,10 @@
 use std::{env, io, collections::HashMap, pin::Pin, sync::RwLock};
-use actix_files;
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 use actix_web::{error, middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
+use actix_web_static_files::ResourceFiles;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Serialize, Deserialize};
@@ -215,6 +215,8 @@ async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(user))
 }
 
+include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+
 #[actix_web::main]
 async fn main() -> io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
@@ -260,6 +262,7 @@ async fn main() -> io::Result<()> {
     log::info!("starting bearTracks on port 443 and 80");
 
     HttpServer::new(move || {
+        let generated = generate();
         App::new()
             .app_data(web::Data::new(Databases {main: main_db_pool.clone(), auth: auth_db_pool.clone(), transact: trans_db_pool.clone() }))
             .app_data(sessions.clone())
@@ -292,10 +295,9 @@ async fn main() -> io::Result<()> {
                 .route("/settings", web::get().to(static_files::static_settings))
                 .route("/spin", web::get().to(static_files::static_spin))
                 .route("/teams", web::get().to(static_files::static_teams))
+                .route("/favicon.ico", web::get().to(static_files::static_favicon))
                 // GET folders
-                .service(actix_files::Files::new("/assets", "./static/assets"))
-                .service(actix_files::Files::new("/css", "./static/css"))
-                .service(actix_files::Files::new("/js", "./static/js"))
+                .service(ResourceFiles::new("/static", generated))
             /* auth endpoints */
                 // GET
                 .service(web::resource("/logout").route(web::get().to(auth_get_logout)))

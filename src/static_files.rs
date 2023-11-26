@@ -1,104 +1,149 @@
-use std::env;
-use std::path::PathBuf;
-use actix_files::NamedFile;
-use actix_web::{Result, HttpRequest, HttpResponse};
+use std::{env, include_str, include_bytes};
+use actix_web::{HttpRequest, HttpResponse, http::header::ContentType};
+
+// bundle static files in binary
+const INDEX_HTML: &str = include_str!("../static/index.html");
+const BLACKJACK_HTML: &str = include_str!("../static/blackjack.html");
+const BROWSE_HTML: &str = include_str!("../static/browse.html");
+const CHARTS_HTML: &str = include_str!("../static/charts.html");
+const CREATE_HTML: &str = include_str!("../static/create.html");
+const DETAIL_HTML: &str = include_str!("../static/detail.html");
+const LOGIN_HTML: &str = include_str!("../static/login.html");
+const MAIN_HTML: &str = include_str!("../static/main.html");
+const MANAGE_HTML: &str = include_str!("../static/manage.html");
+const MANAGE_SCOUTS_HTML: &str = include_str!("../static/manageScouts.html");
+const MANAGE_TEAM_HTML: &str = include_str!("../static/manageTeam.html");
+const MANAGE_TEAMS_HTML: &str = include_str!("../static/manageTeams.html");
+const MATCHES_HTML: &str = include_str!("../static/matches.html");
+const POINT_RECORDS_HTML: &str = include_str!("../static/pointRecords.html");
+const POINTS_HTML: &str = include_str!("../static/points.html");
+const SCOUTS_HTML: &str = include_str!("../static/scouts.html");
+const SETTINGS_HTML: &str = include_str!("../static/settings.html");
+const SPIN_HTML: &str = include_str!("../static/spin.html");
+const TEAMS_HTML: &str = include_str!("../static/teams.html");
+const FAVICON_ICO: &[u8] = include_bytes!("../static/favicon.ico");
 
 pub async fn static_index(req: HttpRequest) -> HttpResponse {
     match req.app_config().local_addr().port() {
         443 => {
-            let path: PathBuf = "./static/index.html".parse().unwrap();
-            NamedFile::open(path).unwrap().into_response(&req)
+            HttpResponse::Ok()
+                .content_type(ContentType::html())
+                .body(INDEX_HTML)
         }
         _ => HttpResponse::PermanentRedirect().append_header(("location", format!("https://{}", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())))).finish(),
     }
 }
 
-pub async fn static_blackjack() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/blackjack.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_blackjack() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(BLACKJACK_HTML)
 }
 
-pub async fn static_browse() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/browse.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_browse() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(BROWSE_HTML)
 }
 
-pub async fn static_charts() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/charts.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_charts() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(CHARTS_HTML)
 }
 
-pub async fn static_create() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/create.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_create() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(CREATE_HTML)
 }
 
-pub async fn static_detail() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/detail.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_detail() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(DETAIL_HTML)
 }
 
-pub async fn static_login() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/login.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_login() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(LOGIN_HTML)
 }
 
-pub async fn static_main() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/main.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_main() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MAIN_HTML)
 }
 
-pub async fn static_manage() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/manage.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_manage() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MANAGE_HTML)
 }
 
-pub async fn static_manage_scouts() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/manageScouts.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_manage_scouts() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MANAGE_SCOUTS_HTML)
 }
 
-pub async fn static_manage_team() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/manageTeam.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_manage_team() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MANAGE_TEAM_HTML)
 }
 
-pub async fn static_manage_teams() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/manageTeams.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_manage_teams() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MANAGE_TEAMS_HTML)
 }
 
-pub async fn static_matches() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/matches.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_matches() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MATCHES_HTML)
 }
 
-pub async fn static_point_records() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/pointRecords.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_point_records() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(POINT_RECORDS_HTML)
 }
 
-pub async fn static_points() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/points.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_points() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(POINTS_HTML)
 }
 
-pub async fn static_scouts() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/scouts.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_scouts() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(SCOUTS_HTML)
 }
 
-pub async fn static_settings() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/settings.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_settings() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(SETTINGS_HTML)
 }
 
-pub async fn static_spin() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/spin.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_spin() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(SPIN_HTML)
 }
 
-pub async fn static_teams() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/teams.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_teams() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(TEAMS_HTML)
+}
+
+pub async fn static_favicon() -> HttpResponse {
+    HttpResponse::Ok()
+        .append_header(("Content-Type", "image/x-icon"))
+        .body(FAVICON_ICO)
 }

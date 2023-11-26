@@ -2,7 +2,6 @@ use std::sync::RwLock;
 use actix_http::StatusCode;
 use actix_web::{web, Responder, HttpResponse};
 use actix_identity::Identity;
-use actix_files::NamedFile;
 use serde::{Serialize, Deserialize};
 use argon2::{
     password_hash::{
@@ -89,7 +88,7 @@ pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessio
     }
 }
 
-pub async fn logout(session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> Result<NamedFile, std::io::Error> {
+pub async fn logout(session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> HttpResponse {
     if let Some(id) = identity.identity() {
         identity.forget();
         if let Some(user) = session.write().unwrap().user_map.remove(&id) {
