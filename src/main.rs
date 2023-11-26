@@ -118,7 +118,15 @@ async fn manage_get_submission_ids(path: web::Path<String>, db: web::Data<Databa
 
 async fn manage_get_all_users(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok().json(db_auth::execute_get_users_mgmt(&db.auth).await?))
+        Ok(HttpResponse::Ok().json(db_auth::execute_get_users_mgmt(&db.auth, db_auth::UserQueryType::All, user).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_get_all_users_in_team(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" || user.team_admin != 0 {
+        Ok(HttpResponse::Ok().json(db_auth::execute_get_users_mgmt(&db.auth, db_auth::UserQueryType::Team, user).await?))
     } else {
         Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
     }
@@ -143,6 +151,18 @@ async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User,
 async fn manage_delete_user(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok().body(db_auth::execute_manage_user(&db.auth, db_auth::UserManageAction::DeleteUser, [req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()]).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_delete_user_team_admin(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" || user.team_admin != 0 {
+        if user.admin == "true" || db_auth::get_user_id(&db.auth, req.match_info().get("user_id").unwrap().parse().unwrap()).await?.team == user.team_admin {
+            Ok(HttpResponse::Ok().body(db_auth::execute_manage_user(&db.auth, db_auth::UserManageAction::DeleteUser, [req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()]).await?))
+        } else {
+            Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+        }
     } else {
         Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
     }
@@ -324,10 +344,12 @@ async fn main() -> io::Result<()> {
                 // GET
                 .service(web::resource("/api/v1/manage/submission_ids/{args}").route(web::get().to(manage_get_submission_ids)))
                 .service(web::resource("/api/v1/manage/all_users").route(web::get().to(manage_get_all_users)))
+                .service(web::resource("/api/v1/manage/team_users").route(web::get().to(manage_get_all_users_in_team)))
                 .service(web::resource("/api/v1/manage/all_access_keys").route(web::get().to(manage_get_all_keys)))
                 // DELETE
                 .service(web::resource("/api/v1/manage/delete/{id}").route(web::delete().to(manage_delete_submission)))
                 .service(web::resource("/api/v1/manage/user/delete/{user_id}").route(web::delete().to(manage_delete_user)))
+                .service(web::resource("/api/v1/manage/user/team_admin_delete/{user_id}").route(web::delete().to(manage_delete_user_team_admin)))
                 .service(web::resource("/api/v1/manage/access_key/delete/{access_key_id}").route(web::delete().to(manage_delete_access_key)))
                 // PATCH
                 .service(web::resource("/api/v1/manage/user/update_admin/{user_id}/{admin}").route(web::patch().to(manage_patch_admin)))

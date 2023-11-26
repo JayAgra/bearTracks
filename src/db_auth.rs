@@ -98,6 +98,39 @@ pub async fn get_user_username(pool: &Pool, username: String) -> Result<User, Er
     .map_err(error::ErrorInternalServerError)
 }
 
+pub async fn get_user_id(pool: &Pool, id: String) -> Result<User, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        get_user_id_entry(conn, id)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn get_user_id_entry(conn: Connection, id: String) -> Result<User, rusqlite::Error> {
+    let mut stmt = conn.prepare("SELECT * FROM users WHERE id=?1")?;
+    stmt.query_row([id], |row| {
+        Ok(User {
+            id: row.get(0)?,
+            username: row.get(1)?,
+            current_challenge: row.get(2)?,
+            full_name: row.get(3)?,
+            team: row.get(4)?,
+            method: row.get(5)?,
+            pass_hash: row.get(6)?,
+            admin: row.get(7)?,
+            team_admin: row.get(8)?,
+            access_ok: row.get(9)?,
+            score: row.get(10)?,
+        })
+    })
+}
+
 fn get_user_username_entry(conn: Connection, username: String) -> Result<User, rusqlite::Error> {
     let mut stmt = conn.prepare("SELECT * FROM users WHERE username=?1")?;
     stmt.query_row([username], |row| {
@@ -238,9 +271,14 @@ pub struct UserPartial {
     pub score: i64
 }
 
+pub enum UserQueryType {
+    All,
+    Team
+}
+
 type UserPartialQuery = Result<Vec<UserPartial>, rusqlite::Error>;
 
-pub async fn execute_get_users_mgmt(pool: &Pool) -> Result<Vec<UserPartial>, Error> {
+pub async fn execute_get_users_mgmt(pool: &Pool, query: UserQueryType, user: User) -> Result<Vec<UserPartial>, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -248,20 +286,28 @@ pub async fn execute_get_users_mgmt(pool: &Pool) -> Result<Vec<UserPartial>, Err
         .map_err(error::ErrorInternalServerError)?;
 
     web::block(move || {
-        get_users_mgmt(conn)
+        match query {
+            UserQueryType::All => get_users_mgmt(conn, user),
+            UserQueryType::Team => get_users_team_mgmt(conn, user),
+        }
     })
     .await?
     .map_err(error::ErrorInternalServerError)
 }
 
-fn get_users_mgmt(conn: Connection) -> UserPartialQuery {
-    let stmt = conn.prepare("SELECT id, username, team, admin, team_admin, score FROM users ORDER BY id DESC;")?;
-    get_partial_user_rows(stmt)
+fn get_users_mgmt(conn: Connection, user: User) -> UserPartialQuery {
+    let stmt = conn.prepare("SELECT id, username, team, admin, team_admin, score FROM users WHERE admin!=?1 ORDER BY id DESC;")?;
+    get_partial_user_rows([user.id], stmt)
 }
 
-fn get_partial_user_rows(mut statement: Statement) -> UserPartialQuery {
+fn get_users_team_mgmt(conn: Connection, user: User) -> UserPartialQuery {
+    let stmt = conn.prepare("SELECT id, username, team, admin, team_admin, score FROM users WHERE team=?1 ORDER BY id DESC;")?;
+    get_partial_user_rows([user.team_admin], stmt)
+}
+
+fn get_partial_user_rows(params: [i64; 1], mut statement: Statement) -> UserPartialQuery {
     statement
-        .query_map([], |row| {
+        .query_map(params, |row| {
             Ok(UserPartial {
                 id: row.get(0)?,
                 username: row.get(1)?,
