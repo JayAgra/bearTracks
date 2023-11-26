@@ -52,7 +52,7 @@ async function uploadForm() {
             case "success": { window.location.href = "/"; break; }
             case "success_adm": { setCooky("lead"); window.location.href = "/"; break; }
             case "success_ctl": { setCooky("childTeamLead"); window.location.href = "/"; break; }
-            case "bad": { errorElement.innerText = "bad credentials"; errorElement.style.display = "unset"; break; }
+            case "bad": { errorElement.innerText = "bad credentials"; errorElement.style.display = "flex"; await new Promise((res) => setTimeout(res, 1000)); window.location.reload(); break; }
         }
     }).catch((error: any) => {
         document.getElementById("error").innerText = "unknown error";

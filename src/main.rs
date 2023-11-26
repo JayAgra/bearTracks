@@ -1,14 +1,17 @@
-use std::{io, collections::HashMap, pin::Pin, sync::RwLock};
-use actix_web::{error, middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
-use actix_session::{SessionMiddleware, storage::CookieSessionStore};
-use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
-use serde::{Serialize, Deserialize};
-use r2d2_sqlite::{self, SqliteConnectionManager};
-use actix_governor::{Governor, GovernorConfigBuilder};
+use std::{env, io, collections::HashMap, pin::Pin, sync::RwLock};
 use actix_files;
+use actix_governor::{Governor, GovernorConfigBuilder};
+use actix_http::StatusCode;
+use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
+use actix_session::{SessionMiddleware, storage::CookieSessionStore};
+use actix_web::{error, middleware, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use r2d2_sqlite::{self, SqliteConnectionManager};
+use serde::{Serialize, Deserialize};
 
 mod analyze;
 mod auth;
+mod casino;
 mod db_auth;
 mod db_main;
 mod db_transact;
@@ -105,11 +108,91 @@ async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, St
 }
 
 async fn manage_get_submission_ids(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::get_ids(&db.main, user).await?))
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().json(db_main::get_ids(&db.main).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_get_all_users(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().json(db_auth::execute_get_users_mgmt(&db.auth).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_get_all_keys(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().json(db_auth::get_access_key(&db.auth, "".to_string(), db_auth::AccessKeyQuery::AllKeys).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
 }
 
 async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().body(db_main::delete_by_id(&db.main, user, path).await?))
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_main::delete_by_id(&db.main, &db.transact, &db.auth, path).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_delete_user(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_auth::execute_manage_user(&db.auth, db_auth::UserManageAction::DeleteUser, [req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()]).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_delete_access_key(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_auth::delete_access_key(&db.auth, req.match_info().get("access_key_id").unwrap().parse().unwrap()).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_patch_admin(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_auth::execute_manage_user(&db.auth, db_auth::UserManageAction::ModifyAdmin, [req.match_info().get("admin").unwrap().parse().unwrap(), req.match_info().get("user_id").unwrap().parse().unwrap()]).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_patch_team_admin(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_auth::execute_manage_user(&db.auth, db_auth::UserManageAction::ModifyTeamAdmin, [req.match_info().get("admin").unwrap().parse().unwrap(), req.match_info().get("user_id").unwrap().parse().unwrap()]).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_patch_points(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_auth::execute_manage_user(&db.auth, db_auth::UserManageAction::ModifyPoints, [req.match_info().get("modify").unwrap().parse().unwrap(), req.match_info().get("user_id").unwrap().parse().unwrap()]).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_patch_access_key(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_auth::update_access_key(&db.auth, req.match_info().get("key").unwrap().parse().unwrap(), req.match_info().get("id").unwrap().parse().unwrap()).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
+}
+
+async fn manage_post_access_key(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok().body(db_auth::create_access_key(&db.auth, req.match_info().get("key").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap()).await?))
+    } else {
+        Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
+    }
 }
 
 async fn misc_get_transact_me(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
@@ -122,6 +205,10 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
 
 async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?))
+}
+
+async fn casino_wheel(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().body(casino::spin_thing(&db.auth, &db.transact, user).await?))
 }
 
 async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
@@ -162,7 +249,15 @@ async fn main() -> io::Result<()> {
         .finish()
         .unwrap();
 
-    log::info!("starting bearTracks on port 8000");
+    /*
+        generate a self-signed certificate for localhost (run from bearTracks directory):
+        openssl req -x509 -newkey rsa:4096 -nodes -keyout ./ssl/key.pem -out ./ssl/cert.pem -days 365 -subj '/CN=localhost'
+     */
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder.set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
+    builder.set_certificate_chain_file("./ssl/cert.pem").unwrap();
+
+    log::info!("starting bearTracks on port 443 and 80");
 
     HttpServer::new(move || {
         App::new()
@@ -223,9 +318,23 @@ async fn main() -> io::Result<()> {
             /* manage endpoints */
                 // GET
                 .service(web::resource("/api/v1/manage/submission_ids").route(web::get().to(manage_get_submission_ids)))
+                .service(web::resource("/api/v1/manage/all_users").route(web::get().to(manage_get_all_users)))
+                .service(web::resource("/api/v1/manage/all_access_keys").route(web::get().to(manage_get_all_keys)))
                 // DELETE
                 .service(web::resource("/api/v1/manage/delete/{id}").route(web::delete().to(manage_delete_submission)))
+                .service(web::resource("/api/v1/manage/user/delete/{user_id}").route(web::delete().to(manage_delete_user)))
+                .service(web::resource("/api/v1/manage/access_key/delete/{access_key_id}").route(web::delete().to(manage_delete_access_key)))
+                // PATCH
+                .service(web::resource("/api/v1/manage/user/update_admin/{user_id}/{admin}").route(web::patch().to(manage_patch_admin)))
+                .service(web::resource("/api/v1/manage/user/update_team_admin/{user_id}/{admin}").route(web::patch().to(manage_patch_team_admin)))
+                .service(web::resource("/api/v1/manage/user/update_points/{user_id}/{modify}").route(web::patch().to(manage_patch_points)))
+                .service(web::resource("/api/v1/manage/access_key/update/{id}/{key}").route(web::patch().to(manage_patch_access_key)))
+                // POST
+                .service(web::resource("/api/v1/manage/access_key/create/{key}/{team}").route(web::post().to(manage_post_access_key)))
             /* user endpoints */
+            /* casino endpoints */
+                // GET
+                .service(web::resource("/api/v1/casino/spin_thing").route(web::get().to(casino_wheel)))
             /* points endpoints */
                 // GET
                 .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))
@@ -237,7 +346,8 @@ async fn main() -> io::Result<()> {
                 // GET
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
     })
-    .bind(("127.0.0.1", 8000))?
+    .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
+    .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?
     .workers(2)
     .run()
     .await

@@ -12,7 +12,7 @@ async function spinWheel() {
         window.alreadySpun = true;
         document.getElementById("playBtn").style.display = "none";
         document.getElementById("backBtn").style.display = "none";
-        _get("/api/casino/spinner/spinWheel", null).then(async (spinAPI) => {
+        _get("/api/v1/casino/spin_thing", null).then(async (spinAPI) => {
             if (spinAPI.status === 0x1933) {
                 unableToGamble();
             }

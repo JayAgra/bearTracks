@@ -8,3 +8,4 @@ data_auth.db-wal
 target/*
 Cargo.lock
 .env
+ssl/*.pem

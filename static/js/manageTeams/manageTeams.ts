@@ -10,10 +10,10 @@ type teamsData = {
 };
 
 async function getTeamData() {
-    _get("/api/manage/teams/list", null).then((response: Array<teamsData>) => {
+    _get("/api/v1/manage/all_access_keys", null).then((response: Array<teamsData>) => {
         var listHTML = "";
         for (var i = 0; i < response.length; i++) {
-            listHTML += `<tr class="padded"><td>${response[i].team}</td><td><div class="inlineInput"><input type="tel" id="${response[i].id}_key_input" value="${response[i].key}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateKey('${response[i].id}', "${response[i].id}_key_input", this)">save</button><button class="uiButton cancelButton" onclick="revokeTeamKey('${response[i].id}', this)">delete</button></div></td></tr>`;
+            listHTML += `<tr class="padded"><td>${response[i].team}</td><td><div class="inlineInput"><input type="tel" id="${response[i].id}_key_input" value="${response[i].key}" style="min-width: 150px"><button class="uiButton actionButton" onclick="updateKey('${response[i].id}', '${response[i].id}_key_input', this)">save</button><button class="uiButton cancelButton" onclick="revokeTeamKey('${response[i].id}', this)">delete</button></div></td></tr>`;
         }
         document.getElementById("teamsTableHead").insertAdjacentHTML("afterend", listHTML); 
     }).catch((err: any) => console.log(err));
@@ -22,7 +22,7 @@ async function getTeamData() {
 
 async function updateKey(id: string, eleId: string, button: any) {
     button.innerText = "..."
-    _patch(`/api/manage/teams/updateKey/${id}/${(document.getElementById(eleId) as HTMLInputElement).value}`, button.id).then((response) => {
+    _patch(`/api/v1/manage/access_key/update/${id}/${(document.getElementById(eleId) as HTMLInputElement).value}`, button.id).then((response) => {
         if (response.status === 0xc87) {
             button.innerText = "done";
         } else {
@@ -34,7 +34,7 @@ async function updateKey(id: string, eleId: string, button: any) {
 
 async function revokeTeamKey(id: string, button: any) {
     button.innerText = "..."
-    _delete(`/api/manage/teams/deleteKey/${id}`, button.id).then((response) => {
+    _delete(`/api/v1/manage/access_key/delete/${id}`, button.id).then((response) => {
         if (response.status === 0xc87) {
             button.innerText = "done";
         } else {
@@ -55,7 +55,7 @@ async function createTeamKey() {
     const key = Number((document.getElementById("newTeamKey_key") as HTMLInputElement).value);
     const team = Number((document.getElementById("newTeamKey_team") as HTMLInputElement).value);
     button.innerText = "..."
-    _post(`/api/manage/teams/createKey/${key}/${team}`, button.id, {}).then(async (response: { "status": number }) => {
+    _post(`/api/v1/manage/access_key/create/${key}/${team}`, button.id, {}).then(async (response: { "status": number }) => {
         if (response.status === 0xc87) {
             button.innerText = "done!";
             await new Promise((res) => setTimeout(res, 250));

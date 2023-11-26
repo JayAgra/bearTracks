@@ -2,7 +2,7 @@ use actix_web::{error, web, Error};
 use rusqlite::{Statement, params};
 use serde::{Deserialize, Serialize};
 
-use crate::db_auth::{User, self};
+use crate::db_auth;
 use crate::db_transact;
 
 use super::analyze;
@@ -243,7 +243,7 @@ pub struct InsertReturn {
     pub id: i64
 }
 
-pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, data: web::Json<MainInsert>, user: User) -> Result<InsertReturn, actix_web::Error> {
+pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, data: web::Json<MainInsert>, user: db_auth::User) -> Result<InsertReturn, actix_web::Error> {
     let pool = pool.clone();
     let transact_pool = transact_pool.clone();
     let auth_pool = auth_pool.clone();
@@ -267,7 +267,7 @@ pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool,
     .map_err(error::ErrorInternalServerError)
 }
 
-fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: User) -> Result<InsertReturn, rusqlite::Error> {
+fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: db_auth::User) -> Result<InsertReturn, rusqlite::Error> {
     let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2023);
     let mut inserted_row = InsertReturn {
         id: 0
@@ -285,25 +285,17 @@ pub struct MainId {
     pub id: i64
 }
 
-pub async fn get_ids(pool: &Pool, user: User) -> Result<Vec<MainId>, actix_web::Error> {
-    if user.admin == "true" {
-        let pool = pool.clone();
+pub async fn get_ids(pool: &Pool) -> Result<Vec<MainId>, actix_web::Error> {
+    let pool = pool.clone();
 
-        let conn = web::block(move || pool.get())
-            .await?
-            .map_err(error::ErrorInternalServerError)?;
-        web::block(move || {
-            get_id_rows(conn)
-        })
+    let conn = web::block(move || pool.get())
         .await?
-        .map_err(error::ErrorInternalServerError)
-    } else {
-        let mut empty_res_vec = Vec::new();
-        empty_res_vec.push(MainId {
-            id: 0
-        });
-        Ok(empty_res_vec)
-    }
+        .map_err(error::ErrorInternalServerError)?;
+    web::block(move || {
+        get_id_rows(conn)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
 }
 
 fn get_id_rows(conn: Connection) -> Result<Vec<MainId>, rusqlite::Error> {
@@ -317,26 +309,47 @@ fn get_id_rows(conn: Connection) -> Result<Vec<MainId>, rusqlite::Error> {
         .and_then(Iterator::collect)
 }
 
-pub async fn delete_by_id(pool: &Pool, user: User, path: web::Path<String>) -> Result<String, actix_web::Error> {
-    if user.admin == "true" {
-        let pool = pool.clone();
+pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, path: web::Path<String>) -> Result<String, actix_web::Error> {
+    let pool = pool.clone();
+    let transact_pool = transact_pool.clone();
+    let auth_pool = auth_pool.clone();
 
-        let conn = web::block(move || pool.get())
-            .await?
-            .map_err(error::ErrorInternalServerError)?;
-
-        web::block(move || {
-            let target_id = path.into_inner();
-            let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1")?;
-            if stmt.execute(params![target_id.parse::<i64>().unwrap()]).is_ok() {
-                Ok("{\"status\":3203}".to_string())
-            } else {
-                Ok("{\"status\":8002}".to_string())
-            }
-        })
+    let conn = web::block(move || pool.get())
         .await?
-        .map_err(error::ErrorInternalServerError::<rusqlite::Error>)
-    } else {
-        Ok("{\"status\":6448}".to_string())
-    }
+        .map_err(error::ErrorInternalServerError)?;
+
+    let transact_conn = web::block(move || transact_pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    let auth_conn = web::block(move || auth_pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        let target_id = path.into_inner();
+        let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1 RETURNING user_id;")?;
+        let execution = stmt
+                                                    .query_row(params![target_id.parse::<i64>().unwrap()], |row| {
+                                                        Ok(MainId {
+                                                            id: row.get(0)?,
+                                                        })
+                                                    });
+        if execution.is_ok() {
+            let id = execution.unwrap().id;
+            if db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: id, trans_type: 8192, amount: -25, time: "".to_string() }).is_ok() {
+                if db_auth::update_points(auth_conn, id, -25).is_ok() {
+                    Ok("{\"status\":3203}".to_string())
+                } else {
+                    Ok("{\"status\":3203}".to_string())
+                }
+            } else {
+                Ok("{\"status\":3203}".to_string())
+            }
+        } else {
+            Ok("{\"status\":8002}".to_string())
+        }
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError::<rusqlite::Error>)
 }

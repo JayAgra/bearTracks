@@ -55,7 +55,9 @@ async function uploadForm() {
             }
             case "bad": {
                 errorElement.innerText = "bad credentials";
-                errorElement.style.display = "unset";
+                errorElement.style.display = "flex";
+                await new Promise((res) => setTimeout(res, 1000));
+                window.location.reload();
                 break;
             }
         }

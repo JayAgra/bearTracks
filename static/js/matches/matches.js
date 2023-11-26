@@ -2,7 +2,7 @@ import { _get } from "../_modules/get/get.min.js";
 async function getMatches() {
     var allOrTeam = document.getElementById('allmatch').checked ? "all" : "team";
     var eventCode = document.getElementById("eventCode").value;
-    _get(`/api/matches/2023/${eventCode}/qual/${allOrTeam}`, "viewMatchButton").then((matchesJSON) => {
+    _get(`/api/v1/events/matches/${new Date().getFullYear()}/${eventCode}/qual/${allOrTeam}`, "viewMatchButton").then((matchesJSON) => {
         var matchesHtml = "";
         for (let i = 0; i < matchesJSON.Schedule.length; i++) {
             matchesHtml = matchesHtml + `<fieldset><label>${matchesJSON.Schedule[i].description}<br>${(matchesJSON.Schedule[i].startTime).replace("T", " ")}</label><br><span style="color: #FF4000;"><a href="browse?number=${matchesJSON.Schedule[i].teams[0].teamNumber}&type=team&event=${eventCode}">${matchesJSON.Schedule[i].teams[0].teamNumber}</a>&emsp;<a href="browse?number=${matchesJSON.Schedule[i].teams[1].teamNumber}&type=team&event=${eventCode}">${matchesJSON.Schedule[i].teams[1].teamNumber}</a>&emsp;<a href="browse?number=${matchesJSON.Schedule[i].teams[2].teamNumber}&type=team&event=${eventCode}">${matchesJSON.Schedule[i].teams[2].teamNumber}</a></span><br><span style="color: #00BFFF;"><a href="browse?number=${matchesJSON.Schedule[i].teams[3].teamNumber}&type=team&event=${eventCode}">${matchesJSON.Schedule[i].teams[3].teamNumber}</a>&emsp;<a href="browse?number=${matchesJSON.Schedule[i].teams[4].teamNumber}&type=team&event=${eventCode}">${matchesJSON.Schedule[i].teams[4].teamNumber}</a>&emsp;<a href="browse?number=${matchesJSON.Schedule[i].teams[5].teamNumber}&type=team&event=${eventCode}">${matchesJSON.Schedule[i].teams[5].teamNumber}</a></span></fieldset>`;

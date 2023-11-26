@@ -1,12 +1,16 @@
-use actix_files::NamedFile;
-use actix_web::Result;
+use std::env;
 use std::path::PathBuf;
+use actix_files::NamedFile;
+use actix_web::{Result, HttpRequest, HttpResponse};
 
-use crate::db_auth;
-
-pub async fn static_index() -> Result<NamedFile, std::io::Error> {
-    let path: PathBuf = "./static/index.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
+pub async fn static_index(req: HttpRequest) -> HttpResponse {
+    match req.app_config().local_addr().port() {
+        443 => {
+            let path: PathBuf = "./static/index.html".parse().unwrap();
+            NamedFile::open(path).unwrap().into_response(&req)
+        }
+        _ => HttpResponse::PermanentRedirect().append_header(("location", format!("https://{}", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())))).finish(),
+    }
 }
 
 pub async fn static_blackjack() -> Result<NamedFile, std::io::Error> {
@@ -44,40 +48,24 @@ pub async fn static_main() -> Result<NamedFile, std::io::Error> {
     Ok(NamedFile::open(path)?)
 }
 
-pub async fn static_manage(user: db_auth::User) -> Result<NamedFile, std::io::Error> {
-    if user.admin == "true" {
-        let path: PathBuf = "./static/manage.html".parse().unwrap();
-        Ok(NamedFile::open(path)?)
-    } else {
-        static_login().await
-    }
+pub async fn static_manage() -> Result<NamedFile, std::io::Error> {
+    let path: PathBuf = "./static/manage.html".parse().unwrap();
+    Ok(NamedFile::open(path)?)
 }
 
-pub async fn static_manage_scouts(user: db_auth::User) -> Result<NamedFile, std::io::Error> {
-    if user.admin == "true" {
-        let path: PathBuf = "./static/manageScouts.html".parse().unwrap();
-        Ok(NamedFile::open(path)?)
-    } else {
-        static_login().await
-    }
+pub async fn static_manage_scouts() -> Result<NamedFile, std::io::Error> {
+    let path: PathBuf = "./static/manageScouts.html".parse().unwrap();
+    Ok(NamedFile::open(path)?)
 }
 
-pub async fn static_manage_team(user: db_auth::User) -> Result<NamedFile, std::io::Error> {
-    if user.team_admin == 0 {
-        static_login().await
-    } else {
-        let path: PathBuf = "./static/manageTeam.html".parse().unwrap();
-        Ok(NamedFile::open(path)?)
-    }
+pub async fn static_manage_team() -> Result<NamedFile, std::io::Error> {
+    let path: PathBuf = "./static/manageTeam.html".parse().unwrap();
+    Ok(NamedFile::open(path)?)
 }
 
-pub async fn static_manage_teams(user: db_auth::User) -> Result<NamedFile, std::io::Error> {
-    if user.admin == "true" {
-        let path: PathBuf = "./static/manageTeams.html".parse().unwrap();
-        Ok(NamedFile::open(path)?)
-    } else {
-        static_login().await
-    }
+pub async fn static_manage_teams() -> Result<NamedFile, std::io::Error> {
+    let path: PathBuf = "./static/manageTeams.html".parse().unwrap();
+    Ok(NamedFile::open(path)?)
 }
 
 pub async fn static_matches() -> Result<NamedFile, std::io::Error> {

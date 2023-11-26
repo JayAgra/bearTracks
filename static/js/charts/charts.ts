@@ -1,25 +1,11 @@
 type eventWt = {
-    "match": number,  // match number
-    "game5": string,  // auto charge
-    "game10": string, // teleop charge
-    "game11": string, // cycle time
-    "game13": string, // low cones
-    "game14": string, // mid cubes
-    "game15": string, // mid cones
-    "game16": string, // high cubes
-    "game17": string, // high cones
-    "game18": string, // low pcs
-    "game19": string, // mid pcs
-    "game20": string, // high pcs
-    "game21": string, // low cubes
-    "game23": string, // cubes
-    "game24": string, // cones
-    "game25": string, // grid
-    "weight": string  // weights
+    "match_num": number,
+    "game": string,
+    "weight": string
 }
 
 type match = {
-    "match": number,
+    "match_num": number,
     "autoCharge": number,
     "teleopCharge": number,
     "cycle": number,
@@ -120,7 +106,7 @@ async function constructGraphs(): Promise<void> {
         chartLabels = [];
 
     try {
-        const response = await fetch(`/api/teams/event/current/${(document.getElementById("eventCode") as HTMLInputElement).value}/${(document.getElementById("teamNum") as HTMLInputElement).value}/weight`, {
+        const response = await fetch(`/api/v1/data/brief/team/${new Date().getFullYear()}/${(document.getElementById("eventCode") as HTMLInputElement).value}/${(document.getElementById("teamNum") as HTMLInputElement).value}`, {
             method: "GET",
             credentials: "include",
             redirect: "follow",
@@ -137,25 +123,26 @@ async function constructGraphs(): Promise<void> {
         teamGraph = await response.json();
 
         teamGraph.forEach((matchData) => {
-            if (completeMatches.includes(matchData.match)) {} else {
-                completeMatches.push(matchData.match);
+            if (completeMatches.includes(matchData.match_num)) {} else {
+                completeMatches.push(matchData.match_num);
+                const game_data = matchData.game.split(",");
                 processedMatches.push({
-                    "match": matchData.match,
-                    "autoCharge": Number(matchData.game5),
-                    "teleopCharge": Number(matchData.game10),
-                    "cycle": Number(matchData.game11),
-                    "lowCubes": Number(matchData.game21),
-                    "lowCones": Number(matchData.game13),
-                    "midCubes": Number(matchData.game14),
-                    "midCones": Number(matchData.game15),
-                    "highCubes": Number(matchData.game16),
-                    "highCones": Number(matchData.game17),
-                    "lowPcs": Number(matchData.game18),
-                    "midPcs": Number(matchData.game19),
-                    "highPcs": Number(matchData.game20),
-                    "cubes": Number(matchData.game23),
-                    "cones": Number(matchData.game24),
-                    "grid": Number(matchData.game25),
+                    "match_num": matchData.match_num,
+                    "autoCharge": Number(game_data[4]),
+                    "teleopCharge": Number(game_data[9]),
+                    "cycle": Number(game_data[10]),
+                    "lowCubes": Number(game_data[20]),
+                    "lowCones": Number(game_data[12]),
+                    "midCubes": Number(game_data[13]),
+                    "midCones": Number(game_data[14]),
+                    "highCubes": Number(game_data[15]),
+                    "highCones": Number(game_data[16]),
+                    "lowPcs": Number(game_data[17]),
+                    "midPcs": Number(game_data[18]),
+                    "highPcs": Number(game_data[19]),
+                    "cubes": Number(game_data[21]),
+                    "cones": Number(game_data[23]),
+                    "grid": Number(game_data[24]),
                     "weight": Number(matchData.weight.split(",")[0])
                 });
             }
@@ -180,9 +167,9 @@ async function constructGraphs(): Promise<void> {
             "weight": []
         }
 
-        processedMatches.sort((a, b) => a.match - b.match);
+        processedMatches.sort((a, b) => a.match_num - b.match_num);
         processedMatches.forEach((matchData) => {
-            chartLabels.push(String(matchData.match));
+            chartLabels.push(String(matchData.match_num));
             allMatches.autoCharge.push(matchData.autoCharge);
             allMatches.teleopCharge.push(matchData.teleopCharge);
             allMatches.cycle.push(matchData.cycle);

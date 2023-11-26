@@ -40,7 +40,7 @@ pub async fn execute(pool: &Pool, query: TransactData, user: db_auth::User) -> R
 }
 
 fn get_user_transact(conn: Connection, user: db_auth::User) -> TransactQuery {
-    let stmt = conn.prepare("SELECT * FROM transactions WHERE user_id=?1")?;
+    let stmt = conn.prepare("SELECT * FROM transactions WHERE user_id=?1 ORDER BY id DESC;")?;
     get_transact_rows(stmt, user)
 }
 

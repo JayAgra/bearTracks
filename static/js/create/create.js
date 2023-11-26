@@ -34,8 +34,13 @@ codeBoxes.forEach((codeBox, index) => {
     codeBox.onkeyup = (event) => { codeBoxKeyUp(index, event); };
     codeBox.onfocus = (event) => { codeBoxFocus(index, event); };
 });
+const errorElement = document.getElementById("error");
+async function errorReload() {
+    errorElement.style.display = "flex";
+    await new Promise((res) => setTimeout(res, 1500));
+    window.location.reload();
+}
 async function uploadForm() {
-    const errorElement = document.getElementById("error");
     const responses = {
         "access": document.querySelector("[name=access]").value,
         "full_name": document.querySelector("[name=full_name]").value,
@@ -46,17 +51,17 @@ async function uploadForm() {
         switch (response.status) {
             case "username_taken": {
                 errorElement.innerText = "username taken";
-                errorElement.style.display = "unset";
+                errorReload();
                 break;
             }
             case "bad_access_key": {
                 errorElement.innerText = "bad access key";
-                errorElement.style.display = "unset";
+                errorReload();
                 break;
             }
             case "password_length": {
                 errorElement.innerText = "password length bad ( 8 <= len <= 32 )";
-                errorElement.style.display = "unset";
+                errorReload();
                 break;
             }
             case "success": {
@@ -65,7 +70,7 @@ async function uploadForm() {
             }
             default: {
                 errorElement.innerText = "internal server error";
-                errorElement.style.display = "unset";
+                errorReload();
                 break;
             }
         }

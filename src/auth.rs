@@ -39,12 +39,12 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
             return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).body("{\"status\": \"username_taken\"}");
         } else {
             // check access key validity
-            let access_key_temp: Result<db_auth::AccessKey, actix_web::Error> = db_auth::get_access_key(pool, create_form.access.clone()).await;
+            let access_key_temp: Result<Vec<db_auth::AccessKey>, actix_web::Error> = db_auth::get_access_key(pool, create_form.access.clone(), db_auth::AccessKeyQuery::ById).await;
             if !access_key_temp.is_ok() {
                 return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).body("{\"status\": \"bad_access_key\"}");
             } else {
                 // insert into database
-                let access_key: db_auth::AccessKey = access_key_temp.unwrap();
+                let access_key: db_auth::AccessKey = access_key_temp.unwrap().first().unwrap().clone();
                 let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, access_key.team, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
                 if !user_temp.is_ok() {
                     return HttpResponse::BadRequest().status(StatusCode::from_u16(500).unwrap()).body("{\"status\": \"creation_error\"}");
@@ -62,14 +62,14 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
 pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessions>>, identity: Identity, login_form: web::Json<LoginForm>) -> impl Responder {
     let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
     if !target_user_temp.is_ok() {
-        return HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"bad\"}");
+        return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).body("{\"status\": \"bad\"}");
     }
     let target_user = target_user_temp.unwrap();
     if target_user.id != 0 {
         // if target_user.pass_hash == login_form.password {
         let parsed_hash = PasswordHash::new(&target_user.pass_hash);
         if parsed_hash.is_err() {
-            return HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"bad\"}");
+            return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).body("{\"status\": \"bad\"}");
         }
         if Argon2::default().verify_password(login_form.password.as_bytes(), &parsed_hash.unwrap()).is_ok() {
             identity.remember(login_form.username.clone());
@@ -82,10 +82,10 @@ pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessio
             }
             return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).body("{\"status\": \"success\"}");
         } else {
-            return HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"bad\"}");
+            return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).body("{\"status\": \"bad\"}");
         }
     } else {
-        return HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"bad\"}");
+        return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).body("{\"status\": \"bad\"}");
     }
 }
 
