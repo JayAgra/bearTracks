@@ -246,7 +246,7 @@ async fn main() -> io::Result<()> {
         env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     } else {
         env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
-        log::error!("[OK] starting in release mode");
+        println!("[OK] starting in release mode");
     }
 
     let sessions = web::Data::new(RwLock::new(Sessions {
@@ -287,7 +287,7 @@ async fn main() -> io::Result<()> {
     builder.set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
     builder.set_certificate_chain_file("./ssl/cert.pem").unwrap();
 
-    log::error!("[OK] starting bearTracks on port 443 and 80");
+    log::info!("[OK] starting bearTracks on port 443 and 80");
 
     HttpServer::new(move || {
         let generated = generate();
