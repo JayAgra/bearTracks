@@ -1,5 +1,7 @@
 import { _get } from "../_modules/get/get.min.js";
 async function getMatches() {
+    document.getElementById("viewMatchButton").innerHTML = "loading...";
+    document.getElementById("viewMatchButton").disabled = true;
     var allOrTeam = document.getElementById('allmatch').checked ? "all" : "team";
     var eventCode = document.getElementById("eventCode").value;
     _get(`/api/v1/events/matches/${new Date().getFullYear()}/${eventCode}/qual/${allOrTeam}`, "viewMatchButton").then((matchesJSON) => {
@@ -11,6 +13,7 @@ async function getMatches() {
         document.getElementById("search").style.display = "none";
         document.getElementById("results").style.display = "flex";
         document.getElementById("viewMatchButton").innerHTML = "View";
+        document.getElementById("viewMatchButton").removeAttribute("disabled");
     }).catch((err) => console.log(err));
 }
 window.getMatches = getMatches;

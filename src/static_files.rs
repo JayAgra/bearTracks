@@ -1,5 +1,5 @@
 use std::{env, include_str, include_bytes};
-use actix_web::{HttpRequest, HttpResponse, http::header::ContentType};
+use actix_web::{HttpRequest, HttpResponse, http::header::{ContentType, CacheControl, CacheDirective}};
 
 // bundle static files in binary
 const INDEX_HTML: &str = include_str!("../static/index.html");
@@ -24,16 +24,25 @@ const TEAMS_HTML: &str = include_str!("../static/teams.html");
 const FAVICON_ICO: &[u8] = include_bytes!("../static/favicon.ico");
 
 pub async fn static_index(req: HttpRequest) -> HttpResponse {
+    // redirect requests not to port 443 (port 80) to 443
     match req.app_config().local_addr().port() {
         443 => {
             HttpResponse::Ok()
                 .content_type(ContentType::html())
+                .insert_header(CacheControl(vec![
+                    CacheDirective::Public,
+                    CacheDirective::MaxAge(1209600u32),
+                ]))
                 .body(INDEX_HTML)
         }
-        _ => HttpResponse::PermanentRedirect().append_header(("location", format!("https://{}", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())))).finish(),
+        _ => HttpResponse::PermanentRedirect()
+                .append_header(
+                    ("location", format!("https://{}", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())))
+                ).finish(),
     }
 }
 
+// serve static html files
 pub async fn static_blackjack() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
@@ -142,8 +151,10 @@ pub async fn static_teams() -> HttpResponse {
         .body(TEAMS_HTML)
 }
 
+// serve static favicon
 pub async fn static_favicon() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/x-icon"))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(2419200u32)]))
         .body(FAVICON_ICO)
 }

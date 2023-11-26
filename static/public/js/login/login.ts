@@ -41,7 +41,8 @@ function setCooky(name: string) {
 }
 
 async function uploadForm() {
-    const errorElement = document.getElementById("error");
+    const errorElement = document.getElementById("error") as HTMLButtonElement;
+    errorElement.disabled = true;
     const responses = { "username": (document.querySelector("[name=username]") as HTMLInputElement).value, "password": (document.querySelector("[name=password]") as HTMLInputElement).value }
     _post("/api/v1/auth/login", errorElement.id, responses).then(async (response: {status: String}) => {
         switch (response.status) {

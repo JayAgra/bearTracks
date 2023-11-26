@@ -13,7 +13,7 @@ document.head.insertAdjacentHTML("afterbegin", styleSheet);
 var blackjackSocket: WebSocket;
 
 function startBlackjack() {
-    blackjackSocket = new WebSocket("wss://localhost/api/v1/casino/blackjack");
+    blackjackSocket = new WebSocket(`wss://${window.location.host}/api/v1/casino/blackjack`);
 
     blackjackSocket.addEventListener("open", () => {
         console.info("blackjack socket opened");
