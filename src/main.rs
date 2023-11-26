@@ -76,24 +76,24 @@ async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, _use
     Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::DataExists, path).await?))
 }
 
-async fn data_get_main_brief_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefTeam, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap()]).await?))
+async fn data_get_main_brief_team(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::BriefTeam, path).await?))
 }
 
-async fn data_get_main_brief_match(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefMatch, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("match_num").unwrap().parse().unwrap()]).await?))
+async fn data_get_main_brief_match(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::BriefMatch, path).await?))
 }
 
-async fn data_get_main_brief_event(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefEvent, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), "".to_string()]).await?))
+async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::BriefEvent, path).await?))
 }
 
-async fn data_get_main_brief_user(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::execute_get_brief(&db.main, db_main::MainBrief::BriefUser, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()]).await?))
+async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::BriefUser, path).await?))
 }
 
-async fn data_get_main_teams(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::execute_get_teams(&db.main, [req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap()]).await?))
+async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::GetTeams, path).await?))
 }
 
 async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
@@ -108,9 +108,9 @@ async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, St
     forward::forward_frc_api_event_matches(req, path).await
 }
 
-async fn manage_get_submission_ids(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn manage_get_submission_ids(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok().json(db_main::get_ids(&db.main).await?))
+        Ok(HttpResponse::Ok().json(db_main::execute(&db.main, db_main::MainData::Id, path).await?))
     } else {
         Ok(HttpResponse::Unauthorized().status(StatusCode::from_u16(401).unwrap()).body("{\"status\": \"unauthorized\"}"))
     }
@@ -201,7 +201,7 @@ async fn misc_get_transact_me(db: web::Data<Databases>, user: db_auth::User) -> 
 }
 
 async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().json(db_main::MainId { id: user.id }))
+    Ok(HttpResponse::Ok().json(db_main::Id { id: user.id }))
 }
 
 async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
@@ -311,18 +311,18 @@ async fn main() -> io::Result<()> {
                 // GET (✅)
                 .service(web::resource("/api/v1/data/detail/{id}").route(web::get().to(data_get_detailed)))
                 .service(web::resource("/api/v1/data/exists/{id}").route(web::get().to(data_get_exists)))
-                .service(web::resource("/api/v1/data/brief/team/{season}/{event}/{team}").route(web::get().to(data_get_main_brief_team)))
-                .service(web::resource("/api/v1/data/brief/match/{season}/{event}/{match_num}").route(web::get().to(data_get_main_brief_match)))
-                .service(web::resource("/api/v1/data/brief/event/{season}/{event}").route(web::get().to(data_get_main_brief_event)))
-                .service(web::resource("/api/v1/data/brief/user/{season}/{user_id}").route(web::get().to(data_get_main_brief_user)))
-                .service(web::resource("/api/v1/data/teams/{season}/{event}").route(web::get().to(data_get_main_teams)))
+                .service(web::resource("/api/v1/data/brief/team/{args}*").route(web::get().to(data_get_main_brief_team))) // season/event/team
+                .service(web::resource("/api/v1/data/brief/match/{args}*").route(web::get().to(data_get_main_brief_match))) // season/event/match_num
+                .service(web::resource("/api/v1/data/brief/event/{args}*").route(web::get().to(data_get_main_brief_event))) // season/event
+                .service(web::resource("/api/v1/data/brief/user/{args}*").route(web::get().to(data_get_main_brief_user))) // season/user_id
+                .service(web::resource("/api/v1/data/teams/{args}*").route(web::get().to(data_get_main_teams))) // season/event
                 .service(web::resource("/api/v1/events/teams/{season}/{event}").route(web::get().to(event_get_frc_api)))
                 .service(web::resource("/api/v1/events/matches/{season}/{event}/{level}/{all}").route(web::get().to(event_get_frc_api_matches)))
                 // POST (✅)
                 .service(web::resource("/api/v1/data/submit").route(web::post().to(data_post_submit)))
             /* manage endpoints */
                 // GET
-                .service(web::resource("/api/v1/manage/submission_ids").route(web::get().to(manage_get_submission_ids)))
+                .service(web::resource("/api/v1/manage/submission_ids/{args}").route(web::get().to(manage_get_submission_ids)))
                 .service(web::resource("/api/v1/manage/all_users").route(web::get().to(manage_get_all_users)))
                 .service(web::resource("/api/v1/manage/all_access_keys").route(web::get().to(manage_get_all_keys)))
                 // DELETE

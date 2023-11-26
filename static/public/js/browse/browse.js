@@ -75,8 +75,8 @@ async function search(num, eCode, searchType = "team") {
                     min[property] = value;
             }
             for (var i = 0; i < listRes.length; i++) {
-                let game_data = listRes[i].game.split(",");
-                htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].match_num}</a><br><span>${listRes[i].name} (${listRes[i].from_team})</span></td>` + // match link
+                let game_data = listRes[i].Brief.game.split(",");
+                htmlTable += ` <tr><td><a href="/detail?id=${listRes[i].Brief.id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].Brief.match_num}</a><br><span>${listRes[i].Brief.name} (${listRes[i].Brief.from_team})</span></td>` + // match link
                     `<td>${eV(game_data[1])}${eV(game_data[2])}${eV(game_data[3])}</td>` + // auto score
                     `<td>${game_data[4]}</td>` + // auto charge
                     `<td>${eV(game_data[5])}${eV(game_data[6])}${eV(game_data[7])}</td>` + // teleop score
@@ -86,12 +86,12 @@ async function search(num, eCode, searchType = "team") {
                     `<td>${game_data[12]}</td><td>${game_data[14]}</td><td>${game_data[16]}</td>` + // cones
                     `<td>${game_data[17]}</td><td>${game_data[18]}</td><td>${game_data[19]}</td>` + // total
                     `<td>${game_data[10]}</td>` + // cycle time
-                    `<td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`; // standard mps
+                    `<td>${Number(listRes[i].Brief.weight.split(",")[0]).toFixed(2)}</td></tr>`; // standard mps
                 avg.auto_charge += Number(game_data[4]);
                 avg.teleop_charge += Number(game_data[9]);
                 avg.grid += Number(game_data[24]);
                 avg.cycle += Number(game_data[10]);
-                avg.perf_score += Number(listRes[i].weight.split(",")[0]);
+                avg.perf_score += Number(listRes[i].Brief.weight.split(",")[0]);
                 avg.lowCube += Number(game_data[20]);
                 avg.lowCone += Number(game_data[12]);
                 avg.midCube += Number(game_data[13]);
@@ -105,12 +105,12 @@ async function search(num, eCode, searchType = "team") {
                 setIfHigher("teleop_charge", Number(game_data[9]));
                 setIfHigher("grid", Number(game_data[24]));
                 setIfHigher("cycle", Number(game_data[10]));
-                setIfHigher("perf_score", Number(listRes[i].weight.split(",")[0]));
+                setIfHigher("perf_score", Number(listRes[i].Brief.weight.split(",")[0]));
                 setIfLower("auto_charge", Number(game_data[4]));
                 setIfLower("teleop_charge", Number(game_data[9]));
                 setIfLower("grid", Number(game_data[24]));
                 setIfLower("cycle", Number(game_data[10]));
-                setIfLower("perf_score", Number(listRes[i].weight.split(",")[0]));
+                setIfLower("perf_score", Number(listRes[i].Brief.weight.split(",")[0]));
             }
             for (let key in avg) {
                 avg[key] /= listRes.length;
@@ -140,13 +140,13 @@ async function search(num, eCode, searchType = "team") {
                 "perf_score": 0
             };
             for (var i = 0; i < listRes.length; i++) {
-                let game_data = listRes[i].game.split(",");
-                htmlTable += ` <tr><td><strong>Team ${listRes[i].team}</strong><br><a href="/detail?id=${listRes[i].id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].match_num}</a><br><span>${listRes[i].name} (${listRes[i].team})</span></td><td>${eV(game_data[1])}${eV(game_data[2])}${eV(game_data[3])}</td><td>${game_data[4]}</td><td>${eV(game_data[5])}${eV(game_data[6])}${eV(game_data[7])}</td><td>${game_data[9]}</td><td>${game_data[24]}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${game_data[10]}</td><td>${Number(listRes[i].weight.split(",")[0]).toFixed(2)}</td></tr>`;
+                let game_data = listRes[i].Brief.game.split(",");
+                htmlTable += ` <tr><td><strong>Team ${listRes[i].Brief.team}</strong><br><a href="/detail?id=${listRes[i].Brief.id}" target="_blank" style="all: unset; color: #2997FF; text-decoration: none;">qual ${listRes[i].Brief.match_num}</a><br><span>${listRes[i].Brief.name} (${listRes[i].Brief.team})</span></td><td>${eV(game_data[1])}${eV(game_data[2])}${eV(game_data[3])}</td><td>${game_data[4]}</td><td>${eV(game_data[5])}${eV(game_data[6])}${eV(game_data[7])}</td><td>${game_data[9]}</td><td>${game_data[24]}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${game_data[10]}</td><td>${Number(listRes[i].Brief.weight.split(",")[0]).toFixed(2)}</td></tr>`;
                 avg.auto_charge += Number(game_data[4]);
                 avg.teleop_charge += Number(game_data[9]);
                 avg.grid += Number(game_data[24]);
                 avg.cycle += Number(game_data[10]);
-                avg.perf_score += Number(listRes[i].weight.split(",")[0]);
+                avg.perf_score += Number(listRes[i].Brief.weight.split(",")[0]);
             }
             for (let key in avg) {
                 avg[key] /= listRes.length;

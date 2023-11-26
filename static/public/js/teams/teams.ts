@@ -23,8 +23,8 @@ async function getTeamRanks() {
             var teams: any = {};
             var teamsCount: any = {};
             JSON.parse(xhr.responseText).forEach((e: any) => {
-                addProperty(teams, e.team, Number(e.weight.split(",")[Number(weight)]));
-                addProperty(teamsCount, e.team, 1);
+                addProperty(teams, e.Team.team, Number(e.Team.weight.split(",")[Number(weight)]));
+                addProperty(teamsCount, e.Team.team, 1);
             });
             for (let team in teams) {
                 teams[team] /= teamsCount[team];

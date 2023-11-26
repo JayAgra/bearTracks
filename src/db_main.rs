@@ -8,7 +8,7 @@ use crate::db_transact;
 use super::analyze;
 
 #[derive(Serialize)]
-pub enum FullMain {
+pub enum Main {
     FullMain {
         id: i64,
         event: String,
@@ -24,22 +24,52 @@ pub enum FullMain {
         name: String,
         from_team: i64,
         weight: String,
-        analysis: String
+        analysis: String,
     },
-    Exists { id: i64, team: i64, match_num: i64 }
+    Exists {
+        id: i64,
+        team: i64,
+        match_num: i64,
+    },
+    Brief {
+        id: i64,
+        event: String,
+        season: i64,
+        team: i64,
+        match_num: i64,
+        game: String,
+        user_id: i64,
+        name: String,
+        from_team: i64,
+        weight: String,
+    },
+    Team {
+        id: i64,
+        team: i64,
+        weight: String,
+    },
+    Id {
+        id: i64,
+    }
 }
 
 pub type Pool = r2d2::Pool<r2d2_sqlite::SqliteConnectionManager>;
 pub type Connection = r2d2::PooledConnection<r2d2_sqlite::SqliteConnectionManager>;
-type QueryResult = Result<Vec<FullMain>, rusqlite::Error>;
+type QueryResult = Result<Vec<Main>, rusqlite::Error>;
 
 #[allow(clippy::enum_variant_names)]
 pub enum MainData {
     GetDataDetailed,
-    DataExists
+    DataExists,
+    BriefEvent,
+    BriefTeam,
+    BriefMatch,
+    BriefUser,
+    GetTeams,
+    Id
 }
 
-pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> Result<Vec<FullMain>, Error> {
+pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> Result<Vec<Main>, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get())
@@ -49,7 +79,13 @@ pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> R
     web::block(move || {
         match query {
             MainData::GetDataDetailed => get_data_detailed(conn, path),
-            MainData::DataExists => get_submission_exists(conn, path)
+            MainData::DataExists => get_submission_exists(conn, path),
+            MainData::BriefEvent => get_brief_event(conn, path),
+            MainData::BriefTeam => get_brief_team(conn, path),
+            MainData::BriefMatch => get_brief_match(conn, path),
+            MainData::BriefUser => get_brief_user(conn, path),
+            MainData::GetTeams => get_all_teams(conn, path),
+            MainData::Id => get_main_ids(conn, path),
         }
     })
     .await?
@@ -57,21 +93,56 @@ pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> R
 }
 
 fn get_data_detailed(conn: Connection, path: web::Path<String>) -> QueryResult {
-    let target_id = path.into_inner();
+    let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT * FROM main WHERE id=:id LIMIT 1;")?;
-    get_rows(stmt, [target_id.parse::<i64>().unwrap()])
+    get_rows(stmt, [args[0].parse::<i64>().unwrap()])
 }
 
 fn get_submission_exists(conn: Connection, path: web::Path<String>) -> QueryResult {
-    let target_id = path.into_inner();
+    let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, team, match_num FROM main WHERE id=:id LIMIT 1;")?;
-    get_exists_row(stmt, [target_id.parse::<i64>().unwrap()])
+    get_exists_row(stmt, [args[0].parse::<i64>().unwrap()])
+}
+
+fn get_brief_event(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let args = path.split("/").collect::<Vec<_>>();
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND id!=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, [args[0], args[1], ""])
+}
+
+fn get_brief_team(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let args = path.split("/").collect::<Vec<_>>();
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, [args[0], args[1], args[2]])
+}
+
+fn get_brief_match(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let args = path.split("/").collect::<Vec<_>>();
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, [args[0], args[1], args[2]])
+}
+
+fn get_brief_user(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let args = path.split("/").collect::<Vec<_>>();
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND user_id=?2 AND id!=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, [args[0], args[1], ""])
+}
+
+fn get_all_teams(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let args = path.split("/").collect::<Vec<_>>();
+    let stmt = conn.prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
+    get_team_rows(stmt, [args[0], args[1]])
+}
+
+fn get_main_ids(conn: Connection, _path: web::Path<String>) -> QueryResult {
+    let stmt = conn.prepare("SELECT id FROM main;")?;
+    get_id_rows(stmt)
 }
 
 fn get_exists_row(mut statement: Statement, params: [i64; 1]) -> QueryResult {
     statement
         .query_map(params, |row| {
-            Ok(FullMain::Exists { 
+            Ok(Main::Exists { 
                 id: row.get(0)?,
                 team: row.get(1)?,
                 match_num: row.get(2)?,
@@ -83,7 +154,7 @@ fn get_exists_row(mut statement: Statement, params: [i64; 1]) -> QueryResult {
 fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
     statement
         .query_map(params, |row| {
-            Ok(FullMain::FullMain { 
+            Ok(Main::FullMain { 
                 id: row.get(0)?,
                 event: row.get(1)?,
                 season: row.get(2)?,
@@ -104,76 +175,10 @@ fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
         .and_then(Iterator::collect)
 }
 
-// metadata endpoints
-
-#[derive(Serialize)]
-pub struct MainDataBrief {
-    pub id: i64,
-    pub event: String,
-    pub season: i64,
-    pub team: i64,
-    pub match_num: i64,
-    pub game: String,
-    pub user_id: i64,
-    pub name: String,
-    pub from_team: i64,
-    pub weight: String
-}
-
-type BriefQueryResult = Result<Vec<MainDataBrief>, rusqlite::Error>;
-
-#[allow(clippy::enum_variant_names)]
-pub enum MainBrief {
-    BriefTeam,
-    BriefMatch,
-    BriefEvent,
-    BriefUser,
-}
-
-pub async fn execute_get_brief(pool: &Pool, query: MainBrief, params: [String; 3]) -> Result<Vec<MainDataBrief>, Error> {
-    let pool = pool.clone();
-
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-
-    web::block(move || {
-        match query {
-            MainBrief::BriefTeam => get_brief_team(conn, params),
-            MainBrief::BriefMatch => get_brief_match(conn, params),
-            MainBrief::BriefEvent => get_brief_event(conn, params),
-            MainBrief::BriefUser => get_brief_user(conn, params)
-        }
-    })
-    .await?
-    .map_err(error::ErrorInternalServerError)
-}
-
-// TODO: parameterize
-fn get_brief_team(conn: Connection, params: [String; 3]) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
-    get_brief_rows(stmt, params)
-}
-
-fn get_brief_match(conn: Connection, params: [String; 3]) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
-    get_brief_rows(stmt, params)
-}
-
-fn get_brief_event(conn: Connection, params: [String; 3]) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND id!=?3 ORDER BY id DESC;")?;
-    get_brief_rows(stmt, params)
-}
-
-fn get_brief_user(conn: Connection, params: [String; 3]) -> BriefQueryResult {
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND user_id=?2 AND id!=?3 ORDER BY id DESC;")?;
-    get_brief_rows(stmt, params)
-}
-
-fn get_brief_rows(mut statement: Statement, params: [String; 3]) -> BriefQueryResult {
+fn get_brief_rows(mut statement: Statement, params: [&str; 3]) -> QueryResult {
     statement
         .query_map(params, |row| {
-            Ok(MainDataBrief { 
+            Ok(Main::Brief { 
                 id: row.get(0)?,
                 event: row.get(1)?,
                 season: row.get(2)?,
@@ -189,37 +194,23 @@ fn get_brief_rows(mut statement: Statement, params: [String; 3]) -> BriefQueryRe
         .and_then(Iterator::collect)
 }
 
-#[derive(Serialize)]
-pub struct MainDbTeams {
-    pub id: i64,
-    pub team: i64,
-    pub weight: String
-}
-
-type TeamsQueryResult = Result<Vec<MainDbTeams>, rusqlite::Error>;
-
-pub async fn execute_get_teams(pool: &Pool, params: [String; 2]) -> Result<Vec<MainDbTeams>, Error> {
-    let pool = pool.clone();
-
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-
-    web::block(move || {
-        get_teams(conn, params)
-    })
-    .await?
-    .map_err(error::ErrorInternalServerError)
-}
-
-fn get_teams(conn: Connection, params: [String; 2]) -> TeamsQueryResult {
-    let mut stmt = conn.prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
-    stmt
+fn get_team_rows(mut statement: Statement, params: [&str; 2]) -> QueryResult {
+    statement
         .query_map(params, |row| {
-            Ok(MainDbTeams {
+            Ok(Main::Team {
                 id: row.get(0)?,
                 team: row.get(1)?,
                 weight: row.get(2)?
+            })
+        })
+        .and_then(Iterator::collect)
+}
+
+fn get_id_rows(mut statement: Statement) -> QueryResult {
+    statement
+        .query_map([], |row| {
+            Ok(Main::Id {
+                id: row.get(0)?
             })
         })
         .and_then(Iterator::collect)
@@ -280,33 +271,9 @@ fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Conn
     Ok(inserted_row)
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct MainId {
-    pub id: i64
-}
-
-pub async fn get_ids(pool: &Pool) -> Result<Vec<MainId>, actix_web::Error> {
-    let pool = pool.clone();
-
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-    web::block(move || {
-        get_id_rows(conn)
-    })
-    .await?
-    .map_err(error::ErrorInternalServerError)
-}
-
-fn get_id_rows(conn: Connection) -> Result<Vec<MainId>, rusqlite::Error> {
-    let mut statement = conn.prepare("SELECT id FROM main;")?;
-    statement
-        .query_map([], |row| {
-            Ok(MainId {
-                id: row.get(0)?
-            })
-        })
-        .and_then(Iterator::collect)
+#[derive(Serialize)]
+pub struct Id {
+    pub id: i64,
 }
 
 pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, path: web::Path<String>) -> Result<String, actix_web::Error> {
@@ -331,7 +298,7 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
         let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1 RETURNING user_id;")?;
         let execution = stmt
                                                     .query_row(params![target_id.parse::<i64>().unwrap()], |row| {
-                                                        Ok(MainId {
+                                                        Ok(Id {
                                                             id: row.get(0)?,
                                                         })
                                                     });
