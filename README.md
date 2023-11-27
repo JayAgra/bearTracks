@@ -6,7 +6,7 @@ a webapp for frc scouting<br><br>
 ### script
 set up bearTracks using the simple shell script.
 ```sh
-curl -fSsl "https://raw.githubusercontent.com/JayAgra/bearTracks/setup.sh" | sudo sh
+curl -fSsl "https://raw.githubusercontent.com/JayAgra/bearTracks/main/setup.sh" | sudo sh
 ```
 ### environment variables
 ```
