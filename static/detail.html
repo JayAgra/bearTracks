@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Detailed Data - bearTracks</title>
+        <meta name="robots" content="nositelinkssearchbox, nofollow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="stylesheet" href="static/css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="static/css/supplement.min.css" type="text/css">
+        <script src="static/js/form/form.min.js"></script>
+    </head>
+    <body class="dark-mode" onload="loadData()">
+        <script>themeHandle()</script>
+        <div class="container" id="results" style="display: flex;">
+            <div class="dummy">
+                <h1 class="w3">bearTracks<br><span class="gametitle">match data</span></h1>
+                <h3 style="color: var(--cancelColor); display: none;" id="errorTxt"></h3>
+                <h3>Team Number: <span id="resultTeamNum"></span></h3><h5>Match Number: <span id="resultMatchNum"></span> | Event: <span id="resultEventCode"></span></h5><p style="text-align: left" id="resultText"></p><br>
+                <button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Back</button>
+            </div>
+        </div>
+        <script type="module" src="static/js/detail/detail.min.js"></script>
+    </body>
+</html>

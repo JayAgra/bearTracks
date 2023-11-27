@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Matches - bearTracks</title>
+        <meta name="robots" content="nositelinkssearchbox, nofollow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#121212" id="themeMeta">
+        <link rel="stylesheet" href="static/css/float.min.css" type="text/css">
+        <script src="static/js/form/form.min.js"></script>
+        <style>a,a:visited{text-align:center;text-decoration:none;font-size:6vh;border-bottom:#fff;color:inherit}body{text-align:center;}</style>
+    </head>
+    <body class="dark-mode">
+        <script>themeHandle()</script>
+        <div class="container" id="search" style="display: flex;">
+            <div class="maincontent">
+                <h1 class="w3">bearTracks<br><span class="gametitle">Matches</span></h1><br><br>
+                <label>Event Code: </label><br>
+                <select name="event" id="eventCode">
+                    <option value="CADA">CADA - Sacramento Regional</option>
+                    <option value="CASJ">CASJ - Silicon Valley Regional</option>
+                    <option value="WOOD">WOOD - CalGames</option>
+                    <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                </select><br><br>
+                <label>Include All Matches: </label><input id="allmatch" type="checkbox"><br>
+                <button type="button" class="uiButton actionButton" id="viewMatchButton" onclick="getMatches()">View</button><br>
+                <button type="button" class="uiButton returnButton" onclick="window.location.href='/'" type="button">Back</button>
+            </div>
+        </div>
+        <div class="container" id="results" style="display: none;">
+            <div class="dummy">
+                <h1 class="w3" id="matchHeader">bearTracks<br><span class="gametitle">Matches</span></h1><br><br>
+                <button class="uiButton actionButton" onclick="window.location.href='/'">Back</button><br>
+            </div>
+        </div>
+        <script type="module" src="static/js/matches/matches.min.js"></script>
+    </body>
+</html>

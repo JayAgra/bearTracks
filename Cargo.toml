@@ -1,0 +1,41 @@
+[package]
+name = "bear_tracks"
+version = "4.0.0"
+edition = "2021"
+authors = ["Jayen Agrawal"]
+description = "a scouting webapp for frc"
+readme = "README.md"
+repository = "https://github.com/JayAgra/bearTracks/"
+license = "MIT"
+build = "build.rs"
+
+[dependencies]
+actix = "0.13.1"
+actix-governor = "0.5.0"
+actix-http = "3.4"
+actix-identity = "0.4.0"
+actix-session = { version = "~0.7", features = ["cookie-session"] }
+actix-web = { version = "4.4", features = ["openssl"] }
+actix-web-actors = "4.2.0"
+actix-web-static-files = "4.0.1"
+argon2 = "0.5.2"
+dotenv = "0.15.0"
+env_logger = "0.10"
+futures-util = { version = "0.3.17", default-features = false, features = ["std"] }
+html-escape = "0.2.13"
+log = "0.4"
+openssl = { version = "0.10", features = ["v110"] }
+r2d2 = "0.8"
+r2d2_sqlite = "0.22"
+rand = "0.8.5"
+reqwest = "0.11.22"
+serde = { version = "1", features = ["derive"] }
+static-files = "0.2.1"
+vader_sentiment = "0.1.1"
+
+[build-dependencies]
+static-files = "0.2.1"
+
+[dependencies.rusqlite]
+version = "0.29"
+features = ["bundled"]
