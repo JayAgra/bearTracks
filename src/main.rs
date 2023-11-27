@@ -461,7 +461,7 @@ async fn main() -> io::Result<()> {
             ))
             .wrap(middleware::Logger::default())
             .wrap(SessionMiddleware::new(CookieSessionStore::default(), secret_key.clone()))
-            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=604800")).add(("X-bearTracks", "4.0.0")))
+            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "4.0.0")))
             /* src  endpoints */
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))

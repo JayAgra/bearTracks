@@ -40,6 +40,9 @@ function setCooky(name: string) {
     document.cookie = name + "=" + "true" + "; expires=" + new Date(Date.now() + 86400000).toUTCString() + "; path=/"
 }
 
+function deleteCooky(name: String) { document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'; }
+document.onload = () => { deleteCooky("lead"); deleteCooky("childTeamLead"); }
+
 async function uploadForm() {
     const errorElement = document.getElementById("error") as HTMLButtonElement;
     errorElement.disabled = true;

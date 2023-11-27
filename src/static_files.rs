@@ -21,6 +21,7 @@ const SCOUTS_HTML: &str = include_str!("../static/scouts.html");
 const SETTINGS_HTML: &str = include_str!("../static/settings.html");
 const SPIN_HTML: &str = include_str!("../static/spin.html");
 const TEAMS_HTML: &str = include_str!("../static/teams.html");
+// favicon isn't utf8 so it needs include bytes instead
 const FAVICON_ICO: &[u8] = include_bytes!("../static/favicon.ico");
 
 pub async fn static_index(req: HttpRequest) -> HttpResponse {
@@ -31,7 +32,7 @@ pub async fn static_index(req: HttpRequest) -> HttpResponse {
                 .content_type(ContentType::html())
                 .insert_header(CacheControl(vec![
                     CacheDirective::Public,
-                    CacheDirective::MaxAge(1209600u32),
+                    CacheDirective::MaxAge(23328000u32),
                 ]))
                 .body(INDEX_HTML)
         }
@@ -155,6 +156,6 @@ pub async fn static_teams() -> HttpResponse {
 pub async fn static_favicon() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/x-icon"))
-        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(2419200u32)]))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
         .body(FAVICON_ICO)
 }

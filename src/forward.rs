@@ -16,7 +16,7 @@ pub async fn forward_frc_api_event_teams(req: HttpRequest, path: web::Path<(Stri
     match response {
         Ok(response) => {
             HttpResponse::build(response.status())
-                .insert_header(("Cache-Control", "public, max-age=604800, immutable"))
+                .insert_header(("Cache-Control", "public, max-age=46656000, immutable"))
                 .body(response.bytes().await.unwrap().to_vec())
         }
         Err(_) => HttpResponse::InternalServerError().finish(),
@@ -42,7 +42,7 @@ pub async fn forward_frc_api_event_matches(req: HttpRequest, path: web::Path<(St
     match response {
         Ok(response) => {
             HttpResponse::build(response.status())
-                .insert_header(("Cache-Control", "public, max-age=604800, immutable"))
+                .insert_header(("Cache-Control", "public, max-age=46656000, immutable"))
                 .body(response.bytes().await.unwrap().to_vec())
         }
         Err(_) => HttpResponse::BadGateway().finish(),
