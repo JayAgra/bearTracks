@@ -59,41 +59,59 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
 }
 
 pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessions>>, identity: Identity, login_form: web::Json<LoginForm>) -> impl Responder {
+    // try to get target user from database
     let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
-    if !target_user_temp.is_ok() {
+    // if the query errored, send fail response
+    if target_user_temp.is_err() {
         return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
     }
+    // query was OK, unwrap and set to target_user
     let target_user = target_user_temp.unwrap();
+    // ensure the target user id exists
     if target_user.id != 0 {
+        // parse the hash of the user from the database
         let parsed_hash = PasswordHash::new(&target_user.pass_hash);
+        // if error in parsing hash, send failure response
         if parsed_hash.is_err() {
             return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
         }
+        // check that the provided password's hash is equal to the correct password's hash
         if Argon2::default().verify_password(login_form.password.as_bytes(), &parsed_hash.unwrap()).is_ok() {
+            // save the username to the identity
             identity.remember(login_form.username.clone());
+            // write the user object to the session
             session.write().unwrap().user_map.insert(target_user.clone().username.to_string(), target_user.clone());
+            // if admin, send admin success response
             if target_user.admin == "true" {
                 return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success_adm\"}");
             }
+            // if team admin, send team admin success response
             if target_user.team_admin != 0 {
                 return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success_ctl\"}");
             }
+            // send generic success response
             return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success\"}");
+        // bad password, send failure
         } else {
             return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
         }
+    // target user is zero, send failure
     } else {
         return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
     }
 }
 
 pub async fn logout(session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> HttpResponse {
+    // if session exists, proceed
     if let Some(id) = identity.identity() {
+        // forget identity
         identity.forget();
-        if let Some(user) = session.write().unwrap().user_map.remove(&id) {
-            log::info!("user {} logged out", user.username);
+        // remove user object from the user hashmap
+        if let Some(_user) = session.write().unwrap().user_map.remove(&id) {
+            // log::info!("user {} logged out", user.username);
         }
     }
     
+    // send user to login page
     static_files::static_login().await
 }

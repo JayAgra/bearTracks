@@ -1,4 +1,3 @@
-use actix::prelude::*;
 use actix::Message;
 use actix::{Actor, StreamHandler};
 use actix_web::{web, error, HttpRequest, HttpResponse, Error};
@@ -54,12 +53,13 @@ fn spin_thing_process(auth_conn: db_auth::Connection, transact_conn: db_transact
     Ok(format!("{{\"spin\": {}}}", spin))
 }
 
+//
+// blackjack
+//
+
+// suit and value array constants
 const SUITS: [&str; 4] = ["h", "d", "c", "s"];
 const VALUES: [&str; 13] = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
-
-//
-// blackjack //
-//
 
 #[derive(Clone, Debug)]
 struct BlackjackSession {
@@ -112,6 +112,7 @@ impl Message for MessageType {
 }
 
 impl MessageType {
+    // convert string to a message type enumerator
     fn from_str(value: &str) -> Option<MessageType> {
         match value {
             "48" => Some(MessageType::Hit),
@@ -119,15 +120,6 @@ impl MessageType {
             _ => None,
         }
     }
-}
-
-#[derive(Clone, Debug)]
-struct ResultMessage {
-    result: String,
-}
-
-impl Message for ResultMessage {
-    type Result = ();
 }
 
 impl Actor for BlackjackSession {
@@ -142,43 +134,56 @@ impl Actor for BlackjackSession {
 impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError>> for BlackjackSession {
     fn handle(&mut self, msg: Result<actix_http::ws::Message, actix_http::ws::ProtocolError>, ctx: &mut Self::Context) {
         match msg {
+            // text messages
             Ok(actix_http::ws::Message::Text(text)) => {
+                // use the from_str implemented above to convert the message to a message type
                 if let Some(message_type) = MessageType::from_str(text.to_string().as_str()) {
                     match message_type {
+                        // client wants to hit
                         MessageType::Hit => {
+                            // clone the game
                             let mut game_state: BlackjackSession = self.clone();
+                            // add a new card to hand, and save the new score to variable
                             let new_score: i64 = self.get_card(&mut game_state.game.player.hand, "player", ctx);
+                            // update actual instance's player hand and score
                             self.game.player.hand = game_state.game.player.hand;
                             self.game.player.score = new_score;
+                            // end game if player score is above or equal to 21
                             if self.game.player.score >= 21 {
                                 self.end_game(ctx);
                             }
                         }
+                        // client wants to stand
                         MessageType::Stand => {
+                            // repeat until the dealer has more than 17
                             while self.game.dealer.score < 17 {
+                                // clone game
                                 let mut game_state: BlackjackSession = self.clone();
+                                // draw new dealer card and save score
                                 let new_score: i64 = self.get_card(&mut game_state.game.dealer.hand, "dealer", ctx);
+                                // update actual game's variables
                                 self.game.dealer.hand = game_state.game.dealer.hand;
                                 self.game.dealer.score = new_score;
-                                if self.game.player.score >= 21 {
-                                    self.end_game(ctx);
-                                }
                             }
                             self.end_game(ctx);
                         }
                     }
                 }
             }
+            // don't process any other messages
             Ok(actix_http::ws::Message::Binary(_)) => {}
+            // but respond to pings
             Ok(actix_http::ws::Message::Ping(ping)) => {
                 ctx.pong(&ping);
             }
             Ok(actix_http::ws::Message::Pong(_)) => {}
             Ok(actix_http::ws::Message::Continuation(_)) => {}
             Ok(actix_http::ws::Message::Nop) => {}
+            // and close if client closes
             Ok(actix_http::ws::Message::Close(reason)) => {
                 ctx.close(reason);
             }
+            // print errors for debug
             Err(err) => {
                 println!("blackjack socket error: {:?}", err);
             }
@@ -187,137 +192,160 @@ impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError
 }
 
 impl BlackjackSession {
+    // draw starting cards
     fn starting_cards(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
+        // first player card
         let card1: Card = self.new_card();
+        // add to player hand
         self.game.player.hand.push(card1.clone());
+        // update player score
         self.game.player.score = self.get_score(&self.game.player.hand);
+        // send card to client
         ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "player1"}}"#, card1.suit, card1.value));
 
+        // second player card
         let card2: Card = self.new_card();
         self.game.player.hand.push(card2.clone());
         self.game.player.score = self.get_score(&self.game.player.hand);
         ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "player2"}}"#, card2.suit, card2.value));
 
+        // first dealer card
         let dealer_card: Card = self.new_card();
+        // add to dealer hand
         self.game.dealer.hand.push(dealer_card.clone());
+        // update dealer score
         self.game.dealer.score = self.get_score(&self.game.dealer.hand);
+        // first dealer card may be sent to client
         ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "dealer1"}}"#, dealer_card.suit, dealer_card.value));
 
-        if self.game.player.score > 21 {
+        // end if either player got blackjack
+        if self.game.player.score == 21 || self.game.dealer.score == 21 {
             self.end_game(ctx);
         }
     }
 
+    // get new card and return current score
     fn get_card(&mut self, hand: &mut Vec<Card>, target: &str, ctx: &mut ws::WebsocketContext<Self>) -> i64 {
+        // draw card
         let new_card = self.new_card();
+        // insert into hand
         hand.push(new_card.clone());
+        // get score
         let new_score: i64 = self.get_score(hand);
 
+        // different logic for player/dealer
         if target == "player" {
-            let new_game: BlackjackGame = BlackjackGame {
-                player: Player {
-                    hand: hand.clone(),
-                    score: new_score,
-                },
-                dealer: self.game.dealer.clone(),
-            };
-
-            self.game = new_game;
+            // update game instance with new scores and hands
+            // i don't know id this is needed
+            self.game.player.hand = hand.clone();
+            self.game.player.score = new_score;
+            // send card to client
             ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "{}{}"}}"#, new_card.suit, new_card.value, target, self.game.player.hand.len()));
         } else {
-            let new_game: BlackjackGame = BlackjackGame {
-                dealer: Player {
-                    hand: hand.clone(),
-                    score: new_score,
-                },
-                player: self.game.player.clone(),
-            };
-
-            self.game = new_game;
+            // update game instance
+            self.game.dealer.hand = hand.clone();
+            self.game.dealer.score = new_score;
+            // send dealer card to client
+            // this is safe because the dealer only draws once game is over
             ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "{}{}"}}"#, new_card.suit, new_card.value, target, self.game.dealer.hand.len()));
         }
 
         new_score
     }
 
+    // new card function
     fn new_card(&self) -> Card {
         Card {
+            // pick random suit
             suit: SUITS.choose(&mut rand::thread_rng()).unwrap().to_string(),
+            // pick random value
             value: VALUES.choose(&mut rand::thread_rng()).unwrap().to_string(),
         }
     }
 
+    // calculate score
     fn get_score(&self, hand: &Vec<Card>) -> i64 {
+        // mutable variables for score and ace count
         let mut score: i64 = 0;
         let mut aces: i64 = 0;
 
+        // iterate through cards
         for card in hand {
+            // value is a reference to the card's value
             let value = &card.value;
             match value.as_str() {
+                // increment aces and score
                 "A" => {
                     aces += 1;
                     score += 11;
                 }
+                // add 10 for face cards
                 "K" | "Q" | "J" => score += 10,
+                // parse &str as i64 and add to total
                 _ => score += value.parse::<i64>().unwrap(),
             }
         }
 
+        // ace logic
+        // while there is at least one ace and the score is over 21, change an ace value to 1
         while aces > 0 && score > 21 {
             score -= 10;
             aces -= 1;
         }
 
+        // return the score
         score
     }
 
+    // game end logic
     fn end_game(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
-        let result;
+        // result string that will be sent to client
+        let result: String;
 
+        // if player busts
         if self.game.player.score > 21 {
             result = "LB".to_string();
             self.credit_loss();
+        // if dealer busts
         } else if self.game.dealer.score > 21 {
             result = "WD".to_string();
             self.credit_win();
+        // if player score is more than dealer score
         } else if self.game.player.score > self.game.dealer.score {
             result = "WN".to_string();
             self.credit_win();
+        // if dealer score is more than player score
         } else if self.game.player.score < self.game.dealer.score {
             result = "LS".to_string();
             self.credit_loss();
+        // draw
         } else {
             result = "DR".to_string();
             self.credit_tie();
         }
 
+        // send result
         ctx.text(format!(r#"{{"result": "{}"}}"#, result));
+        // close socket
         ctx.close(Some(ws::CloseReason { code: ws::CloseCode::Normal, description: Some("".to_string()) }));
     }
 
     fn credit_win(&self) {
-        // credit logic
+        // TODO: credit logic
     }
 
     fn credit_tie(&self) {
-        // credit logic
+        // TODO: credit logic
     }
 
     fn credit_loss(&self) {
-        // credit logic
+        // TODO: credit logic
     }
 }
 
-impl Handler<ResultMessage> for BlackjackSession {
-    type Result = ();
-
-    fn handle(&mut self, msg: ResultMessage, ctx: &mut Self::Context) {
-        ctx.text(format!(r#"{{"result": "{}"}}"#, msg.result));
-        ctx.close(Some(ws::CloseReason { code: ws::CloseCode::Normal, description: Some("".to_string()) }));
-    }
-}
-
+// websocket route
 pub async fn websocket_route(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
+    // start websocket connection with clean game state
     ws::start(BlackjackSession {
         game: BlackjackGame {
             player: Player { hand: Vec::new(), score: 0 },
