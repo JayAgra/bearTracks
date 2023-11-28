@@ -7,6 +7,7 @@ use crate::db_transact;
 
 use super::analyze;
 
+// all data from this database can be represented by this enumerator
 #[derive(Serialize)]
 pub enum Main {
     FullMain {
@@ -14,7 +15,7 @@ pub enum Main {
         event: String,
         season: i64,
         team: i64,
-        match_num: i64, // not match because thats a rust keyword
+        match_num: i64,
         level: String,
         game: String,
         defend: String,
@@ -53,10 +54,13 @@ pub enum Main {
     }
 }
 
+// pool and connection types
 pub type Pool = r2d2::Pool<r2d2_sqlite::SqliteConnectionManager>;
 pub type Connection = r2d2::PooledConnection<r2d2_sqlite::SqliteConnectionManager>;
+// type representing the expected query result
 type QueryResult = Result<Vec<Main>, rusqlite::Error>;
 
+// enum to specify intended query type
 #[allow(clippy::enum_variant_names)]
 pub enum MainData {
     GetDataDetailed,
@@ -69,13 +73,17 @@ pub enum MainData {
     Id
 }
 
+// execute query
 pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> Result<Vec<Main>, Error> {
+    // clone pool
     let pool = pool.clone();
 
+    // get database connection
     let conn = web::block(move || pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
 
+    // run query function based on provided enum
     web::block(move || {
         match query {
             MainData::GetDataDetailed => get_data_detailed(conn, path),
@@ -92,53 +100,62 @@ pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> R
     .map_err(error::ErrorInternalServerError)
 }
 
+// get detailed data based on an id
 fn get_data_detailed(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT * FROM main WHERE id=:id LIMIT 1;")?;
     get_rows(stmt, [args[0].parse::<i64>().unwrap()])
 }
 
+// get the id, team, and match number based on an id. used to confirm submission
 fn get_submission_exists(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, team, match_num FROM main WHERE id=:id LIMIT 1;")?;
     get_exists_row(stmt, [args[0].parse::<i64>().unwrap()])
 }
 
+// get minimum required data on all matches in event
 fn get_brief_event(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND id!=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], ""])
 }
 
+// get minimum required data on all matches a team played at an event
 fn get_brief_team(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], args[2]])
 }
 
+// get minimum required data from a specific match
 fn get_brief_match(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], args[2]])
 }
 
+// get minimal data on all submissions from a given user
 fn get_brief_user(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND user_id=?2 AND id!=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], ""])
 }
 
+// get weight and team number for all teams at an event, for performance rankings
 fn get_all_teams(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
     get_team_rows(stmt, [args[0], args[1]])
 }
 
+// get all valid IDs from main database, for data management
 fn get_main_ids(conn: Connection, _path: web::Path<String>) -> QueryResult {
     let stmt = conn.prepare("SELECT id FROM main;")?;
     get_id_rows(stmt)
 }
 
+// map result data to enumerator for exists query
 fn get_exists_row(mut statement: Statement, params: [i64; 1]) -> QueryResult {
     statement
         .query_map(params, |row| {
@@ -151,6 +168,7 @@ fn get_exists_row(mut statement: Statement, params: [i64; 1]) -> QueryResult {
         .and_then(Iterator::collect)
 }
 
+// map result data to enumerator for detailed query
 fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
     statement
         .query_map(params, |row| {
@@ -175,6 +193,7 @@ fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
         .and_then(Iterator::collect)
 }
 
+// map results to enum for brief data queries
 fn get_brief_rows(mut statement: Statement, params: [&str; 3]) -> QueryResult {
     statement
         .query_map(params, |row| {
@@ -194,6 +213,7 @@ fn get_brief_rows(mut statement: Statement, params: [&str; 3]) -> QueryResult {
         .and_then(Iterator::collect)
 }
 
+// results to enum for teams at event
 fn get_team_rows(mut statement: Statement, params: [&str; 2]) -> QueryResult {
     statement
         .query_map(params, |row| {
@@ -206,6 +226,7 @@ fn get_team_rows(mut statement: Statement, params: [&str; 2]) -> QueryResult {
         .and_then(Iterator::collect)
 }
 
+// results to enum for existing data
 fn get_id_rows(mut statement: Statement) -> QueryResult {
     statement
         .query_map([], |row| {
@@ -216,6 +237,7 @@ fn get_id_rows(mut statement: Statement) -> QueryResult {
         .and_then(Iterator::collect)
 }
 
+// incoming data structure for a new main form submission
 #[derive(Deserialize)]
 pub struct MainInsert {
     pub event: String,
@@ -229,16 +251,19 @@ pub struct MainInsert {
     pub overall: String,
 }
 
+// value that will be returned to client (submission's id for verification)
 #[derive(Serialize)]
-pub struct InsertReturn {
-    pub id: i64
+pub struct Id {
+    pub id: i64,
 }
 
-pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, data: web::Json<MainInsert>, user: db_auth::User) -> Result<InsertReturn, actix_web::Error> {
+pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, data: web::Json<MainInsert>, user: db_auth::User) -> Result<Id, actix_web::Error> {
+    // clone pools for all databases
     let pool = pool.clone();
     let transact_pool = transact_pool.clone();
     let auth_pool = auth_pool.clone();
 
+    // get connections to all databases
     let conn = web::block(move || pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
@@ -258,29 +283,33 @@ pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool,
     .map_err(error::ErrorInternalServerError)
 }
 
-fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: db_auth::User) -> Result<InsertReturn, rusqlite::Error> {
+fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: db_auth::User) -> Result<Id, rusqlite::Error> {
+    // analyze the data
     let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2023);
-    let mut inserted_row = InsertReturn {
+    // create mutable response object
+    let mut inserted_row = Id {
         id: 0
     };
+    // insert data into database
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
     stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, user.id, user.full_name, user.team, analysis_results.weight, analysis_results.analysis])?;
+    // update response object with the correct ID
     inserted_row.id = conn.last_insert_rowid();
+    // insert transaction and update points. they're unused variables- i don't care if the points failed to credit
     let _inserted = db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: user.id, trans_type: 0x1000, amount: 25, time: "".to_string() }).expect("oop");
     let _updated = db_auth::update_points(auth_conn, user.id, 25).expect("oop");
+    // return response object
     Ok(inserted_row)
 }
 
-#[derive(Serialize)]
-pub struct Id {
-    pub id: i64,
-}
-
+// function to delete data for users with admin access
 pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, path: web::Path<String>) -> Result<String, actix_web::Error> {
+    // clone pools for all three databases
     let pool = pool.clone();
     let transact_pool = transact_pool.clone();
     let auth_pool = auth_pool.clone();
 
+    // get connections to all databases
     let conn = web::block(move || pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
@@ -294,8 +323,11 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
         .map_err(error::ErrorInternalServerError)?;
 
     web::block(move || {
+        // get the target id from request path
         let target_id = path.into_inner();
+        // prepare statement
         let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1 RETURNING user_id;")?;
+        // run query, mapping the result to a single Id object (containing the user id, not submission id) that will used to deduct points
         let execution = stmt
                                                     .query_row(params![target_id.parse::<i64>().unwrap()], |row| {
                                                         Ok(Id {
@@ -303,9 +335,13 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
                                                         })
                                                     });
         if execution.is_ok() {
-            let id = execution.unwrap().id;
+            // get the user id from the execution result
+            let id: i64 = execution.unwrap().id;
+            // insert transaction to deduct user points
             if db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: id, trans_type: 8192, amount: -25, time: "".to_string() }).is_ok() {
+                // deduct user points
                 if db_auth::update_points(auth_conn, id, -25).is_ok() {
+                    // again, it doesn't really matter if points failed. send success anyways
                     Ok("{\"status\":3203}".to_string())
                 } else {
                     Ok("{\"status\":3203}".to_string())
@@ -314,6 +350,7 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
                 Ok("{\"status\":3203}".to_string())
             }
         } else {
+            // query failed, send error
             Ok("{\"status\":8002}".to_string())
         }
     })

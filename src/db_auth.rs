@@ -255,10 +255,10 @@ fn create_user_entry(conn: Connection, team: i64, full_name: String, username: S
     Ok(new_user)
 }
 
-pub fn update_points(conn: Connection, user_id: i64, inc: i64) -> Result<db_main::InsertReturn, rusqlite::Error> {
+pub fn update_points(conn: Connection, user_id: i64, inc: i64) -> Result<db_main::Id, rusqlite::Error> {
     let mut stmt = conn.prepare("UPDATE users SET score = score + ?1 WHERE id = ?2;")?;
     stmt.execute(params![inc, user_id])?;
-    Ok(db_main::InsertReturn { id: conn.last_insert_rowid() })
+    Ok(db_main::Id { id: conn.last_insert_rowid() })
 }
 
 #[derive(Serialize, Deserialize, Clone)]

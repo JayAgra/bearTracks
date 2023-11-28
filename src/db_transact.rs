@@ -58,8 +58,8 @@ fn get_transact_rows(mut statement: Statement, user: db_auth::User) -> TransactQ
         .and_then(Iterator::collect)
 }
 
-pub fn insert_transaction(conn: Connection, data: Transact) -> Result<db_main::InsertReturn, rusqlite::Error> {
+pub fn insert_transaction(conn: Connection, data: Transact) -> Result<db_main::Id, rusqlite::Error> {
     let mut stmt = conn.prepare("INSERT INTO transactions (user_id, trans_type, amount) VALUES (?, ?, ?);")?;
     stmt.execute(params![data.user_id, data.trans_type, data.amount])?;
-    Ok(db_main::InsertReturn { id: conn.last_insert_rowid() })
+    Ok(db_main::Id { id: conn.last_insert_rowid() })
 }
