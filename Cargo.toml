@@ -1,6 +1,6 @@
 [package]
 name = "bear_tracks"
-version = "4.0.0"
+version = "4.1.0"
 edition = "2021"
 authors = ["Jayen Agrawal"]
 description = "a scouting webapp for frc"
@@ -19,19 +19,28 @@ actix-web = { version = "4.4", features = ["openssl"] }
 actix-web-actors = "4.2.0"
 actix-web-static-files = "4.0.1"
 argon2 = "0.5.2"
+async-trait = { version = "~0.1" }
+anyhow = { version = "~1.0" }
+base64urlsafedata = "0.1.3"
+chrono = { version = "~0.4" }
 dotenv = "0.15.0"
 env_logger = "0.10"
 futures-util = { version = "0.3.17", default-features = false, features = ["std"] }
 html-escape = "0.2.13"
 log = "0.4"
+once_cell = { version = "~1.17" }
 openssl = { version = "0.10", features = ["v110"] }
 r2d2 = "0.8"
 r2d2_sqlite = "0.22"
 rand = "0.8.5"
 reqwest = "0.11.22"
-serde = { version = "1", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_cbor_2 = { version = "0.12.0-dev" }
+serde_json = "1.0"
 static-files = "0.2.1"
+tokio = { version = "1.22.0", features = [ "sync", "test-util", "macros", "net", "rt-multi-thread", "time" ] }
 vader_sentiment = "0.1.1"
+webauthn-rs = { version = "0.4.8", features = ["danger-allow-state-serialisation"]}
 
 [build-dependencies]
 static-files = "0.2.1"

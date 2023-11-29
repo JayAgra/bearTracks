@@ -1,6 +1,8 @@
+use std::str;
 use actix_web::{error, web, Error};
 use rusqlite::{Statement, params};
 use serde::{Serialize, Deserialize};
+use serde_json;
 use argon2::{
     password_hash::{
         rand_core::OsRng,
@@ -9,6 +11,7 @@ use argon2::{
     },
     Argon2
 };
+use webauthn_rs::prelude::*;
 
 use crate::db_main;
 
@@ -432,4 +435,50 @@ fn update_access_key_sql(conn: Connection, key: String, id: String) -> Result<St
     let mut stmt = conn.prepare("UPDATE accessKeys SET key=?1 WHERE id=?2")?;
     stmt.execute(params![key, id])?;
     Ok("{\"status\": 3207}".to_string())
+}
+
+pub async fn get_passkeys(pool: &Pool, id: String) -> Result<Vec<Passkey>, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        get_passkey_data(conn, id)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn get_passkey_data(conn: Connection, id: String) -> Result<Vec<Passkey>, rusqlite::Error> {
+    let mut statement = conn.prepare("SELECT passkey FROM passkeys WHERE user_id=?1;")?;
+    statement
+        .query_map([id], |row| {
+            let passkey_text: String = row.get(0)?;
+            Ok(
+                serde_json::from_str(str::from_utf8(passkey_text.as_bytes()).unwrap()).unwrap()
+            )
+        })
+        .and_then(Iterator::collect)
+}
+
+pub async fn set_passkey(pool: &Pool, passkey: Passkey, user_id: i64) -> Result<i64, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        set_passkey_data(conn, passkey, user_id)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn set_passkey_data(conn: Connection, passkey: Passkey, user_id: i64) -> Result<i64, rusqlite::Error> {
+    let mut statement = conn.prepare("INSERT INTO passkeys (user_id, passkey) VALUES (?1, ?2);")?;
+    statement.execute(params![user_id, serde_json::to_string(&passkey).unwrap()])?;
+    Ok(conn.last_insert_rowid())
 }

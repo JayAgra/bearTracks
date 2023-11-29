@@ -1,3 +1,4 @@
 static/public/js/*/*.js            linguist-vendored
 static/public/assets/*.js          linguist-vendored
 static/public/js/tsconfig.json     linguist-language=JSON-with-Comments
+static/public/wasm/*.js            linguist-vendored

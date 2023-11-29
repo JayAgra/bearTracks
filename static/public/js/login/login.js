@@ -27,12 +27,15 @@ nextBtn.addEventListener("click", async () => {
             isPkBtn = true;
         }
     }
+    else {
+        window.location.href = "/passkeyAuth";
+    }
 });
 function setCooky(name) {
     document.cookie = name + "=" + "true" + "; expires=" + new Date(Date.now() + 86400000).toUTCString() + "; path=/";
 }
 function deleteCooky(name) { document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'; }
-document.onload = () => { deleteCooky("lead"); deleteCooky("childTeamLead"); };
+window.onload = () => { deleteCooky("lead"); deleteCooky("childTeamLead"); };
 async function uploadForm() {
     const errorElement = document.getElementById("error");
     errorElement.disabled = true;

@@ -6,6 +6,7 @@ data_transact.db-wal
 data_auth.db-shm
 data_auth.db-wal
 target*
+pkg*
 Cargo.lock
 .env
 ssl/*.pem
