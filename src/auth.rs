@@ -67,12 +67,14 @@ pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessio
         // query error, send failure response
         return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
     }
+    // query was OK, unwrap and set to target_user
     let target_user = target_user_temp.unwrap();
     
     // ensure the target user id exists
     if target_user.id != 0 {
         // parse the hash of the user from the database
         let parsed_hash = PasswordHash::new(&target_user.pass_hash);
+        // if error in parsing hash, send failure response
         if parsed_hash.is_err() {
             // could not parse hash, send failure
             return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
@@ -83,20 +85,24 @@ pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessio
             identity.remember(login_form.username.clone());
             // write the user object to the session
             session.write().unwrap().user_map.insert(target_user.clone().username.to_string(), target_user.clone());
+            // if admin, send admin success response
             if target_user.admin == "true" {
                 // user is admin, send admin response for client cookie
                 return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success_adm\"}");
             }
+            // if team admin, send team admin success response
             if target_user.team_admin != 0 {
                 // user is a team admin, send team admin response
                 return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success_ctl\"}");
             }
             // send generic success response
             return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success\"}");
+        // bad password, send failure
         } else {
             // bad password, send 400
             return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
         }
+    // target user is zero, send failure
     } else {
         // target user id is zero, send 400
         return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}");
