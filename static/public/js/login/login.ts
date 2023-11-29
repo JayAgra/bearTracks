@@ -33,6 +33,8 @@ nextBtn.addEventListener("click", async () => {
             passwordLoginButton.removeAttribute("disabled");
             isPkBtn = true;
         }
+    } else {
+        window.location.href = "/passkeyAuth";
     }
 });
 
@@ -41,7 +43,7 @@ function setCooky(name: string) {
 }
 
 function deleteCooky(name: String) { document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'; }
-document.onload = () => { deleteCooky("lead"); deleteCooky("childTeamLead"); }
+window.onload = () => { deleteCooky("lead"); deleteCooky("childTeamLead"); }
 
 async function uploadForm() {
     const errorElement = document.getElementById("error") as HTMLButtonElement;

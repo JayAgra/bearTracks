@@ -2,13 +2,14 @@ use std::{env, io, collections::HashMap, pin::Pin, sync::RwLock};
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
-use actix_session::{SessionMiddleware, storage::CookieSessionStore};
+use actix_session::{SessionMiddleware, Session};
 use actix_web::{error, middleware::{self, DefaultHeaders}, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
 use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use serde::{Serialize, Deserialize};
+use webauthn_rs::prelude::*;
 
 mod analyze;
 mod auth;
@@ -17,6 +18,8 @@ mod db_auth;
 mod db_main;
 mod db_transact;
 mod forward;
+mod passkey;
+mod session;
 mod static_files;
 
 // hashmap containing user session IDs
@@ -34,7 +37,11 @@ impl FromRequest for db_auth::User {
         let fut = Identity::from_request(req, payload);
         let session: Option<&web::Data<RwLock<Sessions>>> = req.app_data();
         if session.is_none() {
-            return Box::pin( async { Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}")) });
+            return Box::pin(
+                async {
+                    Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
+                }
+            );
         }
         let session = session.unwrap().clone();
         Box::pin(async move {
@@ -81,6 +88,38 @@ async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Ses
 // destroy session endpoint
 async fn auth_get_logout(session: web::Data<RwLock<Sessions>>, identity: Identity) -> impl Responder {
     auth::logout(session, identity).await
+}
+
+// create passkey
+async fn auth_psk_create_start(db: web::Data<Databases>, user: db_auth::User, session: Session, webauthn: web::Data<Webauthn>) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(passkey::webauthn_start_registration(&db.auth, user, session, webauthn).await?)
+    )
+}
+
+// finish passkey creation
+async fn auth_psk_create_finish(db: web::Data<Databases>, user: db_auth::User, data: web::Json<RegisterPublicKeyCredential>, session: Session, webauthn: web::Data<Webauthn>) -> Result<HttpResponse, AWError> {
+    Ok(
+        passkey::webauthn_finish_registration(&db.auth, user, data, session, webauthn).await?
+    )
+}
+
+// get passkey auth challenge
+async fn auth_psk_auth_start(db: web::Data<Databases>, username: web::Path<String>, session: Session, webauthn: web::Data<Webauthn>) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(passkey::webauthn_start_authentication(&db.auth, username.into_inner(), session, webauthn).await?)
+    )
+}
+
+// finish passkey authentication
+async fn auth_psk_auth_finish(db: web::Data<Databases>, cred: web::Json<PublicKeyCredential>, session: Session, identity: Identity, webauthn: web::Data<Webauthn>, sessions: web::Data<RwLock<Sessions>>) -> Result<HttpResponse, AWError> {
+    Ok(
+        passkey::webauthn_finish_authentication(&db.auth, cred, session, identity, webauthn, sessions).await?
+    )
 }
 
 // get detailed data by submission id. used in /detail
@@ -451,16 +490,31 @@ async fn main() -> io::Result<()> {
         // generated resources from actix_web_files
         let generated = generate();
         App::new()
+            // add databases to app data
             .app_data(web::Data::new(Databases {main: main_db_pool.clone(), auth: auth_db_pool.clone(), transact: trans_db_pool.clone() }))
+            // add sessions to app data
             .app_data(sessions.clone())
+            // add webauthn to app data
+            .app_data(passkey::setup_passkeys())
+            // use governor ratelimiting as middleware
             .wrap(Governor::new(&governor_conf))
+            // use cookie id system middleware
             .wrap(IdentityService::new(
                 CookieIdentityPolicy::new(&[0; 32])
                     .name("bear_tracks")
                     .secure(false),
             ))
+            // logging middleware
             .wrap(middleware::Logger::default())
-            .wrap(SessionMiddleware::new(CookieSessionStore::default(), secret_key.clone()))
+            // session middleware
+            .wrap(
+                SessionMiddleware::builder(session::MemorySession, secret_key.clone())
+                    .cookie_name("bear_tracks-ms".to_string())
+                    .cookie_http_only(true)
+                    .cookie_secure(false)
+                    .build()
+            )
+            // default headers for caching. overridden on most all api endpoints
             .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "4.0.0")))
             /* src  endpoints */
                 // GET individual files
@@ -477,6 +531,8 @@ async fn main() -> io::Result<()> {
                 .route("/manageTeam", web::get().to(static_files::static_manage_team))
                 .route("/manageTeams", web::get().to(static_files::static_manage_teams))
                 .route("/matches", web::get().to(static_files::static_matches))
+                .route("/passkey", web::get().to(static_files::static_passkey))
+                .route("/passkeyAuth", web::get().to(static_files::static_passkey_auth))
                 .route("/pointRecords", web::get().to(static_files::static_point_records))
                 .route("/points", web::get().to(static_files::static_points))
                 .route("/scouts", web::get().to(static_files::static_scouts))
@@ -492,6 +548,10 @@ async fn main() -> io::Result<()> {
                 // POST
                 .service(web::resource("/api/v1/auth/create").route(web::post().to(auth_post_create)))
                 .service(web::resource("/api/v1/auth/login").route(web::post().to(auth_post_login)))
+                .service(web::resource("/api/v1/auth/passkey/register_start").route(web::post().to(auth_psk_create_start)))
+                .service(web::resource("/api/v1/auth/passkey/register_finish").route(web::post().to(auth_psk_create_finish)))
+                .service(web::resource("/api/v1/auth/passkey/auth_start/{username}").route(web::post().to(auth_psk_auth_start)))
+                .service(web::resource("/api/v1/auth/passkey/auth_finish").route(web::post().to(auth_psk_auth_finish)))
             /* data endpoints */
                 // GET (✅)
                 .service(web::resource("/api/v1/data/detail/{id}").route(web::get().to(data_get_detailed)))
