@@ -1,5 +1,5 @@
 [package]
-name = "webauthn_create"
+name = "webauthn_login"
 version = "0.1.1"
 edition = "2021"
 rust-version = "1.70.0"
@@ -29,7 +29,3 @@ features = [
     "PublicKeyCredential",
     "PublicKeyCredentialCreationOptions",
 ]
-
-[profile.release]
-lto = true
-opt-level = 'z'
