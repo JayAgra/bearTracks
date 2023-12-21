@@ -209,7 +209,7 @@ impl App {
                 <meta name="robots" content="nositelinkssearchbox, nofollow"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <meta name="theme-color" content="#282828"/>
-                <meta http-equiv="refresh" content="2; url=/passkeyAuth"/>
+                <meta http-equiv="refresh" content="1; url=/"/>
                 <link rel="stylesheet" href="static/css/float.min.css" type="text/css"/>
                 <link rel="stylesheet" href="static/css/settings.css" type="text/css"/>
             </head>

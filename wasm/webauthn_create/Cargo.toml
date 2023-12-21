@@ -29,3 +29,7 @@ features = [
     "PublicKeyCredential",
     "PublicKeyCredentialCreationOptions",
 ]
+
+[profile.release]
+lto = true
+opt-level = 'z'

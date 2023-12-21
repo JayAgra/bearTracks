@@ -10,3 +10,4 @@ pkg*
 Cargo.lock
 .env
 ssl/*.pem
+.vscode*

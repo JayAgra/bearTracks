@@ -532,7 +532,6 @@ async fn main() -> io::Result<()> {
                 .route("/manageTeams", web::get().to(static_files::static_manage_teams))
                 .route("/matches", web::get().to(static_files::static_matches))
                 .route("/passkey", web::get().to(static_files::static_passkey))
-                .route("/passkeyAuth", web::get().to(static_files::static_passkey_auth))
                 .route("/pointRecords", web::get().to(static_files::static_point_records))
                 .route("/points", web::get().to(static_files::static_points))
                 .route("/scouts", web::get().to(static_files::static_scouts))
