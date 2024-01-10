@@ -10,10 +10,12 @@ import SwiftUI
 @main
 struct beartracksApp: App {
     let settingsManager = SettingsManager.shared
+    var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     
     var body: some Scene {
         WindowGroup {
             TabBar()
+                .preferredColorScheme(darkMode ? .dark : .light)
         }
     }
 }

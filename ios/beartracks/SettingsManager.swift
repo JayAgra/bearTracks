@@ -15,6 +15,7 @@ class SettingsManager {
             "teamNumber": "766",
             "eventCode": "CADA",
             "season": "2023",
+            "darkMode": true,
         ]
         UserDefaults.standard.register(defaults: defaults)
     }

@@ -11,6 +11,8 @@ struct SettingsView: View {
     @State private var teamNumberInput: String = UserDefaults.standard.string(forKey: "teamNumber") ?? ""
     @State private var eventCodeInput: String = UserDefaults.standard.string(forKey: "eventCode") ?? ""
     @State private var seasonInput: String = UserDefaults.standard.string(forKey: "season") ?? ""
+    @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
+    @State private var showAlert = false
     
     var body: some View {
         VStack {
@@ -58,8 +60,25 @@ struct SettingsView: View {
                             saveSeason()
                         }
                     }
+                    HStack {
+                        Toggle(isOn: $darkMode) {
+                            Label("Dark Mode", systemImage: "moon.fill")
+                        }
+                        .padding()
+                        .onChange(of: darkMode) {
+                            UserDefaults.standard.set(darkMode, forKey: "darkMode")
+                            showAlert = true
+                        }
+                    }
                 }
             }
+            .alert(isPresented: $showAlert, content: {
+                Alert (
+                    title: Text("Theme Change"),
+                    message: Text("You must restart the app for the change to take effect"),
+                    dismissButton: .default(Text("Ok"))
+                )
+            })
         }
         .padding()
     }
