@@ -11,3 +11,14 @@ Cargo.lock
 .env
 ssl/*.pem
 .vscode*
+*.swiftpm/
+*.swiftpm/*
+*/.build
+*/build
+*/Packages
+*xcuserdata/
+*fastlane/*
+*!fastlane/Fastfile
+*!fastlane/Pluginfile
+*.xcbkptlist
+*.xcuserstate

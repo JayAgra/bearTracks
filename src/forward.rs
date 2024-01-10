@@ -28,7 +28,11 @@ pub async fn forward_frc_api_event_matches(req: HttpRequest, path: web::Path<(St
     let (season, event, level, all) = path.into_inner();
     let mut url_param: String = "&start=&end=".to_string();
     if all != "all" {
-        url_param = format!("&teamNumber={}", env::var("MY_TEAM").unwrap_or_else(|_| "766".to_string()))
+        if all != "false" {
+            url_param = format!("&teamNumber={}", all)
+        } else {
+            url_param = format!("&teamNumber={}", env::var("MY_TEAM").unwrap_or_else(|_| "766".to_string()))
+        }
     }
     let target_url: String = format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel={}{}", season, event, level, url_param);
     // create client and get response

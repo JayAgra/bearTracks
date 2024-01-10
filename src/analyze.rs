@@ -5,6 +5,7 @@ use super::db_main;
 
 pub(crate) enum Season {
     S2023,
+    S2024
 }
 
 fn bool_to_num(value: &str) -> f64 {
@@ -22,7 +23,8 @@ pub(crate) struct AnalysisResults {
 
 pub fn analyze_data(data: &web::Json<db_main::MainInsert>, season: Season) -> AnalysisResults {
     match season {
-        Season::S2023 => season_2023(data).unwrap()
+        Season::S2023 => season_2023(data).unwrap(),
+        Season::S2024 => season_2024(data).unwrap()
     }
 }
 
@@ -184,6 +186,80 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         score * (mid_cone / 9.0),
         score * (high_cube / 9.0),
         score * (high_cone / 9.0),
+    );
+
+    let string_mps_scores: Vec<String> = mps_scores
+                                            .iter()
+                                            .map(|float| float.to_string())
+                                            .collect();
+
+    let string_analysis_results: Vec<String> = analysis_results
+                                            .iter()
+                                            .map(|float| float.to_string())
+                                            .collect();
+
+    Ok(AnalysisResults {
+        weight: string_mps_scores.join(","),
+        analysis: string_analysis_results.join(","),
+    })
+}
+
+fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults, Error> {
+    let analyzer = vader_sentiment::SentimentIntensityAnalyzer::new();
+    let game_data = data.game.split(",").collect::<Vec<_>>();
+    /*
+        0  LEAVE (bool)
+        1  AMP in AUTO (bool)
+        2  SPEAKER in AUTO (bool)
+        3  AMP notes (int)
+        4  SPEAKER notes (int)
+        5  AMPLIFIED SPEAKER notes (int)
+        6  CYCLE TIME (string)
+        7  PARKED (bool)
+        8  ONSTAGE (bool)
+        9  SPOTLIT (bool)
+        10 HARMONY (bool)
+        11 NOTE IN TRAP (bool)
+    */
+    let analysis_results: Vec<f64> = vec!(
+        analyzer.polarity_scores(data.defend.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.driving.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.overall.as_str()).get("compound").unwrap().clone()
+    );
+
+    let (game_3, game_4, game_5): (f64, f64, f64) = 
+        (game_data[3].parse::<i64>().unwrap() as f64,
+         game_data[4].parse::<i64>().unwrap() as f64,
+         game_data[5].parse::<i64>().unwrap() as f64);
+
+    let mut score: f64 = 0.0;
+
+    score += bool_to_num(game_data[0]) * 2.0;
+    score += bool_to_num(game_data[1]) * 2.0;
+    score += bool_to_num(game_data[2]) * 5.0;
+
+    score += game_3 * 1.0;
+    score += game_4 * 2.0;
+    score += game_5 * 5.0;
+
+    score += bool_to_num(game_data[7]) * 1.0;
+    score += bool_to_num(game_data[8]) * 3.0;
+    score += bool_to_num(game_data[9]) * 1.0;
+    score += bool_to_num(game_data[10]) * 2.0;
+    score += bool_to_num(game_data[11]) * 5.0;
+
+    let mps_scores: Vec<f64> = vec!(
+        score, // standard
+        score * (game_3 + game_4 + game_5), // note count
+        score * ((game_4 * 2.0) + (game_5 * 5.0)), // speaker points
+        score * game_3, // amp points
+        score * (
+            (bool_to_num(game_data[7]) * 1.0) +
+            (bool_to_num(game_data[8]) * 3.0) +
+            (bool_to_num(game_data[9]) * 1.0) +
+            (bool_to_num(game_data[10]) * 2.0) +
+            (bool_to_num(game_data[11]) * 5.0)
+        ) // endgame points
     );
 
     let string_mps_scores: Vec<String> = mps_scores

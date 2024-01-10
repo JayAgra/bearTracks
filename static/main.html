@@ -1,45 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Match Scouting - bearTracks</title>
-        <meta name="robots" content="nositelinkssearchbox, nofollow">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="theme-color" content="#121212" id="themeMeta">
-        <link rel="stylesheet" href="static/css/float.min.css" type="text/css">
-        <link rel="stylesheet" href="static/css/grid.min.css" type="text/css">
-        <script src="static/js/form/form.min.js"></script>
-    </head>
-    <body class="dark-mode" onload="checkLogin()" style="width: 100vw;">
-        <script>themeHandle()</script>
-        <form id="mainFormHTML">
-            <input type="text" value="main" name="formType" hidden>
-            <h1 class="w3">bearTracks<br><span class="gametitle">match scouting</span></h1><br>
-            <h2 class="gameflair1">Pre-Match</h2>
-            <fieldset><label>Event Code<span id="badEvent" style="color: red; display: none;"></span><br></label><select name="event" id="eventCode"><option value="CADA">CADA - Sacramento Regional</option><option value="CASJ">CASJ - Silicon Valley Regional</option><option value="WOOD">WOOD - CalGames</option><option value="CCCC" selected>CCCC - Capital City Classic</option></select></fieldset>
-            <fieldset><label>Match Number<span id="badMatchNum" style="color: red; display: none;"></span><br></label><input type="tel" name="match" class="smallerInput" id="matchNumberInput" required><select name="level" class="lowerSelect"><option value="Practice" disabled>Practice</option><option value="Qualification" selected>Qual</option><option value="Upper" disabled>Upper</option><option value="Lower" disabled>Lower</option></select></fieldset>
-            <fieldset><label>Team Number<br></label><select name="team" id="teamNumber" style="min-width: 250px;"><optgroup label="Blue Alliance"><option value="" class="teamNumOption"></option><option value="" class="teamNumOption"></option><option value="" class="teamNumOption"></option></optgroup><optgroup label="Red Alliance"><option value="" class="teamNumOption"></option><option value="" class="teamNumOption"></option><option value="" class="teamNumOption"></option></optgroup></select></fieldset><br>
-            <h2 class="gameflair1">Match Scouting</h2>
-            <br><label><strong class="vstrong">During AUTO, the robot...</strong></label>
-            <fieldset><br><input value="true" type="checkbox" name="game1" class="checkbig"><span>&emsp;Completely left COMMUNITY<br></span><br><input value="true" type="checkbox" name="game2" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br><input value="true" type="checkbox" name="game3" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br><input value="true" type="checkbox" name="game4" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br><input value="0" type="radio" name="game5" class="checkbig" checked="checked"><span>&emsp;Not DOCKED or ENGAGED<br></span><br><input value="8" type="radio" name="game5" class="checkbig"><span>&emsp;DOCKED, not ENGAGED<br></span><br><input value="12" type="radio" name="game5" class="checkbig"><span>&emsp;DOCKED and ENGAGED<br></span><br></fieldset>
-            <p id="landscapeReminder" style="display: none; color: red;">Consider turning your device for the grid</p>
-            <p>select all grid squares that the robot fills (incl. auto)</p>
-            <fieldset><input value="000000000000000000000000000" type="text" name="game12" id="griddata" hidden><p><strong>Top of grid</strong></p><div class="sg"></div><p><strong>Bottom of grid</strong></p></fieldset>
-            <br><label><strong class="vstrong">During TELEOP, the robot...</strong></label>
-            <fieldset><br><input value="true" type="checkbox" name="game6" class="checkbig"><span>&emsp;Scored on a bottom ROW<br></span><br><input value="true" type="checkbox" name="game7" class="checkbig"><span>&emsp;Scored on a middle ROW<br></span><br><input value="true" type="checkbox" name="game8" class="checkbig"><span>&emsp;Scored on a top ROW<br></span><br><input value="true" type="checkbox" name="game9" class="checkbig"><span>&emsp;COOPERTITION bonus<br></span><br><input value="0" type="radio" name="game10" class="checkbig" checked="checked"><span>&emsp;Not DOCKED or ENGAGED<br></span><br><input value="2" type="radio" name="game10" class="checkbig"><span>&emsp;PARKED (in COMMUNITY)<br></span><br><input value="6" type="radio" name="game10" class="checkbig"><span>&emsp;DOCKED and not ENGAGED<br></span><br><input value="10" type="radio" name="game10" class="checkbig"><span>&emsp;DOCKED and ENGAGED<br></span><br></fieldset>
-            <input value="0" type="number" name="game13" hidden><input value="0" type="number" name="game14" hidden><input value="0" type="number" name="game15" hidden><input value="0" type="number" name="game16" hidden><input value="0" type="number" name="game17" hidden><input value="0" type="number" name="game18" hidden><input value="0" type="number" name="game19" hidden><input value="0" type="number" name="game20" hidden><input value="0" type="number" name="game21" hidden><input value="0" type="number" name="game22" hidden><input value="0" type="number" name="game23" hidden><input value="0" type="number" name="game24" hidden><input value="0" type="number" name="game25" hidden>
-            <br><h2 class="gameflair1">Post Game</h2>
-            <fieldset><label>Cycle time <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span><br></label><br><input type="tel" name="game11" class="smallerInput" id="validateLength" required> seconds</fieldset>
-            <fieldset><label>Did the robot play defense? Explain.<br><br></label><textarea rows="2" cols="30" name="defend" required></textarea></fieldset>
-            <fieldset><label>Thoughts about driving<br><br></label><textarea rows="2" cols="30" name="driving" required></textarea></fieldset>
-            <fieldset><label>Overall assessment<br><br></label><textarea rows="4" cols="30" name="overall" required></textarea></fieldset><br>
-            <p style="text-align:center"><button type="button" class="uiButton actionButton" onclick="uploadForm()" id="submitButton" disabled="disabled">Submit</button><br><br><button type="button" class="uiButton cancelButton" onclick="window.location.href='/'">Back</button><br><br></p>
-        </form>
-        <div class="dummy" id="submitUi" style="display: none;">
-            <h1 style="padding-top: 25vh" id="submitText_d">Submitting...</h1>
-            <progress style="min-width: 75vw;" id="submitProgress_d"></progress><br>
-            <button type="button" class="uiButton actionButton" onclick="uploadForm()" id="reSubmitButton" style="display: none;">retry</button><br>
-        </div>
-        <script type="module" src="static/js/main_form/main_form.min.js"></script>
-    </body>
+	<head>
+		<meta charset="utf-8">
+		<title>Match Scouting - bearTracks</title>
+		<meta name="robots" content="nositelinkssearchbox, nofollow">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="theme-color" content="#121212" id="themeMeta">
+		<link rel="stylesheet" href="static/css/float.min.css" type="text/css">
+		<link rel="stylesheet" href="static/css/grid.min.css" type="text/css">
+		<script src="static/js/form/form.min.js"></script>
+	</head>
+	<body class="dark-mode" onload="checkLogin()" style="width: 100vw;">
+		<script>
+			themeHandle()
+		</script>
+		<form id="mainFormHTML">
+			<input type="text" value="main" name="formType" hidden>
+			<h1 class="w3">bearTracks<br>
+				<span class="gametitle">match scouting</span>
+			</h1>
+			<br>
+			<h2 class="gameflair1">Pre-Match</h2>
+			<fieldset>
+				<label>Event Code <span id="badEvent" style="color: red; display: none;"></span>
+					<br>
+				</label>
+				<select name="event" id="eventCode">
+					<option value="CAFR" selected>CADA - Central Valley Regional</option>
+					<option value="CABE">CASJ - East Bay Regional</option>
+				</select>
+			</fieldset>
+			<fieldset>
+				<label>Match Number <span id="badMatchNum" style="color: red; display: none;"></span>
+					<br>
+				</label>
+				<input type="tel" name="match" class="smallerInput" id="matchNumberInput" required>
+				<select name="level" class="lowerSelect">
+					<option value="Qualification" selected>Qual</option>
+				</select>
+			</fieldset>
+			<fieldset>
+				<label>Team Number <br>
+				</label>
+				<select name="team" id="teamNumber" style="min-width: 250px;">
+					<optgroup label="Blue Alliance">
+						<option value="" class="teamNumOption"></option>
+						<option value="" class="teamNumOption"></option>
+						<option value="" class="teamNumOption"></option>
+					</optgroup>
+					<optgroup label="Red Alliance">
+						<option value="" class="teamNumOption"></option>
+						<option value="" class="teamNumOption"></option>
+						<option value="" class="teamNumOption"></option>
+					</optgroup>
+				</select>
+			</fieldset>
+			<br>
+			<h2 class="gameflair1">Match Scouting</h2>
+			<br>
+			<label>
+				<strong class="vstrong">during AUTO, the robot...</strong>
+			</label>
+			<fieldset>
+				<br>
+				<input value="true" type="checkbox" name="game1" class="checkbig">
+				<span>&emsp;completely left starting zone (LEAVE) <br>
+				</span>
+				<br>
+				<input value="true" type="checkbox" name="game2" class="checkbig">
+				<span>&emsp;scored an AMP note <br>
+				</span>
+				<br>
+				<input value="true" type="checkbox" name="game3" class="checkbig">
+				<span>&emsp;scored a SPEAKER note <br>
+				</span>
+				<br>
+			</fieldset>
+            <label>
+				<strong class="vstrong">teleop scoring</strong>
+			</label>
+			<fieldset>
+				<div class="sg">
+                    <div class="sg-c up" id="up_0">↑</div>
+                    <div class="sg-c up" id="up_1">↑</div>
+                    <div class="sg-c up" id="up_2">↑</div>
+                    <div class="sg-c counter" id="in_0"><span class="count">0</span><span>AMP</span></div>
+                    <div class="sg-c counter" id="in_1"><span class="count">0</span><span>SPEAKER</span></div>
+                    <div class="sg-c counter" id="in_2"><span class="count">0</span><span>AMPLIFIED SPEAKER</span></div>
+                    <div class="sg-c down" id="dn_0">↓</div>
+                    <div class="sg-c down" id="dn_1">↓</div>
+                    <div class="sg-c down" id="dn_2">↓</div>
+                </div>
+			</fieldset>
+			<br><br>
+			<label>
+				<strong class="vstrong">in the ENDGAME, the robot</strong>
+			</label>
+			<fieldset>
+				<br>
+				<input value="true" type="checkbox" name="game8" class="checkbig">
+				<span>&emsp;was PARKED (bumpers in the STAGE zone) <br>
+				</span>
+				<br>
+				<input value="true" type="checkbox" name="game9" class="checkbig">
+				<span>&emsp;was ONSTAGE (hanging)<br>
+				</span>
+				<br>
+				<input value="true" type="checkbox" name="game10" class="checkbig">
+				<span>&emsp;was SPOTLIT (HIGH NOTE on MICROPHONE) <br>
+				</span>
+				<br>
+				<input value="true" type="checkbox" name="game11" class="checkbig">
+				<span>&emsp;was in HARMONY (more than 1 robot on a single chain) <br>
+				</span>
+				<br>
+				<input value="true" type="checkbox" name="game12" class="checkbig">
+				<span>&emsp;scored a NOTE in TRAP <br>
+				</span>
+				<br>
+			</fieldset>
+			<br>
+			<h2 class="gameflair1">Post Game</h2>
+			<fieldset>
+				<label>Cycle time <span id="tooLong" style="color: red; display: none;">must be a number, 0 - 120 (use 120 for no scoring)</span>
+					<br>
+				</label>
+				<br>
+				<input type="tel" name="game7" class="smallerInput" id="validateLength" required> seconds
+			</fieldset>
+			<fieldset>
+				<label>Did the robot play defense? Explain. <br>
+					<br>
+				</label>
+				<textarea rows="2" cols="30" name="defend" required></textarea>
+			</fieldset>
+			<fieldset>
+				<label>Thoughts about driving <br>
+					<br>
+				</label>
+				<textarea rows="2" cols="30" name="driving" required></textarea>
+			</fieldset>
+			<fieldset>
+				<label>Overall assessment <br>
+					<br>
+				</label>
+				<textarea rows="4" cols="30" name="overall" required></textarea>
+			</fieldset>
+			<br>
+			<p style="text-align:center">
+				<button type="button" class="uiButton actionButton" onclick="uploadForm()" id="submitButton" disabled="disabled">Submit</button>
+				<br>
+				<br>
+				<button type="button" class="uiButton cancelButton" onclick="window.location.href='/'">Back</button>
+				<br>
+				<br>
+			</p>
+		</form>
+		<div class="dummy" id="submitUi" style="display: none;">
+			<h1 style="padding-top: 25vh" id="submitText_d">Submitting...</h1>
+			<progress style="min-width: 75vw;" id="submitProgress_d"></progress>
+			<br>
+			<button type="button" class="uiButton actionButton" onclick="uploadForm()" id="reSubmitButton" style="display: none;">retry</button>
+			<br>
+		</div>
+		<script type="module" src="static/js/main_form/main_form.js"></script>
+	</body>
 </html>

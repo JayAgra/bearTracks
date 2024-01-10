@@ -285,7 +285,7 @@ pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool,
 
 fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: db_auth::User) -> Result<Id, rusqlite::Error> {
     // analyze the data
-    let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2023);
+    let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2024);
     // create mutable response object
     let mut inserted_row = Id {
         id: 0
