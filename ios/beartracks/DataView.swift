@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct DataView: View {
-    @State private var eventData: [DataEntry] = []
-    @State private var selectedEntry: Int? = nil
-    @State private var isShowingSheet = false
+    @State private var didInitialLoad: Bool = false
+    @State private var sheetConfig = DetailSheetConfig()
+    @ObservedObject var dataItems: DataViewModel = DataViewModel()
     
     var body: some View {
         VStack {
@@ -20,8 +20,8 @@ struct DataView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             ScrollView {
                 LazyVStack {
-                    if !eventData.isEmpty {
-                        ForEach(eventData, id: \.Brief.id) { entry in
+                    if !dataItems.dataEntries.isEmpty {
+                        ForEach(dataItems.dataEntries, id: \.Brief.id) { entry in
                             VStack {
                                 HStack {
                                     Text("\(String(entry.Brief.team))")
@@ -40,9 +40,8 @@ struct DataView: View {
                                 }
                             }
                             .padding()
-                            .onTapGesture {
-                                selectedEntry = entry.Brief.id
-                                isShowingSheet.toggle()
+                            .onTapGesture() {
+                                sheetConfig.selectId(id: String(entry.Brief.id))
                             }
                             Divider()
                         }
@@ -51,41 +50,25 @@ struct DataView: View {
                             .padding(.bottom)
                     }
                 }
-            }.refreshable {
-                fetchEventJson()
+            }
+            .refreshable {
+                dataItems.reload()
+            }
+            .onAppear() {
+                if !didInitialLoad {
+                    dataItems.reload()
+                    didInitialLoad = true
+                }
             }
         }
         .padding()
-        .onAppear() {
-            fetchEventJson()
-        }
-        .sheet(isPresented: $isShowingSheet, content: {
-            if let selectedEntry = selectedEntry {
-                DetailedView(targetId: selectedEntry)
-            }
+        .sheet(isPresented: $sheetConfig.showSheet, onDismiss: {
+            sheetConfig.deselect()
+        }, content: {
+            DetailedView(config: sheetConfig)
         })
-    }
-    
-    func fetchEventJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults.standard.string(forKey: "season") ?? "2023")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA")") else {
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let result = try decoder.decode([DataEntry].self, from: data)
-                    DispatchQueue.main.async {
-                        self.eventData = result
-                    }
-                } catch {
-                    print("parse error")
-                }
-            } else if let error = error {
-                print("fetch error: \(error)")
-            }
-        }.resume()
+        // &y mode
+        // .background(Color(red: 0.98, green: 0.73, blue: 0.84, opacity: 1.0))
     }
 }
 
@@ -93,19 +76,17 @@ struct DataView: View {
     DataView()
 }
 
-struct DataEntry: Codable {
-    let Brief: BriefData
-}
-
-struct BriefData: Codable {
-    let id: Int
-    let event: String
-    let season: Int
-    let team: Int
-    let match_num: Int
-    let game: String
-    let user_id: Int
-    let name: String
-    let from_team: Int
-    let weight: String
+struct DetailSheetConfig {
+    var selectedId: String = "-1"
+    var showSheet = false
+ 
+    mutating func selectId(id: String) {
+        selectedId = id
+        showSheet = true
+    }
+    
+    mutating func deselect() {
+        selectedId = "-1"
+        showSheet = false
+    }
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MatchList: View {
+    @State private var didInitialLoad: Bool = false
     @State private var matchJson: [Match] = []
     
     var body: some View {
@@ -60,13 +61,16 @@ struct MatchList: View {
                     }
                 }
             }
-            .refreshable {
-                fetchMatchJson()
-            }
+//            .refreshable {
+//                fetchMatchJson()
+//            }
         }
         .padding()
         .onAppear() {
-            fetchMatchJson()
+            if !didInitialLoad {
+                fetchMatchJson()
+                didInitialLoad = true
+            }
         }
     }
     

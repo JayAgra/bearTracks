@@ -9,7 +9,7 @@ import SwiftUI
 import Foundation
 
 struct DetailedView: View {
-    let targetId: Int
+    let config: DetailSheetConfig
     @State private var detailData: [DetailedData] = []
     @State private var gameData: [String] = []
     
@@ -179,8 +179,8 @@ struct DetailedView: View {
         }
     }
     
-    func fetchDetailJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(targetId)") else {
+    func fetchDetailJson() {        
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(config.selectedId)") else {
             return
         }
         
@@ -191,7 +191,9 @@ struct DetailedView: View {
                     let result = try decoder.decode([DetailedData].self, from: data)
                     DispatchQueue.main.async {
                         self.detailData = result
-                        self.gameData = result[0].FullMain.game.components(separatedBy: ",");
+                        if !result.isEmpty {
+                            self.gameData = result[0].FullMain.game.components(separatedBy: ",");
+                        }
                     }
                 } catch {
                     print("parse error")
@@ -209,10 +211,6 @@ struct DetailedView: View {
             return "❌"
         }
     }
-}
-
-#Preview {
-    DetailedView(targetId: 1600)
 }
 
 struct DetailedData: Codable {

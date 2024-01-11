@@ -15,6 +15,7 @@
 		F5333E992B4E10060009CA99 /* beartracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5333E982B4E10060009CA99 /* beartracksApp.swift */; };
 		F5333E9D2B4E10070009CA99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5333E9C2B4E10070009CA99 /* Assets.xcassets */; };
 		F5333EA02B4E10070009CA99 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5333E9F2B4E10070009CA99 /* Preview Assets.xcassets */; };
+		F54943252B507C3600E2769A /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54943242B507C3600E2769A /* DataViewModel.swift */; };
 		F5740FC82B4E31CA00A55D9F /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5740FC72B4E31CA00A55D9F /* SettingsManager.swift */; };
 		F599A22E2B4E4294002170CA /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F599A22D2B4E4294002170CA /* DetailedView.swift */; };
 /* End PBXBuildFile section */
@@ -29,6 +30,7 @@
 		F5333E982B4E10060009CA99 /* beartracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracksApp.swift; sourceTree = "<group>"; };
 		F5333E9C2B4E10070009CA99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5333E9F2B4E10070009CA99 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F54943242B507C3600E2769A /* DataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewModel.swift; sourceTree = "<group>"; };
 		F5740FC72B4E31CA00A55D9F /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		F599A22D2B4E4294002170CA /* DetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +75,7 @@
 				F50F3B7A2B4E1E530009E6B7 /* Teams.swift */,
 				F5740FC72B4E31CA00A55D9F /* SettingsManager.swift */,
 				F599A22D2B4E4294002170CA /* DetailedView.swift */,
+				F54943242B507C3600E2769A /* DataViewModel.swift */,
 			);
 			path = beartracks;
 			sourceTree = "<group>";
@@ -120,7 +123,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F5333E902B4E10060009CA99 /* Build configuration list for PBXProject "beartracks" */;
+			buildConfigurationList = F5333E902B4E10060009CA99 /* Build configuration list for PBXProject "bearTracks" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -157,6 +160,7 @@
 			files = (
 				F50F3B712B4E10BE0009E6B7 /* MatchList.swift in Sources */,
 				F50F3B752B4E125F0009E6B7 /* DataView.swift in Sources */,
+				F54943252B507C3600E2769A /* DataViewModel.swift in Sources */,
 				F50F3B792B4E12B30009E6B7 /* SettingsView.swift in Sources */,
 				F5740FC82B4E31CA00A55D9F /* SettingsManager.swift in Sources */,
 				F599A22E2B4E4294002170CA /* DetailedView.swift in Sources */,
@@ -355,7 +359,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F5333E902B4E10060009CA99 /* Build configuration list for PBXProject "beartracks" */ = {
+		F5333E902B4E10060009CA99 /* Build configuration list for PBXProject "bearTracks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F5333EA12B4E10070009CA99 /* Debug */,

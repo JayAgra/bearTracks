@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="static/css/float.min.css" type="text/css">
         <link rel="stylesheet" href="static/css/table.min.css" type="text/css">
         <link rel="stylesheet" href="static/css/supplement.min.css" type="text/css">
+        <link>
         <script src="static/js/form/form.min.js"></script>
     </head>
     <body class="dark-mode" onload="searchOnLoad()">
@@ -24,10 +25,8 @@
                     <input type="tel" id="number" required><br><br>
                     <label>Event Code: </label><br>
                     <select id="event">
-                        <option value="CADA">CADA - Sacramento Regional</option>
-                        <option value="CASJ">CASJ - Silicon Valley Regional</option>
-                        <option value="WOOD">WOOD - CalGames</option>
-                        <option value="CCCC" selected>CCCC - Capital City Classic</option>
+                        <option value="CAFR" selected>CADA - Central Valley Regional</option>
+                        <option value="CABE">CASJ - East Bay Regional</option>
                     </select><br><br>
                     <button type="button" class="uiButton actionButton" onclick="callSearch()" id="searchBtn">Search</button><br>
                     <button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Back</button>
