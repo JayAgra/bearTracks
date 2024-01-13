@@ -61,7 +61,6 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
 }
 
 pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessions>>, identity: Identity, login_form: web::Json<LoginForm>) -> impl Responder {
-    println!("{}", &login_form.username);
     // try to get target user from database
     let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
     if target_user_temp.is_err() {

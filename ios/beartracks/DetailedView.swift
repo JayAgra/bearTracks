@@ -9,9 +9,13 @@ import SwiftUI
 import Foundation
 
 struct DetailedView: View {
-    let config: DetailSheetConfig
     @State private var detailData: [DetailedData] = []
     @State private var gameData: [String] = []
+    private var dataModel: DataViewModel
+    
+    init(model: DataViewModel) {
+        dataModel = model
+    }
     
     var body: some View {
         VStack {
@@ -179,12 +183,12 @@ struct DetailedView: View {
         }
     }
     
-    func fetchDetailJson() {        
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(config.selectedId)") else {
+    func fetchDetailJson() {  
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(dataModel.getSelectedItem())") else {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        sharedSession.dataTask(with: url) { data, _, error in
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
@@ -201,7 +205,8 @@ struct DetailedView: View {
             } else if let error = error {
                 print("fetch error: \(error)")
             }
-        }.resume()
+        }
+        .resume()
     }
     
     func valueToEmoji(input: String) -> String {

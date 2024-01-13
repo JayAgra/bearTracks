@@ -122,8 +122,8 @@ async fn auth_psk_auth_finish(db: web::Data<Databases>, cred: web::Json<PublicKe
     )
 }
 
-// get detailed data by submission id. used in /detail **NO AUTH**
-async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+// get detailed data by submission id. used in /detail
+async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -140,7 +140,7 @@ async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, _use
     )
 }
 
-// get summary of all data for a given team at an event in a season. used on /browse **NO AUTH**
+// get summary of all data for a given team at an event in a season. used on /browse
 async fn data_get_main_brief_team(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
@@ -158,8 +158,8 @@ async fn data_get_main_brief_match(path: web::Path<String>, db: web::Data<Databa
     )
 }
 
-// get summary of all data from an event, given a season. used for /browse **NO AUTH**
-async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+// get summary of all data from an event, given a season. used for /browse
+async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -176,8 +176,8 @@ async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databas
     )
 }
 
-// get basic data about all teams at an event, in a season. used for event rankings. **NO AUTH**
-async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+// get basic data about all teams at an event, in a season. used for event rankings.
+async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -194,13 +194,13 @@ async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Da
     )
 }
 
-// forward frc api data for teams [deprecated] **NO AUTH**
-async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>) -> HttpResponse {
+// forward frc api data for teams [deprecated]
+async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>, _user: db_auth::User) -> HttpResponse {
     forward::forward_frc_api_event_teams(req, path).await
 }
 
-// forward frc api data for events. used on main form to ensure entered matches and teams are valid **NO AUTH REQUIRED**
-async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String, String, String)>) -> HttpResponse {
+// forward frc api data for events. used on main form to ensure entered matches and teams are valid
+async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String, String, String)>, _user: db_auth::User) -> HttpResponse {
     forward::forward_frc_api_event_matches(req, path).await
 }
 
@@ -525,12 +525,10 @@ async fn main() -> io::Result<()> {
                 .route("/create", web::get().to(static_files::static_create))
                 .route("/detail", web::get().to(static_files::static_detail))
                 .route("/login", web::get().to(static_files::static_login))
-                .route("/main", web::get().to(static_files::static_main))
                 .route("/manage", web::get().to(static_files::static_manage))
                 .route("/manageScouts", web::get().to(static_files::static_manage_scouts))
                 .route("/manageTeam", web::get().to(static_files::static_manage_team))
                 .route("/manageTeams", web::get().to(static_files::static_manage_teams))
-                .route("/matches", web::get().to(static_files::static_matches))
                 .route("/passkey", web::get().to(static_files::static_passkey))
                 .route("/pointRecords", web::get().to(static_files::static_point_records))
                 .route("/points", web::get().to(static_files::static_points))

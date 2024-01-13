@@ -56,7 +56,7 @@ struct Teams: View {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        sharedSession.dataTask(with: url) { data, _, error in
             if let data = data {
                 do {
                     let decoder = JSONDecoder()

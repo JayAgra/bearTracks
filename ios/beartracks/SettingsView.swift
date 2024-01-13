@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var eventCodeInput: String = UserDefaults.standard.string(forKey: "eventCode") ?? ""
     @State private var seasonInput: String = UserDefaults.standard.string(forKey: "season") ?? ""
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
+    @State private var haptics: Bool = UserDefaults.standard.bool(forKey: "haptics")
     @State private var showAlert = false
     
     var body: some View {
@@ -70,13 +71,22 @@ struct SettingsView: View {
                             showAlert = true
                         }
                     }
+                    HStack {
+                        Toggle(isOn: $haptics) {
+                            Label("Haptics", systemImage: "iphone.radiowaves.left.and.right")
+                        }
+                        .padding()
+                        .onChange(of: haptics) {
+                            UserDefaults.standard.set(haptics, forKey: "haptics")
+                        }
+                    }
                 }
             }
             .alert(isPresented: $showAlert, content: {
                 Alert (
-                    title: Text("Theme Change"),
-                    message: Text("You must restart the app for the change to take effect"),
-                    dismissButton: .default(Text("Ok"))
+                    title: Text("theme change"),
+                    message: Text("an app restart is required for the theme change to take effect"),
+                    dismissButton: .default(Text("ok"))
                 )
             })
         }

@@ -7,36 +7,48 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F50F3B712B4E10BE0009E6B7 /* MatchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50F3B702B4E10BE0009E6B7 /* MatchList.swift */; };
-		F50F3B732B4E11250009E6B7 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50F3B722B4E11250009E6B7 /* TabBar.swift */; };
-		F50F3B752B4E125F0009E6B7 /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50F3B742B4E125F0009E6B7 /* DataView.swift */; };
-		F50F3B792B4E12B30009E6B7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50F3B782B4E12B30009E6B7 /* SettingsView.swift */; };
-		F50F3B7B2B4E1E530009E6B7 /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50F3B7A2B4E1E530009E6B7 /* Teams.swift */; };
-		F5333E992B4E10060009CA99 /* beartracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5333E982B4E10060009CA99 /* beartracksApp.swift */; };
-		F5333E9D2B4E10070009CA99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5333E9C2B4E10070009CA99 /* Assets.xcassets */; };
-		F5333EA02B4E10070009CA99 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5333E9F2B4E10070009CA99 /* Preview Assets.xcassets */; };
-		F54943252B507C3600E2769A /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54943242B507C3600E2769A /* DataViewModel.swift */; };
-		F5740FC82B4E31CA00A55D9F /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5740FC72B4E31CA00A55D9F /* SettingsManager.swift */; };
-		F599A22E2B4E4294002170CA /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F599A22D2B4E4294002170CA /* DetailedView.swift */; };
+		F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54E76C12B527D96003C65A2 /* bearTracksApp.swift */; };
+		F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
+		F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */; };
+		F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E3F2B527E050033DB0D /* MatchList.swift */; };
+		F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E402B527E050033DB0D /* DetailedView.swift */; };
+		F5AE2E482B527E050033DB0D /* PressModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E412B527E050033DB0D /* PressModifier.swift */; };
+		F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E442B527E050033DB0D /* DataViewModel.swift */; };
+		F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E452B527E050033DB0D /* DataView.swift */; };
+		F5AE2E532B527E170033DB0D /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4D2B527E170033DB0D /* Teams.swift */; };
+		F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
+		F5AE2E552B527E170033DB0D /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4F2B527E170033DB0D /* TabBar.swift */; };
+		F5AE2E562B527E170033DB0D /* ScoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E502B527E170033DB0D /* ScoutViewModel.swift */; };
+		F5AE2E572B527E170033DB0D /* ScoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E512B527E170033DB0D /* ScoutView.swift */; };
+		F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E522B527E170033DB0D /* SettingsView.swift */; };
+		F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
+		F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
+		F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F50F3B702B4E10BE0009E6B7 /* MatchList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchList.swift; sourceTree = "<group>"; };
-		F50F3B722B4E11250009E6B7 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
-		F50F3B742B4E125F0009E6B7 /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
-		F50F3B782B4E12B30009E6B7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		F50F3B7A2B4E1E530009E6B7 /* Teams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Teams.swift; sourceTree = "<group>"; };
-		F5333E952B4E10060009CA99 /* beartracks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beartracks.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5333E982B4E10060009CA99 /* beartracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracksApp.swift; sourceTree = "<group>"; };
-		F5333E9C2B4E10070009CA99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F5333E9F2B4E10070009CA99 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		F54943242B507C3600E2769A /* DataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewModel.swift; sourceTree = "<group>"; };
-		F5740FC72B4E31CA00A55D9F /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
-		F599A22D2B4E4294002170CA /* DetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedView.swift; sourceTree = "<group>"; };
+		F54E76BE2B527D96003C65A2 /* bearTracks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bearTracks.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F54E76C12B527D96003C65A2 /* bearTracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bearTracksApp.swift; sourceTree = "<group>"; };
+		F54E76C52B527D97003C65A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F5AE2E3F2B527E050033DB0D /* MatchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MatchList.swift; path = bearTracks/MatchList.swift; sourceTree = SOURCE_ROOT; };
+		F5AE2E402B527E050033DB0D /* DetailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailedView.swift; path = bearTracks/DetailedView.swift; sourceTree = SOURCE_ROOT; };
+		F5AE2E412B527E050033DB0D /* PressModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PressModifier.swift; path = bearTracks/PressModifier.swift; sourceTree = SOURCE_ROOT; };
+		F5AE2E442B527E050033DB0D /* DataViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataViewModel.swift; path = bearTracks/DataViewModel.swift; sourceTree = SOURCE_ROOT; };
+		F5AE2E452B527E050033DB0D /* DataView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataView.swift; path = bearTracks/DataView.swift; sourceTree = SOURCE_ROOT; };
+		F5AE2E4D2B527E170033DB0D /* Teams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Teams.swift; sourceTree = "<group>"; };
+		F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		F5AE2E4F2B527E170033DB0D /* TabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		F5AE2E502B527E170033DB0D /* ScoutViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoutViewModel.swift; sourceTree = "<group>"; };
+		F5AE2E512B527E170033DB0D /* ScoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoutView.swift; sourceTree = "<group>"; };
+		F5AE2E522B527E170033DB0D /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
+		F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
+		F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		F5333E922B4E10060009CA99 /* Frameworks */ = {
+		F54E76BB2B527D96003C65A2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,44 +58,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F5333E8C2B4E10060009CA99 = {
+		F54E76B52B527D96003C65A2 = {
 			isa = PBXGroup;
 			children = (
-				F5333E972B4E10060009CA99 /* beartracks */,
-				F5333E962B4E10060009CA99 /* Products */,
+				F54E76C02B527D96003C65A2 /* bearTracks */,
+				F54E76BF2B527D96003C65A2 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		F5333E962B4E10060009CA99 /* Products */ = {
+		F54E76BF2B527D96003C65A2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F5333E952B4E10060009CA99 /* beartracks.app */,
+				F54E76BE2B527D96003C65A2 /* bearTracks.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F5333E972B4E10060009CA99 /* beartracks */ = {
+		F54E76C02B527D96003C65A2 /* bearTracks */ = {
 			isa = PBXGroup;
 			children = (
-				F5333E982B4E10060009CA99 /* beartracksApp.swift */,
-				F5333E9C2B4E10070009CA99 /* Assets.xcassets */,
-				F5333E9E2B4E10070009CA99 /* Preview Content */,
-				F50F3B702B4E10BE0009E6B7 /* MatchList.swift */,
-				F50F3B722B4E11250009E6B7 /* TabBar.swift */,
-				F50F3B742B4E125F0009E6B7 /* DataView.swift */,
-				F50F3B782B4E12B30009E6B7 /* SettingsView.swift */,
-				F50F3B7A2B4E1E530009E6B7 /* Teams.swift */,
-				F5740FC72B4E31CA00A55D9F /* SettingsManager.swift */,
-				F599A22D2B4E4294002170CA /* DetailedView.swift */,
-				F54943242B507C3600E2769A /* DataViewModel.swift */,
+				F54E76C12B527D96003C65A2 /* bearTracksApp.swift */,
+				F5AE2E452B527E050033DB0D /* DataView.swift */,
+				F5AE2E442B527E050033DB0D /* DataViewModel.swift */,
+				F5AE2E402B527E050033DB0D /* DetailedView.swift */,
+				F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */,
+				F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */,
+				F5AE2E3F2B527E050033DB0D /* MatchList.swift */,
+				F5AE2E412B527E050033DB0D /* PressModifier.swift */,
+				F5AE2E512B527E170033DB0D /* ScoutView.swift */,
+				F5AE2E502B527E170033DB0D /* ScoutViewModel.swift */,
+				F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */,
+				F5AE2E522B527E170033DB0D /* SettingsView.swift */,
+				F5AE2E4F2B527E170033DB0D /* TabBar.swift */,
+				F5AE2E4D2B527E170033DB0D /* Teams.swift */,
+				F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */,
+				F54E76C52B527D97003C65A2 /* Assets.xcassets */,
+				F54E76C72B527D97003C65A2 /* Preview Content */,
 			);
-			path = beartracks;
+			path = bearTracks;
 			sourceTree = "<group>";
 		};
-		F5333E9E2B4E10070009CA99 /* Preview Content */ = {
+		F54E76C72B527D97003C65A2 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				F5333E9F2B4E10070009CA99 /* Preview Assets.xcassets */,
+				F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -91,39 +109,39 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F5333E942B4E10060009CA99 /* beartracks */ = {
+		F54E76BD2B527D96003C65A2 /* bearTracks */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F5333EA32B4E10070009CA99 /* Build configuration list for PBXNativeTarget "beartracks" */;
+			buildConfigurationList = F54E76CC2B527D97003C65A2 /* Build configuration list for PBXNativeTarget "bearTracks" */;
 			buildPhases = (
-				F5333E912B4E10060009CA99 /* Sources */,
-				F5333E922B4E10060009CA99 /* Frameworks */,
-				F5333E932B4E10060009CA99 /* Resources */,
+				F54E76BA2B527D96003C65A2 /* Sources */,
+				F54E76BB2B527D96003C65A2 /* Frameworks */,
+				F54E76BC2B527D96003C65A2 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = beartracks;
-			productName = beartracks;
-			productReference = F5333E952B4E10060009CA99 /* beartracks.app */;
+			name = bearTracks;
+			productName = bearTracks;
+			productReference = F54E76BE2B527D96003C65A2 /* bearTracks.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		F5333E8D2B4E10060009CA99 /* Project object */ = {
+		F54E76B62B527D96003C65A2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastSwiftUpdateCheck = 1520;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
-					F5333E942B4E10060009CA99 = {
-						CreatedOnToolsVersion = 15.0;
+					F54E76BD2B527D96003C65A2 = {
+						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
-			buildConfigurationList = F5333E902B4E10060009CA99 /* Build configuration list for PBXProject "bearTracks" */;
+			buildConfigurationList = F54E76B92B527D96003C65A2 /* Build configuration list for PBXProject "bearTracks" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -131,49 +149,55 @@
 				en,
 				Base,
 			);
-			mainGroup = F5333E8C2B4E10060009CA99;
-			productRefGroup = F5333E962B4E10060009CA99 /* Products */;
+			mainGroup = F54E76B52B527D96003C65A2;
+			productRefGroup = F54E76BF2B527D96003C65A2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F5333E942B4E10060009CA99 /* beartracks */,
+				F54E76BD2B527D96003C65A2 /* bearTracks */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F5333E932B4E10060009CA99 /* Resources */ = {
+		F54E76BC2B527D96003C65A2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5333EA02B4E10070009CA99 /* Preview Assets.xcassets in Resources */,
-				F5333E9D2B4E10070009CA99 /* Assets.xcassets in Resources */,
+				F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */,
+				F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F5333E912B4E10060009CA99 /* Sources */ = {
+		F54E76BA2B527D96003C65A2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F50F3B712B4E10BE0009E6B7 /* MatchList.swift in Sources */,
-				F50F3B752B4E125F0009E6B7 /* DataView.swift in Sources */,
-				F54943252B507C3600E2769A /* DataViewModel.swift in Sources */,
-				F50F3B792B4E12B30009E6B7 /* SettingsView.swift in Sources */,
-				F5740FC82B4E31CA00A55D9F /* SettingsManager.swift in Sources */,
-				F599A22E2B4E4294002170CA /* DetailedView.swift in Sources */,
-				F50F3B7B2B4E1E530009E6B7 /* Teams.swift in Sources */,
-				F5333E992B4E10060009CA99 /* beartracksApp.swift in Sources */,
-				F50F3B732B4E11250009E6B7 /* TabBar.swift in Sources */,
+				F5AE2E532B527E170033DB0D /* Teams.swift in Sources */,
+				F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */,
+				F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */,
+				F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */,
+				F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */,
+				F5AE2E482B527E050033DB0D /* PressModifier.swift in Sources */,
+				F5AE2E572B527E170033DB0D /* ScoutView.swift in Sources */,
+				F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */,
+				F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */,
+				F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */,
+				F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */,
+				F5AE2E552B527E170033DB0D /* TabBar.swift in Sources */,
+				F5AE2E562B527E170033DB0D /* ScoutViewModel.swift in Sources */,
+				F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */,
+				F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		F5333EA12B4E10070009CA99 /* Debug */ = {
+		F54E76CA2B527D97003C65A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -236,7 +260,7 @@
 			};
 			name = Debug;
 		};
-		F5333EA22B4E10070009CA99 /* Release */ = {
+		F54E76CB2B527D97003C65A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -292,25 +316,22 @@
 			};
 			name = Release;
 		};
-		F5333EA42B4E10070009CA99 /* Debug */ = {
+		F54E76CD2B527D97003C65A2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"beartracks/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -324,25 +345,22 @@
 			};
 			name = Debug;
 		};
-		F5333EA52B4E10070009CA99 /* Release */ = {
+		F54E76CE2B527D97003C65A2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"beartracks/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -359,25 +377,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F5333E902B4E10060009CA99 /* Build configuration list for PBXProject "bearTracks" */ = {
+		F54E76B92B527D96003C65A2 /* Build configuration list for PBXProject "bearTracks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5333EA12B4E10070009CA99 /* Debug */,
-				F5333EA22B4E10070009CA99 /* Release */,
+				F54E76CA2B527D97003C65A2 /* Debug */,
+				F54E76CB2B527D97003C65A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F5333EA32B4E10070009CA99 /* Build configuration list for PBXNativeTarget "beartracks" */ = {
+		F54E76CC2B527D97003C65A2 /* Build configuration list for PBXNativeTarget "bearTracks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5333EA42B4E10070009CA99 /* Debug */,
-				F5333EA52B4E10070009CA99 /* Release */,
+				F54E76CD2B527D97003C65A2 /* Debug */,
+				F54E76CE2B527D97003C65A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = F5333E8D2B4E10060009CA99 /* Project object */;
+	rootObject = F54E76B62B527D96003C65A2 /* Project object */;
 }

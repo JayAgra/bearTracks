@@ -9,12 +9,10 @@ const CHARTS_HTML: &str = include_str!("../static/charts.html");
 const CREATE_HTML: &str = include_str!("../static/create.html");
 const DETAIL_HTML: &str = include_str!("../static/detail.html");
 const LOGIN_HTML: &str = include_str!("../static/login.html");
-const MAIN_HTML: &str = include_str!("../static/main.html");
 const MANAGE_HTML: &str = include_str!("../static/manage.html");
 const MANAGE_SCOUTS_HTML: &str = include_str!("../static/manageScouts.html");
 const MANAGE_TEAM_HTML: &str = include_str!("../static/manageTeam.html");
 const MANAGE_TEAMS_HTML: &str = include_str!("../static/manageTeams.html");
-const MATCHES_HTML: &str = include_str!("../static/matches.html");
 const POINT_RECORDS_HTML: &str = include_str!("../static/pointRecords.html");
 const PASSKEY_HTML: &str = include_str!("../static/passkey.html");
 const POINTS_HTML: &str = include_str!("../static/points.html");
@@ -81,12 +79,6 @@ pub async fn static_login() -> HttpResponse {
         .body(LOGIN_HTML)
 }
 
-pub async fn static_main() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(MAIN_HTML)
-}
-
 pub async fn static_manage() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
@@ -109,12 +101,6 @@ pub async fn static_manage_teams() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(MANAGE_TEAMS_HTML)
-}
-
-pub async fn static_matches() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(MATCHES_HTML)
 }
 
 pub async fn static_passkey() -> HttpResponse {

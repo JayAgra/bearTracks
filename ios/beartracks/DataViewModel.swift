@@ -10,6 +10,7 @@ import SwiftUI
 
 class DataViewModel: ObservableObject {
     @Published private(set) var dataEntries: [DataEntry]
+    @Published private(set) var selectedItem: String = "-1"
     @State private var isShowingSheet = false
     
     init() {
@@ -17,29 +18,47 @@ class DataViewModel: ObservableObject {
         self.reload()
     }
     
+    func setSelectedItem(item: String) {
+        selectedItem = item
+    }
+    
+    func getSelectedItem() -> String {
+        return selectedItem
+    }
+    
     func fetchEventJson(completionBlock: @escaping ([DataEntry]) -> Void) -> Void {
         guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults.standard.string(forKey: "season") ?? "2023")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA")") else {
             return
         }
         
-        let requestTask = URLSession.shared.dataTask(with: url) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        
+        let requestTask = sharedSession.dataTask(with: request) {
             (data: Data?, response: URLResponse?, error: Error?) in
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
                     let result = try decoder.decode([DataEntry].self, from: data)
                     DispatchQueue.main.async {
-                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        if UserDefaults.standard.bool(forKey: "haptics") {
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        }
                         completionBlock(result)
                     }
                 } catch {
                     print("parse error")
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    if UserDefaults.standard.bool(forKey: "haptics") {
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    }
                     return
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                if UserDefaults.standard.bool(forKey: "haptics") {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
                 return
             }
         }

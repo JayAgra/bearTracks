@@ -9,8 +9,8 @@ import SwiftUI
 
 struct DataView: View {
     @State private var didInitialLoad: Bool = false
-    @State private var sheetConfig = DetailSheetConfig()
     @ObservedObject var dataItems: DataViewModel = DataViewModel()
+    @State private var showSheet: Bool = false
     
     var body: some View {
         VStack {
@@ -41,7 +41,9 @@ struct DataView: View {
                             }
                             .padding()
                             .onTapGesture() {
-                                sheetConfig.selectId(id: String(entry.Brief.id))
+                                // sheetConfig.selectId(id: String(entry.Brief.id))
+                                dataItems.setSelectedItem(item: String(entry.Brief.id))
+                                showSheet = true
                             }
                             Divider()
                         }
@@ -62,14 +64,18 @@ struct DataView: View {
             }
         }
         .padding()
-        .sheet(isPresented: $sheetConfig.showSheet, onDismiss: {
-            sheetConfig.deselect()
+        .sheet(isPresented: $showSheet, onDismiss: {
+                showSheet = false
         }, content: {
-            DetailedView(config: sheetConfig)
+            DetailedView(model: dataItems)
         })
         // &y mode
         // .background(Color(red: 0.98, green: 0.73, blue: 0.84, opacity: 1.0))
     }
+    
+//    func getSheetConfig() -> DetailSheetConfig {
+//        return sheetConfig
+//    }
 }
 
 #Preview {

@@ -16,6 +16,7 @@ class SettingsManager {
             "eventCode": "CADA",
             "season": "2023",
             "darkMode": true,
+            "haptics": true,
         ]
         UserDefaults.standard.register(defaults: defaults)
     }

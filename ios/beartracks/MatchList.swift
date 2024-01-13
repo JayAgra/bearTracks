@@ -79,7 +79,7 @@ struct MatchList: View {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        sharedSession.dataTask(with: url) { data, _, error in
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
@@ -93,7 +93,8 @@ struct MatchList: View {
             } else if let error = error {
                 print("fetch error: \(error)")
             }
-        }.resume()
+        }
+        .resume()
     }
 }
 
