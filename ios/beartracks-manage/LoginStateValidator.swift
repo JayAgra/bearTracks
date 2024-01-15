@@ -1,8 +1,8 @@
 //
 //  LoginStateValidator.swift
-//  beartracks-scout
+//  beartracks-manage
 //
-//  Created by Jayen Agrawal on 1/14/24.
+//  Created by Jayen Agrawal on 1/15/24.
 //
 
 import Foundation

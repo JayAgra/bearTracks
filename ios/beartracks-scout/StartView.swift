@@ -17,6 +17,11 @@ struct StartView: View {
     @State private var teamNumber: String = ""
     @FocusState private var focusField: FocusText?
     
+    func loadPane() {
+        self.matchNumber = controller.getMatchNumber()
+        self.teamNumber = controller.getTeamNumber()
+    }
+    
     var body: some View {
         VStack {
             Text("bearTracks")
@@ -71,6 +76,9 @@ struct StartView: View {
                     .buttonStyle(.bordered)
                 }
             }
+        }
+        .onAppear() {
+            loadPane()
         }
     }
 }

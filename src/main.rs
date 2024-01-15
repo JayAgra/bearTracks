@@ -2,7 +2,7 @@ use std::{env, io, collections::HashMap, pin::Pin, sync::RwLock};
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
-use actix_session::{SessionMiddleware, Session};
+use actix_session::{SessionMiddleware, Session, config::PersistentSession};
 use actix_web::{error, middleware::{self, DefaultHeaders}, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
 use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
@@ -502,6 +502,7 @@ async fn main() -> io::Result<()> {
             .wrap(IdentityService::new(
                 CookieIdentityPolicy::new(&[0; 32])
                     .name("bear_tracks")
+                    .max_age_secs(actix_web::cookie::time::Duration::weeks(2).whole_seconds())
                     .secure(false),
             ))
             // logging middleware
@@ -512,6 +513,10 @@ async fn main() -> io::Result<()> {
                     .cookie_name("bear_tracks-ms".to_string())
                     .cookie_http_only(true)
                     .cookie_secure(false)
+                    .session_lifecycle(
+                        PersistentSession::default()
+                            .session_ttl(actix_web::cookie::time::Duration::weeks(2))
+                    )
                     .build()
             )
             // default headers for caching. overridden on most all api endpoints
@@ -520,7 +525,6 @@ async fn main() -> io::Result<()> {
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
-                .route("/charts", web::get().to(static_files::static_charts))
                 .route("/create", web::get().to(static_files::static_create))
                 .route("/login", web::get().to(static_files::static_login))
                 .route("/manage", web::get().to(static_files::static_manage))
@@ -533,7 +537,6 @@ async fn main() -> io::Result<()> {
                 .route("/scouts", web::get().to(static_files::static_scouts))
                 .route("/settings", web::get().to(static_files::static_settings))
                 .route("/spin", web::get().to(static_files::static_spin))
-                .route("/teams", web::get().to(static_files::static_teams))
                 .route("/favicon.ico", web::get().to(static_files::static_favicon))
                 // GET folders
                 .service(ResourceFiles::new("/static", generated))

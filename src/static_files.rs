@@ -4,7 +4,6 @@ use actix_web::{HttpRequest, HttpResponse, http::header::{ContentType, CacheCont
 // bundle static files in binary
 const INDEX_HTML: &str = include_str!("../static/index.html");
 const BLACKJACK_HTML: &str = include_str!("../static/blackjack.html");
-const CHARTS_HTML: &str = include_str!("../static/charts.html");
 const CREATE_HTML: &str = include_str!("../static/create.html");
 const LOGIN_HTML: &str = include_str!("../static/login.html");
 const MANAGE_HTML: &str = include_str!("../static/manage.html");
@@ -17,7 +16,6 @@ const POINTS_HTML: &str = include_str!("../static/points.html");
 const SCOUTS_HTML: &str = include_str!("../static/scouts.html");
 const SETTINGS_HTML: &str = include_str!("../static/settings.html");
 const SPIN_HTML: &str = include_str!("../static/spin.html");
-const TEAMS_HTML: &str = include_str!("../static/teams.html");
 // favicon isn't utf8 so it needs include bytes instead
 const FAVICON_ICO: &[u8] = include_bytes!("../static/favicon.ico");
 
@@ -45,12 +43,6 @@ pub async fn static_blackjack() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(BLACKJACK_HTML)
-}
-
-pub async fn static_charts() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(CHARTS_HTML)
 }
 
 pub async fn static_create() -> HttpResponse {
@@ -123,12 +115,6 @@ pub async fn static_spin() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(SPIN_HTML)
-}
-
-pub async fn static_teams() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(TEAMS_HTML)
 }
 
 // serve static favicon

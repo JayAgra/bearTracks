@@ -26,6 +26,12 @@ struct EndView: View {
         self.overall = controller.getOverallResponse()
     }
     
+    func loadPane() {
+        self.defense = controller.getDefenseResponse()
+        self.driving = controller.getDrivingResponse()
+        self.overall = controller.getOverallResponse()
+    }
+    
     var body: some View {
         VStack {
             Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
@@ -93,6 +99,9 @@ struct EndView: View {
                 .buttonStyle(.bordered)
             }
             Spacer()
+        }
+        .onAppear() {
+            loadPane()
         }
     }
 }
