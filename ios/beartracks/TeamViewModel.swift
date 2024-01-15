@@ -32,7 +32,7 @@ class TeamViewModel: ObservableObject {
     }
     
     func fetchTeamMatchesJson(completionBlock: @escaping ([DataEntry]) -> Void) -> Void {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/team/\(UserDefaults.standard.string(forKey: "season") ?? "2023")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA")/\(targetTeam)") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/team/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/\(targetTeam)") else {
             return
         }
         
@@ -74,7 +74,7 @@ class TeamViewModel: ObservableObject {
     }
     
     func fetchStatboticsTeamJson(completionBlock: @escaping (StatboticsTeamData) -> Void) -> Void {
-        guard let url = URL(string: "https://api.statbotics.io/v2/team_event/\(targetTeam)/\(UserDefaults.standard.string(forKey: "season") ?? "2023")\(UserDefaults.standard.string(forKey: "eventCode")?.lowercased() ?? "cada")") else {
+        guard let url = URL(string: "https://api.statbotics.io/v2/team_event/\(targetTeam)/\(UserDefaults.standard.string(forKey: "season") ?? "2024")\(UserDefaults.standard.string(forKey: "eventCode")?.lowercased() ?? "cafr")") else {
             return
         }
         

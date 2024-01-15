@@ -26,7 +26,7 @@ struct SettingsView: View {
                     .font(.title)
                     .padding(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Text("\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA") • \(UserDefaults.standard.string(forKey: "season") ?? "2023")")
+                Text("\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") • \(UserDefaults.standard.string(forKey: "season") ?? "2024")")
                     .font(.title3)
                     .padding(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)

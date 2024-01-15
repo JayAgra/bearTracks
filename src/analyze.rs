@@ -225,6 +225,11 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     );
 
     let mut score: f64 = 0.0;
+
+    score += analysis_results[0] * 3.75;
+    score += analysis_results[1] * 3.75;
+    score += analysis_results[2] * 7.5;
+
     let mut speaker_scores: i32 = 0;
     let mut intake_time: f64 = 0.0;
     let mut travel_time: f64 = 0.0;

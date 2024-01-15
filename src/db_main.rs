@@ -38,7 +38,6 @@ pub enum Main {
         season: i64,
         team: i64,
         match_num: i64,
-        game: String,
         user_id: i64,
         name: String,
         from_team: i64,
@@ -117,28 +116,28 @@ fn get_submission_exists(conn: Connection, path: web::Path<String>) -> QueryResu
 // get minimum required data on all matches in event
 fn get_brief_event(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND id!=?3 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND id!=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], ""])
 }
 
 // get minimum required data on all matches a team played at an event
 fn get_brief_team(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], args[2]])
 }
 
 // get minimum required data from a specific match
 fn get_brief_match(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], args[2]])
 }
 
 // get minimal data on all submissions from a given user
 fn get_brief_user(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, game, user_id, name, from_team, weight FROM main WHERE season=?1 AND user_id=?2 AND id!=?3 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND user_id=?2 AND id!=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], ""])
 }
 
@@ -203,11 +202,10 @@ fn get_brief_rows(mut statement: Statement, params: [&str; 3]) -> QueryResult {
                 season: row.get(2)?,
                 team: row.get(3)?,
                 match_num: row.get(4)?,
-                game: row.get(5)?,
-                user_id: row.get(6)?,
-                name: row.get(7)?,
-                from_team: row.get(8)?,
-                weight: row.get(9)?,
+                user_id: row.get(5)?,
+                name: row.get(6)?,
+                from_team: row.get(7)?,
+                weight: row.get(8)?,
             })
         })
         .and_then(Iterator::collect)

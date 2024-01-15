@@ -106,7 +106,7 @@ struct MatchList: View {
     }
     
     func fetchMatchJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults.standard.string(forKey: "season") ?? "2023")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA")/qualification/\( UserDefaults.standard.string(forKey: "teamNumber") ?? "766")") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/qualification/\( UserDefaults.standard.string(forKey: "teamNumber") ?? "766")") else {
             return
         }
         

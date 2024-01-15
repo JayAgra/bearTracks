@@ -27,7 +27,7 @@ class DataViewModel: ObservableObject {
     }
     
     func fetchEventJson(completionBlock: @escaping ([DataEntry]) -> Void) -> Void {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults.standard.string(forKey: "season") ?? "2023")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA")") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")") else {
             return
         }
         
@@ -83,7 +83,6 @@ struct BriefData: Codable {
     let season: Int
     let team: Int
     let match_num: Int
-    let game: String
     let user_id: Int
     let name: String
     let from_team: Int

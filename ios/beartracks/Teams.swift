@@ -63,7 +63,7 @@ struct Teams: View {
     }
     
     func fetchTeamsJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/teams/\(UserDefaults.standard.string(forKey: "season") ?? "2023")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA")") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/teams/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")") else {
             return
         }
         

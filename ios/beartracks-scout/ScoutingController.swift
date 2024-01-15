@@ -154,12 +154,11 @@ class ScoutingController: ObservableObject {
         } catch {
             print("serialization error")
         }
-        let matchData = ScoutingDataExport(season: 2024, event: eventCode, match_num: Int(matchNumber) ?? 0, level: "Qualification", team: Int(teamNumber) ?? 0, game: encodedMatchTimes, defense: defense, driving: driving, overall: overall)
+        let matchData = ScoutingDataExport(season: 2024, event: eventCode, match_num: Int(matchNumber) ?? 0, level: "Qualification", team: Int(teamNumber) ?? 0, game: encodedMatchTimes, defend: defense, driving: driving, overall: overall)
 
         do {
             let jsonData = try JSONEncoder().encode(matchData)
-            print(String(data: jsonData, encoding: .utf8))
-
+            
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -171,12 +170,9 @@ class ScoutingController: ObservableObject {
                 if let data = data {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            self.resetControllerData()
-                            self.advanceToTab(tab: .start)
                             completionBlock(.done)
                         } else {
                             print("server non-successful response")
-                            print(response)
                             completionBlock(.error)
                         }
                     } else {
@@ -190,7 +186,7 @@ class ScoutingController: ObservableObject {
             }
             requestTask.resume()
         } catch {
-            self.submitSheetType = .error
+            completionBlock(.error)
         }
         
     }
@@ -219,7 +215,7 @@ struct ScoutingDataExport: Codable {
     let level: String
     let team: Int
     let game: String
-    let defense: String
+    let defend: String
     let driving: String
     let overall: String
 }

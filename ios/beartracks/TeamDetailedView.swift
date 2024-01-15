@@ -10,7 +10,7 @@ import Foundation
 
 struct TeamDetailedView: View {
     @State private var detailData: [DetailedData] = []
-    @State private var gameData: [String] = []
+    @State private var gameData: [MatchTime2024] = []
     private var dataModel: TeamViewModel
     
     init(model: TeamViewModel) {
@@ -19,13 +19,13 @@ struct TeamDetailedView: View {
     
     var body: some View {
         VStack {
-            if !detailData.isEmpty {
+            if !detailData.isEmpty && detailData[0].FullMain.season == 2024 {
                 ScrollView {
-                    Text("\(detailData[0].FullMain.level) \(String(detailData[0].FullMain.match_num))")
+                    Text("Team \(String(detailData[0].FullMain.team))")
                         .font(.largeTitle)
                         .padding([.top, .leading])
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("Team \(String(detailData[0].FullMain.team)) @ \(detailData[0].FullMain.event) \(String(detailData[0].FullMain.season))")
+                    Text("\(detailData[0].FullMain.level) \(String(detailData[0].FullMain.match_num)) @ \(detailData[0].FullMain.event) \(String(detailData[0].FullMain.season))")
                         .font(.title2)
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -38,84 +38,48 @@ struct TeamDetailedView: View {
                     }
                     .padding([.top, .leading])
                     VStack {
-                        Text("autonomous")
+                        Text("cycles")
                             .font(.title2)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         VStack {
-                            VStack {
-                                Text("Taxi")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(valueToEmoji(input: gameData[0]))")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("Score B/M/T")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(valueToEmoji(input: gameData[1]))\(valueToEmoji(input: gameData[2]))\(valueToEmoji(input: gameData[3]))")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("Charging")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(gameData[4]) points")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
+                            Divider()
+                            ForEach(gameData, id: \.id) { matchTime in
+                                VStack {
+                                    HStack {
+                                        if matchTime.speaker {
+                                            Text("Speaker")
+                                                .font(.title3)
+                                        } else {
+                                            Text("Amplifier")
+                                                .font(.title3)
+                                        }
+                                        Spacer()
+                                        Text("\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s")
+                                            .font(.title3)
+                                    }
+                                    .padding(.bottom)
+                                    HStack {
+                                        Spacer()
+                                        Label(String(format: "%.1f", matchTime.intake), systemImage: "tray.and.arrow.down")
+                                        Spacer()
+                                        Label(String(format: "%.1f", matchTime.travel), systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+                                        Spacer()
+                                        Label(String(format: "%.1f", matchTime.outtake), systemImage: "tray.and.arrow.up")
+                                        Spacer()
+                                    }
+                                }
+                                .padding([.leading, .trailing])
+                                Divider()
+                            }
                         }
-                        .padding(.leading)
+                        .padding([.leading, .trailing])
                     }
                     .padding([.top, .leading])
-                    VStack {
-                        Text("teleoperated")
-                            .font(.title2)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        VStack {
-                            VStack {
-                                Text("Score B/M/T")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(valueToEmoji(input: gameData[5]))\(valueToEmoji(input: gameData[6]))\(valueToEmoji(input: gameData[7]))")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("Charging")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(gameData[9]) points")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("Grid")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(gameData[11].replacingOccurrences(of: "0", with: "⬜").replacingOccurrences(of: "1", with: "🟪").replacingOccurrences(of: "2", with: "🟨").separate(every: 9, with: "\n"))")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                        }
-                        .padding(.leading)
-                    }
-                    .padding(.leading)
                     VStack {
                         Text("other")
                             .font(.title2)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         VStack {
-                            VStack {
-                                Text("alliance coopertition")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(valueToEmoji(input: gameData[8]))")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("cycle time")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(gameData[10]) seconds")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
                             VStack {
                                 Text("defense")
                                     .fontWeight(.bold)
@@ -138,27 +102,6 @@ struct TeamDetailedView: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Text("\(String(detailData[0].FullMain.overall))")
                                     .padding([.leading, .trailing])
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("low/mid/high cubes, cones, pcs")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(gameData[20])/\(gameData[13])/\(gameData[15]), \(gameData[12])/\(gameData[14])/\(gameData[16]), \(gameData[17])/\(gameData[18])/\(gameData[19])")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("cubes/cones")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(gameData[22])/\(gameData[23])")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }.padding(.bottom)
-                            VStack {
-                                Text("grid points")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("\(gameData[24])")
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }.padding(.bottom)
                             VStack {
@@ -196,7 +139,11 @@ struct TeamDetailedView: View {
                     DispatchQueue.main.async {
                         self.detailData = result
                         if !result.isEmpty {
-                            self.gameData = result[0].FullMain.game.components(separatedBy: ",");
+                            do {
+                                self.gameData = try decoder.decode([MatchTime2024].self, from: Data(result[0].FullMain.game.utf8))
+                            } catch {
+                                print("parse error")
+                            }
                         }
                     }
                 } catch {
@@ -207,13 +154,5 @@ struct TeamDetailedView: View {
             }
         }
         .resume()
-    }
-    
-    func valueToEmoji(input: String) -> String {
-        if input == "true" {
-            return "✅"
-        } else {
-            return "❌"
-        }
     }
 }

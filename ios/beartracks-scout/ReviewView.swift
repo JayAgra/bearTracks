@@ -10,6 +10,7 @@ import SwiftUI
 struct ReviewView: View {
     @ObservedObject var controller: ScoutingController
     @State private var submitSheetState: SubmitSheetType = .waiting
+    @State private var showSheet: Bool = false
     
     var body: some View {
         VStack {
@@ -96,6 +97,7 @@ struct ReviewView: View {
             }
             
             Button("submit") {
+                showSheet = true
                 controller.submitData { result in
                     self.submitSheetState = result
                 }
@@ -103,8 +105,8 @@ struct ReviewView: View {
             .padding()
             .buttonStyle(.borderedProminent)
         }
-        .sheet(isPresented: $controller.showSubmitSheet) {
-            switch controller.submitSheetType {
+        .sheet(isPresented: $showSheet) {
+            switch submitSheetState {
                 case .waiting:
                     VStack {
                         Spacer()
@@ -132,6 +134,10 @@ struct ReviewView: View {
                         Text("done")
                             .font(.title)
                         Spacer()
+                    }
+                    .onAppear() {
+                        controller.resetControllerData()
+                        controller.advanceToTab(tab: .start)
                     }
                 case .error:
                     VStack {
