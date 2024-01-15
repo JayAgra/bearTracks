@@ -4,10 +4,8 @@ use actix_web::{HttpRequest, HttpResponse, http::header::{ContentType, CacheCont
 // bundle static files in binary
 const INDEX_HTML: &str = include_str!("../static/index.html");
 const BLACKJACK_HTML: &str = include_str!("../static/blackjack.html");
-const BROWSE_HTML: &str = include_str!("../static/browse.html");
 const CHARTS_HTML: &str = include_str!("../static/charts.html");
 const CREATE_HTML: &str = include_str!("../static/create.html");
-const DETAIL_HTML: &str = include_str!("../static/detail.html");
 const LOGIN_HTML: &str = include_str!("../static/login.html");
 const MANAGE_HTML: &str = include_str!("../static/manage.html");
 const MANAGE_SCOUTS_HTML: &str = include_str!("../static/manageScouts.html");
@@ -49,12 +47,6 @@ pub async fn static_blackjack() -> HttpResponse {
         .body(BLACKJACK_HTML)
 }
 
-pub async fn static_browse() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(BROWSE_HTML)
-}
-
 pub async fn static_charts() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
@@ -65,12 +57,6 @@ pub async fn static_create() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(CREATE_HTML)
-}
-
-pub async fn static_detail() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(DETAIL_HTML)
 }
 
 pub async fn static_login() -> HttpResponse {

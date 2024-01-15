@@ -10,6 +10,8 @@ import SwiftUI
 struct MatchList: View {
     @State private var didInitialLoad: Bool = false
     @State private var matchJson: [Match] = []
+    @State private var showSheet: Bool = false
+    @ObservedObject var selectedItemTracker: MatchListModel = MatchListModel()
     
     var body: some View {
         VStack {
@@ -29,28 +31,52 @@ struct MatchList: View {
                                         .font(.largeTitle)
                                         .fontWeight(String(match.teams[0].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                         .foregroundColor(Color.red)
+                                        .onTapGesture {
+                                            selectedItemTracker.setSelectedItem(item: String(match.teams[0].teamNumber))
+                                            showSheet = true
+                                        }
                                     Text("\(String(match.teams[1].teamNumber))")
                                         .font(.largeTitle)
                                         .fontWeight(String(match.teams[1].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                         .foregroundColor(Color.red)
+                                        .onTapGesture {
+                                            selectedItemTracker.setSelectedItem(item: String(match.teams[1].teamNumber))
+                                            showSheet = true
+                                        }
                                     Text("\(String(match.teams[2].teamNumber))")
                                         .font(.largeTitle)
                                         .fontWeight(String(match.teams[2].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                         .foregroundColor(Color.red)
+                                        .onTapGesture {
+                                            selectedItemTracker.setSelectedItem(item: String(match.teams[2].teamNumber))
+                                            showSheet = true
+                                        }
                                 }
                                 HStack {
                                     Text("\(String(match.teams[3].teamNumber))")
                                         .font(.largeTitle)
                                         .fontWeight(String(match.teams[3].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                         .foregroundColor(Color.blue)
+                                        .onTapGesture {
+                                            selectedItemTracker.setSelectedItem(item: String(match.teams[3].teamNumber))
+                                            showSheet = true
+                                        }
                                     Text("\(String(match.teams[4].teamNumber))")
                                         .font(.largeTitle)
                                         .fontWeight(String(match.teams[4].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                         .foregroundColor(Color.blue)
+                                        .onTapGesture {
+                                            selectedItemTracker.setSelectedItem(item: String(match.teams[4].teamNumber))
+                                            showSheet = true
+                                        }
                                     Text("\(String(match.teams[5].teamNumber))")
                                         .font(.largeTitle)
                                         .fontWeight(String(match.teams[5].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                         .foregroundColor(Color.blue)
+                                        .onTapGesture {
+                                            selectedItemTracker.setSelectedItem(item: String(match.teams[5].teamNumber))
+                                            showSheet = true
+                                        }
                                 }
                             }
                             .padding(.bottom)
@@ -72,6 +98,11 @@ struct MatchList: View {
                 didInitialLoad = true
             }
         }
+        .sheet(isPresented: $showSheet, onDismiss: {
+            showSheet = false
+        }, content: {
+            TeamView(team: selectedItemTracker.getSelectedItem())
+        })
     }
     
     func fetchMatchJson() {

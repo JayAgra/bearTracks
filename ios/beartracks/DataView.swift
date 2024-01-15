@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DataView: View {
-    @State private var didInitialLoad: Bool = false
     @ObservedObject var dataItems: DataViewModel = DataViewModel()
     @State private var showSheet: Bool = false
     
@@ -40,6 +39,7 @@ struct DataView: View {
                                 }
                             }
                             .padding()
+                            .contentShape(Rectangle())
                             .onTapGesture() {
                                 // sheetConfig.selectId(id: String(entry.Brief.id))
                                 dataItems.setSelectedItem(item: String(entry.Brief.id))
@@ -57,10 +57,7 @@ struct DataView: View {
                 dataItems.reload()
             }
             .onAppear() {
-                if !didInitialLoad {
-                    dataItems.reload()
-                    didInitialLoad = true
-                }
+                dataItems.reload()
             }
         }
         .padding()

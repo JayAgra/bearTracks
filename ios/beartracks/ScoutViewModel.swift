@@ -34,7 +34,7 @@ class ScoutViewModel: ObservableObject {
         }
     }
     
-    func clearCycle() {
+    func clearSpeaker() {
         times = [0, 0, 0]
         startMillis = [0, 0, 0]
         buttonPressed = [false, false, false]
@@ -43,12 +43,12 @@ class ScoutViewModel: ObservableObject {
         }
     }
     
-    func clearMiss() {
+    func clearAmplifier() {
         times = [0, 0, 0]
         startMillis = [0, 0, 0]
         buttonPressed = [false, false, false]
         if UserDefaults.standard.bool(forKey: "haptics") {
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
     }
 }

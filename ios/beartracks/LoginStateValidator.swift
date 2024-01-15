@@ -8,7 +8,7 @@
 import Foundation
 
 func checkLoginState(completion: @escaping (Bool) -> Void) {
-    guard let url = URL(string: "https://beartracks.io/api/v1/whomi") else {
+    guard let url = URL(string: "https://beartracks.io/api/v1/whoami") else {
         completion(false)
         return
     }
@@ -16,7 +16,7 @@ func checkLoginState(completion: @escaping (Bool) -> Void) {
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
 
-    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+    let task = sharedSession.dataTask(with: request) { (data, response, error) in
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 200 {
                 completion(true)

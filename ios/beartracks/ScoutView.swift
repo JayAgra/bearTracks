@@ -61,20 +61,20 @@ struct ScoutView: View {
             }
             .padding(.bottom)
             HStack {
-                Button("cycle", systemImage: "checkmark") {
-                    viewModel.clearCycle()
+                Button("speaker", systemImage: "speaker.wave.3") {
+                    viewModel.clearSpeaker()
                 }
                 .font(.title)
                 .buttonStyle(.bordered)
                 .foregroundStyle(Color.green)
             }
             HStack {
-                Button("miss", systemImage: "xmark") {
-                    viewModel.clearMiss()
+                Button("amplifier", systemImage: "speaker.plus") {
+                    viewModel.clearAmplifier()
                 }
                 .font(.title)
                 .buttonStyle(.bordered)
-                .foregroundStyle(Color.red)
+                .foregroundStyle(Color.green)
             }
         }
     }

@@ -176,8 +176,8 @@ async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databas
     )
 }
 
-// get basic data about all teams at an event, in a season. used for event rankings.
-async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+// get basic data about all teams at an event, in a season. used for event rankings. ** NO AUTH **
+async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -520,10 +520,8 @@ async fn main() -> io::Result<()> {
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
-                .route("/browse", web::get().to(static_files::static_browse))
                 .route("/charts", web::get().to(static_files::static_charts))
                 .route("/create", web::get().to(static_files::static_create))
-                .route("/detail", web::get().to(static_files::static_detail))
                 .route("/login", web::get().to(static_files::static_login))
                 .route("/manage", web::get().to(static_files::static_manage))
                 .route("/manageScouts", web::get().to(static_files::static_manage_scouts))

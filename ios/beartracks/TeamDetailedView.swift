@@ -1,19 +1,19 @@
 //
-//  DetailedView.swift
-//  beartracks
+//  TeamDetailedView.swift
+//  bearTracks
 //
-//  Created by Jayen Agrawal on 1/9/24.
+//  Created by Jayen Agrawal on 1/14/24.
 //
 
 import SwiftUI
 import Foundation
 
-struct DetailedView: View {
+struct TeamDetailedView: View {
     @State private var detailData: [DetailedData] = []
     @State private var gameData: [String] = []
-    private var dataModel: DataViewModel
+    private var dataModel: TeamViewModel
     
-    init(model: DataViewModel) {
+    init(model: TeamViewModel) {
         dataModel = model
     }
     
@@ -21,11 +21,11 @@ struct DetailedView: View {
         VStack {
             if !detailData.isEmpty {
                 ScrollView {
-                    Text("Team \(String(detailData[0].FullMain.team))")
+                    Text("\(detailData[0].FullMain.level) \(String(detailData[0].FullMain.match_num))")
                         .font(.largeTitle)
                         .padding([.top, .leading])
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("\(detailData[0].FullMain.level) \(String(detailData[0].FullMain.match_num)) @ \(detailData[0].FullMain.event) \(String(detailData[0].FullMain.season))")
+                    Text("Team \(String(detailData[0].FullMain.team)) @ \(detailData[0].FullMain.event) \(String(detailData[0].FullMain.season))")
                         .font(.title2)
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -183,7 +183,7 @@ struct DetailedView: View {
         }
     }
     
-    func fetchDetailJson() {  
+    func fetchDetailJson() {
         guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(dataModel.getSelectedItem())") else {
             return
         }
@@ -216,26 +216,4 @@ struct DetailedView: View {
             return "❌"
         }
     }
-}
-
-struct DetailedData: Codable {
-    let FullMain: FullMainData
-}
-
-struct FullMainData: Codable {
-    let id: Int
-    let event: String
-    let season: Int
-    let team: Int
-    let match_num: Int
-    let level: String
-    let game: String
-    let defend: String
-    let driving: String
-    let overall: String
-    let user_id: Int
-    let name: String
-    let from_team: Int
-    let weight: String
-    let analysis: String
 }

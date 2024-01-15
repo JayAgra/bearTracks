@@ -10,6 +10,8 @@ import Foundation
 
 struct Teams: View {
     @State private var teamsList: [TeamData] = []
+    @State private var showSheet: Bool = false
+    @ObservedObject var selectedItemTracker: MatchListModel = MatchListModel()
     
     var body: some View {
         VStack {
@@ -37,6 +39,10 @@ struct Teams: View {
                                 }
                             }
                             .padding()
+                            .onTapGesture {
+                                selectedItemTracker.setSelectedItem(item: String(team.team.team))
+                                showSheet = true
+                            }
                         }
                     } else {
                         Text("loading teams...")
@@ -49,6 +55,11 @@ struct Teams: View {
         .onAppear() {
             fetchTeamsJson()
         }
+        .sheet(isPresented: $showSheet, onDismiss: {
+            showSheet = false
+        }, content: {
+            TeamView(team: selectedItemTracker.getSelectedItem())
+        })
     }
     
     func fetchTeamsJson() {
@@ -85,7 +96,6 @@ struct Teams: View {
     Teams()
 }
 
-// MARK: - WelcomeElement
 struct TeamElement: Codable {
     let team: TeamEl
 
@@ -98,7 +108,6 @@ struct TeamElement: Codable {
     }
 }
 
-// MARK: - Team
 struct TeamEl: Codable {
     let id: Int
     let team: Int

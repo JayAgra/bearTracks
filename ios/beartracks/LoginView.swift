@@ -12,7 +12,7 @@ struct LoginView: View {
     @State private var username = ""
     @State private var password = ""
     @State private var alertMessage = ""
-    @State private var alertTitle = ""
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
@@ -42,7 +42,7 @@ struct LoginView: View {
         .padding()
         .alert(isPresented: $showAlert, content: {
             Alert (
-                title: Text(alertTitle),
+                title: Text("Auth Error"),
                 message: Text(alertMessage),
                 dismissButton: .default(Text("ok"))
             )
@@ -69,24 +69,19 @@ struct LoginView: View {
                 if let _data = _data {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            showAlert = true
-                            alertTitle = "logged in"
-                            alertMessage = "you may now close the login sheet"
+                            dismiss()
                         } else {
                             showAlert = true
-                            alertTitle = "auth error"
                             alertMessage = "bad credentials"
                         }
                     }
                 } else {
                     showAlert = true
-                    alertTitle = "auth error"
                     alertMessage = "network error"
                 }
             }.resume()
         } catch {
             showAlert = true
-            alertTitle = "auth error"
             alertMessage = "failed to serialize auth object"
         }
     }

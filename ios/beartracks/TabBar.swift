@@ -9,9 +9,9 @@ import SwiftUI
 
 struct TabBar: View {
     enum Tab {
-        case teams, matches, scout, data, settings
+        case teams, matches, /* scout ,*/ data, settings
     }
-    @State private var selectedTab: Tab = .scout
+    @State private var selectedTab: Tab = .teams
     @State private var loginRequired: Bool = false
 
     var body: some View {
@@ -26,11 +26,13 @@ struct TabBar: View {
                     Label("matches", systemImage: "calendar")
                 }
                 .tag(Tab.matches)
-            ScoutView()
+            /*
+             ScoutView()
                 .tabItem {
                     Label("scout", systemImage: "eyes")
                 }
                 .tag(Tab.scout)
+            */
             DataView()
                 .tabItem {
                     Label("data", systemImage: "magnifyingglass")
@@ -47,7 +49,12 @@ struct TabBar: View {
                 loginRequired = !isLoggedIn
             }
         }
-        .sheet(isPresented: $loginRequired)  {
+        .sheet(isPresented: $loginRequired, onDismiss: {
+            loginRequired = false
+            checkLoginState { isLoggedIn in
+                loginRequired = !isLoggedIn
+            }
+        }) {
             LoginView()
         }
     }
