@@ -22,8 +22,6 @@
 		F5AE2E532B527E170033DB0D /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4D2B527E170033DB0D /* Teams.swift */; };
 		F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
 		F5AE2E552B527E170033DB0D /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4F2B527E170033DB0D /* TabBar.swift */; };
-		F5AE2E562B527E170033DB0D /* ScoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E502B527E170033DB0D /* ScoutViewModel.swift */; };
-		F5AE2E572B527E170033DB0D /* ScoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E512B527E170033DB0D /* ScoutView.swift */; };
 		F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E522B527E170033DB0D /* SettingsView.swift */; };
 		F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
 		F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
@@ -60,8 +58,6 @@
 		F5AE2E4D2B527E170033DB0D /* Teams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Teams.swift; sourceTree = "<group>"; };
 		F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		F5AE2E4F2B527E170033DB0D /* TabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
-		F5AE2E502B527E170033DB0D /* ScoutViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoutViewModel.swift; sourceTree = "<group>"; };
-		F5AE2E512B527E170033DB0D /* ScoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoutView.swift; sourceTree = "<group>"; };
 		F5AE2E522B527E170033DB0D /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
@@ -107,8 +103,6 @@
 				F5AE2E3F2B527E050033DB0D /* MatchList.swift */,
 				F540A1442B54AB6F00611384 /* MatchListModel.swift */,
 				F5AE2E412B527E050033DB0D /* PressModifier.swift */,
-				F5AE2E512B527E170033DB0D /* ScoutView.swift */,
-				F5AE2E502B527E170033DB0D /* ScoutViewModel.swift */,
 				F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */,
 				F5AE2E522B527E170033DB0D /* SettingsView.swift */,
 				F5AE2E4F2B527E170033DB0D /* TabBar.swift */,
@@ -208,7 +202,6 @@
 				F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */,
 				F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */,
 				F5AE2E482B527E050033DB0D /* PressModifier.swift in Sources */,
-				F5AE2E572B527E170033DB0D /* ScoutView.swift in Sources */,
 				F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */,
 				F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */,
 				F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */,
@@ -217,7 +210,6 @@
 				F540A1452B54AB6F00611384 /* MatchListModel.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
 				F5AE2E552B527E170033DB0D /* TabBar.swift in Sources */,
-				F5AE2E562B527E170033DB0D /* ScoutViewModel.swift in Sources */,
 				F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */,
 				F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */,
 				F540A1432B54A9EE00611384 /* TeamDetailedView.swift in Sources */,

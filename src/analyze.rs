@@ -1,4 +1,5 @@
 use actix_web::{web, Error};
+use serde::{Deserialize, Serialize};
 use vader_sentiment;
 
 use super::db_main;
@@ -204,62 +205,49 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     })
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct MatchTime2024 {
+    pub id: i64,
+    pub intake: f64,
+    pub outtake: f64,
+    pub speaker: bool,
+    pub travel: f64,
+}
+
 fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults, Error> {
     let analyzer = vader_sentiment::SentimentIntensityAnalyzer::new();
-    let game_data = data.game.split(",").collect::<Vec<_>>();
-    /*
-        0  LEAVE (bool)
-        1  AMP in AUTO (bool)
-        2  SPEAKER in AUTO (bool)
-        3  AMP notes (int)
-        4  SPEAKER notes (int)
-        5  AMPLIFIED SPEAKER notes (int)
-        6  CYCLE TIME (string)
-        7  PARKED (bool)
-        8  ONSTAGE (bool)
-        9  SPOTLIT (bool)
-        10 HARMONY (bool)
-        11 NOTE IN TRAP (bool)
-    */
+    let game_data: Vec<MatchTime2024> = serde_json::from_str(data.game.as_str()).expect("failed to convert");
+
     let analysis_results: Vec<f64> = vec!(
         analyzer.polarity_scores(data.defend.as_str()).get("compound").unwrap().clone(),
         analyzer.polarity_scores(data.driving.as_str()).get("compound").unwrap().clone(),
         analyzer.polarity_scores(data.overall.as_str()).get("compound").unwrap().clone()
     );
 
-    let (game_3, game_4, game_5): (f64, f64, f64) = 
-        (game_data[3].parse::<i64>().unwrap() as f64,
-         game_data[4].parse::<i64>().unwrap() as f64,
-         game_data[5].parse::<i64>().unwrap() as f64);
-
     let mut score: f64 = 0.0;
+    let mut speaker_scores: i32 = 0;
+    let mut intake_time: f64 = 0.0;
+    let mut travel_time: f64 = 0.0;
+    let mut outtake_time: f64 = 0.0;
 
-    score += bool_to_num(game_data[0]) * 2.0;
-    score += bool_to_num(game_data[1]) * 2.0;
-    score += bool_to_num(game_data[2]) * 5.0;
+    for time in &game_data {
+        if time.speaker {
+            speaker_scores += 1
+        }
+        intake_time += time.intake;
+        travel_time += time.travel;
+        outtake_time += time.outtake;
+    }
 
-    score += game_3 * 1.0;
-    score += game_4 * 2.0;
-    score += game_5 * 5.0;
-
-    score += bool_to_num(game_data[7]) * 1.0;
-    score += bool_to_num(game_data[8]) * 3.0;
-    score += bool_to_num(game_data[9]) * 1.0;
-    score += bool_to_num(game_data[10]) * 2.0;
-    score += bool_to_num(game_data[11]) * 5.0;
-
+    score += speaker_scores as f64 * 3.0;
+    score += (&game_data.len() - speaker_scores as usize) as f64;
+    
     let mps_scores: Vec<f64> = vec!(
         score, // standard
-        score * (game_3 + game_4 + game_5), // note count
-        score * ((game_4 * 2.0) + (game_5 * 5.0)), // speaker points
-        score * game_3, // amp points
-        score * (
-            (bool_to_num(game_data[7]) * 1.0) +
-            (bool_to_num(game_data[8]) * 3.0) +
-            (bool_to_num(game_data[9]) * 1.0) +
-            (bool_to_num(game_data[10]) * 2.0) +
-            (bool_to_num(game_data[11]) * 5.0)
-        ) // endgame points
+        score * 100.0 / intake_time, // fast intake
+        score * 100.0 / travel_time, // fast travel
+        score * 100.0 / outtake_time, // fast shoot
+        score * 100.0 / (intake_time + travel_time + outtake_time) // fast cycle
     );
 
     let string_mps_scores: Vec<String> = mps_scores
