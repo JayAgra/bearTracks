@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F520BC412B5774300073A20F /* UsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F520BC402B5774300073A20F /* UsersView.swift */; };
+		F520BC432B5774660073A20F /* UsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F520BC422B5774660073A20F /* UsersViewModel.swift */; };
 		F54A8D202B55A42F005975A2 /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D1F2B55A42F005975A2 /* LoginStateValidator.swift */; };
 		F54A8D222B55A44C005975A2 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D212B55A44C005975A2 /* URLSessionConfiguration.swift */; };
 		F54A8D242B55A463005975A2 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D232B55A463005975A2 /* LoginView.swift */; };
@@ -14,6 +16,9 @@
 		F54A8D282B55AA3C005975A2 /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D272B55AA3C005975A2 /* DataView.swift */; };
 		F54A8D2A2B55AA4E005975A2 /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D292B55AA4E005975A2 /* DataViewModel.swift */; };
 		F54A8D2C2B55AA65005975A2 /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D2B2B55AA65005975A2 /* DetailedView.swift */; };
+		F58BA8A92B57835100807838 /* TeamsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58BA8A82B57835100807838 /* TeamsView.swift */; };
+		F58BA8AB2B57835A00807838 /* TeamsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58BA8AA2B57835A00807838 /* TeamsViewModel.swift */; };
+		F58BA8AD2B57878100807838 /* CreateKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58BA8AC2B57878100807838 /* CreateKeyView.swift */; };
 		F5CF31272B55A3DA00BA58EF /* beartracks_manageApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5CF31262B55A3DA00BA58EF /* beartracks_manageApp.swift */; };
 		F5CF31292B55A3DA00BA58EF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5CF31282B55A3DA00BA58EF /* ContentView.swift */; };
 		F5CF312B2B55A3DB00BA58EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5CF312A2B55A3DB00BA58EF /* Assets.xcassets */; };
@@ -21,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F520BC402B5774300073A20F /* UsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersView.swift; sourceTree = "<group>"; };
+		F520BC422B5774660073A20F /* UsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersViewModel.swift; sourceTree = "<group>"; };
 		F54A8D1F2B55A42F005975A2 /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F54A8D212B55A44C005975A2 /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F54A8D232B55A463005975A2 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -28,6 +35,9 @@
 		F54A8D272B55AA3C005975A2 /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
 		F54A8D292B55AA4E005975A2 /* DataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewModel.swift; sourceTree = "<group>"; };
 		F54A8D2B2B55AA65005975A2 /* DetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedView.swift; sourceTree = "<group>"; };
+		F58BA8A82B57835100807838 /* TeamsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsView.swift; sourceTree = "<group>"; };
+		F58BA8AA2B57835A00807838 /* TeamsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsViewModel.swift; sourceTree = "<group>"; };
+		F58BA8AC2B57878100807838 /* CreateKeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateKeyView.swift; sourceTree = "<group>"; };
 		F5CF31232B55A3DA00BA58EF /* beartracks-manage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-manage.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5CF31262B55A3DA00BA58EF /* beartracks_manageApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_manageApp.swift; sourceTree = "<group>"; };
 		F5CF31282B55A3DA00BA58EF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -67,15 +77,20 @@
 			children = (
 				F5CF31262B55A3DA00BA58EF /* beartracks_manageApp.swift */,
 				F5CF31282B55A3DA00BA58EF /* ContentView.swift */,
-				F54A8D1F2B55A42F005975A2 /* LoginStateValidator.swift */,
-				F54A8D232B55A463005975A2 /* LoginView.swift */,
-				F54A8D252B55A4ED005975A2 /* TabBarView.swift */,
-				F54A8D212B55A44C005975A2 /* URLSessionConfiguration.swift */,
-				F5CF312A2B55A3DB00BA58EF /* Assets.xcassets */,
-				F5CF312C2B55A3DB00BA58EF /* Preview Content */,
+				F58BA8AC2B57878100807838 /* CreateKeyView.swift */,
 				F54A8D272B55AA3C005975A2 /* DataView.swift */,
 				F54A8D292B55AA4E005975A2 /* DataViewModel.swift */,
 				F54A8D2B2B55AA65005975A2 /* DetailedView.swift */,
+				F54A8D1F2B55A42F005975A2 /* LoginStateValidator.swift */,
+				F54A8D232B55A463005975A2 /* LoginView.swift */,
+				F54A8D252B55A4ED005975A2 /* TabBarView.swift */,
+				F58BA8A82B57835100807838 /* TeamsView.swift */,
+				F58BA8AA2B57835A00807838 /* TeamsViewModel.swift */,
+				F54A8D212B55A44C005975A2 /* URLSessionConfiguration.swift */,
+				F520BC402B5774300073A20F /* UsersView.swift */,
+				F520BC422B5774660073A20F /* UsersViewModel.swift */,
+				F5CF312A2B55A3DB00BA58EF /* Assets.xcassets */,
+				F5CF312C2B55A3DB00BA58EF /* Preview Content */,
 			);
 			path = "beartracks-manage";
 			sourceTree = "<group>";
@@ -158,14 +173,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F520BC432B5774660073A20F /* UsersViewModel.swift in Sources */,
 				F5CF31292B55A3DA00BA58EF /* ContentView.swift in Sources */,
 				F54A8D2C2B55AA65005975A2 /* DetailedView.swift in Sources */,
+				F58BA8A92B57835100807838 /* TeamsView.swift in Sources */,
 				F5CF31272B55A3DA00BA58EF /* beartracks_manageApp.swift in Sources */,
+				F58BA8AB2B57835A00807838 /* TeamsViewModel.swift in Sources */,
 				F54A8D202B55A42F005975A2 /* LoginStateValidator.swift in Sources */,
 				F54A8D282B55AA3C005975A2 /* DataView.swift in Sources */,
+				F520BC412B5774300073A20F /* UsersView.swift in Sources */,
 				F54A8D2A2B55AA4E005975A2 /* DataViewModel.swift in Sources */,
 				F54A8D242B55A463005975A2 /* LoginView.swift in Sources */,
 				F54A8D262B55A4ED005975A2 /* TabBarView.swift in Sources */,
+				F58BA8AD2B57878100807838 /* CreateKeyView.swift in Sources */,
 				F54A8D222B55A44C005975A2 /* URLSessionConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

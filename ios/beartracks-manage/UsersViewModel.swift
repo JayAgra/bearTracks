@@ -1,33 +1,24 @@
 //
-//  DataViewModel.swift
+//  UsersViewModel.swift
 //  beartracks-manage
 //
-//  Created by Jayen Agrawal on 1/15/24.
+//  Created by Jayen Agrawal on 1/16/24.
 //
 
 import Foundation
 import SwiftUI
 
-class DataViewModel: ObservableObject {
-    @Published public var dataEntries: [DataEntry]
+class UsersViewModel: ObservableObject {
+    @Published public var usersList: [UsersListing]
     @Published private(set) var selectedItem: String = "-1"
-    @State private var isShowingSheet = false
     
     init() {
-        self.dataEntries = []
+        self.usersList = []
         self.reload()
     }
     
-    func setSelectedItem(item: String) {
-        selectedItem = item
-    }
-    
-    func getSelectedItem() -> String {
-        return selectedItem
-    }
-    
-    func fetchDataJson(completionBlock: @escaping ([DataEntry]) -> Void) -> Void {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CADA")") else {
+    func fetchUsersJson(completionBlock: @escaping ([UsersListing]) -> Void) -> Void {
+        guard let url = URL(string: "https://beartracks.io/api/v1/manage/all_users") else {
             return
         }
         
@@ -40,25 +31,18 @@ class DataViewModel: ObservableObject {
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
-                    let result = try decoder.decode([DataEntry].self, from: data)
+                    let result = try decoder.decode([UsersListing].self, from: data)
                     DispatchQueue.main.async {
-                        if UserDefaults.standard.bool(forKey: "haptics") {
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        }
                         completionBlock(result)
                     }
                 } catch {
-                    print("parse error")
-                    if UserDefaults.standard.bool(forKey: "haptics") {
-                        UINotificationFeedbackGenerator().notificationOccurred(.error)
-                    }
+                    print("parse error \(error)")
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                     return
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
-                if UserDefaults.standard.bool(forKey: "haptics") {
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
-                }
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return
             }
         }
@@ -66,13 +50,13 @@ class DataViewModel: ObservableObject {
     }
     
     func reload() {
-        self.fetchDataJson() { (output) in
-            self.dataEntries = output
+        self.fetchUsersJson() { output in
+            self.usersList = output
         }
     }
     
-    func deleteSubmission(id: String) {
-            guard let url = URL(string: "https://beartracks.io/api/v1/manage/delete/\(id)") else {
+    func deleteUser(id: String) {
+            guard let url = URL(string: "https://beartracks.io/api/v1/manage/user/delete/\(id)") else {
                 return
             }
             
@@ -102,19 +86,11 @@ class DataViewModel: ObservableObject {
     }
 }
 
-
-struct DataEntry: Codable {
-    let Brief: BriefData
-}
-
-struct BriefData: Codable {
+struct UsersListing: Codable {
     let id: Int
-    let event: String
-    let season: Int
+    let username: String
     let team: Int
-    let match_num: Int
-    let user_id: Int
-    let name: String
-    let from_team: Int
-    let weight: String
+    let admin: String
+    let team_admin: Int
+    let score: Int
 }
