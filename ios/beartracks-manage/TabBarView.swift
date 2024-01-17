@@ -34,7 +34,7 @@ struct TabBarView: View {
                 }
                 .tag(Tab.teams)
             
-            ContentView()
+            SettingsView(loginRequired: $loginRequired)
                 .tabItem {
                     Label("settings", systemImage: "gear")
                 }

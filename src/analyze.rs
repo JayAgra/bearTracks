@@ -244,15 +244,15 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         outtake_time += time.outtake;
     }
 
-    score += speaker_scores as f64 * 6.0;
-    score += (&game_data.len() - speaker_scores as usize) as f64 * 2.0;
+    score += speaker_scores as f64 * 12.0;
+    score += (&game_data.len() - speaker_scores as usize) as f64 * 4.0;
     
     let mps_scores: Vec<f64> = vec!(
         score, // standard
-        score * 100.0 / intake_time, // fast intake
-        score * 100.0 / travel_time, // fast travel
-        score * 100.0 / outtake_time, // fast shoot
-        score * 100.0 / (intake_time + travel_time + outtake_time) // fast cycle
+        score * 100.0 / (intake_time / game_data.len() as f64), // fast intake
+        score * 100.0 / (travel_time / game_data.len() as f64), // fast travel
+        score * 100.0 / (outtake_time / game_data.len() as f64), // fast shoot
+        score * 100.0 / (intake_time + travel_time + outtake_time) / game_data.len() as f64 // fast cycle
     );
 
     let string_mps_scores: Vec<String> = mps_scores

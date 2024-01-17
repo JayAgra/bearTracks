@@ -186,6 +186,14 @@ async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databa
     )
 }
 
+async fn data_get_main_brief_season(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(db_main::execute(&db.main, db_main::MainData::BriefSeason, path).await?)
+    )
+}
+
 // get summary of all submissions created by a certain user id. used for /browse
 async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
@@ -573,6 +581,7 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/data/brief/team/{args}*").route(web::get().to(data_get_main_brief_team))) // season/event/team
                 .service(web::resource("/api/v1/data/brief/match/{args}*").route(web::get().to(data_get_main_brief_match))) // season/event/match_num
                 .service(web::resource("/api/v1/data/brief/event/{args}*").route(web::get().to(data_get_main_brief_event))) // season/event
+                .service(web::resource("/api/v1/data/brief/season/{args}*").route(web::get().to(data_get_main_brief_season))) // season/event
                 .service(web::resource("/api/v1/data/brief/user/{args}*").route(web::get().to(data_get_main_brief_user))) // season/user_id
                 .service(web::resource("/api/v1/data/teams/{args}*").route(web::get().to(data_get_main_teams))) // season/event
                 .service(web::resource("/api/v1/events/teams/{season}/{event}").route(web::get().to(event_get_frc_api)))

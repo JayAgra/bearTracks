@@ -64,6 +64,7 @@ type QueryResult = Result<Vec<Main>, rusqlite::Error>;
 pub enum MainData {
     GetDataDetailed,
     DataExists,
+    BriefSeason,
     BriefEvent,
     BriefTeam,
     BriefMatch,
@@ -87,6 +88,7 @@ pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> R
         match query {
             MainData::GetDataDetailed => get_data_detailed(conn, path),
             MainData::DataExists => get_submission_exists(conn, path),
+            MainData::BriefSeason => get_brief_season(conn, path),
             MainData::BriefEvent => get_brief_event(conn, path),
             MainData::BriefTeam => get_brief_team(conn, path),
             MainData::BriefMatch => get_brief_match(conn, path),
@@ -111,6 +113,12 @@ fn get_submission_exists(conn: Connection, path: web::Path<String>) -> QueryResu
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT id, team, match_num FROM main WHERE id=:id LIMIT 1;")?;
     get_exists_row(stmt, [args[0].parse::<i64>().unwrap()])
+}
+
+fn get_brief_season(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let args = path.split("/").collect::<Vec<_>>();
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event!=?2 AND id!=?3 ORDER BY id DESC;")?;
+    get_brief_rows(stmt, [args[0], "", ""])
 }
 
 // get minimum required data on all matches in event
