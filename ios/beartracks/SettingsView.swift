@@ -16,50 +16,59 @@ struct SettingsView: View {
     @State private var showAlert = false
     
     var body: some View {
-        VStack {
-            Text("Settings")
-                .font(.largeTitle)
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            VStack {
-                Text("Team \(UserDefaults.standard.string(forKey: "teamNumber") ?? "766")")
-                    .font(.title)
-                    .padding(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text("\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") • \(UserDefaults.standard.string(forKey: "season") ?? "2024")")
-                    .font(.title3)
-                    .padding(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text("bearTracks v5.0.0")
-                    .font(.caption)
-                    .padding(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }.padding()
+        NavigationView {
             ScrollView {
                 VStack {
                     HStack {
-                        TextField("Team Number", text: $teamNumberInput)
-                            .padding()
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Picker("Team Number", selection: $teamNumberInput) {
+                            Text("766")
+                                .tag("766")
+                        }
+                        .padding()
+                        .pickerStyle(.menu)
+                        Spacer()
                         Button("Save") {
                             saveTeamNumber()
                         }
+                        .padding()
                     }
                     HStack {
-                        TextField("Event Code", text: $eventCodeInput)
-                            .padding()
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Picker("Event Code", selection: $eventCodeInput) {
+                            Text("CADA")
+                                .tag("CADA")
+                            Text("CASJ")
+                                .tag("CASJ")
+                            Text("CAFR")
+                                .tag("CAFR")
+                            Text("CABE")
+                                .tag("CABE")
+                            Text("WOOD")
+                                .tag("WOOD")
+                            Text("CCCC")
+                                .tag("CCCC")
+                        }
+                        .pickerStyle(.menu)
+                        .padding()
+                        Spacer()
                         Button("Save") {
                             saveEventCode()
                         }
+                        .padding()
                     }
                     HStack {
-                        TextField("Season", text: $seasonInput)
-                            .padding()
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Picker("Season", selection: $seasonInput) {
+                            Text("2023")
+                                .tag("2023")
+                            Text("2024")
+                                .tag("2024")
+                        }
+                        .pickerStyle(.menu)
+                        .padding()
+                        Spacer()
                         Button("Save") {
                             saveSeason()
                         }
+                        .padding()
                     }
                     HStack {
                         Toggle(isOn: $darkMode) {
@@ -71,17 +80,9 @@ struct SettingsView: View {
                             showAlert = true
                         }
                     }
-                    HStack {
-                        Toggle(isOn: $haptics) {
-                            Label("Haptics", systemImage: "iphone.radiowaves.left.and.right")
-                        }
-                        .padding()
-                        .onChange(of: haptics) {
-                            UserDefaults.standard.set(haptics, forKey: "haptics")
-                        }
-                    }
                 }
             }
+            .navigationTitle("Settings")
             .alert(isPresented: $showAlert, content: {
                 Alert (
                     title: Text("theme change"),
@@ -90,7 +91,6 @@ struct SettingsView: View {
                 )
             })
         }
-        .padding()
     }
     
     func saveTeamNumber() {

@@ -15,83 +15,90 @@ struct MatchList: View {
     
     var body: some View {
         VStack {
-            Text("Matches")
-                .font(.largeTitle)
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            ScrollView {
-                LazyVStack {
-                    if !matchJson.isEmpty {
+            NavigationView {
+                if !matchJson.isEmpty {
+                    List {
                         ForEach(matchJson, id: \.description) { match in
                             VStack {
                                 Text("\(match.description)")
                                     .font(.title3)
                                 HStack {
-                                    Text("\(String(match.teams[0].teamNumber))")
-                                        .font(.largeTitle)
-                                        .fontWeight(String(match.teams[0].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
-                                        .foregroundColor(Color.red)
-                                        .onTapGesture {
-                                            selectedItemTracker.setSelectedItem(item: String(match.teams[0].teamNumber))
-                                            showSheet = true
-                                        }
-                                    Text("\(String(match.teams[1].teamNumber))")
-                                        .font(.largeTitle)
-                                        .fontWeight(String(match.teams[1].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
-                                        .foregroundColor(Color.red)
-                                        .onTapGesture {
-                                            selectedItemTracker.setSelectedItem(item: String(match.teams[1].teamNumber))
-                                            showSheet = true
-                                        }
-                                    Text("\(String(match.teams[2].teamNumber))")
-                                        .font(.largeTitle)
-                                        .fontWeight(String(match.teams[2].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
-                                        .foregroundColor(Color.red)
-                                        .onTapGesture {
-                                            selectedItemTracker.setSelectedItem(item: String(match.teams[2].teamNumber))
-                                            showSheet = true
-                                        }
-                                }
-                                HStack {
-                                    Text("\(String(match.teams[3].teamNumber))")
-                                        .font(.largeTitle)
-                                        .fontWeight(String(match.teams[3].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
-                                        .foregroundColor(Color.blue)
-                                        .onTapGesture {
-                                            selectedItemTracker.setSelectedItem(item: String(match.teams[3].teamNumber))
-                                            showSheet = true
-                                        }
-                                    Text("\(String(match.teams[4].teamNumber))")
-                                        .font(.largeTitle)
-                                        .fontWeight(String(match.teams[4].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
-                                        .foregroundColor(Color.blue)
-                                        .onTapGesture {
-                                            selectedItemTracker.setSelectedItem(item: String(match.teams[4].teamNumber))
-                                            showSheet = true
-                                        }
-                                    Text("\(String(match.teams[5].teamNumber))")
-                                        .font(.largeTitle)
-                                        .fontWeight(String(match.teams[5].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
-                                        .foregroundColor(Color.blue)
-                                        .onTapGesture {
-                                            selectedItemTracker.setSelectedItem(item: String(match.teams[5].teamNumber))
-                                            showSheet = true
-                                        }
+                                    Spacer()
+                                    VStack {
+                                        Text("\(String(match.teams[0].teamNumber))")
+                                            .font(.largeTitle)
+                                            .fontWeight(String(match.teams[0].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
+                                            .foregroundColor(Color.red)
+                                            .onTapGesture {
+                                                selectedItemTracker.setSelectedItem(item: String(match.teams[0].teamNumber))
+                                                showSheet = true
+                                            }
+                                            
+                                        Text("\(String(match.teams[3].teamNumber))")
+                                            .font(.largeTitle)
+                                            .fontWeight(String(match.teams[3].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
+                                            .foregroundColor(Color.blue)
+                                            .onTapGesture {
+                                                selectedItemTracker.setSelectedItem(item: String(match.teams[3].teamNumber))
+                                                showSheet = true
+                                            }
+                                    }
+                                    Spacer()
+                                    VStack {
+                                        Text("\(String(match.teams[1].teamNumber))")
+                                            .font(.largeTitle)
+                                            .fontWeight(String(match.teams[1].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
+                                            .foregroundColor(Color.red)
+                                            .onTapGesture {
+                                                selectedItemTracker.setSelectedItem(item: String(match.teams[1].teamNumber))
+                                                showSheet = true
+                                            }
+                                        Text("\(String(match.teams[4].teamNumber))")
+                                            .font(.largeTitle)
+                                            .fontWeight(String(match.teams[4].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
+                                            .foregroundColor(Color.blue)
+                                            .onTapGesture {
+                                                selectedItemTracker.setSelectedItem(item: String(match.teams[4].teamNumber))
+                                                showSheet = true
+                                            }
+                                    }
+                                    Spacer()
+                                    VStack {
+                                        Text("\(String(match.teams[2].teamNumber))")
+                                            .font(.largeTitle)
+                                            .fontWeight(String(match.teams[2].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
+                                            .foregroundColor(Color.red)
+                                            .onTapGesture {
+                                                selectedItemTracker.setSelectedItem(item: String(match.teams[2].teamNumber))
+                                                showSheet = true
+                                            }
+                                        Text("\(String(match.teams[5].teamNumber))")
+                                            .font(.largeTitle)
+                                            .fontWeight(String(match.teams[5].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
+                                            .foregroundColor(Color.blue)
+                                            .onTapGesture {
+                                                selectedItemTracker.setSelectedItem(item: String(match.teams[5].teamNumber))
+                                                showSheet = true
+                                            }
+                                    }
+                                    Spacer()
                                 }
                             }
-                            .padding(.bottom)
                         }
-                    } else {
+                    }
+                    .navigationTitle("Matches")
+                } else {
+                    VStack {
                         Text("loading matches...")
                             .padding(.bottom)
                     }
+                    .navigationTitle("Matches")
                 }
             }
 //            .refreshable {
 //                fetchMatchJson()
 //            }
         }
-        .padding()
         .onAppear() {
             if !didInitialLoad {
                 fetchMatchJson()

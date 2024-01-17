@@ -15,13 +15,9 @@ struct Teams: View {
     
     var body: some View {
         VStack {
-            Text("Teams")
-                .font(.largeTitle)
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            ScrollView {
-                LazyVStack {
-                    if !teamsList.isEmpty {
+            NavigationView {
+                if !teamsList.isEmpty {
+                    List {
                         ForEach(Array(teamsList[0].enumerated()), id: \.element.team.team) { index, team in
                             VStack {
                                 HStack {
@@ -34,24 +30,29 @@ struct Teams: View {
                                         .padding(.trailing)
                                         .frame(maxWidth: .infinity, alignment: .trailing)
                                 }
+                                .contentShape(Rectangle())
                                 HStack {
-                                    ProgressView(value: (team.firstValue() ?? 0) / (teamsList[0][0].firstValue() ?? 0))
+                                    ProgressView(value: max(team.firstValue() ?? 0, 0) / max(teamsList[0][0].firstValue() ?? 0, 1))
+                                        .padding([.leading, .trailing])
                                 }
                             }
-                            .padding()
                             .onTapGesture {
                                 selectedItemTracker.setSelectedItem(item: String(team.team.team))
                                 showSheet = true
                             }
+                            .contentShape(Rectangle())
                         }
-                    } else {
+                    }
+                    .navigationTitle("Teams")
+                } else {
+                    VStack {
                         Text("loading teams...")
                             .padding(.bottom)
                     }
+                    .navigationTitle("Teams")
                 }
             }
         }
-        .padding()
         .onAppear() {
             fetchTeamsJson()
         }
