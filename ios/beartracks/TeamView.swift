@@ -73,36 +73,29 @@ struct TeamView: View {
                 }
                 .padding()
                 Divider()
-                ScrollView {
-                    LazyVStack {
-                        ForEach(dataItems.teamMatches, id: \.Brief.id) { entry in
-                            VStack {
-                                HStack {
-                                    Text("\(String(entry.Brief.team))")
-                                        .font(.title)
-                                        .padding(.leading)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("match \(String(entry.Brief.match_num))")
-                                        .font(.title)
-                                        .padding(.trailing)
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
-                                }
-                                HStack {
-                                    Text("#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team)) (\(entry.Brief.name))")
-                                        .padding(.leading)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                                HStack {
-                                    ProgressView(value: (entry.Brief.weight.components(separatedBy: ",").compactMap({ Float($0) }).first ?? 0) / dataItems.maximumValue)
-                                }
+                List {
+                    ForEach(dataItems.teamMatches, id: \.Brief.id) { entry in
+                        VStack {
+                            HStack {
+                                Text("match \(String(entry.Brief.match_num))")
+                                    .font(.title)
+                                    .padding(.leading)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding()
-                            .contentShape(Rectangle())
-                            .onTapGesture() {
-                                dataItems.setSelectedItem(item: String(entry.Brief.id))
-                                showSheet = true
+                            HStack {
+                                Text("#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team)) (\(entry.Brief.name))")
+                                    .padding(.leading)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            Divider()
+                            HStack {
+                                ProgressView(value: (max(entry.Brief.weight.components(separatedBy: ",").compactMap({ Float($0) }).first ?? 0, 0)) / max(dataItems.maximumValue, 1))
+                                    .padding([.leading, .trailing])
+                            }
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture() {
+                            dataItems.setSelectedItem(item: String(entry.Brief.id))
+                            showSheet = true
                         }
                     }
                 }

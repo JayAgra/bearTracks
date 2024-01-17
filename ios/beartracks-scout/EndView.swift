@@ -33,21 +33,18 @@ struct EndView: View {
     }
     
     var body: some View {
-        VStack {
-            Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text("Match Scouting")
-                .font(.largeTitle)
-                .padding([.leading, .bottom])
-                .frame(maxWidth: .infinity, alignment: .leading)
-            ScrollView {
-                VStack {
+        NavigationView {
+            VStack {
+                Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                ScrollView {
                     VStack {
-                        Text("Did the robot play defense? If so, explain- was it effective? Did it incur foul points?")
-                            .padding([.leading, .top])
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
+                        VStack {
+                            Text("Did the robot play defense? If so, explain- was it effective? Did it incur foul points?")
+                                .padding([.leading, .top])
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
                             TextEditor(text: $defense)
                                 .focused($frqFocusField, equals: .defense)
                                 .overlay(
@@ -56,52 +53,57 @@ struct EndView: View {
                                 )
                                 .frame(height: 150)
                                 .padding([.leading, .trailing])
+                        }
+                        
+                        VStack {
+                            Text("How was the driving? Did the driver seem confident?")
+                                .padding([.leading, .top])
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            TextEditor(text: $driving)
+                                .focused($frqFocusField, equals: .driving)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.gray, lineWidth: 1)
+                                )
+                                .frame(height: 150)
+                                .padding([.leading, .trailing])
+                        }
+                        
+                        VStack {
+                            Text("Provide an overall description of the team's performance in this match")
+                                .padding([.leading, .top])
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            TextEditor(text: $overall)
+                                .focused($frqFocusField, equals: .overall)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.gray, lineWidth: 1)
+                                )
+                                .frame(height: 150)
+                                .padding([.leading, .trailing])
+                        }
                     }
-                    
-                    VStack {
-                        Text("How was the driving? Did the driver seem confident?")
-                            .padding([.leading, .top])
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        TextEditor(text: $driving)
-                            .focused($frqFocusField, equals: .driving)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.gray, lineWidth: 1)
-                            )
-                            .frame(height: 150)
-                            .padding([.leading, .trailing])
+                    .padding(.bottom)
+                    Button("review") {
+                        controller.setDefenseResponse(response: defense)
+                        controller.setDrivingResponse(response: driving)
+                        controller.setOverallResponse(response: overall)
+                        controller.advanceToTab(tab: .review)
                     }
-                    
-                    VStack {
-                        Text("Provide an overall description of the team's performance in this match")
-                            .padding([.leading, .top])
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        TextEditor(text: $overall)
-                            .focused($frqFocusField, equals: .overall)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.gray, lineWidth: 1)
-                            )
-                            .frame(height: 150)
-                            .padding([.leading, .trailing])
-                    }
+                    .padding()
+                    .buttonStyle(.bordered)
                 }
-                .padding(.bottom)
-                Button("review") {
-                    controller.setDefenseResponse(response: defense)
-                    controller.setDrivingResponse(response: driving)
-                    controller.setOverallResponse(response: overall)
-                    controller.advanceToTab(tab: .review)
-                }
-                .padding()
-                .buttonStyle(.bordered)
+                Spacer()
             }
-            Spacer()
-        }
-        .onAppear() {
-            loadPane()
+            .onAppear() {
+                loadPane()
+                if controller.getTeamNumber() == "" || controller.getMatchNumber() == "" {
+                    controller.advanceToTab(tab: .start)
+                }
+            }
+            .navigationTitle("Match Scouting")
         }
     }
 }

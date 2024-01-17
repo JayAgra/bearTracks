@@ -22,17 +22,17 @@ struct TabBarView: View {
                 }
                 .tag(Tab.data)
             
-            ContentView()
+            UsersView()
                 .tabItem {
-                    Label("scouts", systemImage: "person")
+                    Label("users", systemImage: "person")
                 }
                 .tag(Tab.scouts)
             
-            ContentView()
+            TeamsView()
                 .tabItem {
                     Label("teams", systemImage: "person.3")
                 }
-                .tag(Tab.scouts)
+                .tag(Tab.teams)
             
             ContentView()
                 .tabItem {

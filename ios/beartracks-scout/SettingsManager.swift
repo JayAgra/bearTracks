@@ -12,8 +12,9 @@ class SettingsManager {
 
     private init() {
         let defaults: [String: Any] = [
+            "eventCode": "CAFR",
+            "season": "2024",
             "darkMode": true,
-            "haptics": true
         ]
         UserDefaults.standard.register(defaults: defaults)
     }

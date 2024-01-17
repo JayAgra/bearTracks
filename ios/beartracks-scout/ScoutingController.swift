@@ -12,7 +12,7 @@ class ScoutingController: ObservableObject {
     // tab selection
     @Published public var currentTab: Tab = .start
     // basic meta
-    private var eventCode: String = "CADA"
+    private var eventCode: String = UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR"
     private var matchNumber: String = ""
     private var teamNumber: String = ""
     // match buttons
@@ -104,9 +104,7 @@ class ScoutingController: ObservableObject {
         if !buttonPressed[buttonIndex] {
             buttonPressed[buttonIndex].toggle()
             startMillis[buttonIndex] = Date().timeIntervalSince1970
-            if UserDefaults.standard.bool(forKey: "haptics") {
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-            }
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
     }
     
@@ -115,9 +113,7 @@ class ScoutingController: ObservableObject {
             buttonPressed[buttonIndex].toggle()
             times[buttonIndex] += Date().timeIntervalSince1970 - startMillis[buttonIndex]
             startMillis[buttonIndex] = 0
-            if UserDefaults.standard.bool(forKey: "haptics") {
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-            }
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
     }
     
@@ -130,17 +126,13 @@ class ScoutingController: ObservableObject {
     func clearSpeaker() {
         matchTimes.append(MatchTime(id: matchTimes.count, speaker: true, intake: times[0], travel: times[1], outtake: times[2]))
         resetItems()
-        if UserDefaults.standard.bool(forKey: "haptics") {
-            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-        }
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
     }
     
     func clearAmplifier() {
         matchTimes.append(MatchTime(id: matchTimes.count, speaker: false, intake: times[0], travel: times[1], outtake: times[2]))
         resetItems()
-        if UserDefaults.standard.bool(forKey: "haptics") {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
     
     func submitData(completionBlock: @escaping (SubmitSheetType) -> Void) {

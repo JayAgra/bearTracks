@@ -122,6 +122,25 @@ async fn auth_psk_auth_finish(db: web::Data<Databases>, cred: web::Json<PublicKe
     )
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct DataMeta {
+    pub seasons: Vec<String>,
+    pub events: Vec<String>,
+    pub teams: Vec<String>
+}
+
+async fn data_get_meta() -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(DataMeta {
+                seasons: env::var("SEASONS").unwrap_or_else(|_| "0".to_string()).split(",").map(|s| s.to_string()).collect::<Vec<String>>(),
+                events: env::var("EVENTS").unwrap_or_else(|_| "0".to_string()).split(",").map(|s| s.to_string()).collect::<Vec<String>>(),
+                teams: env::var("TEAMS").unwrap_or_else(|_| "0".to_string()).split(",").map(|s| s.to_string()).collect::<Vec<String>>()
+            })
+    )
+}
+
 // get detailed data by submission id. used in /detail
 async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
@@ -469,8 +488,8 @@ async fn main() -> io::Result<()> {
     // ratelimiting with governor
     let governor_conf = GovernorConfigBuilder::default()
         // these may be a lil high but whatever
-        .per_second(100)
-        .burst_size(200)
+        .per_second(250)
+        .burst_size(500)
         .finish()
         .unwrap();
 
@@ -527,10 +546,6 @@ async fn main() -> io::Result<()> {
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
                 .route("/create", web::get().to(static_files::static_create))
                 .route("/login", web::get().to(static_files::static_login))
-                .route("/manage", web::get().to(static_files::static_manage))
-                .route("/manageScouts", web::get().to(static_files::static_manage_scouts))
-                .route("/manageTeam", web::get().to(static_files::static_manage_team))
-                .route("/manageTeams", web::get().to(static_files::static_manage_teams))
                 .route("/passkey", web::get().to(static_files::static_passkey))
                 .route("/pointRecords", web::get().to(static_files::static_point_records))
                 .route("/points", web::get().to(static_files::static_points))
@@ -552,6 +567,7 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/auth/passkey/auth_finish").route(web::post().to(auth_psk_auth_finish)))
             /* data endpoints */
                 // GET (✅)
+                .service(web::resource("/api/v1/data").route(web::get().to(data_get_meta)))
                 .service(web::resource("/api/v1/data/detail/{id}").route(web::get().to(data_get_detailed)))
                 .service(web::resource("/api/v1/data/exists/{id}").route(web::get().to(data_get_exists)))
                 .service(web::resource("/api/v1/data/brief/team/{args}*").route(web::get().to(data_get_main_brief_team))) // season/event/team

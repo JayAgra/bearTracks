@@ -47,9 +47,6 @@ class TeamViewModel: ObservableObject {
                     let decoder = JSONDecoder()
                     let result = try decoder.decode([DataEntry].self, from: data)
                     DispatchQueue.main.async {
-                        if UserDefaults.standard.bool(forKey: "haptics") {
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        }
                         result.forEach({ data in
                             let wt = data.Brief.weight.components(separatedBy: ",").compactMap({ Float($0) }).first ?? 0
                             if wt > self.maximumValue {
@@ -64,9 +61,6 @@ class TeamViewModel: ObservableObject {
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
-                if UserDefaults.standard.bool(forKey: "haptics") {
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
-                }
                 return
             }
         }
@@ -109,9 +103,6 @@ class TeamViewModel: ObservableObject {
         }
         self.fetchStatboticsTeamJson() { (output) in
             self.teamData = [output]
-        }
-        if UserDefaults.standard.bool(forKey: "haptics") {
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }
 }

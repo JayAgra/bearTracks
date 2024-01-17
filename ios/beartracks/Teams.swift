@@ -11,17 +11,15 @@ import Foundation
 struct Teams: View {
     @State private var teamsList: [TeamData] = []
     @State private var showSheet: Bool = false
+    @State private var loadFailed: Bool = false
+    @State private var loadComplete: Bool = false
     @ObservedObject var selectedItemTracker: MatchListModel = MatchListModel()
     
     var body: some View {
         VStack {
-            Text("Teams")
-                .font(.largeTitle)
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            ScrollView {
-                LazyVStack {
-                    if !teamsList.isEmpty {
+            NavigationView {
+                if !teamsList.isEmpty && !teamsList[0].isEmpty {
+                    List {
                         ForEach(Array(teamsList[0].enumerated()), id: \.element.team.team) { index, team in
                             VStack {
                                 HStack {
@@ -34,24 +32,56 @@ struct Teams: View {
                                         .padding(.trailing)
                                         .frame(maxWidth: .infinity, alignment: .trailing)
                                 }
+                                .contentShape(Rectangle())
                                 HStack {
-                                    ProgressView(value: (team.firstValue() ?? 0) / (teamsList[0][0].firstValue() ?? 0))
+                                    ProgressView(value: max(team.firstValue() ?? 0, 0) / max(teamsList[0][0].firstValue() ?? 0, 1))
+                                        .padding([.leading, .trailing])
                                 }
                             }
-                            .padding()
                             .onTapGesture {
                                 selectedItemTracker.setSelectedItem(item: String(team.team.team))
                                 showSheet = true
                             }
+                            .contentShape(Rectangle())
                         }
+                    }
+                    .navigationTitle("Teams")
+                } else {
+                    if loadFailed {
+                        VStack {
+                            Label("failed", systemImage: "xmark.seal.fill")
+                                .padding(.bottom)
+                                .labelStyle(.iconOnly)
+                                .foregroundStyle(Color.pink)
+                            Text("load failed")
+                                .padding(.bottom)
+                        }
+                        .navigationTitle("Teams")
                     } else {
-                        Text("loading teams...")
-                            .padding(.bottom)
+                        if loadComplete {
+                            VStack {
+                                Label("none", systemImage: "questionmark.app.dashed")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                    .foregroundStyle(Color.pink)
+                                Text("no data")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Teams")
+                        } else {
+                            VStack {
+                                Label("loading", systemImage: "hourglass")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                Text("loading teams...")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Teams")
+                        }
                     }
                 }
             }
         }
-        .padding()
         .onAppear() {
             fetchTeamsJson()
         }
@@ -80,13 +110,17 @@ struct Teams: View {
                         }
                     }
                     DispatchQueue.main.async {
+                        self.loadFailed = false
+                        self.loadComplete = true
                         self.teamsList = [result]
                     }
                 } catch {
                     print("parse error \(error)")
+                    self.loadFailed = true
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
+                self.loadFailed = true
             }
         }.resume()
     }

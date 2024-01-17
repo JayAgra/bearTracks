@@ -13,13 +13,9 @@ struct DataView: View {
     
     var body: some View {
         VStack {
-            Text("Data")
-                .font(.largeTitle)
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            ScrollView {
-                LazyVStack {
-                    if !dataItems.dataEntries.isEmpty {
+            NavigationView {
+                if !dataItems.dataEntries.isEmpty {
+                    List {
                         ForEach(dataItems.dataEntries, id: \.Brief.id) { entry in
                             VStack {
                                 HStack {
@@ -38,18 +34,47 @@ struct DataView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                             }
-                            .padding()
                             .contentShape(Rectangle())
                             .onTapGesture() {
                                 // sheetConfig.selectId(id: String(entry.Brief.id))
                                 dataItems.setSelectedItem(item: String(entry.Brief.id))
                                 showSheet = true
                             }
-                            Divider()
                         }
+                    }
+                    .navigationTitle("Data")
+                } else {
+                    if dataItems.loadFailed {
+                        VStack {
+                            Label("failed", systemImage: "xmark.seal.fill")
+                                .padding(.bottom)
+                                .labelStyle(.iconOnly)
+                                .foregroundStyle(Color.pink)
+                            Text("load failed")
+                                .padding(.bottom)
+                        }
+                        .navigationTitle("Data")
                     } else {
-                        Text("loading data...")
-                            .padding(.bottom)
+                        if dataItems.loadComplete {
+                            VStack {
+                                Label("none", systemImage: "questionmark.app.dashed")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                    .foregroundStyle(Color.pink)
+                                Text("no data")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Data")
+                        } else {
+                            VStack {
+                                Label("loading", systemImage: "hourglass")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                Text("loading data...")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Data")
+                        }
                     }
                 }
             }
@@ -60,7 +85,6 @@ struct DataView: View {
                 dataItems.reload()
             }
         }
-        .padding()
         .sheet(isPresented: $showSheet, onDismiss: {
                 showSheet = false
         }, content: {

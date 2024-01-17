@@ -37,7 +37,7 @@ struct TabBar: View {
                 }
                 .tag(Tab.review)
             
-            SettingsView()
+            SettingsView(loginRequired: $loginRequired)
                 .tabItem {
                     Label("settings", systemImage: "gear")
                 }
