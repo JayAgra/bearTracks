@@ -139,10 +139,10 @@ struct SettingsView: View {
 }
 
 struct SettingsView_Preview: PreviewProvider {
-  @State static var loginReq = false
-  static var previews: some View {
-      SettingsView(loginRequired: $loginReq)
-  }
+    @State static var loginReq = false
+    static var previews: some View {
+        SettingsView(loginRequired: $loginReq)
+    }
 }
 
 struct DataMetadata: Codable {

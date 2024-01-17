@@ -488,8 +488,8 @@ async fn main() -> io::Result<()> {
     // ratelimiting with governor
     let governor_conf = GovernorConfigBuilder::default()
         // these may be a lil high but whatever
-        .per_second(100)
-        .burst_size(200)
+        .per_second(250)
+        .burst_size(500)
         .finish()
         .unwrap();
 

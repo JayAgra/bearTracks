@@ -226,9 +226,9 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
 
     let mut score: f64 = 0.0;
 
-    score += analysis_results[0] * 3.75;
-    score += analysis_results[1] * 3.75;
-    score += analysis_results[2] * 7.5;
+    score += (analysis_results[0] + 1.0) * 3.75;
+    score += (analysis_results[1] + 1.0) * 3.75;
+    score += (analysis_results[2] + 1.0) * 7.5;
 
     let mut speaker_scores: i32 = 0;
     let mut intake_time: f64 = 0.0;
@@ -244,8 +244,8 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         outtake_time += time.outtake;
     }
 
-    score += speaker_scores as f64 * 3.0;
-    score += (&game_data.len() - speaker_scores as usize) as f64;
+    score += speaker_scores as f64 * 6.0;
+    score += (&game_data.len() - speaker_scores as usize) as f64 * 2.0;
     
     let mps_scores: Vec<f64> = vec!(
         score, // standard

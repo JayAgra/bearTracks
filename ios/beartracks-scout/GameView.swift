@@ -14,9 +14,6 @@ struct GameView: View {
         VStack {
             NavigationView {
                 VStack {
-                    Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
-                        .padding(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     HStack {
                         VStack {
                             Text(String(format: "%.1f", controller.times[0]))
@@ -83,6 +80,8 @@ struct GameView: View {
                     }
                     .padding()
                     .buttonStyle(.bordered)
+                    Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .navigationTitle("Match Scouting")
             }
