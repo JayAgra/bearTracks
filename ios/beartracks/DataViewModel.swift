@@ -12,6 +12,7 @@ class DataViewModel: ObservableObject {
     @Published private(set) var dataEntries: [DataEntry]
     @Published private(set) var selectedItem: String = "-1"
     @Published private(set) var loadFailed: Bool = false
+    @Published private(set) var loadComplete: Bool = false
     @State private var isShowingSheet = false
     
     init() {
@@ -44,6 +45,7 @@ class DataViewModel: ObservableObject {
                     let result = try decoder.decode([DataEntry].self, from: data)
                     DispatchQueue.main.async {
                         self.loadFailed = false
+                        self.loadComplete = true
                         completionBlock(result)
                     }
                 } catch {

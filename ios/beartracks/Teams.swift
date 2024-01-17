@@ -11,12 +11,14 @@ import Foundation
 struct Teams: View {
     @State private var teamsList: [TeamData] = []
     @State private var showSheet: Bool = false
+    @State private var loadFailed: Bool = false
+    @State private var loadComplete: Bool = false
     @ObservedObject var selectedItemTracker: MatchListModel = MatchListModel()
     
     var body: some View {
         VStack {
             NavigationView {
-                if !teamsList.isEmpty {
+                if !teamsList.isEmpty && !teamsList[0].isEmpty {
                     List {
                         ForEach(Array(teamsList[0].enumerated()), id: \.element.team.team) { index, team in
                             VStack {
@@ -45,11 +47,38 @@ struct Teams: View {
                     }
                     .navigationTitle("Teams")
                 } else {
-                    VStack {
-                        Text("loading teams...")
-                            .padding(.bottom)
+                    if loadFailed {
+                        VStack {
+                            Label("failed", systemImage: "xmark.seal.fill")
+                                .padding(.bottom)
+                                .labelStyle(.iconOnly)
+                                .foregroundStyle(Color.pink)
+                            Text("load failed")
+                                .padding(.bottom)
+                        }
+                        .navigationTitle("Teams")
+                    } else {
+                        if loadComplete {
+                            VStack {
+                                Label("none", systemImage: "questionmark.app.dashed")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                    .foregroundStyle(Color.pink)
+                                Text("no data")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Teams")
+                        } else {
+                            VStack {
+                                Label("loading", systemImage: "hourglass")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                Text("loading teams...")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Teams")
+                        }
                     }
-                    .navigationTitle("Teams")
                 }
             }
         }
@@ -81,13 +110,17 @@ struct Teams: View {
                         }
                     }
                     DispatchQueue.main.async {
+                        self.loadFailed = false
+                        self.loadComplete = true
                         self.teamsList = [result]
                     }
                 } catch {
                     print("parse error \(error)")
+                    self.loadFailed = true
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
+                self.loadFailed = true
             }
         }.resume()
     }

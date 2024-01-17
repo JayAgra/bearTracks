@@ -14,6 +14,8 @@ struct SettingsView: View {
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @State private var haptics: Bool = UserDefaults.standard.bool(forKey: "haptics")
     @State private var showAlert = false
+    @State private var settingsOptions: [DataMetadata] = []
+    @Binding var loginRequired: Bool
     
     var body: some View {
         NavigationView {
@@ -21,8 +23,15 @@ struct SettingsView: View {
                 VStack {
                     HStack {
                         Picker("Team Number", selection: $teamNumberInput) {
-                            Text("766")
-                                .tag("766")
+                            if !settingsOptions.isEmpty {
+                                ForEach(settingsOptions[0].teams, id: \.self) { team in
+                                    Text(team)
+                                        .tag(team)
+                                }
+                            } else {
+                                Text(teamNumberInput)
+                                    .tag(teamNumberInput)
+                            }
                         }
                         .padding()
                         .pickerStyle(.menu)
@@ -34,18 +43,15 @@ struct SettingsView: View {
                     }
                     HStack {
                         Picker("Event Code", selection: $eventCodeInput) {
-                            Text("CADA")
-                                .tag("CADA")
-                            Text("CASJ")
-                                .tag("CASJ")
-                            Text("CAFR")
-                                .tag("CAFR")
-                            Text("CABE")
-                                .tag("CABE")
-                            Text("WOOD")
-                                .tag("WOOD")
-                            Text("CCCC")
-                                .tag("CCCC")
+                            if !settingsOptions.isEmpty {
+                                ForEach(settingsOptions[0].events, id: \.self) { event_code in
+                                    Text(event_code)
+                                        .tag(event_code)
+                                }
+                            } else {
+                                Text(eventCodeInput)
+                                    .tag(eventCodeInput)
+                            }
                         }
                         .pickerStyle(.menu)
                         .padding()
@@ -57,10 +63,15 @@ struct SettingsView: View {
                     }
                     HStack {
                         Picker("Season", selection: $seasonInput) {
-                            Text("2023")
-                                .tag("2023")
-                            Text("2024")
-                                .tag("2024")
+                            if !settingsOptions.isEmpty {
+                                ForEach(settingsOptions[0].seasons, id: \.self) { season in
+                                    Text(season)
+                                        .tag(season)
+                                }
+                            } else {
+                                Text(seasonInput)
+                                    .tag(seasonInput)
+                            }
                         }
                         .pickerStyle(.menu)
                         .padding()
@@ -80,6 +91,18 @@ struct SettingsView: View {
                             showAlert = true
                         }
                     }
+                    HStack {
+                        Button("Log Out") {
+                            if let cookies = HTTPCookieStorage.shared.cookies(for: sharedSession.configuration.urlCache?.cachedResponse(for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(string: "https://beartracks.io")!) {
+                                for cookie in cookies {
+                                    sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
+                                }
+                                loginRequired = true
+                            }
+                        }
+                        .foregroundStyle(Color.pink)
+                        .buttonStyle(.bordered)
+                    }
                 }
             }
             .navigationTitle("Settings")
@@ -90,6 +113,11 @@ struct SettingsView: View {
                     dismissButton: .default(Text("ok"))
                 )
             })
+        }
+        .onAppear() {
+            loadSettingsJson { result in
+                self.settingsOptions = result
+            }
         }
     }
     
@@ -104,8 +132,47 @@ struct SettingsView: View {
     func saveSeason() {
         UserDefaults.standard.set(seasonInput, forKey: "season")
     }
+    
+    func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) -> Void {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data") else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        
+        let requestTask = sharedSession.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(DataMetadata.self, from: data)
+                    DispatchQueue.main.async {
+                        completionBlock([result])
+                    }
+                } catch {
+                    print("parse error")
+                    completionBlock([])
+                }
+            } else if let error = error {
+                print("fetch error: \(error)")
+                completionBlock([])
+            }
+        }
+        requestTask.resume()
+    }
 }
 
-#Preview {
-    SettingsView()
+struct SettingsView_Preview: PreviewProvider {
+    @State static var loginReq = false
+    static var previews: some View {
+        SettingsView(loginRequired: $loginReq)
+    }
+}
+
+struct DataMetadata: Codable {
+    let seasons: [String]
+    let events: [String]
+    let teams: [String]
 }

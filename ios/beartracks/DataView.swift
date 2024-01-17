@@ -49,19 +49,32 @@ struct DataView: View {
                             Label("failed", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
                                 .labelStyle(.iconOnly)
+                                .foregroundStyle(Color.pink)
                             Text("load failed")
                                 .padding(.bottom)
                         }
                         .navigationTitle("Data")
                     } else {
-                        VStack {
-                            Label("loading", systemImage: "hourglass")
-                                .padding(.bottom)
-                                .labelStyle(.iconOnly)
-                            Text("loading data...")
-                                .padding(.bottom)
+                        if dataItems.loadComplete {
+                            VStack {
+                                Label("none", systemImage: "questionmark.app.dashed")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                    .foregroundStyle(Color.pink)
+                                Text("no data")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Data")
+                        } else {
+                            VStack {
+                                Label("loading", systemImage: "hourglass")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                Text("loading data...")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Data")
                         }
-                        .navigationTitle("Data")
                     }
                 }
             }
