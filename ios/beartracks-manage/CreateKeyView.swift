@@ -16,7 +16,7 @@ struct CreateKeyView: View {
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 if !awaitingCreation {
                     if !keyCreated {
                         VStack {

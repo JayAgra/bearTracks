@@ -12,13 +12,12 @@ struct SettingsView: View {
     @State private var eventCodeInput: String = UserDefaults.standard.string(forKey: "eventCode") ?? ""
     @State private var seasonInput: String = UserDefaults.standard.string(forKey: "season") ?? ""
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
-    @State private var haptics: Bool = UserDefaults.standard.bool(forKey: "haptics")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
     @Binding var loginRequired: Bool
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack {
                     HStack {

@@ -14,7 +14,7 @@ struct ReviewView: View {
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 VStack {
                     ScrollView {
                         LazyVStack {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ActivityKit
 
 @main
 struct beartracksApp: App {

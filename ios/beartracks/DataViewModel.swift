@@ -10,7 +10,6 @@ import SwiftUI
 
 class DataViewModel: ObservableObject {
     @Published private(set) var dataEntries: [DataEntry]
-    @Published private(set) var selectedItem: String = "-1"
     @Published private(set) var loadFailed: Bool = false
     @Published private(set) var loadComplete: Bool = false
     @State private var isShowingSheet = false
@@ -18,14 +17,6 @@ class DataViewModel: ObservableObject {
     init() {
         self.dataEntries = []
         self.reload()
-    }
-    
-    func setSelectedItem(item: String) {
-        selectedItem = item
-    }
-    
-    func getSelectedItem() -> String {
-        return selectedItem
     }
     
     func fetchEventJson(completionBlock: @escaping ([DataEntry]) -> Void) -> Void {

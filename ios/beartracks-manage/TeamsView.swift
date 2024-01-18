@@ -17,7 +17,7 @@ struct TeamsView: View {
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 if !teamsModel.teamList.isEmpty {
                     List {
                         ForEach(teamsModel.teamList, id: \.id) { team in

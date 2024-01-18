@@ -11,10 +11,10 @@ import Foundation
 struct DetailedView: View {
     @State private var detailData: [DetailedData] = [];
     @State private var gameData: [MatchTime2024] = [];
-    private var dataModel: DataViewModel
+    private var dataId: String
     
-    init(model: DataViewModel) {
-        dataModel = model
+    init(model: String) {
+        dataId = model
     }
     
     var body: some View {
@@ -132,7 +132,7 @@ struct DetailedView: View {
     }
     
     func fetchDetailJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(dataModel.getSelectedItem())") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(dataId)") else {
             return
         }
         

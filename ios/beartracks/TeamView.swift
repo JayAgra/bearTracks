@@ -20,10 +20,6 @@ struct TeamView: View {
     var body: some View {
         VStack {
             if !(dataItems.teamData.isEmpty || dataItems.teamMatches.isEmpty) {
-                Text("Team \(String(dataItems.teamData.first?.team ?? 766))")
-                    .font(.largeTitle)
-                    .padding(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 HStack {
                     VStack {
                         Text(String((dataItems.teamData.first?.wins ?? 0)))
@@ -75,29 +71,35 @@ struct TeamView: View {
                 Divider()
                 List {
                     ForEach(dataItems.teamMatches, id: \.Brief.id) { entry in
-                        VStack {
-                            HStack {
-                                Text("match \(String(entry.Brief.match_num))")
-                                    .font(.title)
-                                    .padding(.leading)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                        NavigationLink(value: entry.Brief.id) {
+                            VStack {
+                                HStack {
+                                    Text("match \(String(entry.Brief.match_num))")
+                                        .font(.title)
+                                        .padding(.leading)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                HStack {
+                                    Text("#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team)) (\(entry.Brief.name))")
+                                        .padding(.leading)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                HStack {
+                                    ProgressView(value: (max(entry.Brief.weight.components(separatedBy: ",").compactMap({ Float($0) }).first ?? 0, 0)) / max(dataItems.maximumValue, 1))
+                                        .padding([.leading, .trailing])
+                                }
                             }
-                            HStack {
-                                Text("#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team)) (\(entry.Brief.name))")
-                                    .padding(.leading)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .onTapGesture() {
+                                dataItems.setSelectedItem(item: String(entry.Brief.id))
+                                showSheet = true
                             }
-                            HStack {
-                                ProgressView(value: (max(entry.Brief.weight.components(separatedBy: ",").compactMap({ Float($0) }).first ?? 0, 0)) / max(dataItems.maximumValue, 1))
-                                    .padding([.leading, .trailing])
-                            }
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture() {
-                            dataItems.setSelectedItem(item: String(entry.Brief.id))
-                            showSheet = true
                         }
                     }
+                }
+                .navigationDestination(isPresented: $showSheet) {
+                    DetailedView(model: dataItems.getSelectedItem())
+                        .navigationTitle("#\(dataItems.getSelectedItem())")
                 }
             } else {
                 Text("loading team...")
@@ -110,11 +112,6 @@ struct TeamView: View {
                 didInitialLoad = true
             }
         }
-        .sheet(isPresented: $showSheet, onDismiss: {
-            showSheet = false
-        }, content: {
-            TeamDetailedView(model: dataItems)
-        })
     }
 }
 

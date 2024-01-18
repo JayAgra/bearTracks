@@ -11,7 +11,7 @@ struct SettingsView: View {
     @Binding var loginRequired: Bool
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack {
                     HStack {

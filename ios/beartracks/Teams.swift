@@ -13,39 +13,45 @@ struct Teams: View {
     @State private var showSheet: Bool = false
     @State private var loadFailed: Bool = false
     @State private var loadComplete: Bool = false
-    @ObservedObject var selectedItemTracker: MatchListModel = MatchListModel()
+    @State private var selectedItem: String = ""
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 if !teamsList.isEmpty && !teamsList[0].isEmpty {
                     List {
                         ForEach(Array(teamsList[0].enumerated()), id: \.element.team.team) { index, team in
-                            VStack {
-                                HStack {
-                                    Text("\(String(index + 1))")
-                                        .font(.title)
-                                        .padding(.leading)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("\(String(team.team.team))")
-                                        .font(.title)
-                                        .padding(.trailing)
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                            NavigationLink(value: team.team.team) {
+                                VStack {
+                                    HStack {
+                                        Text("\(String(index + 1))")
+                                            .font(.title)
+                                            .padding(.leading)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        Text("\(String(team.team.team))")
+                                            .font(.title)
+                                            .padding(.trailing)
+                                            .frame(maxWidth: .infinity, alignment: .trailing)
+                                    }
+                                    .contentShape(Rectangle())
+                                    HStack {
+                                        ProgressView(value: max(team.firstValue() ?? 0, 0) / max(teamsList[0][0].firstValue() ?? 0, 1))
+                                            .padding([.leading, .trailing])
+                                    }
+                                }
+                                .onTapGesture {
+                                    selectedItem = String(team.team.team)
+                                    showSheet = true
                                 }
                                 .contentShape(Rectangle())
-                                HStack {
-                                    ProgressView(value: max(team.firstValue() ?? 0, 0) / max(teamsList[0][0].firstValue() ?? 0, 1))
-                                        .padding([.leading, .trailing])
-                                }
                             }
-                            .onTapGesture {
-                                selectedItemTracker.setSelectedItem(item: String(team.team.team))
-                                showSheet = true
-                            }
-                            .contentShape(Rectangle())
                         }
                     }
                     .navigationTitle("Teams")
+                    .navigationDestination(isPresented: $showSheet) {
+                        TeamView(team: selectedItem)
+                            .navigationTitle("team \(selectedItem)")
+                    }
                 } else {
                     if loadFailed {
                         VStack {
@@ -85,11 +91,6 @@ struct Teams: View {
         .onAppear() {
             fetchTeamsJson()
         }
-        .sheet(isPresented: $showSheet, onDismiss: {
-            showSheet = false
-        }, content: {
-            TeamView(team: selectedItemTracker.getSelectedItem())
-        })
     }
     
     func fetchTeamsJson() {

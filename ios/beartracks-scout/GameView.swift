@@ -12,7 +12,7 @@ struct GameView: View {
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 VStack {
                     HStack {
                         VStack {

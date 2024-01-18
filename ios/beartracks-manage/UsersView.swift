@@ -16,7 +16,7 @@ struct UsersView: View {
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 if !userModel.usersList.isEmpty {
                     List {
                         ForEach(userModel.usersList, id: \.id) { user in

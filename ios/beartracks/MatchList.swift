@@ -13,11 +13,12 @@ struct MatchList: View {
     @State private var showSheet: Bool = false
     @State private var loadFailed: Bool = false
     @State private var loadComplete: Bool = false
-    @ObservedObject var selectedItemTracker: MatchListModel = MatchListModel()
+    @State private var selectedItem: String = ""
+    
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 if !matchJson.isEmpty {
                     List {
                         ForEach(matchJson, id: \.description) { match in
@@ -32,7 +33,7 @@ struct MatchList: View {
                                             .fontWeight(String(match.teams[0].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                             .foregroundColor(Color.red)
                                             .onTapGesture {
-                                                selectedItemTracker.setSelectedItem(item: String(match.teams[0].teamNumber))
+                                                selectedItem = String(match.teams[0].teamNumber)
                                                 showSheet = true
                                             }
                                             
@@ -41,7 +42,7 @@ struct MatchList: View {
                                             .fontWeight(String(match.teams[3].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                             .foregroundColor(Color.blue)
                                             .onTapGesture {
-                                                selectedItemTracker.setSelectedItem(item: String(match.teams[3].teamNumber))
+                                                selectedItem = String(match.teams[3].teamNumber)
                                                 showSheet = true
                                             }
                                     }
@@ -52,7 +53,7 @@ struct MatchList: View {
                                             .fontWeight(String(match.teams[1].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                             .foregroundColor(Color.red)
                                             .onTapGesture {
-                                                selectedItemTracker.setSelectedItem(item: String(match.teams[1].teamNumber))
+                                                selectedItem = String(match.teams[1].teamNumber)
                                                 showSheet = true
                                             }
                                         Text("\(String(match.teams[4].teamNumber))")
@@ -60,7 +61,7 @@ struct MatchList: View {
                                             .fontWeight(String(match.teams[4].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                             .foregroundColor(Color.blue)
                                             .onTapGesture {
-                                                selectedItemTracker.setSelectedItem(item: String(match.teams[4].teamNumber))
+                                                selectedItem = String(match.teams[4].teamNumber)
                                                 showSheet = true
                                             }
                                     }
@@ -71,7 +72,7 @@ struct MatchList: View {
                                             .fontWeight(String(match.teams[2].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                             .foregroundColor(Color.red)
                                             .onTapGesture {
-                                                selectedItemTracker.setSelectedItem(item: String(match.teams[2].teamNumber))
+                                                selectedItem = String(match.teams[2].teamNumber)
                                                 showSheet = true
                                             }
                                         Text("\(String(match.teams[5].teamNumber))")
@@ -79,7 +80,7 @@ struct MatchList: View {
                                             .fontWeight(String(match.teams[5].teamNumber) == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766") ? .bold: .regular)
                                             .foregroundColor(Color.blue)
                                             .onTapGesture {
-                                                selectedItemTracker.setSelectedItem(item: String(match.teams[5].teamNumber))
+                                                selectedItem = String(match.teams[5].teamNumber)
                                                 showSheet = true
                                             }
                                     }
@@ -89,6 +90,9 @@ struct MatchList: View {
                         }
                     }
                     .navigationTitle("Matches")
+                    .navigationDestination(isPresented: $showSheet) {
+                        TeamView(team: selectedItem)
+                    }
                 } else {
                     if loadFailed {
                         VStack {
@@ -124,9 +128,6 @@ struct MatchList: View {
                     }
                 }
             }
-//            .refreshable {
-//                fetchMatchJson()
-//            }
         }
         .onAppear() {
             if !didInitialLoad {
@@ -134,11 +135,6 @@ struct MatchList: View {
                 didInitialLoad = true
             }
         }
-        .sheet(isPresented: $showSheet, onDismiss: {
-            showSheet = false
-        }, content: {
-            TeamView(team: selectedItemTracker.getSelectedItem())
-        })
     }
     
     func fetchMatchJson() {

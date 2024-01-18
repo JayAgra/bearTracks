@@ -16,7 +16,7 @@ struct DataView: View {
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 if !dataItems.dataEntries.isEmpty {
                     List {
                         ForEach(dataItems.dataEntries, id: \.Brief.id) { entry in

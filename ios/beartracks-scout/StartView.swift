@@ -20,7 +20,7 @@ struct StartView: View {
     
     var body: some View {
         VStack {
-            NavigationView {
+            NavigationStack {
                 VStack {
                     LazyVStack {
                         Text("Match Number")
