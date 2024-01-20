@@ -83,15 +83,17 @@ struct DetailedView: View {
                                                 Text("Unknown entry")
                                             }
                                         }
-                                        .padding(.bottom)
-                                        HStack {
-                                            Spacer()
-                                            Label(String(format: "%.1f", matchTime.intake), systemImage: "tray.and.arrow.down")
-                                            Spacer()
-                                            Label(String(format: "%.1f", matchTime.travel), systemImage: "arrow.up.and.down.and.arrow.left.and.right")
-                                            Spacer()
-                                            Label(String(format: "%.1f", matchTime.outtake), systemImage: "tray.and.arrow.up")
-                                            Spacer()
+                                        if matchTime.score_type == 0 || matchTime.score_type == 1 {
+                                            HStack {
+                                                Spacer()
+                                                Label(String(format: "%.1f", matchTime.intake), systemImage: "tray.and.arrow.down")
+                                                Spacer()
+                                                Label(String(format: "%.1f", matchTime.travel), systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+                                                Spacer()
+                                                Label(String(format: "%.1f", matchTime.outtake), systemImage: "tray.and.arrow.up")
+                                                Spacer()
+                                            }
+                                            .padding(.top)
                                         }
                                     }
                                     .padding([.leading, .trailing])

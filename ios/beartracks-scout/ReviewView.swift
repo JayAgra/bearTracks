@@ -31,25 +31,30 @@ struct ReviewView: View {
                                 ForEach(controller.getMatchTimes(), id: \.id) { matchTime in
                                     VStack {
                                         HStack {
-                                            if matchTime.speaker {
+                                            if matchTime.score_type == 0 {
                                                 Text("Speaker")
                                                     .font(.title3)
-                                            } else {
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
+                                                    .font(.title3)
+                                            } else if matchTime.score_type == 1 {
                                                 Text("Amplifier")
                                                     .font(.title3)
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
+                                                    .font(.title3)
                                             }
-                                            Spacer()
-                                            Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
-                                                .font(.title3)
                                         }
-                                        HStack {
-                                            Spacer()
-                                            Text(String(format: "%.1f", matchTime.intake))
-                                            Spacer()
-                                            Text(String(format: "%.1f", matchTime.travel))
-                                            Spacer()
-                                            Text(String(format: "%.1f", matchTime.outtake))
-                                            Spacer()
+                                        if matchTime.score_type == 0 || matchTime.score_type == 1 {
+                                            HStack {
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.intake))
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.travel))
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.outtake))
+                                                Spacer()
+                                            }
                                         }
                                     }
                                     .padding([.leading, .trailing])
