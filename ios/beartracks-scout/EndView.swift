@@ -9,6 +9,9 @@ import SwiftUI
 
 struct EndView: View {
     @ObservedObject var controller: ScoutingController
+    @State private var scoreTrap: Bool = false
+    @State private var chainClimb: Bool = false
+    @State private var buddyClimb: Bool = false
     @State private var defense: String = ""
     @State private var driving: String = ""
     @State private var overall: String = ""
@@ -34,6 +37,12 @@ struct EndView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 ScrollView {
                     VStack {
+                        VStack {
+                            Toggle("Trap note", isOn: $scoreTrap)
+                            Toggle("Climb", isOn: $chainClimb)
+                            Toggle("Buddy climb", isOn: $buddyClimb)
+                        }
+                        .padding()
                         VStack {
                             Text("Did the robot play defense? If so, was it effective? Did it incur foul points?")
                                 .padding([.leading, .top])
@@ -73,6 +82,9 @@ struct EndView: View {
                     }
                     .padding(.bottom)
                     Button("review") {
+                        controller.addEndgameValue(type: 2, value: scoreTrap ? 1 : 0)
+                        controller.addEndgameValue(type: 3, value: chainClimb ? 1 : 0)
+                        controller.addEndgameValue(type: 4, value: buddyClimb ? 1 : 0)
                         controller.setDefenseResponse(response: defense)
                         controller.setDrivingResponse(response: driving)
                         controller.setOverallResponse(response: overall)

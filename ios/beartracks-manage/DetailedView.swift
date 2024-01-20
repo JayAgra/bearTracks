@@ -46,16 +46,40 @@ struct DetailedView: View {
                             ForEach(gameData, id: \.id) { matchTime in
                                 VStack {
                                     HStack {
-                                        if matchTime.speaker {
+                                        switch matchTime.score_type {
+                                        case 0:
                                             Text("Speaker")
                                                 .font(.title3)
-                                        } else {
+                                            Spacer()
+                                            Text("\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s")
+                                                .font(.title3)
+                                        case 1:
                                             Text("Amplifier")
                                                 .font(.title3)
+                                            Spacer()
+                                            Text("\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s")
+                                                .font(.title3)
+                                        case 2:
+                                            Text("Trap Note")
+                                                .font(.title3)
+                                            Spacer()
+                                            Text("\(matchTime.intake == 1 ? "✅" : "❌")")
+                                                .font(.title3)
+                                        case 3:
+                                            Text("Climb")
+                                                .font(.title3)
+                                            Spacer()
+                                            Text("\(matchTime.intake == 1 ? "✅" : "❌")")
+                                                .font(.title3)
+                                        case 4:
+                                            Text("Buddy Climb")
+                                                .font(.title3)
+                                            Spacer()
+                                            Text("\(matchTime.intake == 1 ? "✅" : "❌")")
+                                                .font(.title3)
+                                        default:
+                                            Text("Unknown entry")
                                         }
-                                        Spacer()
-                                        Text("\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s")
-                                            .font(.title3)
                                     }
                                     .padding(.bottom)
                                     HStack {
@@ -181,7 +205,7 @@ struct FullMainData: Codable {
 
 struct MatchTime2024: Codable {
     let id: Int
-    let speaker: Bool
+    let score_type: Int
     let intake: Float
     let outtake: Float
     let travel: Float

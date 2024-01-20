@@ -31,7 +31,7 @@ openssl req -x509 -newkey rsa:4096 -nodes -keyout ./ssl/key.pem -out ./ssl/cert.
 
 ## iOS & macOS apps
 
-The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended only for the server admins, and can only be installed by compiling and installing it yourself. The Scout and Manage apps use the iPad version on macOS, while the Data app uses Mac Catalyst.
+The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended for the server admins, and can only be installed by compiling it yourself. Scout and Data are available on the App Store. Data uses Mac Catalyst to provide an optimized macOS experience, while Scout runs the iPad version.
 
 |             | Data | Scout | Manage |
 |-------------|------|-------|--------|

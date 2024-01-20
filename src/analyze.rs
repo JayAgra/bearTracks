@@ -17,6 +17,14 @@ fn bool_to_num(value: &str) -> f64 {
     }
 }
 
+fn real_bool_to_num(value: bool) -> f64 {
+    if value {
+        return 1.0;
+    } else {
+        return  0.0;
+    }
+}
+
 pub(crate) struct AnalysisResults {
     pub weight: String,
     pub analysis: String
@@ -210,7 +218,7 @@ pub struct MatchTime2024 {
     pub id: i64,
     pub intake: f64,
     pub outtake: f64,
-    pub speaker: bool,
+    pub score_type: i64,
     pub travel: f64,
 }
 
@@ -231,13 +239,34 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     score += (analysis_results[2] + 1.0) * 7.5;
 
     let mut speaker_scores: i32 = 0;
+    let mut amplifier_scores: i32 = 0;
+    let mut trap_note: bool = false;
+    let mut climb: bool = false;
+    let mut buddy: bool = false;
     let mut intake_time: f64 = 0.0;
     let mut travel_time: f64 = 0.0;
     let mut outtake_time: f64 = 0.0;
 
     for time in &game_data {
-        if time.speaker {
-            speaker_scores += 1
+        match time.score_type {
+            0 => speaker_scores += 1,
+            1 => amplifier_scores += 1,
+            2 => {
+                if time.intake == 1.0 {
+                    trap_note = true;
+                }
+            },
+            3 => {
+                if time.intake == 1.0 {
+                    climb = true;
+                }
+            },
+            4 => {
+                if time.intake == 1.0 {
+                    buddy = true;
+                }
+            },
+            _ => {}
         }
         intake_time += time.intake;
         travel_time += time.travel;
@@ -245,7 +274,11 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     }
 
     score += speaker_scores as f64 * 12.0;
-    score += (&game_data.len() - speaker_scores as usize) as f64 * 4.0;
+    score += amplifier_scores as f64 * 4.0;
+
+    score += real_bool_to_num(trap_note) * 6.0;
+    score += real_bool_to_num(climb) * 4.0;
+    score += real_bool_to_num(buddy) * 4.0;
     
     let mps_scores: Vec<f64> = vec!(
         score, // standard
