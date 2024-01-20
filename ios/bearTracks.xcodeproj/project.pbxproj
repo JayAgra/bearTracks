@@ -350,12 +350,13 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = bearTracks/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -365,7 +366,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.0;
+				MARKETING_VERSION = 5.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -385,12 +386,13 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = bearTracks/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -400,7 +402,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.0;
+				MARKETING_VERSION = 5.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
