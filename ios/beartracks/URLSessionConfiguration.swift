@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Shared `URLSession` configuration
 let sharedSession: URLSession = {
     let configuration = URLSessionConfiguration.default
     configuration.httpCookieStorage = HTTPCookieStorage.shared

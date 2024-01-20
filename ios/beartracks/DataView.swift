@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View for a list of all data
 struct DataView: View {
     @ObservedObject var dataItems: DataViewModel = DataViewModel()
     @State private var showSheet: Bool = false
@@ -41,6 +42,9 @@ struct DataView: View {
                                     selectedItem = String(entry.Brief.id)
                                     showSheet = true
                                 }
+                                #if targetEnvironment(macCatalyst)
+                                .padding([.top, .bottom])
+                                #endif
                             }
                         }
                     }

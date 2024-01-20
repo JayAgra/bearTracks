@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Ensures the user has a valid session.
 func checkLoginState(completion: @escaping (Bool) -> Void) {
     guard let url = URL(string: "https://beartracks.io/api/v1/whoami") else {
         completion(false)

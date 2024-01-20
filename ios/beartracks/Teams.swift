@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 
+/// Shows listing of top teams by scouting data performance, not RPs
 struct Teams: View {
     @State private var teamsList: [TeamData] = []
     @State private var showSheet: Bool = false
@@ -21,7 +22,7 @@ struct Teams: View {
                 if !teamsList.isEmpty && !teamsList[0].isEmpty {
                     List {
                         ForEach(Array(teamsList[0].enumerated()), id: \.element.team.team) { index, team in
-                            NavigationLink(value: team.team.team) {
+                            NavigationLink(value: String(team.team.team)) {
                                 VStack {
                                     HStack {
                                         Text("\(String(index + 1))")
@@ -38,13 +39,18 @@ struct Teams: View {
                                         ProgressView(value: max(team.firstValue() ?? 0, 0) / max(teamsList[0][0].firstValue() ?? 0, 1))
                                             .padding([.leading, .trailing])
                                     }
+                                    .contentShape(Rectangle())
                                 }
                                 .onTapGesture {
                                     selectedItem = String(team.team.team)
                                     showSheet = true
                                 }
                                 .contentShape(Rectangle())
+                                #if targetEnvironment(macCatalyst)
+                                .padding([.top, .bottom])
+                                #endif
                             }
+                            .contentShape(Rectangle())
                         }
                     }
                     .navigationTitle("Teams")
@@ -143,6 +149,7 @@ struct TeamElement: Codable {
     }
 }
 
+/// bearTracks API response structure
 struct TeamEl: Codable {
     let id: Int
     let team: Int
@@ -155,4 +162,6 @@ struct TeamEl: Codable {
     }
 }
 
+/// Alias of `TeamEl` to match the exact structure of API response
+/// > Can remove this in future versions
 typealias TeamData = [TeamElement]

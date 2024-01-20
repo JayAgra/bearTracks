@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Settings window for event config & logging out
 struct SettingsView: View {
     @State private var teamNumberInput: String = UserDefaults.standard.string(forKey: "teamNumber") ?? ""
     @State private var eventCodeInput: String = UserDefaults.standard.string(forKey: "eventCode") ?? ""
@@ -18,7 +19,7 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
+            VStack {
                 VStack {
                     HStack {
                         Picker("Team Number", selection: $teamNumberInput) {
@@ -103,6 +104,7 @@ struct SettingsView: View {
                         .buttonStyle(.bordered)
                     }
                 }
+                Spacer()
             }
             .navigationTitle("Settings")
             .alert(isPresented: $showAlert, content: {
@@ -170,6 +172,8 @@ struct SettingsView_Preview: PreviewProvider {
     }
 }
 
+/// Data structure of the metadata call to bearTracks API.
+/// > Used to provide season, event, and team options
 struct DataMetadata: Codable {
     let seasons: [String]
     let events: [String]

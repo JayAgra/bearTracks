@@ -38,7 +38,6 @@ struct EndView: View {
                             Text("Did the robot play defense? If so, was it effective? Did it incur foul points?")
                                 .padding([.leading, .top])
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            
                             TextEditor(text: $defense)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
@@ -47,12 +46,10 @@ struct EndView: View {
                                 .frame(height: 150)
                                 .padding([.leading, .trailing])
                         }
-                        
                         VStack {
                             Text("How was the driving? Did the driver seem confident?")
                                 .padding([.leading, .top])
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            
                             TextEditor(text: $driving)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
@@ -61,12 +58,10 @@ struct EndView: View {
                                 .frame(height: 150)
                                 .padding([.leading, .trailing])
                         }
-                        
                         VStack {
                             Text("Provide an overall description of the team's performance in this match")
                                 .padding([.leading, .top])
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            
                             TextEditor(text: $overall)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)

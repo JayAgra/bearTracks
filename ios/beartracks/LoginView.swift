@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Login sheet view
 struct LoginView: View {
     @State private var showAlert = false
     @State private var username = ""

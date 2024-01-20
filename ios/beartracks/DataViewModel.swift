@@ -7,12 +7,11 @@
 
 import Foundation
 import SwiftUI
-
+/// Controller for data list view. Handles the data request.
 class DataViewModel: ObservableObject {
     @Published private(set) var dataEntries: [DataEntry]
     @Published private(set) var loadFailed: Bool = false
     @Published private(set) var loadComplete: Bool = false
-    @State private var isShowingSheet = false
     
     init() {
         self.dataEntries = []
@@ -60,11 +59,12 @@ class DataViewModel: ObservableObject {
     }
 }
 
-
+/// Represents a data entry containing a Brief data structure
 struct DataEntry: Codable {
     let Brief: BriefData
 }
 
+/// Brief data structure from beartracks server
 struct BriefData: Codable {
     let id: Int
     let event: String

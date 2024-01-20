@@ -9,13 +9,11 @@
 /* Begin PBXBuildFile section */
 		F540A13D2B549D2500611384 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
 		F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
-		F540A1452B54AB6F00611384 /* MatchListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A1442B54AB6F00611384 /* MatchListModel.swift */; };
 		F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54E76C12B527D96003C65A2 /* bearTracksApp.swift */; };
 		F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */; };
 		F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E3F2B527E050033DB0D /* MatchList.swift */; };
 		F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E402B527E050033DB0D /* DetailedView.swift */; };
-		F5AE2E482B527E050033DB0D /* PressModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E412B527E050033DB0D /* PressModifier.swift */; };
 		F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E442B527E050033DB0D /* DataViewModel.swift */; };
 		F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E452B527E050033DB0D /* DataView.swift */; };
 		F5AE2E532B527E170033DB0D /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4D2B527E170033DB0D /* Teams.swift */; };
@@ -53,14 +51,12 @@
 /* Begin PBXFileReference section */
 		F540A13C2B549D2500611384 /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		F540A13E2B549D2E00611384 /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
-		F540A1442B54AB6F00611384 /* MatchListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchListModel.swift; sourceTree = "<group>"; };
 		F54E76BE2B527D96003C65A2 /* bearTracks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bearTracks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54E76C12B527D96003C65A2 /* bearTracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bearTracksApp.swift; sourceTree = "<group>"; };
 		F54E76C52B527D97003C65A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5AE2E3F2B527E050033DB0D /* MatchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MatchList.swift; path = bearTracks/MatchList.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E402B527E050033DB0D /* DetailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailedView.swift; path = bearTracks/DetailedView.swift; sourceTree = SOURCE_ROOT; };
-		F5AE2E412B527E050033DB0D /* PressModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PressModifier.swift; path = bearTracks/PressModifier.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E442B527E050033DB0D /* DataViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataViewModel.swift; path = bearTracks/DataViewModel.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E452B527E050033DB0D /* DataView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataView.swift; path = bearTracks/DataView.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E4D2B527E170033DB0D /* Teams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Teams.swift; sourceTree = "<group>"; };
@@ -70,6 +66,8 @@
 		F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		F5D3D3402B5A098D00A88A00 /* bearTracks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = bearTracks.entitlements; sourceTree = "<group>"; };
+		F5D3D3452B5A17AE00A88A00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +100,8 @@
 		F54E76C02B527D96003C65A2 /* bearTracks */ = {
 			isa = PBXGroup;
 			children = (
+				F5D3D3452B5A17AE00A88A00 /* Info.plist */,
+				F5D3D3402B5A098D00A88A00 /* bearTracks.entitlements */,
 				F54E76C12B527D96003C65A2 /* bearTracksApp.swift */,
 				F5AE2E452B527E050033DB0D /* DataView.swift */,
 				F5AE2E442B527E050033DB0D /* DataViewModel.swift */,
@@ -109,8 +109,6 @@
 				F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */,
 				F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */,
 				F5AE2E3F2B527E050033DB0D /* MatchList.swift */,
-				F540A1442B54AB6F00611384 /* MatchListModel.swift */,
-				F5AE2E412B527E050033DB0D /* PressModifier.swift */,
 				F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */,
 				F5AE2E522B527E170033DB0D /* SettingsView.swift */,
 				F5AE2E4F2B527E170033DB0D /* TabBar.swift */,
@@ -209,13 +207,11 @@
 				F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */,
 				F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */,
 				F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */,
-				F5AE2E482B527E050033DB0D /* PressModifier.swift in Sources */,
 				F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */,
 				F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */,
 				F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */,
 				F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */,
 				F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */,
-				F540A1452B54AB6F00611384 /* MatchListModel.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
 				F5AE2E552B527E170033DB0D /* TabBar.swift in Sources */,
 				F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */,
@@ -351,15 +347,18 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = bearTracks/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -369,9 +368,11 @@
 				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -381,15 +382,18 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = bearTracks/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -399,9 +403,11 @@
 				MARKETING_VERSION = 5.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};

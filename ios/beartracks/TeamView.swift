@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// View for team's details
 struct TeamView: View {
     @ObservedObject var dataItems: TeamViewModel
     @State private var didInitialLoad: Bool = false
@@ -94,6 +95,9 @@ struct TeamView: View {
                                 dataItems.setSelectedItem(item: String(entry.Brief.id))
                                 showSheet = true
                             }
+                            #if targetEnvironment(macCatalyst)
+                            .padding([.top, .bottom])
+                            #endif
                         }
                     }
                 }

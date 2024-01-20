@@ -19,25 +19,20 @@ struct LoginView: View {
             Text("bearTracks")
                 .font(.title)
             Text("v5.0.0 • 2024")
-            
             TextField("Username", text: $username)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-
             SecureField("Password", text: $password)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-
             Button("Login") {
                 login()
             }
-            .padding()
-            .font(.title3)
-            .buttonStyle(.bordered)
-            
+                .padding()
+                .font(.title3)
+                .buttonStyle(.bordered)
             Text("[create account](https://beartracks.io/create)")
                 .font(.caption)
-                
         }
         .padding()
         .alert(isPresented: $showAlert, content: {

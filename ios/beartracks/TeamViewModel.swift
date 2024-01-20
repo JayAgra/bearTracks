@@ -8,6 +8,12 @@
 import Foundation
 import SwiftUI
 
+/// Detailed data about a team
+///
+/// - From bearTracks
+///     - A listing of all matches from a team at an event. The team's performance gets displayed in `TeamView` as a progress bar, indicating the team's performance in any given match compared that of their best match.
+/// - From Statbotics
+///     - The team's record and ranking point details + rank is fetched and is displayed in the `TeamView` directly above a scrollable view of the team's data.
 class TeamViewModel: ObservableObject {
     @Published private(set) var teamMatches: [DataEntry]
     @Published private(set) var teamData: [StatboticsTeamData]
@@ -107,6 +113,9 @@ class TeamViewModel: ObservableObject {
     }
 }
 
+/// Statbotics' data model for team data.
+///
+/// > All properties are optional due to inconsistency from Statbotics services
 struct StatboticsTeamData: Codable {
     let team: Int?
     let year: Int?

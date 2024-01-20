@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 
+/// View details about a specific submission. Only one season should be suported at a time.
 struct DetailedView: View {
     @State private var detailData: [DetailedData] = [];
     @State private var gameData: [MatchTime2024] = [];
@@ -170,11 +171,12 @@ struct DetailedView: View {
     }
 }
 
-
+/// Contains for FullMainData to match API response
 struct DetailedData: Codable {
     let FullMain: FullMainData
 }
 
+/// All data stored about a submission. Works across seasons.
 struct FullMainData: Codable {
     let id: Int
     let event: String
@@ -193,6 +195,7 @@ struct FullMainData: Codable {
     let analysis: String
 }
 
+/// 2024 season specific data structure for deocding the `game` key of `FullMainData`
 struct MatchTime2024: Codable {
     let id: Int
     let speaker: Bool

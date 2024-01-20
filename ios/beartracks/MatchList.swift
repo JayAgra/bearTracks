@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// List of all upcoming matches for the configured team number
 struct MatchList: View {
     @State private var didInitialLoad: Bool = false
     @State private var matchJson: [Match] = []
@@ -165,10 +166,12 @@ struct MatchList: View {
     }
 }
 
+/// FRC API's Schedule structure
 struct MatchData: Codable {
     let Schedule: [Match]
 }
 
+/// FRC API's Match structure
 struct Match: Codable {
     let description: String
     let startTime: String
@@ -178,6 +181,7 @@ struct Match: Codable {
     let teams: [Team]
 }
 
+/// FRC API's Team structure
 struct Team: Codable {
     let teamNumber: Int
     let station: String

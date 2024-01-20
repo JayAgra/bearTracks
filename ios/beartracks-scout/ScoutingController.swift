@@ -88,7 +88,6 @@ class ScoutingController: ObservableObject {
     }
     
     // functional functions
-    
     func advanceToTab(tab: Tab) {
         currentTab = tab
     }
@@ -150,13 +149,11 @@ class ScoutingController: ObservableObject {
 
         do {
             let jsonData = try JSONEncoder().encode(matchData)
-            
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = jsonData
             request.httpShouldHandleCookies = true
-            
             let requestTask = sharedSession.dataTask(with: request) {
                 (data: Data?, response: URLResponse?, error: Error?) in
                 if let data = data {

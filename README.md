@@ -28,3 +28,20 @@ an ssl certificate is *required*, and must be placed in the ssl directory, with 
 ```sh
 openssl req -x509 -newkey rsa:4096 -nodes -keyout ./ssl/key.pem -out ./ssl/cert.pem -days 365 -subj '/CN=localhost'
 ```
+
+## iOS & macOS apps
+
+The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended only for the server admins, and can only be installed by compiling and installing it yourself. The Scout and Manage apps use the iPad version on macOS, while the Data app uses Mac Catalyst.
+
+|             | Data | Scout | Manage |
+|-------------|------|-------|--------|
+| iOS 17      | ✅    | ✅     | ✅      |
+| iOS 16      | ❌    | ✅     | ❌      |
+| macOS 14    | ✅    | ✅     | ✅      |
+| macOS 11-13 | ❌    | ✅     | ❌      |
+| App Store   | ✅    | ✅     | ❌      |
+
+[Data iOS](https://testflight.apple.com/join/nYsvt12Y)<br>
+[Data macOS](https://apps.apple.com/us/app/beartracks-data/id6475752596)<br>
+[Scout iOS](https://github.com/JayAgra/bearTracks/tree/main/ios/beartracks-scout)<br>
+[Manage Xcode](https://github.com/JayAgra/bearTracks/tree/main/ios/beartracks-manage)
