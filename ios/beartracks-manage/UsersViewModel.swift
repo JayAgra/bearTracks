@@ -56,33 +56,31 @@ class UsersViewModel: ObservableObject {
     }
     
     func deleteUser(id: String) {
-            guard let url = URL(string: "https://beartracks.io/api/v1/manage/user/delete/\(id)") else {
-                return
-            }
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = "DELETE"
-            request.httpShouldHandleCookies = true
-            
-            let requestTask = sharedSession.dataTask(with: request) {
-                (data: Data?, response: URLResponse?, error: Error?) in
-                if let data = data {
-                    if let httpResponse = response as? HTTPURLResponse {
-                        if httpResponse.statusCode == 200 {
-                            self.reload()
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        } else {
-                            self.reload()
-                            UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+        guard let url = URL(string: "https://beartracks.io/api/v1/manage/user/delete/\(id)") else {
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.httpShouldHandleCookies = true
+        let requestTask = sharedSession.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        self.reload()
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    } else {
+                        self.reload()
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
-                } else if let error = error {
-                    print("fetch error: \(error)")
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
-                    self.reload()
                 }
+            } else if let error = error {
+                print("fetch error: \(error)")
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                self.reload()
             }
-            requestTask.resume()
+        }
+        requestTask.resume()
     }
 }
 

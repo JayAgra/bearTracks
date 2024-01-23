@@ -31,17 +31,20 @@ openssl req -x509 -newkey rsa:4096 -nodes -keyout ./ssl/key.pem -out ./ssl/cert.
 
 ## iOS & macOS apps
 
-The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended for the server admins, and can only be installed by compiling it yourself. Scout and Data are available on the App Store. Data uses Mac Catalyst to provide an optimized macOS experience, while Scout runs the iPad version.
+The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended for the server admins, and can only be installed by compiling it yourself. Scout and Data are available on the App Store. Data uses Mac Catalyst to provide an optimized macOS experience, while Scout runs the iPad version. Accounts cannot be made in app, and instead are made on [beartracks.io/create](https://beartracks.io/create)
 
-|             | Data | Scout | Manage |
+|             | Scout | Data | Manage |
 |-------------|------|-------|--------|
 | iOS 17      | ✅    | ✅     | ✅      |
-| iOS 16      | ❌    | ✅     | ❌      |
+| iOS 16      | ✅    | ❌     | ❌      |
 | macOS 14    | ✅    | ✅     | ✅      |
-| macOS 11-13 | ❌    | ✅     | ❌      |
-| App Store   | ✅    | ✅     | ❌      |
+| macOS 11-13 | ✅    | ❌     | ❌      |
+| App Store   | ⌛    | ✅     | ❌      |
+| Web         | ⌛    | ❌     | ❌      |
+| Android     | ❌    | ❌     | ❌      |
+<small>android users may use web (pwa)</small>
 
-[Data iOS](https://testflight.apple.com/join/nYsvt12Y)<br>
-[Data macOS](https://apps.apple.com/us/app/beartracks-data/id6475752596)<br>
-[Scout iOS](https://github.com/JayAgra/bearTracks/tree/main/ios/beartracks-scout)<br>
+[Data iOS](https://apps.apple.com/app/beartracks-data/id6475752596)<br>
+[Data macOS](https://apps.apple.com/app/beartracks-data/id6475752596)<br>
+[Scout iOS](https://testflight.apple.com/join/0LzEHahN)<br>
 [Manage Xcode](https://github.com/JayAgra/bearTracks/tree/main/ios/beartracks-manage)

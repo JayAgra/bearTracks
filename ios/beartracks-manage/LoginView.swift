@@ -18,26 +18,19 @@ struct LoginView: View {
         VStack {
             Text("bearTracks")
                 .font(.title)
-            Text("v5.0.0 • 2024")
-            
+            Text("v5.0.1 • 2024")
             TextField("Username", text: $username)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-
             SecureField("Password", text: $password)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-
             Button("Login") {
                 login()
             }
             .padding()
             .font(.title3)
             .buttonStyle(.bordered)
-            
-            Text("[create account](https://beartracks.io/create)")
-                .font(.caption)
-                
         }
         .padding()
         .alert(isPresented: $showAlert, content: {
@@ -55,16 +48,13 @@ struct LoginView: View {
         }
 
         let credentials = ["username": username, "password": password]
-
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: credentials)
-
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = jsonData
             request.httpShouldHandleCookies = true
-
             sharedSession.dataTask(with: request) { _data, response, error in
                 if let _data = _data {
                     if let httpResponse = response as? HTTPURLResponse {

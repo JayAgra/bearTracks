@@ -12,10 +12,8 @@ func checkLoginState(completion: @escaping (Bool) -> Void) {
         completion(false)
         return
     }
-
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
-
     let task = sharedSession.dataTask(with: request) { (data, response, error) in
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 200 {
@@ -27,6 +25,5 @@ func checkLoginState(completion: @escaping (Bool) -> Void) {
             completion(false)
         }
     }
-
     task.resume()
 }

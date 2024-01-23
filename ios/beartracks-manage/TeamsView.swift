@@ -9,10 +9,8 @@ import SwiftUI
 
 struct TeamsView: View {
     @ObservedObject var teamsModel: TeamsViewModel = TeamsViewModel()
-    @State private var lastDeletedIndex: Int?
     @State private var showCreateSheet: Bool = false
-    @State private var lastDeletedId: String = "-1"
-    @State private var lastDeletedTeam: String = "-1"
+    @State private var lastDeletedTeam: TeamKey = TeamKey(id: 0, key: 0, team: 0)
     @State private var showConfirmDialog: Bool = false
     
     var body: some View {
@@ -41,9 +39,7 @@ struct TeamsView: View {
                             .contentShape(Rectangle())
                         }
                         .onDelete { indexSet in
-                            lastDeletedIndex = Array(indexSet).max()
-                            lastDeletedId = String(teamsModel.teamList[lastDeletedIndex ?? 0].id)
-                            lastDeletedTeam = String(teamsModel.teamList[lastDeletedIndex ?? 0].team)
+                            lastDeletedTeam = teamsModel.teamList[Array(indexSet).max() ?? 0]
                             showConfirmDialog = true
                         }
                     }
@@ -58,10 +54,10 @@ struct TeamsView: View {
                     }
                     .alert(isPresented: $showConfirmDialog) {
                         Alert(
-                            title: Text("Delete Team Key for \(self.lastDeletedTeam)"),
+                            title: Text("Delete Team Key for \(self.lastDeletedTeam.team)"),
                             message: Text("are you sure you would like to delete this user? this action is irreversable."),
                             primaryButton: .destructive(Text("Delete")) {
-                                teamsModel.deleteTeamKey(id: lastDeletedId)
+                                teamsModel.deleteTeamKey(id: String(lastDeletedTeam.id))
                             },
                             secondaryButton: .cancel()
                         )

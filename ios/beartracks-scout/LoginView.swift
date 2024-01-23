@@ -31,8 +31,6 @@ struct LoginView: View {
                 .padding()
                 .font(.title3)
                 .buttonStyle(.bordered)
-            Text("[create account](https://beartracks.io/create)")
-                .font(.caption)
         }
         .padding()
         .alert(isPresented: $showAlert, content: {

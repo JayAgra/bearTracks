@@ -11,7 +11,6 @@ struct UsersView: View {
     @ObservedObject var userModel: UsersViewModel = UsersViewModel()
     @State private var lastDeletedIndex: Int?
     @State private var lastDeletedId: String = "-1"
-    @State private var lastDeletedUsername: String = "-1"
     @State private var showConfirmDialog: Bool = false
     
     var body: some View {
@@ -26,13 +25,9 @@ struct UsersView: View {
                                         .font(.title)
                                         .padding(.leading)
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("team \(String(user.team))")
-                                        .font(.title)
-                                        .padding(.trailing)
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
                                 }
                                 HStack {
-                                    Text("#\(String(user.id)) • \(String(user.score))")
+                                    Text("team \(String(user.team)) • #\(String(user.id)) • \(String(user.score))pts")
                                         .padding(.leading)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
@@ -42,7 +37,6 @@ struct UsersView: View {
                         .onDelete { indexSet in
                             lastDeletedIndex = Array(indexSet).max()
                             lastDeletedId = String(userModel.usersList[lastDeletedIndex ?? 0].id)
-                            lastDeletedUsername = userModel.usersList[lastDeletedIndex ?? 0].username
                             showConfirmDialog = true
                         }
                     }

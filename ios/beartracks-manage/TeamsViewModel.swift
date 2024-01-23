@@ -66,11 +66,9 @@ class TeamsViewModel: ObservableObject {
             guard let url = URL(string: "https://beartracks.io/api/v1/manage/access_key/delete/\(id)") else {
                 return
             }
-            
             var request = URLRequest(url: url)
             request.httpMethod = "DELETE"
             request.httpShouldHandleCookies = true
-            
             let requestTask = sharedSession.dataTask(with: request) {
                 (data: Data?, response: URLResponse?, error: Error?) in
                 if let data = data {

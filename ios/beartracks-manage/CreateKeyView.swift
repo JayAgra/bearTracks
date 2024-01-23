@@ -10,15 +10,13 @@ import SwiftUI
 struct CreateKeyView: View {
     @State private var teamNumber: String = ""
     @State private var teamKey: String = ""
-    @State private var awaitingCreation: Bool = false
-    @State private var keyCreated: Bool = false
-    @State private var keyFailure: Bool = false
+    @State private var requestStatus: (Bool, Bool, Bool) = (false, false, false)
     
     var body: some View {
         VStack {
             NavigationStack {
-                if !awaitingCreation {
-                    if !keyCreated {
+                if !requestStatus.0 {
+                    if !requestStatus.1 {
                         VStack {
                             TextField("Team", text: $teamNumber)
                                 .keyboardType(.numberPad)
@@ -28,7 +26,7 @@ struct CreateKeyView: View {
                                 .textFieldStyle(.roundedBorder)
                             
                             Button("Create") {
-                                awaitingCreation = true
+                                requestStatus.0 = true
                                 createTeamKey()
                             }
                             .buttonStyle(.bordered)
@@ -37,7 +35,7 @@ struct CreateKeyView: View {
                         .padding()
                         .navigationTitle("Create Key")
                     } else {
-                        if keyFailure {
+                        if requestStatus.2 {
                             VStack {
                                 Spacer()
                                 Label("error", systemImage: "xmark.seal.fill")
@@ -79,39 +77,31 @@ struct CreateKeyView: View {
     }
     
     func createTeamKey() {
-            guard let url = URL(string: "https://beartracks.io/api/v1/manage/access_key/create/\(teamKey)/\(teamNumber)") else {
-                return
-            }
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.httpShouldHandleCookies = true
-            
-            let requestTask = sharedSession.dataTask(with: request) {
-                (data: Data?, response: URLResponse?, error: Error?) in
-                if let data = data {
-                    if let httpResponse = response as? HTTPURLResponse {
-                        if httpResponse.statusCode == 200 {
-                            self.keyFailure = false
-                            self.keyCreated = true
-                            self.awaitingCreation = false
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        } else {
-                            self.keyFailure = true
-                            self.keyCreated = true
-                            self.awaitingCreation = false
-                            UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+        guard let url = URL(string: "https://beartracks.io/api/v1/manage/access_key/create/\(teamKey)/\(teamNumber)") else {
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpShouldHandleCookies = true
+        let requestTask = sharedSession.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        self.requestStatus = (false, true, false)
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    } else {
+                        self.requestStatus = (false, true, true)
+                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
-                } else if let error = error {
-                    print("fetch error: \(error)")
-                    self.keyFailure = true
-                    self.keyCreated = true
-                    self.awaitingCreation = false
-                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
+            } else if let error = error {
+                print("fetch error: \(error)")
+                self.requestStatus = (false, true, true)
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
-            requestTask.resume()
+        }
+        requestTask.resume()
     }
 }
 

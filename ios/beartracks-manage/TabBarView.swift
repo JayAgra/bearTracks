@@ -21,19 +21,16 @@ struct TabBarView: View {
                     Label("data", systemImage: "list.dash")
                 }
                 .tag(Tab.data)
-            
             UsersView()
                 .tabItem {
                     Label("users", systemImage: "person")
                 }
                 .tag(Tab.scouts)
-            
             TeamsView()
                 .tabItem {
                     Label("teams", systemImage: "person.3")
                 }
                 .tag(Tab.teams)
-            
             SettingsView(loginRequired: $loginRequired)
                 .tabItem {
                     Label("settings", systemImage: "gear")

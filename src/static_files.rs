@@ -7,7 +7,6 @@ const BLACKJACK_HTML: &str = include_str!("../static/blackjack.html");
 const CREATE_HTML: &str = include_str!("../static/create.html");
 const LOGIN_HTML: &str = include_str!("../static/login.html");
 const POINT_RECORDS_HTML: &str = include_str!("../static/pointRecords.html");
-const PASSKEY_HTML: &str = include_str!("../static/passkey.html");
 const POINTS_HTML: &str = include_str!("../static/points.html");
 const SCOUTS_HTML: &str = include_str!("../static/scouts.html");
 const SETTINGS_HTML: &str = include_str!("../static/settings.html");
@@ -51,12 +50,6 @@ pub async fn static_login() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(LOGIN_HTML)
-}
-
-pub async fn static_passkey() -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(PASSKEY_HTML)
 }
 
 pub async fn static_point_records() -> HttpResponse {

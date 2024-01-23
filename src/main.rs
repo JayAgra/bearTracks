@@ -554,7 +554,6 @@ async fn main() -> io::Result<()> {
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
                 .route("/create", web::get().to(static_files::static_create))
                 .route("/login", web::get().to(static_files::static_login))
-                .route("/passkey", web::get().to(static_files::static_passkey))
                 .route("/pointRecords", web::get().to(static_files::static_point_records))
                 .route("/points", web::get().to(static_files::static_points))
                 .route("/scouts", web::get().to(static_files::static_scouts))

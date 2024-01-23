@@ -96,9 +96,10 @@ struct EndView: View {
                 Spacer()
             }
             .onAppear() {
-                loadPane()
                 if controller.getTeamNumber() == "" || controller.getMatchNumber() == "" {
                     controller.advanceToTab(tab: .start)
+                } else {
+                    loadPane()
                 }
             }
             .navigationTitle("Match Scouting")
