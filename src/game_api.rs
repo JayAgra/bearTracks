@@ -1,10 +1,9 @@
 // 2024 specific
 
 use actix_web::{error, web, Error};
-use rusqlite::{Statement, params};
-use serde::{Deserialize, Serialize};
+use rusqlite::Statement;
+use serde::Serialize;
 
-use crate::analyze;
 use crate::db_main;
 use crate::stats;
 
@@ -20,15 +19,16 @@ pub struct DataStats {
 #[derive(Serialize)]
 pub struct Team {
     pub team: i64,
-    pub trap_note: i64,
-    pub climb: i64,
-    pub buddy_climb: i64,
+    pub trap_note: f64,
+    pub climb: f64,
+    pub buddy_climb: f64,
     pub intake: DataStats,
     pub travel: DataStats,
     pub outtake: DataStats,
     pub speaker: DataStats,
     pub amplifier: DataStats,
-    pub total: DataStats
+    pub total: DataStats,
+    pub points: DataStats
 }
 
 struct TeamDataset {
@@ -98,6 +98,7 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
     let speaker_qrt = stats::quartiles_i64(&data_arr.speaker);
     let amplifier_qrt = stats::quartiles_i64(&data_arr.amplifier);
     let total_qrt = stats::quartiles_i64(&data_arr.shots);
+    let points_qrt = stats::quartiles_i64(&data_arr.points);
 
     let intake_means = stats::means_i64(&data_arr.intake, 0.5);
     let travel_means = stats::means_i64(&data_arr.travel, 0.5);
@@ -105,12 +106,13 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
     let speaker_means = stats::means_i64(&data_arr.speaker, 0.5);
     let amplifier_means = stats::means_i64(&data_arr.amplifier, 0.5);
     let total_means = stats::means_i64(&data_arr.shots, 0.5);
+    let points_means = stats::means_i64(&data_arr.points, 0.5);
 
     Ok(Team {
         team: params[2].parse::<i64>().unwrap_or(0),
-        trap_note: stats::means_i64(&data_arr.trap_note, 0.5)[0],
-        climb: stats::means_i64(&data_arr.climb, 0.5)[0],
-        buddy_climb: stats::means_i64(&data_arr.buddy_climb, 0.5)[0],
+        trap_note: data_arr.trap_note.iter().sum::<i64>() as f64 / data_arr.trap_note.len() as f64,
+        climb: data_arr.climb.iter().sum::<i64>() as f64 / data_arr.climb.len() as f64,
+        buddy_climb: data_arr.buddy_climb.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
         intake: DataStats {
             first: intake_qrt[0],
             median: intake_qrt[1],
@@ -152,6 +154,13 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
             third: total_qrt[2],
             mean: total_means[0],
             decaying: total_means[1]
-        }
+        },
+        points: DataStats {
+            first: points_qrt[0],
+            median: points_qrt[1],
+            third: points_qrt[2],
+            mean: points_means[0],
+            decaying: points_means[1]
+        },
     })
 }
