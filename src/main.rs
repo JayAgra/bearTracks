@@ -18,9 +18,11 @@ mod db_auth;
 mod db_main;
 mod db_transact;
 mod forward;
+mod game_api;
 mod passkey;
 mod session;
 mod static_files;
+mod stats;
 
 // hashmap containing user session IDs
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -449,6 +451,21 @@ async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
     )
 }
 
+async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(
+                game_api::execute(
+                    &db.main,
+                    req.match_info().get("season").unwrap().parse().unwrap(),
+                    req.match_info().get("event").unwrap().parse().unwrap(),
+                    req.match_info().get("team").unwrap().parse().unwrap(),
+                ).await?
+            )
+    )
+}
+
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 #[actix_web::main]
@@ -620,6 +637,9 @@ async fn main() -> io::Result<()> {
             /* debug endpoints */
                 // GET
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
+            /* robot game endpoints */
+                // GET
+                .service(web::resource("/api/v1/game/get_team/{season}/{event}/{team}").route(web::get().to(game_get_team)))
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?

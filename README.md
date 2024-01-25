@@ -39,12 +39,13 @@ The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended 
 | iOS 16      | ✅    | ❌     | ❌      |
 | macOS 14    | ✅    | ✅     | ✅      |
 | macOS 11-13 | ✅    | ❌     | ❌      |
-| App Store   | ⌛    | ✅     | ❌      |
+| App Store   | ✅    | ✅     | ❌      |
 | Web         | ⌛    | ❌     | ❌      |
 | Android     | ❌    | ❌     | ❌      |
-<small>android users may use web (pwa)</small>
+
+<small>android users may use web</small>
 
 [Data iOS](https://apps.apple.com/app/beartracks-data/id6475752596)<br>
 [Data macOS](https://apps.apple.com/app/beartracks-data/id6475752596)<br>
-[Scout iOS](https://testflight.apple.com/join/0LzEHahN)<br>
+[Scout iOS](https://apps.apple.com/app/beartracks-scout/id6476092907)<br>
 [Manage Xcode](https://github.com/JayAgra/bearTracks/tree/main/ios/beartracks-manage)

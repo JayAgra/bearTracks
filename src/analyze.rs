@@ -238,8 +238,8 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     score += (analysis_results[1] + 1.0) * 3.75;
     score += (analysis_results[2] + 1.0) * 7.5;
 
-    let mut speaker_scores: i32 = 0;
-    let mut amplifier_scores: i32 = 0;
+    let mut speaker_scores: i64 = 0;
+    let mut amplifier_scores: i64 = 0;
     let mut trap_note: bool = false;
     let mut climb: bool = false;
     let mut buddy: bool = false;
@@ -285,7 +285,19 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         score * 100.0 / (intake_time / game_data.len() as f64), // fast intake
         score * 100.0 / (travel_time / game_data.len() as f64), // fast travel
         score * 100.0 / (outtake_time / game_data.len() as f64), // fast shoot
-        score * 100.0 / (intake_time + travel_time + outtake_time) / game_data.len() as f64 // fast cycle
+        score * 100.0 / (intake_time + travel_time + outtake_time) / (game_data.len() - 4) as f64 // fast cycle
+    );
+
+    let analysis: Vec<i64> = vec!(
+        real_bool_to_num(trap_note) as i64,
+        real_bool_to_num(climb) as i64,
+        real_bool_to_num(buddy) as i64,
+        intake_time as i64,
+        travel_time as i64,
+        outtake_time as i64,
+        speaker_scores,
+        amplifier_scores,
+        score as i64
     );
 
     let string_mps_scores: Vec<String> = mps_scores
@@ -293,7 +305,7 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                                             .map(|float| float.to_string())
                                             .collect();
 
-    let string_analysis_results: Vec<String> = analysis_results
+    let string_analysis_results: Vec<String> = analysis
                                             .iter()
                                             .map(|float| float.to_string())
                                             .collect();
