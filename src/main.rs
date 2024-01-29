@@ -143,66 +143,99 @@ async fn data_get_meta() -> Result<HttpResponse, AWError> {
     )
 }
 
+fn access_denied_team() -> HttpResponse {
+    HttpResponse::Unauthorized()
+        .body("you must be affiliated with a valid team to access data")
+}
+
 // get detailed data by submission id. used in /detail
-async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::GetDataDetailed, path).await?)
-    )
+async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::GetDataDetailed, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // check if a submission exists, by id. used in submit script to verify submission (verification is mostly a gimmick but whatever)
-async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::DataExists, path).await?)
-    )
+async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::DataExists, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all data for a given team at an event in a season. used on /browse
-async fn data_get_main_brief_team(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefTeam, path).await?)
-    )
+async fn data_get_main_brief_team(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefTeam, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all data for a given match at an event, in a specified season. used on /browsw
-async fn data_get_main_brief_match(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefMatch, path).await?)
-    )
+async fn data_get_main_brief_match(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefMatch, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all data from an event, given a season. used for /browse
-async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefEvent, path).await?)
-    )
+async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefEvent, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
-async fn data_get_main_brief_season(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefSeason, path).await?)
-    )
+async fn data_get_main_brief_season(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefSeason, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all submissions created by a certain user id. used for /browse
-async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefUser, path).await?)
-    )
+async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefUser, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get basic data about all teams at an event, in a season. used for event rankings. ** NO AUTH **
@@ -216,21 +249,33 @@ async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) 
 
 // get POSTed data from form
 async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?)
-    )
+    if user.team != -1 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // forward frc api data for teams [deprecated]
-async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>, _user: db_auth::User) -> HttpResponse {
-    forward::forward_frc_api_event_teams(req, path).await
+async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>, user: db_auth::User) -> HttpResponse {
+    if user.team != -1 {
+        forward::forward_frc_api_event_teams(req, path).await
+    } else {
+        access_denied_team()
+    }
 }
 
 // forward frc api data for events. used on main form to ensure entered matches and teams are valid
-async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String, String, String)>, _user: db_auth::User) -> HttpResponse {
-    forward::forward_frc_api_event_matches(req, path).await
+async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String, String, String)>, user: db_auth::User) -> HttpResponse {
+    if user.team != -1 {
+        forward::forward_frc_api_event_matches(req, path).await
+    } else {
+        access_denied_team()
+    }
 }
 
 // get all valid submission IDs. used on /manage to create list of IDs that can be acted on
@@ -451,6 +496,16 @@ async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
     )
 }
 
+async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(
+                game_api::get_owned_cards(&db.auth, user).await?
+            )
+    )
+}
+
 async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
@@ -640,11 +695,12 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
             /* robot game endpoints */
                 // GET
-                .service(web::resource("/api/v1/game/get_team/{season}/{event}/{team}").route(web::get().to(game_get_team)))
+                .service(web::resource("/api/v1/game/all_owned_cards").route(web::get().to(game_get_cards)))
+                .service(web::resource("/api/v1/game/team_data/{season}/{event}/{team}").route(web::get().to(game_get_team)))
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?
-    .workers(2)
+    .workers(4)
     .run()
     .await
 }

@@ -76,7 +76,7 @@ pub struct User {
     pub pass_hash: String,
     pub admin: String,
     pub team_admin: i64,
-    pub access_ok: String,
+    pub data: String,
     pub score: i64
 }
 
@@ -128,7 +128,7 @@ fn get_user_id_entry(conn: Connection, id: String) -> Result<User, rusqlite::Err
             pass_hash: row.get(6)?,
             admin: row.get(7)?,
             team_admin: row.get(8)?,
-            access_ok: row.get(9)?,
+            data: row.get(9)?,
             score: row.get(10)?,
         })
     })
@@ -147,7 +147,7 @@ fn get_user_username_entry(conn: Connection, username: String) -> Result<User, r
             pass_hash: row.get(6)?,
             admin: row.get(7)?,
             team_admin: row.get(8)?,
-            access_ok: row.get(9)?,
+            data: row.get(9)?,
             score: row.get(10)?,
         })
     })
@@ -223,7 +223,7 @@ pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: St
                 pass_hash: "".to_string(),
                 admin: "false".to_string(),
                 team_admin: 0,
-                access_ok: "true".to_string(),
+                data: "".to_string(),
                 score: 0
             }).map_err(rusqlite::Error::NulError)
         }
@@ -245,7 +245,7 @@ fn create_user_entry(conn: Connection, team: i64, full_name: String, username: S
         pass_hash: password_hash,
         admin: "false".to_string(),
         team_admin: 0,
-        access_ok: "true".to_string(),
+        data: "".to_string(),
         score: 0
     };
     stmt.execute(params![
@@ -261,6 +261,26 @@ fn create_user_entry(conn: Connection, team: i64, full_name: String, username: S
 pub fn update_points(conn: Connection, user_id: i64, inc: i64) -> Result<db_main::Id, rusqlite::Error> {
     let mut stmt = conn.prepare("UPDATE users SET score = score + ?1 WHERE id = ?2;")?;
     stmt.execute(params![inc, user_id])?;
+    Ok(db_main::Id { id: conn.last_insert_rowid() })
+}
+
+pub async fn update_user_data(pool: &Pool, user_id: i64, new_data: String) -> Result<db_main::Id, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        update_user_data_transaction(conn, user_id, new_data)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+pub fn update_user_data_transaction(conn: Connection, user_id: i64, new_data: String) -> Result<db_main::Id, rusqlite::Error> {
+    let mut stmt = conn.prepare("UPDATE users SET data = ?1 WHERE id = ?2;")?;
+    stmt.execute(params![user_id, new_data])?;
     Ok(db_main::Id { id: conn.last_insert_rowid() })
 }
 

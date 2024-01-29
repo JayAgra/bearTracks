@@ -1,9 +1,8 @@
-// 2024 specific
-
 use actix_web::{error, web, Error};
 use rusqlite::Statement;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
+use crate::db_auth;
 use crate::db_main;
 use crate::stats;
 
@@ -15,6 +14,48 @@ pub struct DataStats {
     pub mean: i64,
     pub decaying: i64
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct HeldEventCards {
+    season: i64,
+    event: String,
+    teams: Vec<i64>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct GameUserData {
+    cards: Vec<HeldEventCards>,
+    hand: Vec<HeldEventCards>,
+    wins: i64,
+    losses: i64,
+    ties: i64,
+    box_count: i64,
+}
+
+const EMPTY_USER: GameUserData = GameUserData {
+    cards: Vec::new(),
+    hand: Vec::new(),
+    wins: 0,
+    losses: 0,
+    ties: 0,
+    box_count: 0
+};
+
+pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Result<GameUserData, Error> {
+    let user = db_auth::get_user_id(pool, user.id.to_string()).await?;
+    if user.data == "" {  
+        db_auth::update_user_data(
+            pool,
+            user.id,
+            serde_json::to_string(&EMPTY_USER).unwrap_or("".to_string())
+        ).await?;
+        Ok(EMPTY_USER)
+    } else {
+        Ok(serde_json::from_str::<GameUserData>(&user.data)?)
+    }
+}
+
+// 2024 only
 
 #[derive(Serialize)]
 pub struct Team {

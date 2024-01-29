@@ -15,17 +15,16 @@
         <div class="container">
             <div class="offlineAlert" id="offlineAlert" style="display: none"><span class="closeAlert" onclick="this.parentElement.classList.add('fadeout');">&times;</span> You are offline</div>
             <div>
-                <h1 class="w3">bearTracks<br><span class="gametitle">CRESCENDO</span></h1><br>
+                <h1 class="w3">bearTracks<br><span class="gametitle">CRESCENDO</span></h1>
                 <div style="display: flex; flex-direction: column;">
-                    <a href="manage" class="gameflair1" style="order: 4; margin-bottom: 5%; display: none;" id="additionalUrl">manage data<br></a>
-                    <a href="manageTeam" class="gameflair1" style="order: 5; margin-bottom: 5%; display: none;" id="additionalUrl2">manage team<br></a>
-                    <small style="order: 6"><a href="scouts" style="all: unset; margin-bottom: 7%;">top scouts</a></small>
-                    <small style="order: 7"><a href="points" style="all: unset; margin-bottom: 7%;">points</a></small>
-                    <small style="order: 8"><a href="settings" style="all: unset; margin-bottom: 7%;">settings</a></small>
+                    <a style="order: 0" class="gameflair1" href="scouts">top scouts</a>
+                    <a style="order: 1" class="gameflair1" href="points">points</a>
+                    <h3 style="order: 2"></h3>
+                    <small style="order: 3"><a href="settings" style="all: unset;">settings</a></small>
+                    <small style="order: 4"><a href="create" style="all: unset;">create account</a></small>
                 </div>
             </div>
         </div>
-        <script src="static/js/homepage/homepage.min.js" type="text/javascript"></script>
         <script src="static/js/network/network.min.js" type="text/javascript"></script>
     </body>
 </html>
