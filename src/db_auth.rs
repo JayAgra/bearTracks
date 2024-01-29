@@ -72,11 +72,11 @@ pub struct User {
     pub current_challenge: String,
     pub full_name: String,
     pub team: i64,
-    pub method: String,
+    pub data: String,
     pub pass_hash: String,
     pub admin: String,
     pub team_admin: i64,
-    pub data: String,
+    pub access_ok: String,
     pub score: i64
 }
 
@@ -124,11 +124,11 @@ fn get_user_id_entry(conn: Connection, id: String) -> Result<User, rusqlite::Err
             current_challenge: row.get(2)?,
             full_name: row.get(3)?,
             team: row.get(4)?,
-            method: row.get(5)?,
+            data: row.get(5)?,
             pass_hash: row.get(6)?,
             admin: row.get(7)?,
             team_admin: row.get(8)?,
-            data: row.get(9)?,
+            access_ok: row.get(9)?,
             score: row.get(10)?,
         })
     })
@@ -143,11 +143,11 @@ fn get_user_username_entry(conn: Connection, username: String) -> Result<User, r
             current_challenge: row.get(2)?,
             full_name: row.get(3)?,
             team: row.get(4)?,
-            method: row.get(5)?,
+            data: row.get(5)?,
             pass_hash: row.get(6)?,
             admin: row.get(7)?,
             team_admin: row.get(8)?,
-            data: row.get(9)?,
+            access_ok: row.get(9)?,
             score: row.get(10)?,
         })
     })
@@ -219,11 +219,11 @@ pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: St
                 current_challenge: "".to_string(),
                 full_name,
                 team,
-                method: "pw".to_string(),
+                data: "".to_string(),
                 pass_hash: "".to_string(),
                 admin: "false".to_string(),
                 team_admin: 0,
-                data: "".to_string(),
+                access_ok: "true".to_string(),
                 score: 0
             }).map_err(rusqlite::Error::NulError)
         }
@@ -241,11 +241,11 @@ fn create_user_entry(conn: Connection, team: i64, full_name: String, username: S
         current_challenge: "".to_string(),
         full_name,
         team,
-        method: "pw".to_string(),
+        data: "".to_string(),
         pass_hash: password_hash,
         admin: "false".to_string(),
         team_admin: 0,
-        data: "".to_string(),
+        access_ok: "true".to_string(),
         score: 0
     };
     stmt.execute(params![
