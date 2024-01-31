@@ -22,3 +22,4 @@ ssl/*.pem
 *!fastlane/Pluginfile
 *.xcbkptlist
 *.xcuserstate
+cache/*

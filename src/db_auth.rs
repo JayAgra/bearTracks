@@ -201,11 +201,9 @@ fn get_access_key_all(conn: Connection) -> Result<Vec<AccessKey>, rusqlite::Erro
 
 pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: String, password: String) -> Result<User, Error> {
     let pool = pool.clone();
-
     let conn = web::block(move || pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
-
     web::block(move || {
         let generated_salt = SaltString::generate(&mut OsRng);
         // argon2id v19
@@ -234,7 +232,7 @@ pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: St
 }
 
 fn create_user_entry(conn: Connection, team: i64, full_name: String, username: String, password_hash: String) -> Result<User, rusqlite::Error> {
-    let mut stmt = conn.prepare("INSERT INTO users (username, current_challenge, full_name, team, method, pass_hash, admin, team_admin, access_ok, score) VALUES (?, '', ?, ?, 'pw', ?, 'false', 0, 'true', 0);")?;
+    let mut stmt = conn.prepare("INSERT INTO users (username, current_challenge, full_name, team, data, pass_hash, admin, team_admin, access_ok, score) VALUES (?, '', ?, ?, '', ?, 'false', 0, 'true', 0);")?;
     let mut new_user = User {
         id: 0,
         username,
@@ -279,8 +277,8 @@ pub async fn update_user_data(pool: &Pool, user_id: i64, new_data: String) -> Re
 }
 
 pub fn update_user_data_transaction(conn: Connection, user_id: i64, new_data: String) -> Result<db_main::Id, rusqlite::Error> {
-    let mut stmt = conn.prepare("UPDATE users SET data = ?1 WHERE id = ?2;")?;
-    stmt.execute(params![user_id, new_data])?;
+    let mut stmt: Statement<'_> = conn.prepare("UPDATE users SET data = ?1 WHERE id = ?2;")?;
+    stmt.execute(params![new_data, user_id])?;
     Ok(db_main::Id { id: conn.last_insert_rowid() })
 }
 

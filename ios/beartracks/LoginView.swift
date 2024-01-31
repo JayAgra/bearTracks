@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SafariServices
 
 /// Login sheet view
 struct LoginView: View {
@@ -15,7 +14,6 @@ struct LoginView: View {
     @State private var password = ""
     @State private var alertMessage = ""
     @Environment(\.dismiss) var dismiss
-    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack {

@@ -1,4 +1,5 @@
 use actix_web::{error, web, Error};
+use rand::seq::SliceRandom;
 use rusqlite::Statement;
 use serde::{Serialize, Deserialize};
 
@@ -16,42 +17,159 @@ pub struct DataStats {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct HeldEventCards {
-    season: i64,
-    event: String,
-    teams: Vec<i64>,
-}
-
-#[derive(Serialize, Deserialize)]
 pub struct GameUserData {
-    cards: Vec<HeldEventCards>,
-    hand: Vec<HeldEventCards>,
+    cards: Vec<i64>,
+    hand: Vec<i64>,
     wins: i64,
     losses: i64,
     ties: i64,
     box_count: i64,
 }
 
-const EMPTY_USER: GameUserData = GameUserData {
-    cards: Vec::new(),
-    hand: Vec::new(),
-    wins: 0,
-    losses: 0,
-    ties: 0,
-    box_count: 0
-};
+#[derive(Serialize, Deserialize)]
+pub struct ClientInfo {
+    id: i64,
+    username: String,
+    team: i64,
+    score: i64,
+    game_data: GameUserData
+}
 
-pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Result<GameUserData, Error> {
-    let user = db_auth::get_user_id(pool, user.id.to_string()).await?;
-    if user.data == "" {  
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct FrcApiTeam {
+    pub team_number: i64,
+    pub name_full: String,
+    pub name_short: String,
+    pub city: String,
+    pub state_prov: String,
+    pub country: String,
+    pub rookie_year: i64,
+    pub robot_name: String,
+    pub district_code: Option<String>,
+    pub school_name: String,
+    pub website: String,
+    pub home_c_m_p: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct FrcApiTeams {
+    pub team_count_total: i64,
+    pub team_count_page: i64,
+    pub page_current: i64,
+    pub page_total: i64,
+    pub teams: Vec<FrcApiTeam>,
+}
+
+pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Result<ClientInfo, Error> {
+    let user_updated = db_auth::get_user_id(pool, user.id.to_string()).await?;
+    if user_updated.data == "" {  
         db_auth::update_user_data(
             pool,
             user.id,
-            serde_json::to_string(&EMPTY_USER).unwrap_or("".to_string())
+            serde_json::to_string(&GameUserData {
+                cards: vec![99999, 99998, 99997],
+                hand: vec![99999, 99998, 99997],
+                wins: 0,
+                losses: 0,
+                ties: 0,
+                box_count: 0
+            }).unwrap_or("".to_string())
         ).await?;
-        Ok(EMPTY_USER)
+        Ok(ClientInfo {
+            id: -1,
+            username: "none".to_string(),
+            team: -1,
+            score: -1,
+            game_data: GameUserData { cards: vec![99999, 99998, 99997], hand: vec![99999, 99998, 99997], wins: 0, losses: 0, ties: 0, box_count: 0 }
+        })
     } else {
-        Ok(serde_json::from_str::<GameUserData>(&user.data)?)
+        Ok(
+            ClientInfo {
+                id: user_updated.id,
+                username: user_updated.username,
+                team: user_updated.team,
+                score: user_updated.score,
+                game_data: serde_json::from_str::<GameUserData>(&user_updated.data).unwrap_or(GameUserData { cards: vec![99999, 99998, 99997], hand: vec![99999, 99998, 99997], wins: 0, losses: 0, ties: 0, box_count: 0 })
+            }
+        )
+    }
+}
+
+pub async fn open_loot_box(auth_pool: &db_auth::Pool, main_pool: &db_main::Pool, user_param: db_auth::User) -> Result<i64, Error> {
+    let user_queried = db_auth::get_user_id(auth_pool, user_param.id.to_string()).await;
+    if !user_queried.is_ok() {
+        return Ok(-1)
+    }
+    let user = user_queried.unwrap();
+    let teams = db_main::get_team_numbers(main_pool, "2023".to_string()).await;
+    if teams.is_ok() {
+        let team_list = teams.unwrap();
+        if team_list.is_empty() {
+            Ok(-1)
+        } else {
+            let card = team_list.choose(&mut rand::thread_rng()).unwrap().clone();
+            if user.score >= 100 {
+                if user.data == "" {
+                    db_auth::update_user_data(auth_pool, user.id, serde_json::to_string(&GameUserData { cards: vec![99999, 99998, 99997], hand: vec![99999, 99998, 99997], wins: 0, losses: 0, ties: 0, box_count: 0 }).unwrap_or("".to_string())).await?;
+                }
+
+                let mut current_user_data = serde_json::from_str::<GameUserData>(&user.data).unwrap();
+                current_user_data.box_count += 1;
+                current_user_data.cards.push(card);
+                db_auth::update_user_data(auth_pool, user.id, serde_json::to_string(&current_user_data).unwrap_or("".to_string())).await?;
+
+                let auth_pool = auth_pool.clone();
+                let auth_conn = web::block(move || auth_pool.get())
+                    .await?
+                    .map_err(error::ErrorInternalServerError)?;
+
+                db_auth::update_points(auth_conn, user.id, -100)
+                    .map_err(error::ErrorInternalServerError)?;
+
+                Ok(card)
+            } else {
+                Ok(-1)
+            }
+        }
+    } else {
+        Ok(-1)
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct CardsPostData {
+    cards: Vec<i64>
+}
+
+pub async fn set_held_cards(auth_pool: &db_auth::Pool, user_param: db_auth::User, data: &web::Json<CardsPostData>) -> Result<CardsPostData, Error> {
+    let user_queried = db_auth::get_user_id(auth_pool, user_param.id.to_string()).await;
+    if !user_queried.is_ok() {
+        return Ok(CardsPostData { cards: vec![-1, 3] })
+    }
+    let user = user_queried.unwrap();
+    if user.data == "" {
+        Ok(CardsPostData { cards: vec![-1, 3] })
+    } else {
+        let mut current_user_data = serde_json::from_str::<GameUserData>(&user.data).unwrap();
+        let mut cards_not_ok = false;
+        if data.cards.len() == 3 {
+            data.cards.iter().for_each(|card| {
+                if !current_user_data.cards.contains(card) {
+                    cards_not_ok = true;
+                }
+            });
+        } else {
+            cards_not_ok = true;
+        }
+        if !cards_not_ok {
+            current_user_data.hand = data.cards.clone();
+            db_auth::update_user_data(auth_pool, user.id, serde_json::to_string(&current_user_data).unwrap_or("".to_string())).await?;
+            return Ok(CardsPostData { cards: current_user_data.hand })
+        } else {
+            return Ok(CardsPostData { cards: vec![-1, 3] })
+        }
     }
 }
 

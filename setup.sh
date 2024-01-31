@@ -17,6 +17,7 @@ chmod +x update.sh                                                      # make i
 cp bearTracks/service.sh service.sh                                     # copy service management script
 chmod +x service.sh                                                     # make it executatble
 mkdir ssl                                                               # create ssl directory for certificates
+mkdir cache                                                             # create directory for server cache
 cd bearTracks                                                           # ~/bearTracks/bearTracks (git repo)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh          # install rust
 source "$HOME/.cargo/env"                                               # source (needed if rust is newly installed)

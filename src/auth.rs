@@ -56,7 +56,7 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
                     }
                 }
             } else {
-                let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, -1, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
+                let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, 0, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
                 if user_temp.is_err() {
                     return HttpResponse::BadRequest().status(StatusCode::from_u16(500).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"creation_error\"}");
                 } else {
