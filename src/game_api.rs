@@ -103,7 +103,7 @@ pub async fn open_loot_box(auth_pool: &db_auth::Pool, main_pool: &db_main::Pool,
         return Ok(-1)
     }
     let user = user_queried.unwrap();
-    let teams = db_main::get_team_numbers(main_pool, "2023".to_string()).await;
+    let teams = db_main::get_team_numbers(main_pool, "2024".to_string()).await;
     if teams.is_ok() {
         let team_list = teams.unwrap();
         if team_list.is_empty() {
