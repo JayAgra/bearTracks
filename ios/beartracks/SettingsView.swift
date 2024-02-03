@@ -15,7 +15,7 @@ struct SettingsView: View {
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
-    @Binding var loginRequired: Bool
+    @ObservedObject var loginController: LoginStateController
     
     var body: some View {
         NavigationStack {
@@ -86,7 +86,7 @@ struct SettingsView: View {
                             Label("Dark Mode", systemImage: "moon.fill")
                         }
                         .padding()
-                        .onChange(of: darkMode) {
+                        .onChange(of: darkMode) { value in
                             UserDefaults.standard.set(darkMode, forKey: "darkMode")
                             showAlert = true
                         }
@@ -97,7 +97,7 @@ struct SettingsView: View {
                                 for cookie in cookies {
                                     sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
                                 }
-                                loginRequired = true
+                                loginController.loginRequired = true
                             }
                         }
                         .foregroundStyle(Color.pink)
@@ -168,7 +168,7 @@ struct SettingsView: View {
 struct SettingsView_Preview: PreviewProvider {
     @State static var loginReq = false
     static var previews: some View {
-        SettingsView(loginRequired: $loginReq)
+        SettingsView(loginController: LoginStateController())
     }
 }
 

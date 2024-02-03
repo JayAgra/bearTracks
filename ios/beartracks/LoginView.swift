@@ -13,32 +13,44 @@ struct LoginView: View {
     @State private var username = ""
     @State private var password = ""
     @State private var alertMessage = ""
-    @Environment(\.dismiss) var dismiss
+    @State private var loading = false
+    @State public var loginController: LoginStateController
     
     var body: some View {
         VStack {
             Text("bearTracks")
                 .font(.title)
-            Text("v5.0.1 • 2024")
-            
-            TextField("Username", text: $username)
+            Text("v5.0.2 • 2024")
+            if !loading {
+                TextField("username", text: $username)
+                    .padding()
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+                    .textContentType(.username)
+                SecureField("password", text: $password)
+                    .padding()
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+                    .textContentType(.password)
+                Button("login") {
+                    login()
+                }
                 .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-
-            SecureField("Password", text: $password)
-                .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-
-            Button("Login") {
-                login()
+                .font(.title3)
+                .buttonStyle(.bordered)
+            } else {
+                Spacer()
+                ProgressView()
+                    .controlSize(.large)
+                    .padding()
+                Spacer()
             }
-            .padding()
-            .font(.title3)
-            .buttonStyle(.bordered)
         }
         .padding()
         .alert(isPresented: $showAlert, content: {
-            Alert (
+            Alert(
                 title: Text("Auth Error"),
                 message: Text(alertMessage),
                 dismissButton: .default(Text("ok"))
@@ -47,6 +59,7 @@ struct LoginView: View {
     }
     
     private func login() {
+        loading = true
         guard let url = URL(string: "https://beartracks.io/api/v1/auth/login") else {
             return
         }
@@ -55,29 +68,32 @@ struct LoginView: View {
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: credentials)
-
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = jsonData
             request.httpShouldHandleCookies = true
 
-            sharedSession.dataTask(with: request) { _data, response, error in
-                if let _data = _data {
+            sharedSession.dataTask(with: request) { data, response, error in
+                if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            dismiss()
+                            loginController.loginRequired = false
+                            loading = false
                         } else {
+                            loading = false
                             showAlert = true
                             alertMessage = "bad credentials"
                         }
                     }
                 } else {
+                    loading = false
                     showAlert = true
                     alertMessage = "network error"
                 }
             }.resume()
         } catch {
+            loading = false
             showAlert = true
             alertMessage = "failed to serialize auth object"
         }
@@ -85,5 +101,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+    LoginView(loginController: LoginStateController())
 }

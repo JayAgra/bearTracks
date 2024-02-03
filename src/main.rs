@@ -3,7 +3,7 @@ use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
 use actix_session::{SessionMiddleware, Session, config::PersistentSession};
-use actix_web::{error, middleware::{self, DefaultHeaders}, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
+use actix_web::{error, middleware::{self, DefaultHeaders}, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload, http::header::ContentType};
 use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
@@ -466,6 +466,16 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
     )
 }
 
+// if you aren't D6MFYYVHA8 you may want to change this
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\"]}}";
+async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body(APPLE_APP_SITE_ASSOC)
+    )
+}
+
 // get all points. used to construct the leaderboard
 async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
@@ -760,6 +770,7 @@ async fn main() -> io::Result<()> {
                 // GET
                 .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_get_transact_me)))
                 .service(web::resource("/api/v1/whoami").route(web::get().to(misc_get_whoami)))
+                .service(web::resource("/apple-app-site-association").route(web::get().to(misc_apple_app_site_association)))
             /* debug endpoints */
                 // GET
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))

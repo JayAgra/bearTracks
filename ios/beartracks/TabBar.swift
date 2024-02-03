@@ -18,90 +18,78 @@ struct TabBar: View {
         case teams, matches, data, settings
     }
     @State private var selectedTab: Tab? = .teams
-    @State private var loginRequired: Bool = false
+    @ObservedObject public var login: LoginStateController = LoginStateController()
 
     var body: some View {
-        #if targetEnvironment(macCatalyst)
-        NavigationSplitView(sidebar: {
-            List(selection: $selectedTab) {
-                NavigationLink(value: Tab.teams) {
-                    Label("teams", systemImage: "list.number")
+        if !login.loginRequired {
+#if targetEnvironment(macCatalyst)
+            NavigationSplitView(sidebar: {
+                List(selection: $selectedTab) {
+                    NavigationLink(value: Tab.teams) {
+                        Label("teams", systemImage: "list.number")
+                    }
+                    NavigationLink(value: Tab.matches) {
+                        Label("matches", systemImage: "calendar")
+                    }
+                    NavigationLink(value: Tab.data) {
+                        Label("data", systemImage: "magnifyingglass")
+                    }
+                    NavigationLink(value: Tab.settings) {
+                        Label("settings", systemImage: "gear")
+                    }
                 }
-                NavigationLink(value: Tab.matches) {
-                    Label("matches", systemImage: "calendar")
+                .navigationTitle("bearTracks")
+            }, detail: {
+                switch selectedTab {
+                case .teams:
+                    Teams()
+                case .matches:
+                    MatchList()
+                case .data:
+                    DataView()
+                case .settings:
+                    SettingsView(loginController: login)
+                case nil:
+                    LoginView(loginController: login)
                 }
-                NavigationLink(value: Tab.data) {
-                    Label("data", systemImage: "magnifyingglass")
-                }
-                NavigationLink(value: Tab.settings) {
-                    Label("settings", systemImage: "gear")
-                }
-            }
-            .navigationTitle("bearTracks")
+            })
             .onAppear() {
                 checkLoginState { isLoggedIn in
-                    loginRequired = !isLoggedIn
+                    login.loginRequired = !isLoggedIn
                 }
             }
-            .sheet(isPresented: $loginRequired, onDismiss: {
-                loginRequired = false
-                checkLoginState { isLoggedIn in
-                    loginRequired = !isLoggedIn
-                }
-            }) {
-                LoginView()
-            }
-        }, detail: {
-            switch selectedTab {
-            case .teams:
+#else
+            TabView(selection: $selectedTab) {
                 Teams()
-            case .matches:
+                    .tabItem {
+                        Label("teams", systemImage: "list.number")
+                    }
+                    .tag(Tab.teams)
                 MatchList()
-            case .data:
+                    .tabItem {
+                        Label("matches", systemImage: "calendar")
+                    }
+                    .tag(Tab.matches)
                 DataView()
-            case .settings:
-                SettingsView(loginRequired: $loginRequired)
-            case nil:
-                LoginView()
+                    .tabItem {
+                        Label("data", systemImage: "magnifyingglass")
+                    }
+                    .tag(Tab.data)
+                SettingsView(loginController: login)
+                    .tabItem {
+                        Label("settings", systemImage: "gear")
+                    }
+                    .tag(Tab.settings)
             }
-        })
-        #else
-        TabView(selection: $selectedTab) {
-            Teams()
-                .tabItem {
-                    Label("teams", systemImage: "list.number")
+            .onAppear() {
+                checkLoginState { isLoggedIn in
+                    login.loginRequired = !isLoggedIn
                 }
-                .tag(Tab.teams)
-            MatchList()
-                .tabItem {
-                    Label("matches", systemImage: "calendar")
-                }
-                .tag(Tab.matches)
-            DataView()
-                .tabItem {
-                    Label("data", systemImage: "magnifyingglass")
-                }
-                .tag(Tab.data)
-            SettingsView(loginRequired: $loginRequired)
-                .tabItem {
-                    Label("settings", systemImage: "gear")
-                }
-                .tag(Tab.settings)
-        }
-        .onAppear() {
-            checkLoginState { isLoggedIn in
-                loginRequired = !isLoggedIn
             }
+#endif
+        } else {
+            LoginView(loginController: login)
         }
-        .sheet(isPresented: $loginRequired, onDismiss: {
-            loginRequired = false
-            checkLoginState { isLoggedIn in
-                loginRequired = !isLoggedIn
-            }
-        }) {
-            LoginView()
-        }
-        #endif
     }
 }
 
