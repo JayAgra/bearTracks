@@ -15,13 +15,13 @@ struct SettingsView: View {
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
-    @Binding var loginRequired: Bool
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         NavigationStack {
             VStack {
-                VStack {
-                    HStack {
+                Form {
+                    Section {
                         Picker("Team Number", selection: $teamNumberInput) {
                             if !settingsOptions.isEmpty {
                                 ForEach(settingsOptions[0].teams, id: \.self) { team in
@@ -33,15 +33,10 @@ struct SettingsView: View {
                                     .tag(teamNumberInput)
                             }
                         }
-                        .padding()
                         .pickerStyle(.menu)
-                        Spacer()
-                        Button("Save") {
-                            saveTeamNumber()
+                        .onChange(of: teamNumberInput) { value in
+                            UserDefaults.standard.set(teamNumberInput, forKey: "teamNumber")
                         }
-                        .padding()
-                    }
-                    HStack {
                         Picker("Event Code", selection: $eventCodeInput) {
                             if !settingsOptions.isEmpty {
                                 ForEach(settingsOptions[0].events, id: \.self) { event_code in
@@ -54,14 +49,9 @@ struct SettingsView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .padding()
-                        Spacer()
-                        Button("Save") {
-                            saveEventCode()
+                        .onChange(of: eventCodeInput) { value in
+                            UserDefaults.standard.set(eventCodeInput, forKey: "eventCode")
                         }
-                        .padding()
-                    }
-                    HStack {
                         Picker("Season", selection: $seasonInput) {
                             if !settingsOptions.isEmpty {
                                 ForEach(settingsOptions[0].seasons, id: \.self) { season in
@@ -74,35 +64,31 @@ struct SettingsView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .padding()
-                        Spacer()
-                        Button("Save") {
-                            saveSeason()
+                        .onChange(of: seasonInput) { value in
+                            UserDefaults.standard.set(seasonInput, forKey: "season")
                         }
-                        .padding()
-                    }
-                    HStack {
-                        Toggle(isOn: $darkMode) {
-                            Label("Dark Mode", systemImage: "moon.fill")
-                        }
-                        .padding()
-                        .onChange(of: darkMode) {
+                        Toggle("Dark Mode", isOn: $darkMode)
+                        .onChange(of: darkMode) { value in
                             UserDefaults.standard.set(darkMode, forKey: "darkMode")
                             showAlert = true
                         }
                     }
-                    HStack {
+                    Section {
+                        Button("Clear Cache") {
+                            URLCache.shared.removeAllCachedResponses()
+                        }
                         Button("Log Out") {
                             if let cookies = HTTPCookieStorage.shared.cookies(for: sharedSession.configuration.urlCache?.cachedResponse(for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(string: "https://beartracks.io")!) {
                                 for cookie in cookies {
                                     sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
                                 }
-                                loginRequired = true
+                                appState.loginRequired = true
                             }
                         }
                         .foregroundStyle(Color.pink)
-                        .buttonStyle(.bordered)
                     }
+                    Text("To delete or update account information, please email [admin@beartracks.io](mailto:admin@beartracks.io).")
+                        .font(.footnote)
                 }
                 Spacer()
             }
@@ -122,18 +108,6 @@ struct SettingsView: View {
         }
     }
     
-    func saveTeamNumber() {
-        UserDefaults.standard.set(teamNumberInput, forKey: "teamNumber")
-    }
-    
-    func saveEventCode() {
-        UserDefaults.standard.set(eventCodeInput, forKey: "eventCode")
-    }
-    
-    func saveSeason() {
-        UserDefaults.standard.set(seasonInput, forKey: "season")
-    }
-    
     func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) -> Void {
         guard let url = URL(string: "https://beartracks.io/api/v1/data") else {
             return
@@ -142,7 +116,6 @@ struct SettingsView: View {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
-        
         let requestTask = sharedSession.dataTask(with: request) {
             (data: Data?, response: URLResponse?, error: Error?) in
             if let data = data {
@@ -168,7 +141,7 @@ struct SettingsView: View {
 struct SettingsView_Preview: PreviewProvider {
     @State static var loginReq = false
     static var previews: some View {
-        SettingsView(loginRequired: $loginReq)
+        SettingsView()
     }
 }
 

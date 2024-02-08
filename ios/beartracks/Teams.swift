@@ -11,9 +11,7 @@ import Foundation
 /// Shows listing of top teams by scouting data performance, not RPs
 struct Teams: View {
     @State private var teamsList: [TeamData] = []
-    @State private var showSheet: Bool = false
-    @State private var loadFailed: Bool = false
-    @State private var loadComplete: Bool = false
+    @State private var loadState: (Bool, Bool, Bool) = (false, false, false)
     @State private var selectedItem: String = ""
     
     var body: some View {
@@ -43,7 +41,7 @@ struct Teams: View {
                                 }
                                 .onTapGesture {
                                     selectedItem = String(team.team.team)
-                                    showSheet = true
+                                    loadState.0 = true
                                 }
                                 .contentShape(Rectangle())
                                 #if targetEnvironment(macCatalyst)
@@ -54,12 +52,12 @@ struct Teams: View {
                         }
                     }
                     .navigationTitle("Teams")
-                    .navigationDestination(isPresented: $showSheet) {
+                    .navigationDestination(isPresented: $loadState.0) {
                         TeamView(team: selectedItem)
                             .navigationTitle("team \(selectedItem)")
                     }
                 } else {
-                    if loadFailed {
+                    if loadState.1 {
                         VStack {
                             Label("failed", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
@@ -70,7 +68,7 @@ struct Teams: View {
                         }
                         .navigationTitle("Teams")
                     } else {
-                        if loadComplete {
+                        if loadState.2 {
                             VStack {
                                 Label("none", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
@@ -117,17 +115,16 @@ struct Teams: View {
                         }
                     }
                     DispatchQueue.main.async {
-                        self.loadFailed = false
-                        self.loadComplete = true
+                        self.loadState = (self.loadState.0, false, true)
                         self.teamsList = [result]
                     }
                 } catch {
                     print("parse error \(error)")
-                    self.loadFailed = true
+                    self.loadState.1 = true
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
-                self.loadFailed = true
+                self.loadState.1 = true
             }
         }.resume()
     }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GameView: View {
-    @ObservedObject var controller: ScoutingController
+    @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
         VStack {
@@ -82,12 +82,13 @@ struct GameView: View {
                     .buttonStyle(.bordered)
                     Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
                         .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.top)
                 }
                 .navigationTitle("Match Scouting")
             }
         }
         .onAppear() {
-            if controller.getTeamNumber() == "" || controller.getMatchNumber() == "" {
+            if controller.getTeamNumber() == "--" || controller.getMatchNumber() == "--" {
                 controller.advanceToTab(tab: .start)
             }
         }
@@ -95,5 +96,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView(controller: ScoutingController())
+    GameView()
 }

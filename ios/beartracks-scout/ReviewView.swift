@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReviewView: View {
-    @ObservedObject var controller: ScoutingController
+    @EnvironmentObject var controller: ScoutingController
     @State private var submitSheetState: SubmitSheetType = .waiting
     @State private var showSheet: Bool = false
     
@@ -16,12 +16,11 @@ struct ReviewView: View {
         VStack {
             NavigationStack {
                 VStack {
+                    Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())")
+                        .padding(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     ScrollView {
                         LazyVStack {
-                            Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())")
-                                .font(.caption)
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
                             Text("Cycles")
                                 .font(.title2)
                                 .padding()
@@ -94,7 +93,6 @@ struct ReviewView: View {
                             .padding()
                         }
                     }
-                    
                     Button("submit") {
                         showSheet = true
                         controller.submitData { result in
@@ -153,7 +151,7 @@ struct ReviewView: View {
                     }
                 }
                 .onAppear() {
-                    if controller.getTeamNumber() == "" || controller.getMatchNumber() == "" {
+                    if controller.getTeamNumber() == "--" || controller.getMatchNumber() == "--" {
                         controller.advanceToTab(tab: .start)
                     } else {
                         if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == "" || controller.getOverallResponse() == "" {
@@ -168,5 +166,5 @@ struct ReviewView: View {
 }
 
 #Preview {
-    ReviewView(controller: ScoutingController())
+    ReviewView()
 }

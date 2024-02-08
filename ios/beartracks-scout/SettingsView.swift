@@ -13,13 +13,13 @@ struct SettingsView: View {
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
-    @Binding var loginRequired: Bool
+    @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack {
-                    HStack {
+            VStack {
+                Form {
+                    Section {
                         Picker("Event Code", selection: $eventCodeInput) {
                             if !settingsOptions.isEmpty {
                                 ForEach(settingsOptions[0].events, id: \.self) { event_code in
@@ -32,14 +32,12 @@ struct SettingsView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .padding()
-                        Spacer()
-                        Button("Save") {
+                        .onChange(of: eventCodeInput) { _ in
                             saveEventCode()
+                            controller.getMatches { result in
+                                controller.matchList = result
+                            }
                         }
-                        .padding()
-                    }
-                    HStack {
                         Picker("Season", selection: $seasonInput) {
                             if !settingsOptions.isEmpty {
                                 ForEach(settingsOptions[0].seasons, id: \.self) { season in
@@ -52,34 +50,37 @@ struct SettingsView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .padding()
-                        Spacer()
-                        Button("Save") {
+                        .onChange(of: seasonInput) { _ in
                             saveSeason()
+                            controller.getMatches { result in
+                                controller.matchList = result
+                            }
                         }
-                        .padding()
+                        Toggle("Dark Mode", isOn: $darkMode)
+                            .onChange(of: darkMode) { _ in
+                                UserDefaults.standard.set(darkMode, forKey: "darkMode")
+                                showAlert = true
+                            }
                     }
-                    HStack {
-                        Toggle(isOn: $darkMode) {
-                            Label("Dark Mode", systemImage: "moon.fill")
+                    Section {
+                        Button("Clear Cache") {
+                            URLCache.shared.removeAllCachedResponses()
                         }
-                        .padding()
-                        .onChange(of: darkMode) { _ in
-                            UserDefaults.standard.set(darkMode, forKey: "darkMode")
-                            showAlert = true
-                        }
-                    }
-                    HStack {
                         Button("Log Out") {
                             if let cookies = HTTPCookieStorage.shared.cookies(for: sharedSession.configuration.urlCache?.cachedResponse(for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(string: "https://beartracks.io")!) {
                                 for cookie in cookies {
                                     sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
                                 }
-                                loginRequired = true
+                                controller.loginRequired = true
                             }
                         }
                         .foregroundStyle(Color.pink)
-                        .buttonStyle(.bordered)
+                    }
+                    Section {
+                        Text("This application is used to submit scouting data to bearTracks. To view this data, install the [data viewer](https://apps.apple.com/us/app/beartracks-data/id6475752596). The data viewer may only be used by users registered with a team (i.e. team code was not 00000). Team registration is free- to register your team or add yourself to a team after account creation, send an email to [admin@beartracks.io](mailto:admin@beartracks.io).")
+                            .font(.footnote)
+                        Text("To delete or update account information, please email [admin@beartracks.io](mailto:admin@beartracks.io).")
+                            .font(.footnote)
                     }
                 }
             }
@@ -108,14 +109,10 @@ struct SettingsView: View {
     }
     
     func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) -> Void {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data") else {
-            return
-        }
-        
+        guard let url = URL(string: "https://beartracks.io/api/v1/data") else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
-        
         let requestTask = sharedSession.dataTask(with: request) {
             (data: Data?, response: URLResponse?, error: Error?) in
             if let data = data {
@@ -141,7 +138,7 @@ struct SettingsView: View {
 struct SettingsView_Preview: PreviewProvider {
     @State static var loginReq = false
     static var previews: some View {
-        SettingsView(loginRequired: $loginReq)
+        SettingsView()
     }
 }
 

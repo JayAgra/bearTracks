@@ -72,7 +72,7 @@ pub struct User {
     pub current_challenge: String,
     pub full_name: String,
     pub team: i64,
-    pub method: String,
+    pub data: String,
     pub pass_hash: String,
     pub admin: String,
     pub team_admin: i64,
@@ -124,7 +124,7 @@ fn get_user_id_entry(conn: Connection, id: String) -> Result<User, rusqlite::Err
             current_challenge: row.get(2)?,
             full_name: row.get(3)?,
             team: row.get(4)?,
-            method: row.get(5)?,
+            data: row.get(5)?,
             pass_hash: row.get(6)?,
             admin: row.get(7)?,
             team_admin: row.get(8)?,
@@ -143,7 +143,7 @@ fn get_user_username_entry(conn: Connection, username: String) -> Result<User, r
             current_challenge: row.get(2)?,
             full_name: row.get(3)?,
             team: row.get(4)?,
-            method: row.get(5)?,
+            data: row.get(5)?,
             pass_hash: row.get(6)?,
             admin: row.get(7)?,
             team_admin: row.get(8)?,
@@ -201,11 +201,9 @@ fn get_access_key_all(conn: Connection) -> Result<Vec<AccessKey>, rusqlite::Erro
 
 pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: String, password: String) -> Result<User, Error> {
     let pool = pool.clone();
-
     let conn = web::block(move || pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
-
     web::block(move || {
         let generated_salt = SaltString::generate(&mut OsRng);
         // argon2id v19
@@ -219,7 +217,7 @@ pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: St
                 current_challenge: "".to_string(),
                 full_name,
                 team,
-                method: "pw".to_string(),
+                data: "".to_string(),
                 pass_hash: "".to_string(),
                 admin: "false".to_string(),
                 team_admin: 0,
@@ -234,14 +232,14 @@ pub async fn create_user(pool: &Pool, team: i64, full_name: String, username: St
 }
 
 fn create_user_entry(conn: Connection, team: i64, full_name: String, username: String, password_hash: String) -> Result<User, rusqlite::Error> {
-    let mut stmt = conn.prepare("INSERT INTO users (username, current_challenge, full_name, team, method, pass_hash, admin, team_admin, access_ok, score) VALUES (?, '', ?, ?, 'pw', ?, 'false', 0, 'true', 0);")?;
+    let mut stmt = conn.prepare("INSERT INTO users (username, current_challenge, full_name, team, data, pass_hash, admin, team_admin, access_ok, score) VALUES (?, '', ?, ?, '', ?, 'false', 0, 'true', 0);")?;
     let mut new_user = User {
         id: 0,
         username,
         current_challenge: "".to_string(),
         full_name,
         team,
-        method: "pw".to_string(),
+        data: "".to_string(),
         pass_hash: password_hash,
         admin: "false".to_string(),
         team_admin: 0,
@@ -261,6 +259,26 @@ fn create_user_entry(conn: Connection, team: i64, full_name: String, username: S
 pub fn update_points(conn: Connection, user_id: i64, inc: i64) -> Result<db_main::Id, rusqlite::Error> {
     let mut stmt = conn.prepare("UPDATE users SET score = score + ?1 WHERE id = ?2;")?;
     stmt.execute(params![inc, user_id])?;
+    Ok(db_main::Id { id: conn.last_insert_rowid() })
+}
+
+pub async fn update_user_data(pool: &Pool, user_id: i64, new_data: String) -> Result<db_main::Id, Error> {
+    let pool = pool.clone();
+
+    let conn = web::block(move || pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        update_user_data_transaction(conn, user_id, new_data)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+pub fn update_user_data_transaction(conn: Connection, user_id: i64, new_data: String) -> Result<db_main::Id, rusqlite::Error> {
+    let mut stmt: Statement<'_> = conn.prepare("UPDATE users SET data = ?1 WHERE id = ?2;")?;
+    stmt.execute(params![new_data, user_id])?;
     Ok(db_main::Id { id: conn.last_insert_rowid() })
 }
 

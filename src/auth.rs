@@ -39,14 +39,24 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
         } else {
             drop(target_user_temp);
             // check access key validity
-            let access_key_temp: Result<Vec<db_auth::AccessKey>, actix_web::Error> = db_auth::get_access_key(pool, create_form.access.clone(), db_auth::AccessKeyQuery::ById).await;
-            if access_key_temp.is_err() {
-                return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad_access_key\"}");
+            if create_form.access != "00000" {
+                let access_key_temp: Result<Vec<db_auth::AccessKey>, actix_web::Error> = db_auth::get_access_key(pool, create_form.access.clone(), db_auth::AccessKeyQuery::ById).await;
+                if access_key_temp.is_err() {
+                    return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad_access_key\"}");
+                } else {
+                    // insert into database
+                    let access_key: db_auth::AccessKey = access_key_temp.unwrap().first().unwrap().clone();
+                    let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, access_key.team, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
+                    // send final success/failure for creation
+                    if user_temp.is_err() {
+                        return HttpResponse::BadRequest().status(StatusCode::from_u16(500).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"creation_error\"}");
+                    } else {
+                        drop(user_temp);
+                        return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success\"}");
+                    }
+                }
             } else {
-                // insert into database
-                let access_key: db_auth::AccessKey = access_key_temp.unwrap().first().unwrap().clone();
-                let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, access_key.team, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
-                // send final success/failure for creation
+                let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, 0, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
                 if user_temp.is_err() {
                     return HttpResponse::BadRequest().status(StatusCode::from_u16(500).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"creation_error\"}");
                 } else {

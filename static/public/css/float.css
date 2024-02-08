@@ -1,14 +1,14 @@
 body {
     --fieldsetColor: rgba(0,0,0,0);
-    --bodyColor: #121212;
-    --textColor: #fff;
-    --transparency: rgba(0,0,0,0);
     --defaultInputColor: #fff;
-    --inputColorSelected: #ffb600;
-    --gameFlairColor: #68c3e2;
-    --cancelColor: #e90202;
-    --returnColor: #ffb600;
-    --checkAccent: #68c3e2;
+    --bodyColor: #282828;
+    --textColor: #ebdbb2;
+    --defaultInputColor: #504945;
+    --inputColorSelected: #b8bb26;
+    --gameFlairColor: #83a598;
+    --cancelColor: #cc241d;
+    --returnColor: #d3869b;
+    --checkAccent: #fe8019;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,46 +87,22 @@ h1 {
     max-width: 100%;
 }
 select {
-    background-color: var(--transparency);
+    background-color: transparent;
     border: none;
     color: var(--textColor);
     border-bottom: 2px solid var(--defaultInputColor);
     font-size: 16px;
     margin-top: 2vh;
 }
-input[type='text'], input[type='email'], input[type='password'] {
+input[type='text'], input[type='email'], input[type='password'], input[type='number'], input[type='tel'] {
     border: none;
-    background-color: var(--transparency);
+    background-color: transparent;
     color: var(--textColor);
     border-bottom: 1px solid var(--defaultInputColor);
     width: 80%;
 }
-input[type='number'] {
-    border: none;
-    background-color: var(--transparency);
-    color: var(--textColor);
-    border-bottom: 1px solid var(--defaultInputColor);
-    width: 80%;
-}
-input[type='tel'] {
-    border: none;
-    background-color: var(--transparency);
-    color: var(--textColor);
-    border-bottom: 1px solid var(--defaultInputColor);
-    width: 80%;
-}
-input[type='number']:focus {
-    background-color: var(--transparency);
-    outline: none;
-    border-bottom: 2px solid var(--inputColorSelected);
-}
-input[type='tel']:focus {
-    background-color: var(--transparency);
-    outline: none;
-    border-bottom: 2px solid var(--inputColorSelected);
-}
-input[type='text']:focus, input[type='email']:focus, input[type='password']:focus {
-    background-color: var(--transparency);
+input[type='text']:focus, input[type='email']:focus, input[type='password']:focus, input[type='tel']:focus, input[type='number']:focus {
+    background-color: transparent;
     outline: none;
     border-bottom: 2px solid var(--inputColorSelected);
 }
@@ -169,16 +145,17 @@ textarea {
     font-size: 16px;
 }
 textarea {
-    border: none;
-    border-bottom: 1px solid var(--defaultInputColor);
-    background-color: var(--transparency);
+    border: 2px solid var(--defaultInputColor);
+    border-radius: 11px;
+    background-color: transparent;
     color: var(--textColor);
+    padding: 0.5rem;
     resize: none;
     width: 80%;
 }
 textarea:focus {
     outline: none;
-    border-bottom: 1px solid var(--inputColorSelected);
+    border-color: var(--inputColorSelected);
 }
 code {
     font-family:'SF Mono', SFMono-Regular, ui-monospace, Menlo, courier new, monospace;

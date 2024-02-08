@@ -1,13 +1,14 @@
-use std::{env, io, collections::HashMap, pin::Pin, sync::RwLock};
+use std::{env, io, collections::HashMap, fs, pin::Pin, sync::RwLock};
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
 use actix_session::{SessionMiddleware, Session, config::PersistentSession};
-use actix_web::{error, middleware::{self, DefaultHeaders}, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload};
+use actix_web::{error, middleware::{self, DefaultHeaders}, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload, http::header::ContentType};
 use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
+use reqwest::Client;
 use serde::{Serialize, Deserialize};
 use webauthn_rs::prelude::*;
 
@@ -18,9 +19,11 @@ mod db_auth;
 mod db_main;
 mod db_transact;
 mod forward;
+mod game_api;
 mod passkey;
 mod session;
 mod static_files;
+mod stats;
 
 // hashmap containing user session IDs
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -141,66 +144,99 @@ async fn data_get_meta() -> Result<HttpResponse, AWError> {
     )
 }
 
+fn access_denied_team() -> HttpResponse {
+    HttpResponse::Unauthorized()
+        .body("you must be affiliated with a valid team to access data")
+}
+
 // get detailed data by submission id. used in /detail
-async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::GetDataDetailed, path).await?)
-    )
+async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::GetDataDetailed, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // check if a submission exists, by id. used in submit script to verify submission (verification is mostly a gimmick but whatever)
-async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::DataExists, path).await?)
-    )
+async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::DataExists, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all data for a given team at an event in a season. used on /browse
-async fn data_get_main_brief_team(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefTeam, path).await?)
-    )
+async fn data_get_main_brief_team(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefTeam, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all data for a given match at an event, in a specified season. used on /browsw
-async fn data_get_main_brief_match(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefMatch, path).await?)
-    )
+async fn data_get_main_brief_match(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefMatch, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all data from an event, given a season. used for /browse
-async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefEvent, path).await?)
-    )
+async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefEvent, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
-async fn data_get_main_brief_season(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefSeason, path).await?)
-    )
+async fn data_get_main_brief_season(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefSeason, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get summary of all submissions created by a certain user id. used for /browse
-async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute(&db.main, db_main::MainData::BriefUser, path).await?)
-    )
+async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::BriefUser, path).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // get basic data about all teams at an event, in a season. used for event rankings. ** NO AUTH **
@@ -214,21 +250,29 @@ async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) 
 
 // get POSTed data from form
 async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(
-        HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?)
-    )
+    if user.team != 0 {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?)
+        )
+    } else {
+        Ok(access_denied_team())
+    }
 }
 
 // forward frc api data for teams [deprecated]
-async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>, _user: db_auth::User) -> HttpResponse {
+async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>) -> HttpResponse {
     forward::forward_frc_api_event_teams(req, path).await
 }
 
 // forward frc api data for events. used on main form to ensure entered matches and teams are valid
-async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String, String, String)>, _user: db_auth::User) -> HttpResponse {
-    forward::forward_frc_api_event_matches(req, path).await
+async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String)>/*, user: db_auth::User*/) -> HttpResponse {
+    // if user.team != 0 {
+        forward::forward_frc_api_event_matches(req, path).await
+    // } else {
+    //     access_denied_team()
+    // }
 }
 
 // get all valid submission IDs. used on /manage to create list of IDs that can be acted on
@@ -422,6 +466,16 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
     )
 }
 
+// if you aren't D6MFYYVHA8 you may want to change this
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\"]}}";
+async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body(APPLE_APP_SITE_ASSOC)
+    )
+}
+
 // get all points. used to construct the leaderboard
 async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
@@ -449,6 +503,51 @@ async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
     )
 }
 
+async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(
+                game_api::get_owned_cards(&db.auth, user).await?
+            )
+    )
+}
+
+async fn game_open_lootbox(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(
+                game_api::open_loot_box(&db.auth, &db.main, user).await?
+            )
+    )
+}
+
+async fn game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(
+                game_api::set_held_cards(&db.auth, user, &data).await?
+            )
+    )
+}
+
+async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(
+                game_api::execute(
+                    &db.main,
+                    req.match_info().get("season").unwrap().parse().unwrap(),
+                    req.match_info().get("event").unwrap().parse().unwrap(),
+                    req.match_info().get("team").unwrap().parse().unwrap(),
+                ).await?
+            )
+    )
+}
+
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 #[actix_web::main]
@@ -462,6 +561,59 @@ async fn main() -> io::Result<()> {
     } else {
         env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
         println!("[OK] starting in release mode");
+    }
+
+    // cache all possible files
+    let seasons = env::var("SEASONS").unwrap_or_else(|_| "0".to_string()).split(",").map(|s| s.to_string()).collect::<Vec<String>>();
+    let events = env::var("EVENTS").unwrap_or_else(|_| "0".to_string()).split(",").map(|s| s.to_string()).collect::<Vec<String>>();
+
+    for i in 0..seasons.len() {
+        for j in 0..events.len() {
+            // cache team list
+            let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
+            let team_client = Client::new();
+            let team_response = team_client
+                            .request(actix_http::Method::GET, team_target_url)
+                            .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
+                            .send()
+                            .await;
+            
+            match team_response {
+                Ok(response) => {
+                    if response.status() == 200 {
+                        fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
+                        fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), response.text().await.unwrap()).expect(format!("Failed to cache {}/{} team JSON. Could not write file.", seasons[i], events[j]).as_str());
+                    } else {
+                        log::error!("Failed to cache {}/{} team JSON. Response status {}.", seasons[i], events[j], response.status());
+                    }
+                }
+                Err(_) => {
+                    log::error!("Failed to cache {}/{} team JSON. Response was not OK.", seasons[i], events[j]);
+                },
+            }
+
+            let match_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
+            let match_client = Client::new();
+            let match_response = match_client
+                            .request(actix_http::Method::GET, match_target_url)
+                            .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
+                            .send()
+                            .await;
+            
+            match match_response {
+                Ok(response) => {
+                    if response.status() == 200 {
+                        fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
+                        fs::write(format!("cache/frc_api/{}/{}/matches.json", seasons[i], events[j]), response.text().await.unwrap()).expect(format!("Failed to cache {}/{} match JSON. Could not write file.", seasons[i], events[j]).as_str());
+                    } else {
+                        log::error!("Failed to cache {}/{} match JSON. Response status {}.", seasons[i], events[j], response.status());
+                    }
+                }
+                Err(_) => {
+                    log::error!("Failed to cache {}/{} match JSON. Response was not OK.", seasons[i], events[j]);
+                },
+            }
+        }
     }
 
     // hashmap w: web::Data<RwLock<Sessions>>ith user sessions in it
@@ -547,13 +699,15 @@ async fn main() -> io::Result<()> {
                     .build()
             )
             // default headers for caching. overridden on most all api endpoints
-            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "4.0.0")))
+            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.0.2")))
             /* src  endpoints */
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
                 .route("/create", web::get().to(static_files::static_create))
+                .route("/main", web::get().to(static_files::static_main))
                 .route("/login", web::get().to(static_files::static_login))
+                .route("/passkey", web::get().to(static_files::static_passkey))
                 .route("/pointRecords", web::get().to(static_files::static_point_records))
                 .route("/points", web::get().to(static_files::static_points))
                 .route("/scouts", web::get().to(static_files::static_scouts))
@@ -617,13 +771,21 @@ async fn main() -> io::Result<()> {
                 // GET
                 .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_get_transact_me)))
                 .service(web::resource("/api/v1/whoami").route(web::get().to(misc_get_whoami)))
+                .service(web::resource("/apple-app-site-association").route(web::get().to(misc_apple_app_site_association)))
             /* debug endpoints */
                 // GET
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
+            /* robot game endpoints */
+                // GET
+                .service(web::resource("/api/v1/game/all_owned_cards").route(web::get().to(game_get_cards)))
+                .service(web::resource("/api/v1/game/team_data/{season}/{event}/{team}").route(web::get().to(game_get_team)))
+                .service(web::resource("/api/v1/game/open_lootbox").route(web::get().to(game_open_lootbox)))
+                // POST
+                .service(web::resource("/api/v1/game/set_hand").route(web::post().to(game_set_hand)))
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?
-    .workers(2)
+    .workers(4)
     .run()
     .await
 }

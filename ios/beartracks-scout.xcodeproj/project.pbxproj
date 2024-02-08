@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F509F6B52B54D7A8006FD9D5 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6B42B54D7A8006FD9D5 /* TabBar.swift */; };
 		F509F6B72B54D7EA006FD9D5 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6B62B54D7EA006FD9D5 /* StartView.swift */; };
 		F509F6B92B54D802006FD9D5 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6B82B54D802006FD9D5 /* GameView.swift */; };
 		F509F6BB2B54D809006FD9D5 /* EndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6BA2B54D809006FD9D5 /* EndView.swift */; };
@@ -22,11 +21,9 @@
 		F565840D2B54D52A00F587C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565840C2B54D52A00F587C0 /* Assets.xcassets */; };
 		F56584102B54D52A00F587C0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565840F2B54D52A00F587C0 /* Preview Assets.xcassets */; };
 		F5AD47CC2B54FF0500345122 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AD47CB2B54FF0500345122 /* ReviewView.swift */; };
-		F5AD47CE2B55050E00345122 /* SubmitSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AD47CD2B55050E00345122 /* SubmitSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F509F6B42B54D7A8006FD9D5 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		F509F6B62B54D7EA006FD9D5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		F509F6B82B54D802006FD9D5 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		F509F6BA2B54D809006FD9D5 /* EndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndView.swift; sourceTree = "<group>"; };
@@ -41,8 +38,8 @@
 		F56584082B54D52900F587C0 /* beartracks_scoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_scoutApp.swift; sourceTree = "<group>"; };
 		F565840C2B54D52A00F587C0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F565840F2B54D52A00F587C0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F58565C32B7572B400C1606E /* beartracks-scout.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-scout.entitlements"; sourceTree = "<group>"; };
 		F5AD47CB2B54FF0500345122 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
-		F5AD47CD2B55050E00345122 /* SubmitSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +72,7 @@
 		F56584072B54D52900F587C0 /* beartracks-scout */ = {
 			isa = PBXGroup;
 			children = (
+				F58565C32B7572B400C1606E /* beartracks-scout.entitlements */,
 				F56584082B54D52900F587C0 /* beartracks_scoutApp.swift */,
 				F509F6BA2B54D809006FD9D5 /* EndView.swift */,
 				F509F6B82B54D802006FD9D5 /* GameView.swift */,
@@ -86,8 +84,6 @@
 				F509F6BE2B54D8F2006FD9D5 /* SettingsManager.swift */,
 				F509F6BC2B54D810006FD9D5 /* SettingsView.swift */,
 				F509F6B62B54D7EA006FD9D5 /* StartView.swift */,
-				F5AD47CD2B55050E00345122 /* SubmitSheetView.swift */,
-				F509F6B42B54D7A8006FD9D5 /* TabBar.swift */,
 				F509F6C02B54D9C0006FD9D5 /* URLSessionConfiguration.swift */,
 				F565840C2B54D52A00F587C0 /* Assets.xcassets */,
 				F565840E2B54D52A00F587C0 /* Preview Content */,
@@ -177,8 +173,6 @@
 				F509F6C12B54D9C0006FD9D5 /* URLSessionConfiguration.swift in Sources */,
 				F509F6BB2B54D809006FD9D5 /* EndView.swift in Sources */,
 				F509F6C92B54E554006FD9D5 /* PressModifier.swift in Sources */,
-				F5AD47CE2B55050E00345122 /* SubmitSheetView.swift in Sources */,
-				F509F6B52B54D7A8006FD9D5 /* TabBar.swift in Sources */,
 				F5AD47CC2B54FF0500345122 /* ReviewView.swift in Sources */,
 				F509F6BF2B54D8F2006FD9D5 /* SettingsManager.swift in Sources */,
 				F509F6C32B54D9DA006FD9D5 /* LoginStateValidator.swift in Sources */,
@@ -317,13 +311,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Scout;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -335,7 +331,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.1;
+				MARKETING_VERSION = 5.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-scout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -349,13 +345,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Scout;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -367,7 +365,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.1;
+				MARKETING_VERSION = 5.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-scout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

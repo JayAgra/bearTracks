@@ -9,12 +9,15 @@ import Foundation
 import UIKit
 
 class ScoutingController: ObservableObject {
+    // login state
+    @Published public var loginRequired: Bool = false
     // tab selection
     @Published public var currentTab: Tab = .start
     // basic meta
     private var eventCode: String = UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR"
-    private var matchNumber: String = ""
-    private var teamNumber: String = ""
+    @Published public var matchNumber: String = "--"
+    @Published public var teamNumber: String = "--"
+    @Published public var matchList: [MatchData] = []
     // match buttons
     @Published private(set) var times: [Double] = [0, 0, 0]
     private var startMillis: [Double] = [0, 0, 0]
@@ -32,68 +35,27 @@ class ScoutingController: ObservableObject {
     private var submitSheetDetails: String = ""
     
     // getters
-    
-    func getMatchNumber() -> String {
-        return self.matchNumber
-    }
-    
-    func getTeamNumber() -> String {
-        return self.teamNumber
-    }
-    
-    func getDefenseResponse() -> String {
-        return self.defense
-    }
-    
-    func getDrivingResponse() -> String {
-        return self.driving
-    }
-    
-    func getOverallResponse() -> String {
-        return self.overall
-    }
-    
-    func getMatchTimes() -> [MatchTime] {
-        return self.matchTimes
-    }
-    
-    func getSubmitSheetMessage() -> String {
-        return self.submitSheetMessage
-    }
-    
-    func getSubmitSheetDetails() -> String {
-        return self.submitSheetDetails
-    }
-    
+    func getMatchNumber() -> String { return self.matchNumber }
+    func getTeamNumber() -> String { return self.teamNumber }
+    func getDefenseResponse() -> String { return self.defense }
+    func getDrivingResponse() -> String { return self.driving }
+    func getOverallResponse() -> String { return self.overall }
+    func getMatchTimes() -> [MatchTime] { return self.matchTimes }
+    func getSubmitSheetMessage() -> String { return self.submitSheetMessage }
+    func getSubmitSheetDetails() -> String { return self.submitSheetDetails }
+
     // setters
-    
-    func setMatchNumber(match: String) {
-        self.matchNumber = match
-    }
-    
-    func setTeamNumber(team: String) {
-        self.teamNumber = team
-    }
-    
-    func setDefenseResponse(response: String) {
-        self.defense = response
-    }
-    
-    func setDrivingResponse(response: String) {
-        self.driving = response
-    }
-    
-    func setOverallResponse(response: String) {
-        self.overall = response
-    }
+    func setMatchNumber(match: String) { self.matchNumber = match }
+    func setTeamNumber(team: String) { self.teamNumber = team }
+    func setDefenseResponse(response: String) { self.defense = response }
+    func setDrivingResponse(response: String) { self.driving = response }
+    func setOverallResponse(response: String) { self.overall = response }
     
     // functional functions
-    func advanceToTab(tab: Tab) {
-        currentTab = tab
-    }
+    func advanceToTab(tab: Tab) { currentTab = tab }
     
     func advanceToGame() {
-        if matchNumber != "" && teamNumber != "" && currentTab == .start {
+        if matchNumber != "--" && teamNumber != "--" && currentTab == .start {
             currentTab = .game
         }
     }
@@ -139,18 +101,14 @@ class ScoutingController: ObservableObject {
     }
     
     func submitData(completionBlock: @escaping (SubmitSheetType) -> Void) {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else {
-            return
-        }
-        
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
         var encodedMatchTimes: String = ""
         do {
             encodedMatchTimes = try String(data: JSONEncoder().encode(matchTimes), encoding: .utf8) ?? ""
         } catch {
-            print("serialization error")
+            encodedMatchTimes = ""
         }
         let matchData = ScoutingDataExport(season: 2024, event: eventCode, match_num: Int(matchNumber) ?? 0, level: "Qualification", team: Int(teamNumber) ?? 0, game: encodedMatchTimes, defend: defense, driving: driving, overall: overall)
-
         do {
             let jsonData = try JSONEncoder().encode(matchData)
             var request = URLRequest(url: url)
@@ -165,15 +123,12 @@ class ScoutingController: ObservableObject {
                         if httpResponse.statusCode == 200 {
                             completionBlock(.done)
                         } else {
-                            print("server non-successful response")
                             completionBlock(.error)
                         }
                     } else {
-                        print("parse error")
                         completionBlock(.error)
                     }
                 } else {
-                    print("fetch error: \(String(describing: error))")
                     completionBlock(.error)
                 }
             }
@@ -181,12 +136,35 @@ class ScoutingController: ObservableObject {
         } catch {
             completionBlock(.error)
         }
-        
+    }
+    
+    func getMatches(completionBlock: @escaping ([MatchData]) -> Void) {
+        guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/qualification/true") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        let requestTask = sharedSession.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(MatchData.self, from: data)
+                    DispatchQueue.main.async {
+                        completionBlock([result])
+                    }
+                } catch {
+                    completionBlock([])
+                }
+            } else {
+                completionBlock([])
+            }
+        }
+        requestTask.resume()
     }
     
     func resetControllerData() {
-        self.matchNumber = ""
-        self.teamNumber = ""
+        self.matchNumber = "--"
+        self.teamNumber = "--"
         self.times = [0, 0, 0]
         self.startMillis = [0, 0, 0]
         self.buttonPressed = [false, false, false]
@@ -219,4 +197,23 @@ struct MatchTime: Codable {
     let intake: Double
     let travel: Double
     let outtake: Double
+}
+
+struct MatchData: Codable {
+    let Schedule: [Match]
+}
+
+struct Match: Codable {
+    let description: String
+    let startTime: String
+    let matchNumber: Int
+    let field: String
+    let tournamentLevel: String
+    let teams: [Team]
+}
+
+struct Team: Codable {
+    let teamNumber: Int
+    let station: String
+    let surrogate: Bool
 }
