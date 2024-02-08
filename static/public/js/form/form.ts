@@ -12,13 +12,13 @@ function themeHandle() {
             document.body.classList.replace("dark-mode", "light-mode");
             (document.getElementById("themeMeta") as HTMLMetaElement).content = "#ffffff";
             break;
-        case "gruvbox":
-            document.body.classList.replace("dark-mode", "gruvbox");
-            (document.getElementById("themeMeta") as HTMLMetaElement).content = "#282828";
-            break;
-        case "dark": case undefined: default:
+        case "dark":
             document.body.classList.replace("light-mode", "dark-mode");
             (document.getElementById("themeMeta") as HTMLMetaElement).content = "#121212";
+            break;
+        case "gruvbox": case undefined: default:
+            document.body.classList.replace("dark-mode", "gruvbox");
+            (document.getElementById("themeMeta") as HTMLMetaElement).content = "#282828";
             break;
     }
 }

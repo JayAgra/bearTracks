@@ -7,19 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F5081BA22B741D15001497DB /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F540A13D2B549D2500611384 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
 		F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
 		F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54E76C12B527D96003C65A2 /* bearTracksApp.swift */; };
 		F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */; };
-		F59DAD762B6D982F00195CE1 /* LoginStateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59DAD752B6D982F00195CE1 /* LoginStateController.swift */; };
 		F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E3F2B527E050033DB0D /* MatchList.swift */; };
 		F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E402B527E050033DB0D /* DetailedView.swift */; };
 		F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E442B527E050033DB0D /* DataViewModel.swift */; };
 		F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E452B527E050033DB0D /* DataView.swift */; };
 		F5AE2E532B527E170033DB0D /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4D2B527E170033DB0D /* Teams.swift */; };
 		F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
-		F5AE2E552B527E170033DB0D /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4F2B527E170033DB0D /* TabBar.swift */; };
 		F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E522B527E170033DB0D /* SettingsView.swift */; };
 		F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
 		F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
@@ -50,20 +49,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F5081BA12B741D15001497DB /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F540A13C2B549D2500611384 /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		F540A13E2B549D2E00611384 /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
 		F54E76BE2B527D96003C65A2 /* bearTracks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bearTracks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54E76C12B527D96003C65A2 /* bearTracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bearTracksApp.swift; sourceTree = "<group>"; };
 		F54E76C52B527D97003C65A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		F59DAD752B6D982F00195CE1 /* LoginStateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateController.swift; sourceTree = "<group>"; };
 		F5AE2E3F2B527E050033DB0D /* MatchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MatchList.swift; path = bearTracks/MatchList.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E402B527E050033DB0D /* DetailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailedView.swift; path = bearTracks/DetailedView.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E442B527E050033DB0D /* DataViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataViewModel.swift; path = bearTracks/DataViewModel.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E452B527E050033DB0D /* DataView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataView.swift; path = bearTracks/DataView.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E4D2B527E170033DB0D /* Teams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Teams.swift; sourceTree = "<group>"; };
 		F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
-		F5AE2E4F2B527E170033DB0D /* TabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		F5AE2E522B527E170033DB0D /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
@@ -102,8 +100,9 @@
 		F54E76C02B527D96003C65A2 /* bearTracks */ = {
 			isa = PBXGroup;
 			children = (
-				F5D3D3452B5A17AE00A88A00 /* Info.plist */,
 				F5D3D3402B5A098D00A88A00 /* bearTracks.entitlements */,
+				F5D3D3452B5A17AE00A88A00 /* Info.plist */,
+				F5081BA12B741D15001497DB /* AppState.swift */,
 				F54E76C12B527D96003C65A2 /* bearTracksApp.swift */,
 				F5AE2E452B527E050033DB0D /* DataView.swift */,
 				F5AE2E442B527E050033DB0D /* DataViewModel.swift */,
@@ -113,14 +112,12 @@
 				F5AE2E3F2B527E050033DB0D /* MatchList.swift */,
 				F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */,
 				F5AE2E522B527E170033DB0D /* SettingsView.swift */,
-				F5AE2E4F2B527E170033DB0D /* TabBar.swift */,
 				F5AE2E4D2B527E170033DB0D /* Teams.swift */,
 				F540A13C2B549D2500611384 /* TeamView.swift */,
 				F540A13E2B549D2E00611384 /* TeamViewModel.swift */,
 				F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */,
 				F54E76C52B527D97003C65A2 /* Assets.xcassets */,
 				F54E76C72B527D97003C65A2 /* Preview Content */,
-				F59DAD752B6D982F00195CE1 /* LoginStateController.swift */,
 			);
 			path = bearTracks;
 			sourceTree = "<group>";
@@ -205,7 +202,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F59DAD762B6D982F00195CE1 /* LoginStateController.swift in Sources */,
 				F5AE2E532B527E170033DB0D /* Teams.swift in Sources */,
 				F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */,
 				F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */,
@@ -216,8 +212,8 @@
 				F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */,
 				F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */,
 				F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */,
+				F5081BA22B741D15001497DB /* AppState.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
-				F5AE2E552B527E170033DB0D /* TabBar.swift in Sources */,
 				F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */,
 				F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */,
 			);
@@ -354,7 +350,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -365,14 +361,16 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Jayen Agrawal. All rights reserved.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.2;
+				MARKETING_VERSION = 5.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -393,7 +391,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -404,14 +402,16 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Jayen Agrawal. All rights reserved.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.2;
+				MARKETING_VERSION = 5.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

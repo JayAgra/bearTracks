@@ -8,20 +8,13 @@
 import SwiftUI
 
 struct EndView: View {
-    @ObservedObject var controller: ScoutingController
+    @EnvironmentObject var controller: ScoutingController
     @State private var scoreTrap: Bool = false
     @State private var chainClimb: Bool = false
     @State private var buddyClimb: Bool = false
     @State private var defense: String = ""
     @State private var driving: String = ""
     @State private var overall: String = ""
-    
-    init(controller: ScoutingController) {
-        self.controller = controller
-        self.defense = controller.getDefenseResponse()
-        self.driving = controller.getDrivingResponse()
-        self.overall = controller.getOverallResponse()
-    }
     
     func loadPane() {
         self.defense = controller.getDefenseResponse()
@@ -96,7 +89,7 @@ struct EndView: View {
                 Spacer()
             }
             .onAppear() {
-                if controller.getTeamNumber() == "" || controller.getMatchNumber() == "" {
+                if controller.getTeamNumber() == "--" || controller.getMatchNumber() == "--" {
                     controller.advanceToTab(tab: .start)
                 } else {
                     loadPane()
@@ -108,5 +101,5 @@ struct EndView: View {
 }
 
 #Preview {
-    EndView(controller: ScoutingController())
+    EndView()
 }

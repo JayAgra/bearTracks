@@ -5,6 +5,7 @@ use actix_web::{HttpRequest, HttpResponse, http::header::{ContentType, CacheCont
 const INDEX_HTML: &str = include_str!("../static/index.html");
 const BLACKJACK_HTML: &str = include_str!("../static/blackjack.html");
 const CREATE_HTML: &str = include_str!("../static/create.html");
+const MAIN_HTML: &str = include_str!("../static/main.html");
 const LOGIN_HTML: &str = include_str!("../static/login.html");
 const POINT_RECORDS_HTML: &str = include_str!("../static/pointRecords.html");
 const PASSKEY_HTML: &str = include_str!("../static/passkey.html");
@@ -45,6 +46,12 @@ pub async fn static_create() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(CREATE_HTML)
+}
+
+pub async fn static_main() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MAIN_HTML)
 }
 
 pub async fn static_login() -> HttpResponse {

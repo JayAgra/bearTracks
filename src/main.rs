@@ -267,12 +267,12 @@ async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>) 
 }
 
 // forward frc api data for events. used on main form to ensure entered matches and teams are valid
-async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String)>, user: db_auth::User) -> HttpResponse {
-    if user.team != 0 {
+async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String)>/*, user: db_auth::User*/) -> HttpResponse {
+    // if user.team != 0 {
         forward::forward_frc_api_event_matches(req, path).await
-    } else {
-        access_denied_team()
-    }
+    // } else {
+    //     access_denied_team()
+    // }
 }
 
 // get all valid submission IDs. used on /manage to create list of IDs that can be acted on
@@ -699,12 +699,13 @@ async fn main() -> io::Result<()> {
                     .build()
             )
             // default headers for caching. overridden on most all api endpoints
-            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "4.0.0")))
+            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.0.2")))
             /* src  endpoints */
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))
                 .route("/blackjack", web::get().to(static_files::static_blackjack))
                 .route("/create", web::get().to(static_files::static_create))
+                .route("/main", web::get().to(static_files::static_main))
                 .route("/login", web::get().to(static_files::static_login))
                 .route("/passkey", web::get().to(static_files::static_passkey))
                 .route("/pointRecords", web::get().to(static_files::static_point_records))

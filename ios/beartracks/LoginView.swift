@@ -10,36 +10,80 @@ import SwiftUI
 /// Login sheet view
 struct LoginView: View {
     @State private var showAlert = false
-    @State private var username = ""
-    @State private var password = ""
+    @State private var authData: [String] = ["", "", "", ""]
     @State private var alertMessage = ""
     @State private var loading = false
-    @State public var loginController: LoginStateController
+    @State private var create = false
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         VStack {
             Text("bearTracks")
                 .font(.title)
-            Text("v5.0.2 • 2024")
+            Text("v5.0.3 • 2024")
             if !loading {
-                TextField("username", text: $username)
+                if !create {
+                    Text("log in")
+                        .font(.title3)
+                        .padding(.top)
+                    TextField("username", text: $authData[0])
+                        .padding([.leading, .trailing, .bottom])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.username)
+                    SecureField("password", text: $authData[1])
+                        .padding()
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.password)
+                    Button("login") {
+                        authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
+                    }
                     .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
-                    .textContentType(.username)
-                SecureField("password", text: $password)
+                    .font(.title3)
+                    .buttonStyle(.bordered)
+                    Button("create") {
+                        self.create = true
+                    }
+                } else {
+                    Text("create account")
+                        .font(.title3)
+                        .padding(.top)
+                    TextField("team code", text: $authData[3])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
+                        .onChange(of: authData[3]) { _ in
+                            authData[3] = String(authData[3].prefix(5))
+                        }
+                    TextField("full name", text: $authData[2])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .textContentType(.name)
+                    TextField("username", text: $authData[0])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.username)
+                    SecureField("password", text: $authData[1])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.newPassword)
+                    Button("create") {
+                        authAction(type: "create", data: ["access": authData[3], "full_name": authData[2], "username": authData[0], "password": authData[1]])
+                    }
                     .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
-                    .textContentType(.password)
-                Button("login") {
-                    login()
+                    .font(.title3)
+                    .buttonStyle(.bordered)
+                    Button("login") {
+                        self.create = false
+                    }
                 }
-                .padding()
-                .font(.title3)
-                .buttonStyle(.bordered)
             } else {
                 Spacer()
                 ProgressView()
@@ -58,32 +102,30 @@ struct LoginView: View {
         })
     }
     
-    private func login() {
+    private func authAction(type: String, data: Dictionary<String, String>) {
         loading = true
-        guard let url = URL(string: "https://beartracks.io/api/v1/auth/login") else {
-            return
-        }
-
-        let credentials = ["username": username, "password": password]
-
+        guard let url = URL(string: "https://beartracks.io/api/v1/auth/\(type)") else { return }
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: credentials)
+            let jsonData = try JSONSerialization.data(withJSONObject: data)
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = jsonData
             request.httpShouldHandleCookies = true
-
             sharedSession.dataTask(with: request) { data, response, error in
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            loginController.loginRequired = false
+                            appState.loginRequired = false
                             loading = false
                         } else {
                             loading = false
                             showAlert = true
-                            alertMessage = "bad credentials"
+                            if type == "login" {
+                                alertMessage = "bad credentials"
+                            } else {
+                                alertMessage = "creation failed"
+                            }
                         }
                     }
                 } else {
@@ -101,5 +143,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(loginController: LoginStateController())
+    LoginView()
 }

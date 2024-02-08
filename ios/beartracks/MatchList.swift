@@ -16,7 +16,6 @@ struct MatchList: View {
     @State private var loadComplete: Bool = false
     @State private var selectedItem: String = ""
     
-    
     var body: some View {
         VStack {
             NavigationStack {
@@ -93,6 +92,7 @@ struct MatchList: View {
                     .navigationTitle("Matches")
                     .navigationDestination(isPresented: $showSheet) {
                         TeamView(team: selectedItem)
+                            .navigationTitle("team \(selectedItem)")
                     }
                 } else {
                     if loadFailed {
