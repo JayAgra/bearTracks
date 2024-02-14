@@ -88,6 +88,12 @@ async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Ses
     auth::login(&db.auth, session, identity, data).await
 }
 
+async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginForm>) -> Result<HttpResponse, AWError> {
+    Ok(
+        auth::delete_account(&db.auth, data).await?
+    )
+}
+
 // destroy session endpoint
 async fn auth_get_logout(session: web::Data<RwLock<Sessions>>, identity: Identity) -> impl Responder {
     auth::logout(session, identity).await
@@ -699,7 +705,7 @@ async fn main() -> io::Result<()> {
                     .build()
             )
             // default headers for caching. overridden on most all api endpoints
-            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.0.2")))
+            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.0.4")))
             /* src  endpoints */
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))
@@ -722,6 +728,7 @@ async fn main() -> io::Result<()> {
                 // POST
                 .service(web::resource("/api/v1/auth/create").route(web::post().to(auth_post_create)))
                 .service(web::resource("/api/v1/auth/login").route(web::post().to(auth_post_login)))
+                .service(web::resource("/api/v1/auth/delete").route(web::post().to(auth_post_delete)))
                 .service(web::resource("/api/v1/auth/passkey/register_start").route(web::post().to(auth_psk_create_start)))
                 .service(web::resource("/api/v1/auth/passkey/register_finish").route(web::post().to(auth_psk_create_finish)))
                 .service(web::resource("/api/v1/auth/passkey/auth_start/{username}").route(web::post().to(auth_psk_auth_start)))

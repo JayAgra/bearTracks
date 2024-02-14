@@ -15,7 +15,6 @@ class AppState: ObservableObject {
     @Published public var selectedTab: Tab = .teams
 #endif
     @Published public var loginRequired: Bool = false
-    
     private var cancellables: Set<AnyCancellable> = []
 
     init() {

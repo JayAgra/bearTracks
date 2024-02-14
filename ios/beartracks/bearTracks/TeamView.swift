@@ -11,6 +11,7 @@ import SwiftUI
 struct TeamView: View {
     @ObservedObject var dataItems: TeamViewModel
     @State private var didInitialLoad: Bool = false
+    @State private var showStats: Bool = false
     @State private var showSheet: Bool = false
     
     
@@ -69,6 +70,18 @@ struct TeamView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .padding()
+                VStack {
+                    NavigationLink(destination: TeamViewStats(teamNum: dataItems.targetTeam)) {
+                        HStack {
+                            Text("Additional Details")
+                            Spacer()
+                            Label("", systemImage: "chevron.forward")
+                                .labelStyle(.iconOnly)
+                        }
+                        .padding([.leading, .trailing])
+                    }
+                }
+                .padding([.leading, .trailing])
                 Divider()
                 List {
                     ForEach(dataItems.teamMatches, id: \.Brief.id) { entry in

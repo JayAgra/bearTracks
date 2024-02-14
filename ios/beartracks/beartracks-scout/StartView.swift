@@ -35,23 +35,26 @@ struct StartView: View {
                             .onChange(of: controller.matchNumber) { _ in
                                 controller.teamNumber = "--"
                             }
-                            Picker("Team Number", selection: $controller.teamNumber) {
-                                Text("SELECT")
-                                    .tag("--")
-                                    .disabled(true)
-                                if !controller.matchList.isEmpty && !controller.matchList[0].Schedule.isEmpty {
-                                    ForEach(controller.matchList[0].Schedule[(Int(controller.matchNumber) ?? 1) - 1].teams, id: \.teamNumber) { team_entry in
-                                        Text(String(team_entry.teamNumber))
-                                            .tag(String(team_entry.teamNumber))
+                            if controller.matchNumber != "--" {
+                                Picker("Team Number", selection: $controller.teamNumber) {
+                                    Text("SELECT")
+                                        .tag("--")
+                                        .disabled(true)
+                                    if !controller.matchList.isEmpty && !controller.matchList[0].Schedule.isEmpty {
+                                        ForEach(controller.matchList[0].Schedule[(Int(controller.matchNumber) ?? 1) - 1].teams, id: \.teamNumber) { team_entry in
+                                            Text(String(team_entry.teamNumber))
+                                                .tag(String(team_entry.teamNumber))
+                                        }
                                     }
                                 }
+                                .pickerStyle(.menu)
                             }
-                            .pickerStyle(.menu)
                         }
                         Section {
-                            Button("continue") {
-                                controller.advanceToGame()
+                            Button("match") {
+                                controller.advanceToTab(tab: .game)
                             }
+                            .disabled(controller.matchNumber == "--"  || controller.teamNumber == "--")
                         }
                     }
                 }

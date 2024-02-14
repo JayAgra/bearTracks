@@ -40,6 +40,48 @@ struct DetailedView: View {
                         }
                         .padding([.top, .leading])
                         VStack {
+                            HStack {
+                                VStack {
+                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[3]))s")
+                                        .font(.title)
+                                    Text("intake")
+                                }
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[4]))s")
+                                        .font(.title)
+                                    Text("travel")
+                                }
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[5]))s")
+                                        .font(.title)
+                                    Text("outtake")
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .padding()
+                        }
+                        .padding([.top, .leading])
+                        VStack {
+                            HStack {
+                                VStack {
+                                    Text(String(detailData[0].FullMain.analysis.split(separator: ",")[6]))
+                                        .font(.title)
+                                    Text("speaker")
+                                }
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text(String(detailData[0].FullMain.analysis.split(separator: ",")[7]))
+                                        .font(.title)
+                                    Text("amplifier")
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .padding()
+                        }
+                        .padding([.top, .leading])
+                        VStack {
                             Text("cycles")
                                 .font(.title2)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -102,7 +144,7 @@ struct DetailedView: View {
                             }
                             .padding([.leading, .trailing])
                         }
-                        .padding([.top, .leading])
+                        .padding(.leading)
                         VStack {
                             Text("other")
                                 .font(.title2)

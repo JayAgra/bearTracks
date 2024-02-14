@@ -115,7 +115,11 @@ struct LoginView: View {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            controller.loginRequired = false
+                            if type == "login" {
+                                controller.loginRequired = false
+                            } else {
+                                create = false
+                            }
                             loading = false
                         } else {
                             loading = false

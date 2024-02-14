@@ -19,15 +19,14 @@ class ScoutingController: ObservableObject {
     @Published public var teamNumber: String = "--"
     @Published public var matchList: [MatchData] = []
     // match buttons
-    @Published private(set) var times: [Double] = [0, 0, 0]
-    private var startMillis: [Double] = [0, 0, 0]
-    private var buttonPressed: [Bool] = [false, false, false]
+    @Published public var times: [Double] = [0, 0, 0]
     // match time store
     private var matchTimes: [MatchTime] = []
     // qualitative data store
-    private var defense: String = ""
-    private var driving: String = ""
-    private var overall: String = ""
+    @Published public var defense: String = ""
+    @Published public var driving: String = ""
+    @Published public var overall: String = ""
+    @Published public var switches: (Bool, Bool, Bool) = (false, false, false)
     // submit sheet
     @Published public var showSubmitSheet: Bool = false
     @Published public var submitSheetType: SubmitSheetType = .waiting
@@ -54,46 +53,20 @@ class ScoutingController: ObservableObject {
     // functional functions
     func advanceToTab(tab: Tab) { currentTab = tab }
     
-    func advanceToGame() {
-        if matchNumber != "--" && teamNumber != "--" && currentTab == .start {
-            currentTab = .game
-        }
-    }
-    
-    // match buttons
-    func beginClick(buttonIndex: Int = 0) {
-        if !buttonPressed[buttonIndex] {
-            buttonPressed[buttonIndex].toggle()
-            startMillis[buttonIndex] = Date().timeIntervalSince1970
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-        }
-    }
-    
-    func endClick(buttonIndex: Int = 0) {
-        if buttonPressed[buttonIndex] {
-            buttonPressed[buttonIndex].toggle()
-            times[buttonIndex] += Date().timeIntervalSince1970 - startMillis[buttonIndex]
-            startMillis[buttonIndex] = 0
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-        }
-    }
-    
-    func resetItems() {
-        times = [0, 0, 0]
-        startMillis = [0, 0, 0]
-        buttonPressed = [false, false, false]
-    }
-    
     func clearSpeaker() {
-        matchTimes.append(MatchTime(id: matchTimes.count, score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
-        resetItems()
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        if times[0] != 0 || times[1] != 0 || times[2] != 0 {
+            matchTimes.append(MatchTime(id: matchTimes.count, score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
+            times = [0, 0, 0]
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        }
     }
     
     func clearAmplifier() {
-        matchTimes.append(MatchTime(id: matchTimes.count, score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
-        resetItems()
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        if times[0] != 0 || times[1] != 0 || times[2] != 0 {
+            matchTimes.append(MatchTime(id: matchTimes.count, score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
+            times = [0, 0, 0]
+            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+        }
     }
     
     func addEndgameValue(type: Int, value: Double) {
@@ -101,6 +74,9 @@ class ScoutingController: ObservableObject {
     }
     
     func submitData(completionBlock: @escaping (SubmitSheetType) -> Void) {
+        addEndgameValue(type: 2, value: switches.0 ? 1 : 0)
+        addEndgameValue(type: 3, value: switches.0 ? 1 : 0)
+        addEndgameValue(type: 4, value: switches.0 ? 1 : 0)
         guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
         var encodedMatchTimes: String = ""
         do {
@@ -108,7 +84,7 @@ class ScoutingController: ObservableObject {
         } catch {
             encodedMatchTimes = ""
         }
-        let matchData = ScoutingDataExport(season: 2024, event: eventCode, match_num: Int(matchNumber) ?? 0, level: "Qualification", team: Int(teamNumber) ?? 0, game: encodedMatchTimes, defend: defense, driving: driving, overall: overall)
+        let matchData = ScoutingDataExport(season: 2024, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR", match_num: Int(matchNumber) ?? 0, level: "Qualification", team: Int(teamNumber) ?? 0, game: encodedMatchTimes, defend: defense, driving: driving, overall: overall)
         do {
             let jsonData = try JSONEncoder().encode(matchData)
             var request = URLRequest(url: url)
@@ -118,7 +94,7 @@ class ScoutingController: ObservableObject {
             request.httpShouldHandleCookies = true
             let requestTask = sharedSession.dataTask(with: request) {
                 (data: Data?, response: URLResponse?, error: Error?) in
-                if let data = data {
+                if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
                             completionBlock(.done)
@@ -166,8 +142,6 @@ class ScoutingController: ObservableObject {
         self.matchNumber = "--"
         self.teamNumber = "--"
         self.times = [0, 0, 0]
-        self.startMillis = [0, 0, 0]
-        self.buttonPressed = [false, false, false]
         self.matchTimes = []
         self.defense = ""
         self.driving = ""

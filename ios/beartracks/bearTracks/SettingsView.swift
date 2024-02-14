@@ -15,6 +15,8 @@ struct SettingsView: View {
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
+    @State private var showConfirm = false
+    @State private var deletionData: (String, String) = ("", "")
     @EnvironmentObject var appState: AppState
     
     var body: some View {
@@ -87,8 +89,12 @@ struct SettingsView: View {
                         }
                         .foregroundStyle(Color.pink)
                     }
-                    Text("To delete or update account information, please email [admin@beartracks.io](mailto:admin@beartracks.io).")
-                        .font(.footnote)
+                    Section {
+                        Button("Delete Account") {
+                            showConfirm = true
+                        }
+                        .foregroundStyle(Color.pink)
+                    }
                 }
                 Spacer()
             }
@@ -99,6 +105,20 @@ struct SettingsView: View {
                     message: Text("an app restart is required for the theme change to take effect"),
                     dismissButton: .default(Text("ok"))
                 )
+            })
+            .alert("Confirm Deletion", isPresented: $showConfirm, actions: {
+                TextField("Username", text: $deletionData.0)
+                SecureField("Password", text: $deletionData.1)
+                Button("Cancel", role: .cancel, action: {
+                    showConfirm = false
+                })
+                Button("Delete", role: .destructive, action: {
+                    deleteAccount(data: ["username": deletionData.0, "password": deletionData.1])
+                    appState.loginRequired = true
+                    showConfirm = false
+                })
+            }, message: {
+                Text("this action is irreversable")
             })
         }
         .onAppear() {
@@ -135,6 +155,33 @@ struct SettingsView: View {
             }
         }
         requestTask.resume()
+    }
+    
+    private func deleteAccount(data: Dictionary<String, String>) {
+        guard let url = URL(string: "https://beartracks.io/api/v1/auth/delete") else { return }
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: data)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = jsonData
+            request.httpShouldHandleCookies = true
+            sharedSession.dataTask(with: request) { data, response, error in
+                if data != nil {
+                    if let httpResponse = response as? HTTPURLResponse {
+                        if httpResponse.statusCode == 200 {
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        } else {
+                            UINotificationFeedbackGenerator().notificationOccurred(.error)
+                        }
+                    }
+                } else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
+            }.resume()
+        } catch {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
     }
 }
 

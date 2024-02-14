@@ -23,33 +23,23 @@ struct beartracks_scoutApp: App {
                 TabView(selection: $scoutFormController.currentTab) {
                     StartView()
                         .environmentObject(scoutFormController)
-                        .tabItem {
-                            Label("start", systemImage: "backward.end")
-                        }
+                        .tabItem { Label("start", systemImage: "backward.end") }
                         .tag(Tab.start)
                     GameView()
                         .environmentObject(scoutFormController)
-                        .tabItem {
-                            Label("game", systemImage: "gamecontroller")
-                        }
+                        .tabItem { Label("game", systemImage: "gamecontroller") }
                         .tag(Tab.game)
                     EndView()
                         .environmentObject(scoutFormController)
-                        .tabItem {
-                            Label("end", systemImage: "forward.end")
-                        }
+                        .tabItem { Label("end", systemImage: "forward.end") }
                         .tag(Tab.end)
                     ReviewView()
                         .environmentObject(scoutFormController)
-                        .tabItem {
-                            Label("review", systemImage: "magnifyingglass")
-                        }
+                        .tabItem { Label("review", systemImage: "magnifyingglass") }
                         .tag(Tab.review)
                     SettingsView()
                         .environmentObject(scoutFormController)
-                        .tabItem {
-                            Label("settings", systemImage: "gear")
-                        }
+                        .tabItem { Label("settings", systemImage: "gear") }
                         .tag(Tab.settings)
                 }
                 .preferredColorScheme(darkMode ? .dark : .light)

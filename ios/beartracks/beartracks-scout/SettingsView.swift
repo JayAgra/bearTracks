@@ -13,6 +13,8 @@ struct SettingsView: View {
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
+    @State private var showConfirm = false
+    @State private var deletionData: (String, String) = ("", "")
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
@@ -33,7 +35,7 @@ struct SettingsView: View {
                         }
                         .pickerStyle(.menu)
                         .onChange(of: eventCodeInput) { _ in
-                            saveEventCode()
+                            UserDefaults.standard.set(eventCodeInput, forKey: "eventCode")
                             controller.getMatches { result in
                                 controller.matchList = result
                             }
@@ -77,9 +79,13 @@ struct SettingsView: View {
                         .foregroundStyle(Color.pink)
                     }
                     Section {
+                        Button("Delete Account") {
+                            showConfirm = true
+                        }
+                        .foregroundStyle(Color.pink)
+                    }
+                    Section {
                         Text("This application is used to submit scouting data to bearTracks. To view this data, install the [data viewer](https://apps.apple.com/us/app/beartracks-data/id6475752596). The data viewer may only be used by users registered with a team (i.e. team code was not 00000). Team registration is free- to register your team or add yourself to a team after account creation, send an email to [admin@beartracks.io](mailto:admin@beartracks.io).")
-                            .font(.footnote)
-                        Text("To delete or update account information, please email [admin@beartracks.io](mailto:admin@beartracks.io).")
                             .font(.footnote)
                     }
                 }
@@ -92,16 +98,26 @@ struct SettingsView: View {
                     dismissButton: .default(Text("ok"))
                 )
             })
+            .alert("Confirm Deletion", isPresented: $showConfirm, actions: {
+                TextField("Username", text: $deletionData.0)
+                SecureField("Password", text: $deletionData.1)
+                Button("Cancel", role: .cancel, action: {
+                    showConfirm = false
+                })
+                Button("Delete", role: .destructive, action: {
+                    deleteAccount(data: ["username": deletionData.0, "password": deletionData.1])
+                    controller.loginRequired = true
+                    showConfirm = false
+                })
+            }, message: {
+                Text("this action is irreversable")
+            })
         }
         .onAppear() {
             loadSettingsJson { result in
                 self.settingsOptions = result
             }
         }
-    }
-    
-    func saveEventCode() {
-        UserDefaults.standard.set(eventCodeInput, forKey: "eventCode")
     }
     
     func saveSeason() {
@@ -132,6 +148,33 @@ struct SettingsView: View {
             }
         }
         requestTask.resume()
+    }
+    
+    private func deleteAccount(data: Dictionary<String, String>) {
+        guard let url = URL(string: "https://beartracks.io/api/v1/auth/delete") else { return }
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: data)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = jsonData
+            request.httpShouldHandleCookies = true
+            sharedSession.dataTask(with: request) { data, response, error in
+                if data != nil {
+                    if let httpResponse = response as? HTTPURLResponse {
+                        if httpResponse.statusCode == 200 {
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        } else {
+                            UINotificationFeedbackGenerator().notificationOccurred(.error)
+                        }
+                    }
+                } else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
+            }.resume()
+        } catch {
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
     }
 }
 

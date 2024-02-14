@@ -13,6 +13,8 @@
 		F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54E76C12B527D96003C65A2 /* bearTracksApp.swift */; };
 		F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */; };
+		F59F8F7B2B7D292700D35A56 /* TeamViewStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */; };
+		F59F8F7D2B7D2AD600D35A56 /* TeamStatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */; };
 		F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E3F2B527E050033DB0D /* MatchList.swift */; };
 		F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E402B527E050033DB0D /* DetailedView.swift */; };
 		F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E442B527E050033DB0D /* DataViewModel.swift */; };
@@ -56,6 +58,8 @@
 		F54E76C12B527D96003C65A2 /* bearTracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bearTracksApp.swift; sourceTree = "<group>"; };
 		F54E76C52B527D97003C65A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TeamViewStats.swift; path = ../../TeamViewStats.swift; sourceTree = "<group>"; };
+		F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamStatController.swift; sourceTree = "<group>"; };
 		F5AE2E3F2B527E050033DB0D /* MatchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MatchList.swift; path = bearTracks/MatchList.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E402B527E050033DB0D /* DetailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailedView.swift; path = bearTracks/DetailedView.swift; sourceTree = SOURCE_ROOT; };
 		F5AE2E442B527E050033DB0D /* DataViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataViewModel.swift; path = bearTracks/DataViewModel.swift; sourceTree = SOURCE_ROOT; };
@@ -113,8 +117,10 @@
 				F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */,
 				F5AE2E522B527E170033DB0D /* SettingsView.swift */,
 				F5AE2E4D2B527E170033DB0D /* Teams.swift */,
+				F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */,
 				F540A13C2B549D2500611384 /* TeamView.swift */,
 				F540A13E2B549D2E00611384 /* TeamViewModel.swift */,
+				F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */,
 				F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */,
 				F54E76C52B527D97003C65A2 /* Assets.xcassets */,
 				F54E76C72B527D97003C65A2 /* Preview Content */,
@@ -203,6 +209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5AE2E532B527E170033DB0D /* Teams.swift in Sources */,
+				F59F8F7B2B7D292700D35A56 /* TeamViewStats.swift in Sources */,
 				F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */,
 				F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */,
 				F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */,
@@ -211,6 +218,7 @@
 				F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */,
 				F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */,
 				F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */,
+				F59F8F7D2B7D2AD600D35A56 /* TeamStatController.swift in Sources */,
 				F5AE2E4B2B527E050033DB0D /* DataViewModel.swift in Sources */,
 				F5081BA22B741D15001497DB /* AppState.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
@@ -370,7 +378,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -411,7 +419,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.3;
+				MARKETING_VERSION = 5.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -20,7 +20,7 @@ class TeamViewModel: ObservableObject {
     @Published private(set) var maximumValue: Float = 0
     @Published private(set) var selectedItem: String = "-1"
     @State private var isShowingSheet = false
-    private var targetTeam: String = "-1"
+    @Published public var targetTeam: String = "-1"
     
     init(team: String) {
         self.targetTeam = team
