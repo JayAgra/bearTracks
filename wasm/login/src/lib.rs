@@ -34,7 +34,7 @@ impl App {
                             <h1 class="w3">{ "bearTracks"}<br/><span class="gametitle">{ "CRESCENDO" }</span></h1>
                             <form class="login">
                                 <div id="currentUsername">
-                                    <p class="unField">{ "welcome back to hell" }</p>
+                                    <p class="unField">{ "" }</p>
                                     <h2 class="unValue">{ "please log in" }</h2>
                                 </div>
                                 <h3 id="error" style="color: var(--cancelColor);"></h3>
@@ -343,7 +343,7 @@ impl App {
             <body class="gruvbox centerText">
                 <div class="container">
                     <div class="dummy" style="min-width: 250px;">
-                        <h1>{ "error 💀💀💀" }</h1>
+                        <h1>{ "error" }</h1>
                         <p>{ msg }</p>
                     </div>
                 </div>

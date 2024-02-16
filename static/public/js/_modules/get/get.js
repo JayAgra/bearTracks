@@ -9,6 +9,7 @@ export async function _get(url, errorElementId) {
         if (errorElementId !== null) {
             document.getElementById(errorElementId).innerText = "access denied";
         }
+        window.location.href = "/login";
         throw new Error("access denied. terminating.");
     }
     else if (response.status === 401) {

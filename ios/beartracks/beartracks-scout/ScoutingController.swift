@@ -75,8 +75,8 @@ class ScoutingController: ObservableObject {
     
     func submitData(completionBlock: @escaping (SubmitSheetType) -> Void) {
         addEndgameValue(type: 2, value: switches.0 ? 1 : 0)
-        addEndgameValue(type: 3, value: switches.0 ? 1 : 0)
-        addEndgameValue(type: 4, value: switches.0 ? 1 : 0)
+        addEndgameValue(type: 3, value: switches.1 ? 1 : 0)
+        addEndgameValue(type: 4, value: switches.2 ? 1 : 0)
         guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
         var encodedMatchTimes: String = ""
         do {

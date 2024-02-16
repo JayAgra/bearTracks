@@ -10,6 +10,7 @@ export async function _get(url: string, errorElementId: string | null): Promise<
         if (errorElementId !== null) {
             document.getElementById(errorElementId).innerText = "access denied";
         }
+        window.location.href = "/login";
         throw new Error("access denied. terminating.");
     } else if (response.status === 401) {
         window.location.href = "/login";
