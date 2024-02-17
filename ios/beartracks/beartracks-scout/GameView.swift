@@ -28,13 +28,13 @@ struct GameView: View {
                                         pressStarted.0 = true
                                         self.timers.0 = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
                                             self.holdLengths.0 += 0.1
+                                            controller.times[0] = self.holdLengths.0
                                         }
                                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                                     }
                                 }, onRelease: {
                                     self.timers.0?.invalidate()
-                                    controller.times[0] = holdLengths.0
-                                    pressStarted.0 = false
+                                    self.pressStarted.0 = false
                                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                                 }))
                                 .font(.largeTitle)
@@ -51,13 +51,13 @@ struct GameView: View {
                                         pressStarted.1 = true
                                         self.timers.1 = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
                                             self.holdLengths.1 += 0.1
+                                            controller.times[1] = self.holdLengths.1
                                         }
                                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                                     }
                                 }, onRelease: {
                                     self.timers.1?.invalidate()
-                                    controller.times[1] = holdLengths.1
-                                    pressStarted.1 = false
+                                    self.pressStarted.1 = false
                                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                                 }))
                                 .font(.largeTitle)
@@ -74,13 +74,13 @@ struct GameView: View {
                                         pressStarted.2 = true
                                         self.timers.2 = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
                                             self.holdLengths.2 += 0.1
+                                            controller.times[2] = self.holdLengths.2
                                         }
                                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                                     }
                                 }, onRelease: {
                                     self.timers.2?.invalidate()
-                                    controller.times[2] = holdLengths.2
-                                    pressStarted.2 = false
+                                    self.pressStarted.2 = false
                                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                                 }))
                                 .font(.largeTitle)
@@ -93,6 +93,7 @@ struct GameView: View {
                         HStack {
                             Button("speaker", systemImage: "speaker.wave.3") {
                                 controller.clearSpeaker()
+                                self.holdLengths = (0, 0, 0)
                             }
                             .font(.title)
                             .buttonStyle(.bordered)
@@ -101,6 +102,7 @@ struct GameView: View {
                         HStack {
                             Button("amplifier", systemImage: "speaker.plus") {
                                 controller.clearAmplifier()
+                                self.holdLengths = (0, 0, 0)
                             }
                             .font(.title)
                             .buttonStyle(.bordered)
