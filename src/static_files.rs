@@ -10,10 +10,17 @@ const LOGIN_HTML: &str = include_str!("../static/login.html");
 const POINT_RECORDS_HTML: &str = include_str!("../static/pointRecords.html");
 const PASSKEY_HTML: &str = include_str!("../static/passkey.html");
 const POINTS_HTML: &str = include_str!("../static/points.html");
+const SAFARI_PINNED_SVG: &str = include_str!("../static/safari-pinned-tab.svg");
 const SCOUTS_HTML: &str = include_str!("../static/scouts.html");
 const SETTINGS_HTML: &str = include_str!("../static/settings.html");
+const SITE_WEBMANIFEST: &str = include_str!("../static/site.webmanifest");
 const SPIN_HTML: &str = include_str!("../static/spin.html");
 // favicon isn't utf8 so it needs include bytes instead
+const ANDROID_CHROME_192: &[u8] = include_bytes!("../static/android-chrome-192x192.png");
+const ANDROID_CHROME_512: &[u8] = include_bytes!("../static/android-chrome-512x512.png");
+const APPLE_TOUCH_ICON: &[u8] = include_bytes!("../static/apple-touch-icon.png");
+const FAVICON_16: &[u8] = include_bytes!("../static/favicon-16x16.png");
+const FAVICON_32: &[u8] = include_bytes!("../static/favicon-32x32.png");
 const FAVICON_ICO: &[u8] = include_bytes!("../static/favicon.ico");
 
 pub async fn static_index(req: HttpRequest) -> HttpResponse {
@@ -78,6 +85,12 @@ pub async fn static_points() -> HttpResponse {
         .body(POINTS_HTML)
 }
 
+pub async fn static_safari_pinned() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::xml())
+        .body(SAFARI_PINNED_SVG)
+}
+
 pub async fn static_scouts() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
@@ -90,13 +103,54 @@ pub async fn static_settings() -> HttpResponse {
         .body(SETTINGS_HTML)
 }
 
+pub async fn static_webmanifest() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::json())
+        .body(SITE_WEBMANIFEST)
+}
+
 pub async fn static_spin() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(SPIN_HTML)
 }
 
-// serve static favicon
+// serve static favicons
+pub async fn static_android_chrome_192() -> HttpResponse {
+    HttpResponse::Ok()
+        .append_header(("Content-Type", "image/png"))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .body(ANDROID_CHROME_192)
+}
+
+pub async fn static_android_chrome_512() -> HttpResponse {
+    HttpResponse::Ok()
+        .append_header(("Content-Type", "image/png"))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .body(ANDROID_CHROME_512)
+}
+
+pub async fn static_apple_touch_icon() -> HttpResponse {
+    HttpResponse::Ok()
+        .append_header(("Content-Type", "image/png"))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .body(APPLE_TOUCH_ICON)
+}
+
+pub async fn static_favicon_16() -> HttpResponse {
+    HttpResponse::Ok()
+        .append_header(("Content-Type", "image/png"))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .body(FAVICON_16)
+}
+
+pub async fn static_favicon_32() -> HttpResponse {
+    HttpResponse::Ok()
+        .append_header(("Content-Type", "image/png"))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .body(FAVICON_32)
+}
+
 pub async fn static_favicon() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/x-icon"))
