@@ -62,7 +62,7 @@ The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended 
 | macOS 14    | ✅    | ✅     | ✅      |
 | macOS 13    | ✅    | ✅     | ❌      |
 | App Store   | ✅    | ✅     | ❌      |
-| Web         | ⌛    | ❌     | ❌      |
+| Web (PWA)   | ✅    | ❌     | ❌      |
 
 <small>android users may use web</small>
 
