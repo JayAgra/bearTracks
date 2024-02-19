@@ -38,8 +38,8 @@ impl App {
                                     <h2 class="unValue">{ "please log in" }</h2>
                                 </div>
                                 <h3 id="error" style="color: var(--cancelColor);"></h3>
-                                <input id="username_input" type="text" autocomplete="username" placeholder="username" class="ci" name="username"/>
-                                <input id="inputPassword" type="password" autocomplete="current-password" placeholder="password" name="password" class="ci" style="display: none;"/>
+                                <input id="username_input" type="text" autocomplete="username" autocapitalize="off" placeholder="username" class="ci" name="username"/>
+                                <input id="inputPassword" type="password" autocomplete="current-password" autocapitalize="off" placeholder="password" name="password" class="ci" style="display: none;"/>
                                 <div class="buttonCont">
                                     <button
                                         id="pw"
