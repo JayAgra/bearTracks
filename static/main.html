@@ -6,6 +6,14 @@
         <meta name="robots" content="nositelinkssearchbox, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#282828" id="themeMeta">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=504">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=504">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=504">
+        <link rel="manifest" href="/site.webmanifest?v=504">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg?v=504" color="#009698">
+        <link rel="shortcut icon" href="/favicon.ico?v=504">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="static/css/float.min.css" type="text/css">
         <link rel="stylesheet" href="static/css/homepage.min.css" type="text/css">
         <link rel="stylesheet" href="static/css/main_form.min.css" type="text/css">
@@ -13,57 +21,56 @@
     </head>
     <body class="gruvbox" style="width: 100vw;">
         <script>themeHandle()</script>
-        <form style="width: 100vw;">
-            <div class="main_pane">
+        <form id="form_content" style="display: block; width: 100vw;">
                 <h1 class="w3">bearTracks<br><span class="gametitle">CRESCENDO</span></h1>
-                <fieldset>
-                    <label>Event Code <span id="bad_event" style="color: red; display: none;"></span><br></label>
-                    <select name="event" id="event_code"></select>
-                </fieldset>
-                <fieldset>
-                    <label>Match Number <span id="bad_match_num" style="color: red; display: none;"></span><br></label>
-                    <input type="tel" name="match" class="smallerInput" id="match_num_input" required>
-                </fieldset>
-                <fieldset>
-                    <label>Team Number<br></label>
-                    <select name="team" id="team_number" style="min-width: 250px;">
-                        <optgroup label="Blue Alliance">
-                            <option value="" class="teamNumOption"></option>
-                            <option value="" class="teamNumOption"></option>
-                            <option value="" class="teamNumOption"></option>
-                        </optgroup>
-                        <optgroup label="Red Alliance">
-                            <option value="" class="teamNumOption"></option>
-                            <option value="" class="teamNumOption"></option>
-                            <option value="" class="teamNumOption"></option>
-                        </optgroup>
-                    </select>
-                </fieldset><br>
-                <button class="continue_button" type="button"><h2>continue</h2></button>
-            </div>
-            <div class="main_pane" style="width: 80vw; left: 10vw; position: relative; height: 50vh; display: none;">
-                <div class="VStack" style="height: 50vh;">
-                    <div class="HStack">
-                        <div class="VStack">
-                            <h1 class="counter">0.0</h1>
-                            <button class="time_button" type="button"><h1>intake</h1></button>
-                        </div>
-                        <div class="VStack">
-                            <h1 class="counter">0.0</h1>
-                            <button class="time_button" type="button"><h1>travel</h1></button>
-                        </div>
-                        <div class="VStack">
-                            <h1 class="counter">0.0</h1>
-                            <button class="time_button" type="button"><h1>outtake</h1></button>
-                        </div>
+                <div class="VStack" style="align-items: center;">
+                    <div class="VStack" style="width: 80vw; align-items: baseline;">
+                        <fieldset>
+                            <label>Event Code&emsp;<span id="bad_event" style="color: red; display: none;"></span></label>
+                            <select name="event" id="event_code"></select>
+                        </fieldset><br>
+                        <fieldset>
+                            <label>Match Number&emsp;</label>
+                            <select name="match" id="match_num_input"></select>
+                        </fieldset><br>
+                        <fieldset>
+                            <label>Team Number&emsp;</label>
+                            <select name="team" id="team_number">
+                                <optgroup label="Blue Alliance">
+                                    <option value="" class="teamNumOption"></option>
+                                    <option value="" class="teamNumOption"></option>
+                                    <option value="" class="teamNumOption"></option>
+                                </optgroup>
+                                <optgroup label="Red Alliance">
+                                    <option value="" class="teamNumOption"></option>
+                                    <option value="" class="teamNumOption"></option>
+                                    <option value="" class="teamNumOption"></option>
+                                </optgroup>
+                            </select>
+                        </fieldset><br>
                     </div>
-                    <button class="cycle_button" type="button" style="margin-top: 3vh; margin-bottom: 1vh"><h1>speaker</h1></button>
-                    <button class="cycle_button" type="button"><h1>amplifier</h1></button>
-                    <br>
-                    <button class="continue_button" type="button"><h2>continue</h2></button>
                 </div>
-            </div>
-            <div class="main_pane" style="display: none;">
+                <div class="VStack" style="align-items: center;">
+                    <div class="VStack" style="height: 80vh; width: 80vw;">
+                        <br><br><br>
+                        <div class="HStack">
+                            <div class="VStack">
+                                <h1 class="counter">0.0</h1>
+                                <button class="time_button" type="button"><h1>in</h1></button>
+                            </div>
+                            <div class="VStack">
+                                <h1 class="counter">0.0</h1>
+                                <button class="time_button" type="button"><h1>move</h1></button>
+                            </div>
+                            <div class="VStack">
+                                <h1 class="counter">0.0</h1>
+                                <button class="time_button" type="button"><h1>out</h1></button>
+                            </div>
+                        </div>
+                        <button class="cycle_button" type="button" style="margin-top: 3vh; margin-bottom: 1vh"><h1>speaker</h1></button>
+                        <button class="cycle_button" type="button"><h1>amplifier</h1></button><br><br><br>
+                    </div>
+                </div>
                 <div class="VStack" style="align-items: center;">
                     <div class="HStack">
                         <p style="width: 9em; margin-top: 5px; text-align: left;">Trap note</p>
@@ -80,26 +87,28 @@
                         <div style="width: calc(80vw - 9em - 46px);"></div>
                         <label class="ios-switch"><input type="checkbox" name="buddy_climb"><i></i></label>
                     </div>
-                    <div class="VStack" style="align-items: baseline; margin: 1%; width: 80%;">
-                        <label>Did the robot play defense? If so, was it effective? Did it incur foul points?</label>
-                        <textarea rows="6" style="resize: none; margin-top: 1%; width: 100%;" id="defense"></textarea>
+                    <div class="VStack" style="align-items: baseline; margin: 1%; width: 80vw;">
+                        <label style="text-align: left;">Did the robot play defense? If so, was it effective? Did it incur foul points?</label>
+                        <textarea rows="6" style="resize: none; margin-top: 1%; width: 80vw;" name="defense"></textarea>
                     </div>
-                    <div class="VStack" style="align-items: baseline; margin: 1%; width: 80%;">
-                        <label>How was the driving? Did the driver seem confident?</label>
-                        <textarea rows="6" style="resize: none; margin-top: 1%; width: 100%;" id="driving"></textarea>
+                    <div class="VStack" style="align-items: baseline; margin: 1%; width: 80vw;">
+                        <label style="text-align: left;">How was the driving? Did the driver seem confident?</label>
+                        <textarea rows="6" style="resize: none; margin-top: 1%; width: 80vw;" name="driving"></textarea>
                     </div>
-                    <div class="VStack" style="align-items: baseline; margin: 1%; width: 80%;">
-                        <label>Provide an overall description of the team's performance in this match</label>
-                        <textarea rows="6" style="resize: none; margin-top: 1%; width: 100%;" id="overall"></textarea>
+                    <div class="VStack" style="align-items: baseline; margin: 1%; width: 80vw;">
+                        <label style="text-align: left;">Provide an overall description of the team's performance in this match</label>
+                        <textarea rows="6" style="resize: none; margin-top: 1%; width: 80vw;" name="overall"></textarea>
                     </div>
                 </div>
-                <button class="continue_button" type="button"><h2>submit</h2></button>
-            </div>
-            <div class="main_pane" style="display: none;">
-                <h1>submitting...</h1>
-            </div>
+                <br><button class="continue_button" type="button"><h2>submit</h2></button><br><br><br>
         </form>
-        <!--static-->
-        <script type="module" src="static/js/main/main.js"></script>
+        <div id="submit_page" style="display: none; align-items: center;">
+            <h1 style="padding-top: 25vh" id="submit_text">Submitting...</h1>
+            <progress style="min-width: 75vw;" id="submit_progress"></progress><br>
+            <br><button type="button" class="continue_button" onclick="window.location.reload()" id="scout_again"><h2>scout again</h2></button><br><br>
+            <image src="static/assets/checkmark.seal.fill.png" style="display: none; width: 150px" id="success_seal"></image>
+            <image src="static/assets/xmark.seal.fill.png" style="display: none; width: 150px" id="failure_seal"></image>
+        </div>
+        <script type="module" src="static/js/main/main.min.js"></script>
     </body>
 </html>

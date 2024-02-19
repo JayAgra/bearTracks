@@ -119,6 +119,30 @@ pub async fn login(pool: &db_auth::Pool, session: web::Data<RwLock<crate::Sessio
     }
 }
 
+pub async fn delete_account(pool: &db_auth::Pool, login_form: web::Json<LoginForm>) -> Result<HttpResponse, actix_web::Error> {
+    let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
+    if target_user_temp.is_err() {
+        return Ok(HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}"))
+    }
+    let target_user = target_user_temp.unwrap();
+        if target_user.id != 0 {
+        let parsed_hash = PasswordHash::new(&target_user.pass_hash);
+        if parsed_hash.is_err() {
+            return Ok(HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}"))
+        }
+        if Argon2::default().verify_password(login_form.password.as_bytes(), &parsed_hash.unwrap()).is_ok() {
+            Ok(HttpResponse::Ok()
+                .json(
+                    db_auth::execute_manage_user(&pool, db_auth::UserManageAction::DeleteUser, [target_user.id.to_string(), "".to_string()]).await?
+                ))
+        } else {
+            Ok(HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}"))
+        }
+    } else {
+        Ok(HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad\"}"))
+    }
+}
+
 pub async fn logout(session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> HttpResponse {
     // if session exists, proceed
     if let Some(id) = identity.identity() {

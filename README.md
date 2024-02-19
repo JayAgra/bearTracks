@@ -53,17 +53,16 @@ To stop bearTracks, run
 
 ## iOS & macOS apps
 
-The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended for the server admins, and can only be installed by compiling it yourself. Scout and Data are available on the App Store. Data uses Mac Catalyst to provide an optimized macOS experience, while Scout runs the iPad version. Accounts cannot be made in app, and instead are made on [beartracks.io/create](https://beartracks.io/create)
+The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended for the server admins, and can only be installed by compiling it yourself. Scout and Data are available on the App Store. Data uses Mac Catalyst to provide an optimized macOS experience, while Scout runs the iPad version. Accounts may be created in-app or on [beartracks.io/create](https://beartracks.io/create).
 
 |             | Scout | Data | Manage |
 |-------------|------|-------|--------|
 | iOS 17      | ✅    | ✅     | ✅      |
-| iOS 16      | ✅    | ❌     | ❌      |
+| iOS 16      | ✅    | ✅     | ❌      |
 | macOS 14    | ✅    | ✅     | ✅      |
-| macOS 13    | ✅    | ❌     | ❌      |
+| macOS 13    | ✅    | ✅     | ❌      |
 | App Store   | ✅    | ✅     | ❌      |
-| Web         | ⌛    | ❌     | ❌      |
-| Android     | ❌    | ❌     | ❌      |
+| Web (PWA)   | ✅    | ❌     | ❌      |
 
 <small>android users may use web</small>
 
