@@ -11,6 +11,7 @@ struct ReviewView: View {
     @EnvironmentObject var controller: ScoutingController
     @State private var submitSheetState: SubmitSheetType = .waiting
     @State private var showSheet: Bool = false
+    @State private var submitError: String = ""
     
     var body: some View {
         VStack {
@@ -103,7 +104,8 @@ struct ReviewView: View {
                         Button("submit") {
                             showSheet = true
                             controller.submitData { result in
-                                self.submitSheetState = result
+                                self.submitSheetState = result.0
+                                self.submitError = result.1
                             }
                         }
                         .padding()
@@ -155,6 +157,10 @@ struct ReviewView: View {
                                 .padding()
                             Text("error")
                                 .font(.title)
+                                .padding()
+                            Text(submitError)
+                                .font(.title2)
+                                .padding()
                             Spacer()
                         }
                         .onAppear() {

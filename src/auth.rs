@@ -10,6 +10,7 @@ use argon2::{
     },
     Argon2
 };
+use regex::Regex;
 use html_escape;
 
 use crate::db_auth;
@@ -30,11 +31,19 @@ pub struct CreateForm {
 }
 
 pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateForm>) -> impl Responder {
-    // check password length is between 8 and 36, inclusive
+    // check password length is between 8 and 32, inclusive
     if create_form.password.len() >= 8 && create_form.password.len() <= 32 {
+        // check if user is a sketchy motherfucker
+        let regex = Regex::new(r"^[a-z0-9A-Z_-]{3,32}$").unwrap();
+        if  !regex.is_match(&create_form.username) ||
+            !regex.is_match(&create_form.password) ||
+            !regex.is_match(&create_form.full_name)
+            {
+            return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"you_sketchy_motherfucker\"}");
+        }
         // check if username is taken
-        let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, html_escape::encode_text(&create_form.username).to_string()).await;
-        if target_user_temp.is_ok() || create_form.username != html_escape::encode_text(&create_form.username).to_string() {
+        let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, create_form.username.clone()).await;
+        if target_user_temp.is_ok() {
             return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"username_taken\"}");
         } else {
             drop(target_user_temp);

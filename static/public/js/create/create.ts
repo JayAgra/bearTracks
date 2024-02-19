@@ -79,6 +79,11 @@ async function uploadForm() {
     _post("/api/v1/auth/create", errorElement.id, responses)
         .then(async (response: { status: String }) => {
             switch (response.status) {
+                case "you_sketchy_motherfucker": {
+                    errorElement.innerText = "no special characters other than \"_\" or \"-\" in any field. 32 char max for all fields.";
+                    errorReload();
+                    break;
+                }
                 case "username_taken": {
                     errorElement.innerText = "username taken";
                     errorReload();
