@@ -73,7 +73,7 @@ class ScoutingController: ObservableObject {
         matchTimes.append(MatchTime(id: matchTimes.count, score_type: type, intake: value, travel: value, outtake: value))
     }
     
-    func submitData(completionBlock: @escaping (SubmitSheetType) -> Void) {
+    func submitData(completionBlock: @escaping ((SubmitSheetType, String)) -> Void) {
         addEndgameValue(type: 2, value: switches.0 ? 1 : 0)
         addEndgameValue(type: 3, value: switches.1 ? 1 : 0)
         addEndgameValue(type: 4, value: switches.2 ? 1 : 0)
@@ -97,20 +97,20 @@ class ScoutingController: ObservableObject {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            completionBlock(.done)
+                            completionBlock((.done, ""))
                         } else {
-                            completionBlock(.error)
+                            completionBlock((.error, "Response Code \(httpResponse.statusCode)"))
                         }
                     } else {
-                        completionBlock(.error)
+                        completionBlock((.error, "Client response handling error"))
                     }
                 } else {
-                    completionBlock(.error)
+                    completionBlock((.error, "server response do be nil"))
                 }
             }
             requestTask.resume()
         } catch {
-            completionBlock(.error)
+            completionBlock((.error, "Client data encoding failure"))
         }
     }
     
