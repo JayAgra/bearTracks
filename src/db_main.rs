@@ -313,19 +313,29 @@ pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool,
 
 fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: db_auth::User) -> Result<Id, rusqlite::Error> {
     // analyze the data
-    let analysis_results: analyze::AnalysisResults = analyze::analyze_data(data, analyze::Season::S2024);
+    let analysis_results: analyze::AnalysisResults;
+    analysis_results = match data.season {
+        2023 => analyze::analyze_data(data, analyze::Season::S2023),
+        2024 => analyze::analyze_data(data, analyze::Season::S2024),
+        _ => analyze::analyze_data(data, analyze::Season::S2024),
+    };
+
     // create mutable response object
     let mut inserted_row = Id {
         id: 0
     };
+
     // insert data into database
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
     stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, user.id, user.full_name, user.team, analysis_results.weight, analysis_results.analysis])?;
+
     // update response object with the correct ID
     inserted_row.id = conn.last_insert_rowid();
+
     // insert transaction and update points. they're unused variables- i don't care if the points failed to credit
     let _inserted = db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: user.id, trans_type: 0x1000, amount: 25, time: "".to_string() }).expect("oop");
     let _updated = db_auth::update_points(auth_conn, user.id, 25).expect("oop");
+
     // return response object
     Ok(inserted_row)
 }

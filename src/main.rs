@@ -88,6 +88,15 @@ async fn misc_ping() -> Result<HttpResponse, AWError> {
     )
 }
 
+// system is ok
+async fn debug_ok() -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body("true")
+    )
+}
+
 // create account endpoint
 async fn auth_post_create(db: web::Data<Databases>, data: web::Json<auth::CreateForm>) -> impl Responder {
     auth::create_account(&db.auth, data).await
@@ -816,6 +825,7 @@ async fn main() -> io::Result<()> {
                 // GET
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
                 .service(web::resource("/api/v1/debug/system").route(web::get().to(debug_health)))
+                .service(web::resource("/api/v1/debug/ok").route(web::get().to(debug_ok)))
             /* robot game endpoints */
                 // GET
                 .service(web::resource("/api/v1/game/all_owned_cards").route(web::get().to(game_get_cards)))
@@ -826,7 +836,7 @@ async fn main() -> io::Result<()> {
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?
-    .workers(4)
+    .workers(8)
     .run()
     .await
 }
