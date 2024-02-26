@@ -21,6 +21,7 @@ mod db_transact;
 mod forward;
 mod game_api;
 mod passkey;
+mod server_health;
 mod session;
 mod static_files;
 mod stats;
@@ -78,6 +79,15 @@ fn unauthorized_response() -> HttpResponse {
         .body("{\"status\": \"unauthorized\"}")
 }
 
+// pong!!
+async fn misc_ping() -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body("pong")
+    )
+}
+
 // create account endpoint
 async fn auth_post_create(db: web::Data<Databases>, data: web::Json<auth::CreateForm>) -> impl Responder {
     auth::create_account(&db.auth, data).await
@@ -88,6 +98,7 @@ async fn auth_post_login(db: web::Data<Databases>, session: web::Data<RwLock<Ses
     auth::login(&db.auth, session, identity, data).await
 }
 
+// delete account endpoint required for apple platforms
 async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginForm>) -> Result<HttpResponse, AWError> {
     Ok(
         auth::delete_account(&db.auth, data).await?
@@ -138,6 +149,7 @@ pub struct DataMeta {
     pub teams: Vec<String>
 }
 
+// valid entries metadata. iOS and web clients load from this.
 async fn data_get_meta() -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
@@ -150,6 +162,7 @@ async fn data_get_meta() -> Result<HttpResponse, AWError> {
     )
 }
 
+// access denied template
 fn access_denied_team() -> HttpResponse {
     HttpResponse::Unauthorized()
         .body("you must be affiliated with a valid team to access data")
@@ -509,6 +522,16 @@ async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
     )
 }
 
+// server health for debug
+async fn debug_health(session: web::Data<RwLock<Sessions>>) -> Result<HttpResponse, AWError> {
+    Ok(
+        HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(server_health::get_server_health(session))
+    )
+}
+
+// get all user's owned cards
 async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
@@ -519,6 +542,7 @@ async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result
     )
 }
 
+// get random team from scouted teams
 async fn game_open_lootbox(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
@@ -529,6 +553,7 @@ async fn game_open_lootbox(db: web::Data<Databases>, user: db_auth::User) -> Res
     )
 }
 
+// set player's hand
 async fn game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
@@ -784,11 +809,13 @@ async fn main() -> io::Result<()> {
             /* misc endpoints */
                 // GET
                 .service(web::resource("/api/v1/transact/me").route(web::get().to(misc_get_transact_me)))
+                .service(web::resource("/api/v1/ping").route(web::get().to(misc_ping)))
                 .service(web::resource("/api/v1/whoami").route(web::get().to(misc_get_whoami)))
                 .service(web::resource("/apple-app-site-association").route(web::get().to(misc_apple_app_site_association)))
             /* debug endpoints */
                 // GET
                 .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
+                .service(web::resource("/api/v1/debug/system").route(web::get().to(debug_health)))
             /* robot game endpoints */
                 // GET
                 .service(web::resource("/api/v1/game/all_owned_cards").route(web::get().to(game_get_cards)))

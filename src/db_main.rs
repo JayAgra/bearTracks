@@ -357,11 +357,11 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
         let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1 RETURNING user_id;")?;
         // run query, mapping the result to a single Id object (containing the user id, not submission id) that will used to deduct points
         let execution = stmt
-                                                    .query_row(params![target_id.parse::<i64>().unwrap()], |row| {
-                                                        Ok(Id {
-                                                            id: row.get(0)?,
-                                                        })
-                                                    });
+                        .query_row(params![target_id.parse::<i64>().unwrap()], |row| {
+                            Ok(Id {
+                                id: row.get(0)?,
+                            })
+                        });
         if execution.is_ok() {
             // get the user id from the execution result
             let id: i64 = execution.unwrap().id;
