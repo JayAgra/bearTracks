@@ -6,7 +6,7 @@ async function getScoutRanks() {
     _get("/api/v1/points/all", vsButton.id).then((resJson) => {
         var htmltable = "";
         for (var i = 0; i < resJson.length; i++) {
-            htmltable += `<tr><td><p>${resJson[i].username} (${resJson[i].team})</p></td><td>${Math.round(resJson[i].score)}</td></tr>`;
+            htmltable += `<tr><td>${resJson[i].username} (${resJson[i].team})</td><td>${Math.round(resJson[i].score)}</td></tr>`;
         }
         (document.getElementById("preInsert") as HTMLTableRowElement).insertAdjacentHTML("afterend", htmltable);
         (document.getElementById("eventCodeDisplay") as HTMLHeadingElement).innerText = `Top scouts`;
