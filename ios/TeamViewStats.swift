@@ -100,19 +100,19 @@ struct TeamViewStats: View {
                     .padding([.top, .bottom])
                     HStack {
                         VStack {
-                            Text("\(Int(((teamDetail.teamData[0].auto_preload ?? 0) * 100).rounded()))%")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_preload)))")
                                 .font(.title)
                             Text("auto preload")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(Int(((teamDetail.teamData[0].auto_wing ?? 0) * 100).rounded()))%")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_wing)))")
                                 .font(.title)
                             Text("auto wing")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(Int(((teamDetail.teamData[0].auto_center ?? 0) * 100).rounded()))%")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_center)))")
                                 .font(.title)
                             Text("auto center")
                         }

@@ -62,9 +62,33 @@ struct StartView: View {
                                         controller.switches.6 -= 1;
                                     }
                                 }
-                                Toggle("Scored preload", isOn: $controller.switches.3)
-                                Toggle("Wing pickup", isOn: $controller.switches.4)
-                                Toggle("Center pickup", isOn: $controller.switches.5)
+                                Stepper {
+                                    Text("Preloaded notes handled (\(controller.switches.5))")
+                                } onIncrement: {
+                                    controller.switches.5 += 1;
+                                } onDecrement: {
+                                    if controller.switches.5 > 0 {
+                                        controller.switches.5 -= 1;
+                                    }
+                                }
+                                Stepper {
+                                    Text("Alliance wing notes handled (\(controller.switches.4))")
+                                } onIncrement: {
+                                    controller.switches.4 += 1;
+                                } onDecrement: {
+                                    if controller.switches.4 > 0 {
+                                        controller.switches.4 -= 1;
+                                    }
+                                }
+                                Stepper {
+                                    Text("Neutral zone notes handled (\(controller.switches.3))")
+                                } onIncrement: {
+                                    controller.switches.3 += 1;
+                                } onDecrement: {
+                                    if controller.switches.3 > 0 {
+                                        controller.switches.3 -= 1;
+                                    }
+                                }
                             }
                         }
                         Section {

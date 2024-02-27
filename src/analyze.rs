@@ -246,9 +246,9 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     let mut intake_time: f64 = 0.0;
     let mut travel_time: f64 = 0.0;
     let mut outtake_time: f64 = 0.0;
-    let mut auto_preload: bool = false;
-    let mut auto_wing: bool = false;
-    let mut auto_center: bool = false;
+    let mut auto_preload: i64 = 0;
+    let mut auto_wing: i64 = 0;
+    let mut auto_center: i64 = 0;
     let mut auto_scores: i64 = 0;
 
     for time in &game_data {
@@ -271,19 +271,13 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                 }
             },
             5 => {
-                if time.intake == 1.0 {
-                    auto_preload = true;
-                }
+                auto_center = time.intake as i64
             },
             6 => {
-                if time.intake == 1.0 {
-                    auto_wing = true;
-                }
+                auto_wing = time.intake as i64
             },
             7 => {
-                if time.intake == 1.0 {
-                    auto_center = true;
-                }
+                auto_preload = time.intake as i64
             },
             8 => {
                 auto_scores = time.intake as i64
@@ -338,9 +332,9 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         speaker_scores,
         amplifier_scores,
         score as i64,
-        real_bool_to_num(auto_preload) as i64,
-        real_bool_to_num(auto_wing) as i64,
-        real_bool_to_num(auto_center) as i64,
+        auto_preload,
+        auto_wing,
+        auto_center,
         auto_scores
     );
 

@@ -181,9 +181,6 @@ pub struct Team {
     pub trap_note: f64,
     pub climb: f64,
     pub buddy_climb: f64,
-    pub auto_preload: f64,
-    pub auto_wing: f64,
-    pub auto_center: f64,
     pub intake: DataStats,
     pub travel: DataStats,
     pub outtake: DataStats,
@@ -191,7 +188,10 @@ pub struct Team {
     pub amplifier: DataStats,
     pub total: DataStats,
     pub points: DataStats,
-    pub auto_scores: DataStats
+    pub auto_scores: DataStats,
+    pub auto_preload: DataStats,
+    pub auto_wing: DataStats,
+    pub auto_center: DataStats,
 }
 
 struct TeamDataset {
@@ -286,6 +286,9 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
     let amplifier_qrt = stats::quartiles_i64(&data_arr.amplifier);
     let total_qrt = stats::quartiles_i64(&data_arr.shots);
     let points_qrt = stats::quartiles_i64(&data_arr.points);
+    let auto_preload_qrt = stats::quartiles_i64(&data_arr.auto_preload);
+    let auto_wing_qrt = stats::quartiles_i64(&data_arr.auto_wing);
+    let auto_center_qrt = stats::quartiles_i64(&data_arr.auto_center);
     let auto_scores_qrt = stats::quartiles_i64(&data_arr.auto_scores);
 
     let intake_means = stats::means_i64(&data_arr.intake, 0.5);
@@ -295,6 +298,9 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
     let amplifier_means = stats::means_i64(&data_arr.amplifier, 0.5);
     let total_means = stats::means_i64(&data_arr.shots, 0.5);
     let points_means = stats::means_i64(&data_arr.points, 0.5);
+    let auto_preload_means = stats::means_i64(&data_arr.auto_preload, 0.5);
+    let auto_wing_means = stats::means_i64(&data_arr.auto_wing, 0.5);
+    let auto_center_means = stats::means_i64(&data_arr.auto_center, 0.5);
     let auto_scores_means = stats::means_i64(&data_arr.auto_scores, 0.5);
 
     Ok(Team {
@@ -302,9 +308,6 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
         trap_note: data_arr.trap_note.iter().sum::<i64>() as f64 / data_arr.trap_note.len() as f64,
         climb: data_arr.climb.iter().sum::<i64>() as f64 / data_arr.climb.len() as f64,
         buddy_climb: data_arr.buddy_climb.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
-        auto_preload: data_arr.auto_preload.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
-        auto_wing: data_arr.auto_wing.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
-        auto_center: data_arr.auto_center.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
         intake: DataStats {
             first: intake_qrt[0],
             median: intake_qrt[1],
@@ -353,6 +356,27 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
             third: points_qrt[2],
             mean: points_means[0],
             decaying: points_means[1]
+        },
+        auto_preload: DataStats {
+            first: auto_preload_qrt[0],
+            median: auto_preload_qrt[1],
+            third: auto_preload_qrt[2],
+            mean: auto_preload_means[0],
+            decaying: auto_preload_means[1]
+        },
+        auto_wing: DataStats {
+            first: auto_wing_qrt[0],
+            median: auto_wing_qrt[1],
+            third: auto_wing_qrt[2],
+            mean: auto_wing_means[0],
+            decaying: auto_wing_means[1]
+        },
+        auto_center: DataStats {
+            first: auto_center_qrt[0],
+            median: auto_center_qrt[1],
+            third: auto_center_qrt[2],
+            mean: auto_center_means[0],
+            decaying: auto_center_means[1]
         },
         auto_scores: DataStats {
             first: auto_scores_qrt[0],
