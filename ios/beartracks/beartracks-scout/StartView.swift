@@ -51,7 +51,7 @@ struct StartView: View {
                             }
                         }
                         Section {
-                            Button("match") {
+                            Button("start match") {
                                 controller.advanceToTab(tab: .game)
                             }
                             .disabled(controller.matchNumber == "--"  || controller.teamNumber == "--")

@@ -108,7 +108,7 @@ struct GameView: View {
                             .buttonStyle(.bordered)
                             .foregroundStyle(Color.green)
                         }
-                        Button("endgame") {
+                        Button("go to endgame") {
                             controller.advanceToTab(tab: .end)
                         }
                         .padding()

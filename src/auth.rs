@@ -32,9 +32,9 @@ pub struct CreateForm {
 
 pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateForm>) -> impl Responder {
     // check password length is between 8 and 32, inclusive
-    if create_form.password.len() >= 8 && create_form.password.len() <= 32 {
+    if create_form.password.len() >= 8 && create_form.password.len() <= 64 {
         // check if user is a sketchy motherfucker
-        let regex = Regex::new(r"^[a-z0-9A-Z_-_ _*_^]{3,32}$").unwrap();
+        let regex = Regex::new(r"^[a-z0-9A-Z- ~!@#$%^&*()=+/\_[_]{}|?.,]{3,64}$").unwrap();
         if  !regex.is_match(&create_form.username) ||
             !regex.is_match(&create_form.password) ||
             !regex.is_match(&create_form.full_name)
@@ -44,24 +44,28 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
         // check if username is taken
         let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, create_form.username.clone()).await;
         if target_user_temp.is_ok() {
-            return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"username_taken\"}");
+            return HttpResponse::BadRequest().status(StatusCode::from_u16(409).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"username_taken\"}");
         } else {
             drop(target_user_temp);
             // check access key validity
             if create_form.access != "00000" {
                 let access_key_temp: Result<Vec<db_auth::AccessKey>, actix_web::Error> = db_auth::get_access_key(pool, create_form.access.clone(), db_auth::AccessKeyQuery::ById).await;
                 if access_key_temp.is_err() {
-                    return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad_access_key\"}");
+                    return HttpResponse::BadRequest().status(StatusCode::from_u16(403).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad_access_key\"}");
                 } else {
                     // insert into database
-                    let access_key: db_auth::AccessKey = access_key_temp.unwrap().first().unwrap().clone();
-                    let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, access_key.team, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
-                    // send final success/failure for creation
-                    if user_temp.is_err() {
-                        return HttpResponse::BadRequest().status(StatusCode::from_u16(500).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"creation_error\"}");
+                    let access_key = access_key_temp.unwrap().first().cloned();
+                    if let Some(valid_key) = access_key {
+                        let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(pool, valid_key.team, html_escape::encode_text(&create_form.full_name).to_string(), html_escape::encode_text(&create_form.username).to_string(), html_escape::encode_text(&create_form.password).to_string()).await;
+                        // send final success/failure for creation
+                        if user_temp.is_err() {
+                            return HttpResponse::BadRequest().status(StatusCode::from_u16(500).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"creation_error\"}");
+                        } else {
+                            drop(user_temp);
+                            return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success\"}");
+                        }
                     } else {
-                        drop(user_temp);
-                        return HttpResponse::Ok().status(StatusCode::from_u16(200).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"success\"}");
+                        return HttpResponse::BadRequest().status(StatusCode::from_u16(403).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"bad_access_key\"}");
                     }
                 }
             } else {
@@ -75,7 +79,7 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
             }
         }
     } else {
-        return HttpResponse::BadRequest().status(StatusCode::from_u16(400).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"password_length\"}");
+        return HttpResponse::BadRequest().status(StatusCode::from_u16(413).unwrap()).insert_header(("Cache-Control", "no-cache")).body("{\"status\": \"password_length\"}");
     }
 }
 
