@@ -34,7 +34,7 @@ pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateF
     // check password length is between 8 and 32, inclusive
     if create_form.password.len() >= 8 && create_form.password.len() <= 32 {
         // check if user is a sketchy motherfucker
-        let regex = Regex::new(r"^[a-z0-9A-Z_-]{3,32}$").unwrap();
+        let regex = Regex::new(r"^[a-z0-9A-Z_-_ _*_^]{3,32}$").unwrap();
         if  !regex.is_match(&create_form.username) ||
             !regex.is_match(&create_form.password) ||
             !regex.is_match(&create_form.full_name)
