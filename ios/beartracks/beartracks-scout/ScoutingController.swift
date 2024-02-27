@@ -26,7 +26,7 @@ class ScoutingController: ObservableObject {
     @Published public var defense: String = ""
     @Published public var driving: String = ""
     @Published public var overall: String = ""
-    @Published public var switches: (Bool, Bool, Bool) = (false, false, false)
+    @Published public var switches: (Bool, Bool, Bool, Bool, Bool, Bool, Int) = (false, false, false, false, false, false, 0)
     // submit sheet
     @Published public var showSubmitSheet: Bool = false
     @Published public var submitSheetType: SubmitSheetType = .waiting
@@ -77,6 +77,10 @@ class ScoutingController: ObservableObject {
         addEndgameValue(type: 2, value: switches.0 ? 1 : 0)
         addEndgameValue(type: 3, value: switches.1 ? 1 : 0)
         addEndgameValue(type: 4, value: switches.2 ? 1 : 0)
+        addEndgameValue(type: 5, value: switches.3 ? 1 : 0)
+        addEndgameValue(type: 6, value: switches.4 ? 1 : 0)
+        addEndgameValue(type: 7, value: switches.5 ? 1 : 0)
+        addEndgameValue(type: 8, value: Double(switches.6))
         guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
         var encodedMatchTimes: String = ""
         do {

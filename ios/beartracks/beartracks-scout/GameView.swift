@@ -49,12 +49,12 @@ struct GameView: View {
                                     .gesture(
                                         DragGesture()
                                             .onChanged { value in
-                                                self.updateBallOffset(dragValue: value, totalWidth: geometry.size.width * 0.8)
+                                                self.updateBallOffset(dragValue: value, totalWidth: geometry.size.width * 0.8, totalHeight: geometry.size.height)
                                                 self.updateTogglePosition(totalWidth: geometry.size.width * 0.8, height: geometry.size.height)
                                             }
                                             .onEnded { _ in
                                                 withAnimation {
-                                                    if abs(self.ballOffset.height) > geometry.size.height * 0.25 {
+                                                    if abs(self.ballOffset.height) >= geometry.size.height * 0.2 {
                                                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                                                     }
                                                     self.ballOffset = .zero
@@ -63,20 +63,17 @@ struct GameView: View {
                                             }
                                     )
                                     .modifier(PressModifier(onPress: { self.actionState = .travel }, onRelease: {
-                                        if self.ballOffset.height > geometry.size.height * 0.2 {
+                                        if self.ballOffset.height >= geometry.size.height * 0.2 {
                                             let boomThing = UIImpactFeedbackGenerator(style: .medium)
                                             boomThing.prepare(); boomThing.impactOccurred();
-                                            self.holdLengths = (0, 0, 0)
                                             controller.clearAmplifier()
-                                            self.ballOffset = .zero
-                                        } else if self.ballOffset.height < geometry.size.height * -0.2 {
-                                            UINotificationFeedbackGenerator().notificationOccurred(.success)
                                             self.holdLengths = (0, 0, 0)
+                                        } else if self.ballOffset.height <= geometry.size.height * -0.2 {
+                                            UINotificationFeedbackGenerator().notificationOccurred(.success)
                                             controller.clearSpeaker()
-                                            self.ballOffset = .zero
-                                        } else {
-                                            self.actionState = .neutral
+                                            self.holdLengths = (0, 0, 0)
                                         }
+                                        self.actionState = .neutral
                                     }))
                             }
                             .padding(.bottom)
@@ -94,7 +91,7 @@ struct GameView: View {
                                         controller.times[2] = self.holdLengths.2
                                     }
                                 }
-                                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+                                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                             }
                             Spacer()
                             Button("go to endgame") {
@@ -135,14 +132,15 @@ struct GameView: View {
         default:
             self.actionState = .outtake
         }
-        
-        if abs(self.ballOffset.height) > height * 0.2 {
-            // UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-        }
     }
 
-    private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat) {
+    private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat) {
+        if abs(self.ballOffset.height) > totalHeight * 0.2 && abs(dragValue.translation.height) <= totalHeight * 0.2 {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        } else if abs(self.ballOffset.height) <= totalHeight * 0.2 && abs(dragValue.translation.height) > totalHeight * 0.2 {
+            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+        }
+        
         let newOffset = CGSize(
             width: min(max(dragValue.translation.width, (totalWidth * -0.5) + 30), (totalWidth * 0.5) - 30),
             height: dragValue.translation.height
@@ -152,7 +150,7 @@ struct GameView: View {
     }
     
     private func getUIImage(position: ActionState, height: CGFloat) -> Image {
-        if abs(self.ballOffset.height) > height * 0.2 {
+        if abs(self.ballOffset.height) >= height * 0.2 {
             if self.ballOffset.height < 0 {
                 return Image(systemName: "speaker.wave.2")
             } else {
@@ -173,7 +171,7 @@ struct GameView: View {
     }
     
     private func getBallColor(position: ActionState, height: CGFloat) -> Color {
-        if abs(self.ballOffset.height) > height * 0.2 {
+        if abs(self.ballOffset.height) >= height * 0.2 {
             if self.ballOffset.height < 0 {
                 return Color.init(red: 184/255, green: 187/255, blue: 38/255)
             } else {

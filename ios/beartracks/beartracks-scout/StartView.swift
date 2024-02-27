@@ -50,8 +50,25 @@ struct StartView: View {
                                 .pickerStyle(.menu)
                             }
                         }
+                        if controller.matchNumber != "--"  && controller.teamNumber != "--" {
+                            Section {
+                                Text("Autonomous Period")
+                                Stepper {
+                                    Text("Scores (\(controller.switches.6))")
+                                } onIncrement: {
+                                    controller.switches.6 += 1;
+                                } onDecrement: {
+                                    if controller.switches.6 > 0 {
+                                        controller.switches.6 -= 1;
+                                    }
+                                }
+                                Toggle("Scored preload", isOn: $controller.switches.3)
+                                Toggle("Wing pickup", isOn: $controller.switches.4)
+                                Toggle("Center pickup", isOn: $controller.switches.5)
+                            }
+                        }
                         Section {
-                            Button("start match") {
+                            Button("start teleop") {
                                 controller.advanceToTab(tab: .game)
                             }
                             .disabled(controller.matchNumber == "--"  || controller.teamNumber == "--")

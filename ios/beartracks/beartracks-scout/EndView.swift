@@ -21,6 +21,7 @@ struct EndView: View {
                             VStack {
                                 VStack {
                                     Toggle("Trap note", isOn: $controller.switches.0)
+                                    Toggle("Trap note", isOn: $controller.switches.0)
                                     Toggle("Climb", isOn: $controller.switches.1)
                                         .onChange(of: controller.switches.1) { _ in
                                             if !controller.switches.1 {

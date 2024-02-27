@@ -80,13 +80,7 @@ struct DataView: View {
         }, content: {
             DetailedView(model: dataItems)
         })
-        // &y mode
-        // .background(Color(red: 0.98, green: 0.73, blue: 0.84, opacity: 1.0))
     }
-    
-//    func getSheetConfig() -> DetailSheetConfig {
-//        return sheetConfig
-//    }
 }
 
 #Preview {

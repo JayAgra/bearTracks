@@ -246,6 +246,10 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     let mut intake_time: f64 = 0.0;
     let mut travel_time: f64 = 0.0;
     let mut outtake_time: f64 = 0.0;
+    let mut auto_preload: bool = false;
+    let mut auto_wing: bool = false;
+    let mut auto_center: bool = false;
+    let mut auto_scores: i64 = 0;
 
     for time in &game_data {
         match time.score_type {
@@ -266,6 +270,24 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                     buddy = true;
                 }
             },
+            5 => {
+                if time.intake == 1.0 {
+                    auto_preload = true;
+                }
+            },
+            6 => {
+                if time.intake == 1.0 {
+                    auto_wing = true;
+                }
+            },
+            7 => {
+                if time.intake == 1.0 {
+                    auto_center = true;
+                }
+            },
+            8 => {
+                auto_scores = time.intake as i64
+            }
             _ => {}
         }
         intake_time += time.intake;
@@ -273,6 +295,7 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         outtake_time += time.outtake;
     }
 
+    score += auto_scores as f64 * 18.0;
     score += speaker_scores as f64 * 12.0;
     score += amplifier_scores as f64 * 4.0;
 
@@ -314,7 +337,11 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         outtake_time as i64,
         speaker_scores,
         amplifier_scores,
-        score as i64
+        score as i64,
+        real_bool_to_num(auto_preload) as i64,
+        real_bool_to_num(auto_wing) as i64,
+        real_bool_to_num(auto_center) as i64,
+        auto_scores
     );
 
     let string_mps_scores: Vec<String> = mps_scores

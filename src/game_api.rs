@@ -181,13 +181,17 @@ pub struct Team {
     pub trap_note: f64,
     pub climb: f64,
     pub buddy_climb: f64,
+    pub auto_preload: f64,
+    pub auto_wing: f64,
+    pub auto_center: f64,
     pub intake: DataStats,
     pub travel: DataStats,
     pub outtake: DataStats,
     pub speaker: DataStats,
     pub amplifier: DataStats,
     pub total: DataStats,
-    pub points: DataStats
+    pub points: DataStats,
+    pub auto_scores: DataStats
 }
 
 struct TeamDataset {
@@ -200,7 +204,11 @@ struct TeamDataset {
     speaker: Vec<i64>,
     amplifier: Vec<i64>,
     shots: Vec<i64>,
-    points: Vec<i64>
+    points: Vec<i64>,
+    auto_preload: Vec<i64>,
+    auto_wing: Vec<i64>,
+    auto_center: Vec<i64>,
+    auto_scores: Vec<i64>
 }
 
 struct MainAnalysis {
@@ -236,19 +244,39 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
         .and_then(Iterator::collect)
         .unwrap();
     
-    let mut data_arr: TeamDataset = TeamDataset { trap_note: Vec::new(), climb: Vec::new(), buddy_climb: Vec::new(), intake: Vec::new(), travel: Vec::new(), outtake: Vec::new(), speaker: Vec::new(), amplifier: Vec::new(), points: Vec::new(), shots: Vec::new() };
+    let mut data_arr: TeamDataset = TeamDataset {
+        trap_note: Vec::new(),
+        climb: Vec::new(),
+        buddy_climb: Vec::new(),
+        intake: Vec::new(),
+        travel: Vec::new(),
+        outtake: Vec::new(),
+        speaker: Vec::new(),
+        amplifier: Vec::new(),
+        points: Vec::new(),
+        shots: Vec::new(),
+        auto_preload: Vec::new(),
+        auto_wing: Vec::new(),
+        auto_center: Vec::new(),
+        auto_scores: Vec::new()
+    };
+
     data.iter().for_each(|entry| {
         let game_data: Vec<i64> = entry.analysis.split(",").map(|v| v.parse::<i64>().unwrap_or(0)).collect();
-        data_arr.trap_note.push(game_data[0]);
-        data_arr.climb.push(game_data[1]);
-        data_arr.buddy_climb.push(game_data[2]);
-        data_arr.intake.push(game_data[3]);
-        data_arr.travel.push(game_data[4]);
-        data_arr.outtake.push(game_data[5]);
-        data_arr.speaker.push(game_data[6]);
-        data_arr.amplifier.push(game_data[7]);
-        data_arr.shots.push(game_data[6] + game_data[7]);
-        data_arr.points.push(game_data[8]);
+        data_arr.trap_note.push(game_data.get(0).unwrap_or(&0).clone());
+        data_arr.climb.push(game_data.get(1).unwrap_or(&0).clone());
+        data_arr.buddy_climb.push(game_data.get(2).unwrap_or(&0).clone());
+        data_arr.intake.push(game_data.get(3).unwrap_or(&0).clone());
+        data_arr.travel.push(game_data.get(4).unwrap_or(&0).clone());
+        data_arr.outtake.push(game_data.get(5).unwrap_or(&0).clone());
+        data_arr.speaker.push(game_data.get(6).unwrap_or(&0).clone());
+        data_arr.amplifier.push(game_data.get(7).unwrap_or(&0).clone());
+        data_arr.shots.push(game_data.get(6).unwrap_or(&0).clone() + game_data.get(7).unwrap_or(&0).clone());
+        data_arr.points.push(game_data.get(8).unwrap_or(&0).clone());
+        data_arr.auto_preload.push(game_data.get(9).unwrap_or(&0).clone());
+        data_arr.auto_wing.push(game_data.get(10).unwrap_or(&0).clone());
+        data_arr.auto_center.push(game_data.get(11).unwrap_or(&0).clone());
+        data_arr.auto_scores.push(game_data.get(12).unwrap_or(&0).clone());
     });
 
     let intake_qrt = stats::quartiles_i64(&data_arr.intake);
@@ -258,6 +286,7 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
     let amplifier_qrt = stats::quartiles_i64(&data_arr.amplifier);
     let total_qrt = stats::quartiles_i64(&data_arr.shots);
     let points_qrt = stats::quartiles_i64(&data_arr.points);
+    let auto_scores_qrt = stats::quartiles_i64(&data_arr.auto_scores);
 
     let intake_means = stats::means_i64(&data_arr.intake, 0.5);
     let travel_means = stats::means_i64(&data_arr.travel, 0.5);
@@ -266,12 +295,16 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
     let amplifier_means = stats::means_i64(&data_arr.amplifier, 0.5);
     let total_means = stats::means_i64(&data_arr.shots, 0.5);
     let points_means = stats::means_i64(&data_arr.points, 0.5);
+    let auto_scores_means = stats::means_i64(&data_arr.auto_scores, 0.5);
 
     Ok(Team {
         team: params[2].parse::<i64>().unwrap_or(0),
         trap_note: data_arr.trap_note.iter().sum::<i64>() as f64 / data_arr.trap_note.len() as f64,
         climb: data_arr.climb.iter().sum::<i64>() as f64 / data_arr.climb.len() as f64,
         buddy_climb: data_arr.buddy_climb.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
+        auto_preload: data_arr.auto_preload.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
+        auto_wing: data_arr.auto_wing.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
+        auto_center: data_arr.auto_center.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
         intake: DataStats {
             first: intake_qrt[0],
             median: intake_qrt[1],
@@ -320,6 +353,13 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
             third: points_qrt[2],
             mean: points_means[0],
             decaying: points_means[1]
+        },
+        auto_scores: DataStats {
+            first: auto_scores_qrt[0],
+            median: auto_scores_qrt[1],
+            third: auto_scores_qrt[2],
+            mean: auto_scores_means[0],
+            decaying: auto_scores_means[1]
         },
     })
 }

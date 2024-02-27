@@ -121,6 +121,24 @@ struct DetailedView: View {
                                                 Spacer()
                                                 Text("\(matchTime.intake == 1 ? "✅" : "❌")")
                                                     .font(.title3)
+                                            case 5:
+                                                Text("Auto Scored Preload")
+                                                    .font(.title3)
+                                                Spacer()
+                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")")
+                                                    .font(.title3)
+                                            case 6:
+                                                Text("Auto Wing Pickup")
+                                                    .font(.title3)
+                                                Spacer()
+                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")")
+                                                    .font(.title3)
+                                            case 7:
+                                                Text("Auto Center Pickup")
+                                                    .font(.title3)
+                                                Spacer()
+                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")")
+                                                    .font(.title3)
                                             default:
                                                 Text("Unknown entry")
                                             }

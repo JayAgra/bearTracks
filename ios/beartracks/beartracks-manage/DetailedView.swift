@@ -59,37 +59,9 @@ struct DetailedView: View {
                                             Spacer()
                                             Text("\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s")
                                                 .font(.title3)
-                                        case 2:
-                                            Text("Trap Note")
-                                                .font(.title3)
-                                            Spacer()
-                                            Text("\(matchTime.intake == 1 ? "✅" : "❌")")
-                                                .font(.title3)
-                                        case 3:
-                                            Text("Climb")
-                                                .font(.title3)
-                                            Spacer()
-                                            Text("\(matchTime.intake == 1 ? "✅" : "❌")")
-                                                .font(.title3)
-                                        case 4:
-                                            Text("Buddy Climb")
-                                                .font(.title3)
-                                            Spacer()
-                                            Text("\(matchTime.intake == 1 ? "✅" : "❌")")
-                                                .font(.title3)
                                         default:
-                                            Text("Unknown entry")
+                                            Text("boolean entry")
                                         }
-                                    }
-                                    .padding(.bottom)
-                                    HStack {
-                                        Spacer()
-                                        Label(String(format: "%.1f", matchTime.intake), systemImage: "tray.and.arrow.down")
-                                        Spacer()
-                                        Label(String(format: "%.1f", matchTime.travel), systemImage: "arrow.up.and.down.and.arrow.left.and.right")
-                                        Spacer()
-                                        Label(String(format: "%.1f", matchTime.outtake), systemImage: "tray.and.arrow.up")
-                                        Spacer()
                                     }
                                 }
                                 .padding([.leading, .trailing])
