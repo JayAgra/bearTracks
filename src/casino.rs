@@ -303,31 +303,59 @@ impl BlackjackSession {
     }
 
     // game end logic
-    #[tokio::main]
-    async fn end_game(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
+    fn end_game(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
         // result string that will be sent to client
         let result: String;
+
+        let auth_pool_clone = self.auth_db.clone();
+        let transact_pool_clone = self.transact_db.clone();
+        let user_id_clone = self.user_id.clone();
 
         // if player busts
         if self.game.player.score > 21 {
             result = "LB".to_string();
-            ctx.text(self.credit_points(-10).await.unwrap_or("bad".to_string()));
+            tokio::spawn(async move {
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, -10)
+                    .await
+                    .unwrap_or("bad".to_string());
+                }
+            );
         // if dealer busts
         } else if self.game.dealer.score > 21 {
             result = "WD".to_string();
-            ctx.text(self.credit_points(10).await.unwrap_or("bad".to_string()));
+            tokio::spawn(async move {
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 10)
+                    .await
+                    .unwrap_or("bad".to_string());
+                }
+            );
         // if player score is more than dealer score
         } else if self.game.player.score > self.game.dealer.score {
             result = "WN".to_string();
-            ctx.text(self.credit_points(10).await.unwrap_or("bad".to_string()));
+            tokio::spawn(async move {
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 10)
+                    .await
+                    .unwrap_or("bad".to_string());
+                }
+            );
         // if dealer score is more than player score
         } else if self.game.player.score < self.game.dealer.score {
             result = "LS".to_string();
-            ctx.text(self.credit_points(-10).await.unwrap_or("bad".to_string()));
+            tokio::spawn(async move {
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, -10)
+                    .await
+                    .unwrap_or("bad".to_string());
+                }
+            );
         // draw
         } else {
             result = "DR".to_string();
-            ctx.text(self.credit_points(0).await.unwrap_or("bad".to_string()));
+            tokio::spawn(async move {
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 0)
+                    .await
+                    .unwrap_or("bad".to_string());
+                }
+            );
         }
 
         // send result
@@ -335,30 +363,25 @@ impl BlackjackSession {
         // close socket
         ctx.close(Some(ws::CloseReason { code: ws::CloseCode::Normal, description: Some("".to_string()) }));
     }
-
-    async fn credit_points(&self, amount: i64) -> Result<String, Error> {
-        let auth_db_clone = self.auth_db.clone();
-        let transact_db_clone = self.transact_db.clone();
-        let user_id_clone = self.user_id.clone();
-
-        let auth_conn = web::block(move || auth_db_clone.get())
-            .await?
-            .map_err(error::ErrorInternalServerError)?;
-
-        let transact_conn = web::block(move || transact_db_clone.get())
-            .await?
-            .map_err(error::ErrorInternalServerError)?;
-
-        web::block(move || {
-            credit_points(auth_conn, transact_conn, user_id_clone, amount)
-        })
-        .await?
-        .map_err(error::ErrorInternalServerError)
-    }
-
 }
 
-fn credit_points(auth_conn: db_auth::Connection, transact_conn: db_transact::Connection, user_id: i64, amount: i64) -> Result<String, rusqlite::Error> {
+async fn credit_points(auth_pool: db_auth::Pool, transact_pool: db_transact::Pool, user_id: i64, amount: i64) -> Result<String, Error> {
+    let auth_conn = web::block(move || auth_pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    let transact_conn = web::block(move || transact_pool.get())
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+    web::block(move || {
+        credit_points_run(auth_conn, transact_conn, user_id, amount)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
+fn credit_points_run(auth_conn: db_auth::Connection, transact_conn: db_transact::Connection, user_id: i64, amount: i64) -> Result<String, rusqlite::Error> {
     db_auth::update_points(auth_conn, user_id, amount)?;
     db_transact::insert_transaction(
         transact_conn, 
