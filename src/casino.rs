@@ -4,8 +4,9 @@ use actix_web::{web, error, HttpRequest, HttpResponse, Error};
 use actix_web_actors::ws;
 use rusqlite;
 use rand::{Rng, prelude::SliceRandom};
+use tokio;
 
-use crate::db_auth;
+use crate::{db_auth, Databases};
 use crate::db_transact;
 
 const SPIN_THING_SPINS: [i64; 12] = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
@@ -64,6 +65,9 @@ const VALUES: [&str; 13] = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "
 #[derive(Clone, Debug)]
 struct BlackjackSession {
     game: BlackjackGame,
+    user_id: i64,
+    auth_db: db_auth::Pool,
+    transact_db: db_transact::Pool
 }
 
 #[derive(Clone, Debug)]
@@ -194,6 +198,7 @@ impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError
 impl BlackjackSession {
     // draw starting cards
     fn starting_cards(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
+        // TODO put bet subtraction here
         // first player card
         let card1: Card = self.new_card();
         // add to player hand
@@ -298,30 +303,31 @@ impl BlackjackSession {
     }
 
     // game end logic
-    fn end_game(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
+    #[tokio::main]
+    async fn end_game(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
         // result string that will be sent to client
         let result: String;
 
         // if player busts
         if self.game.player.score > 21 {
             result = "LB".to_string();
-            self.credit_loss();
+            ctx.text(self.credit_points(-10).await.unwrap_or("bad".to_string()));
         // if dealer busts
         } else if self.game.dealer.score > 21 {
             result = "WD".to_string();
-            self.credit_win();
+            ctx.text(self.credit_points(10).await.unwrap_or("bad".to_string()));
         // if player score is more than dealer score
         } else if self.game.player.score > self.game.dealer.score {
             result = "WN".to_string();
-            self.credit_win();
+            ctx.text(self.credit_points(10).await.unwrap_or("bad".to_string()));
         // if dealer score is more than player score
         } else if self.game.player.score < self.game.dealer.score {
             result = "LS".to_string();
-            self.credit_loss();
+            ctx.text(self.credit_points(-10).await.unwrap_or("bad".to_string()));
         // draw
         } else {
             result = "DR".to_string();
-            self.credit_tie();
+            ctx.text(self.credit_points(0).await.unwrap_or("bad".to_string()));
         }
 
         // send result
@@ -330,26 +336,60 @@ impl BlackjackSession {
         ctx.close(Some(ws::CloseReason { code: ws::CloseCode::Normal, description: Some("".to_string()) }));
     }
 
-    fn credit_win(&self) {
-        // TODO: credit logic
+    async fn credit_points(&self, amount: i64) -> Result<String, Error> {
+        let auth_db_clone = self.auth_db.clone();
+        let transact_db_clone = self.transact_db.clone();
+        let user_id_clone = self.user_id.clone();
+
+        let auth_conn = web::block(move || auth_db_clone.get())
+            .await?
+            .map_err(error::ErrorInternalServerError)?;
+
+        let transact_conn = web::block(move || transact_db_clone.get())
+            .await?
+            .map_err(error::ErrorInternalServerError)?;
+
+        web::block(move || {
+            credit_points(auth_conn, transact_conn, user_id_clone, amount)
+        })
+        .await?
+        .map_err(error::ErrorInternalServerError)
     }
 
-    fn credit_tie(&self) {
-        // TODO: credit logic
-    }
+}
 
-    fn credit_loss(&self) {
-        // TODO: credit logic
-    }
+fn credit_points(auth_conn: db_auth::Connection, transact_conn: db_transact::Connection, user_id: i64, amount: i64) -> Result<String, rusqlite::Error> {
+    db_auth::update_points(auth_conn, user_id, amount)?;
+    db_transact::insert_transaction(
+        transact_conn, 
+        db_transact::Transact {
+            id: 0,
+            user_id,
+            trans_type: 0x1502,
+            amount,
+            time: "".to_string()
+        }
+    )?;
+
+    Ok("ok".to_string())
 }
 
 // websocket route
-pub async fn websocket_route(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
+pub async fn websocket_route(req: HttpRequest, stream: web::Payload, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, Error> {
     // start websocket connection with clean game state
     ws::start(BlackjackSession {
         game: BlackjackGame {
-            player: Player { hand: Vec::new(), score: 0 },
-            dealer: Player { hand: Vec::new(), score: 0 },
+            player: Player {
+                hand: Vec::new(),
+                score: 0
+            },
+            dealer: Player {
+                hand: Vec::new(),
+                score: 0
+            },
         },
+        user_id: user.id,
+        auth_db: db.auth.clone(),
+        transact_db: db.transact.clone()
     }, &req, stream)
 }

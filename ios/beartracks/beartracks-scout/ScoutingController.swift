@@ -55,7 +55,7 @@ class ScoutingController: ObservableObject {
     
     func clearSpeaker() {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
-            matchTimes.append(MatchTime(id: matchTimes.count, score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
+            matchTimes.append(MatchTime(score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
             times = [0, 0, 0]
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         }
@@ -63,14 +63,14 @@ class ScoutingController: ObservableObject {
     
     func clearAmplifier() {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
-            matchTimes.append(MatchTime(id: matchTimes.count, score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
+            matchTimes.append(MatchTime(score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
             times = [0, 0, 0]
             UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
         }
     }
     
     func addEndgameValue(type: Int, value: Double) {
-        matchTimes.append(MatchTime(id: matchTimes.count, score_type: type, intake: value, travel: value, outtake: value))
+        matchTimes.append(MatchTime(score_type: type, intake: value, travel: value, outtake: value))
     }
     
     func submitData(completionBlock: @escaping ((SubmitSheetType, String)) -> Void) {
@@ -171,7 +171,6 @@ struct ScoutingDataExport: Codable {
 }
 
 struct MatchTime: Codable {
-    let id: Int
     let score_type: Int
     let intake: Double
     let travel: Double

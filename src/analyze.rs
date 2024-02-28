@@ -215,7 +215,6 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
 
 #[derive(Serialize, Deserialize)]
 pub struct MatchTime2024 {
-    pub id: i64,
     pub intake: f64,
     pub outtake: f64,
     pub score_type: i64,
