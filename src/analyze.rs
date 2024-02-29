@@ -215,7 +215,6 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
 
 #[derive(Serialize, Deserialize)]
 pub struct MatchTime2024 {
-    pub id: i64,
     pub intake: f64,
     pub outtake: f64,
     pub score_type: i64,
@@ -246,6 +245,10 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     let mut intake_time: f64 = 0.0;
     let mut travel_time: f64 = 0.0;
     let mut outtake_time: f64 = 0.0;
+    let mut auto_preload: i64 = 0;
+    let mut auto_wing: i64 = 0;
+    let mut auto_center: i64 = 0;
+    let mut auto_scores: i64 = 0;
 
     for time in &game_data {
         match time.score_type {
@@ -266,6 +269,18 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                     buddy = true;
                 }
             },
+            5 => {
+                auto_center = time.intake as i64
+            },
+            6 => {
+                auto_wing = time.intake as i64
+            },
+            7 => {
+                auto_preload = time.intake as i64
+            },
+            8 => {
+                auto_scores = time.intake as i64
+            }
             _ => {}
         }
         intake_time += time.intake;
@@ -273,6 +288,7 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         outtake_time += time.outtake;
     }
 
+    score += auto_scores as f64 * 18.0;
     score += speaker_scores as f64 * 12.0;
     score += amplifier_scores as f64 * 4.0;
 
@@ -314,7 +330,11 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         outtake_time as i64,
         speaker_scores,
         amplifier_scores,
-        score as i64
+        score as i64,
+        auto_preload,
+        auto_wing,
+        auto_center,
+        auto_scores
     );
 
     let string_mps_scores: Vec<String> = mps_scores

@@ -16,6 +16,13 @@
 		F54A8D282B55AA3C005975A2 /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D272B55AA3C005975A2 /* DataView.swift */; };
 		F54A8D2A2B55AA4E005975A2 /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D292B55AA4E005975A2 /* DataViewModel.swift */; };
 		F54A8D2C2B55AA65005975A2 /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D2B2B55AA65005975A2 /* DetailedView.swift */; };
+		F56550362B8EB67200369927 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59236D22B8EA7C3005AFC6E /* WidgetKit.framework */; };
+		F56550372B8EB67200369927 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59236D42B8EA7C3005AFC6E /* SwiftUI.framework */; };
+		F565503A2B8EB67200369927 /* SystemStatusBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56550392B8EB67200369927 /* SystemStatusBundle.swift */; };
+		F565503C2B8EB67200369927 /* SystemStatusLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F565503B2B8EB67200369927 /* SystemStatusLiveActivity.swift */; };
+		F56550402B8EB67300369927 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565503F2B8EB67300369927 /* Assets.xcassets */; };
+		F56550442B8EB67300369927 /* SystemStatusExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F56550352B8EB67200369927 /* SystemStatusExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F56550482B8EB9A100369927 /* SystemStatusLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F565503B2B8EB67200369927 /* SystemStatusLiveActivity.swift */; };
 		F58BA8A92B57835100807838 /* TeamsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58BA8A82B57835100807838 /* TeamsView.swift */; };
 		F58BA8AB2B57835A00807838 /* TeamsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58BA8AA2B57835A00807838 /* TeamsViewModel.swift */; };
 		F58BA8AD2B57878100807838 /* CreateKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58BA8AC2B57878100807838 /* CreateKeyView.swift */; };
@@ -24,6 +31,30 @@
 		F5CF312B2B55A3DB00BA58EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5CF312A2B55A3DB00BA58EF /* Assets.xcassets */; };
 		F5CF312E2B55A3DB00BA58EF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5CF312D2B55A3DB00BA58EF /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F56550422B8EB67300369927 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F5CF311B2B55A3DA00BA58EF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F56550342B8EB67200369927;
+			remoteInfo = SystemStatusExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F59236E32B8EA7C4005AFC6E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F56550442B8EB67300369927 /* SystemStatusExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F520BC402B5774300073A20F /* UsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersView.swift; sourceTree = "<group>"; };
@@ -35,9 +66,17 @@
 		F54A8D272B55AA3C005975A2 /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
 		F54A8D292B55AA4E005975A2 /* DataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewModel.swift; sourceTree = "<group>"; };
 		F54A8D2B2B55AA65005975A2 /* DetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedView.swift; sourceTree = "<group>"; };
+		F56550352B8EB67200369927 /* SystemStatusExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SystemStatusExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F56550392B8EB67200369927 /* SystemStatusBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusBundle.swift; sourceTree = "<group>"; };
+		F565503B2B8EB67200369927 /* SystemStatusLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusLiveActivity.swift; sourceTree = "<group>"; };
+		F565503F2B8EB67300369927 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F56550412B8EB67300369927 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F58BA8A82B57835100807838 /* TeamsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsView.swift; sourceTree = "<group>"; };
 		F58BA8AA2B57835A00807838 /* TeamsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsViewModel.swift; sourceTree = "<group>"; };
 		F58BA8AC2B57878100807838 /* CreateKeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateKeyView.swift; sourceTree = "<group>"; };
+		F59236D22B8EA7C3005AFC6E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		F59236D42B8EA7C3005AFC6E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		F59236EB2B8EABF0005AFC6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F5CF31232B55A3DA00BA58EF /* beartracks-manage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-manage.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5CF31262B55A3DA00BA58EF /* beartracks_manageApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_manageApp.swift; sourceTree = "<group>"; };
 		F5CF31282B55A3DA00BA58EF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -46,6 +85,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F56550322B8EB67200369927 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F56550372B8EB67200369927 /* SwiftUI.framework in Frameworks */,
+				F56550362B8EB67200369927 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F5CF31202B55A3DA00BA58EF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -56,10 +104,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F56550382B8EB67200369927 /* SystemStatus */ = {
+			isa = PBXGroup;
+			children = (
+				F56550392B8EB67200369927 /* SystemStatusBundle.swift */,
+				F565503B2B8EB67200369927 /* SystemStatusLiveActivity.swift */,
+				F565503F2B8EB67300369927 /* Assets.xcassets */,
+				F56550412B8EB67300369927 /* Info.plist */,
+			);
+			path = SystemStatus;
+			sourceTree = "<group>";
+		};
+		F59236D12B8EA7C3005AFC6E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F59236D22B8EA7C3005AFC6E /* WidgetKit.framework */,
+				F59236D42B8EA7C3005AFC6E /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F5CF311A2B55A3DA00BA58EF = {
 			isa = PBXGroup;
 			children = (
 				F5CF31252B55A3DA00BA58EF /* beartracks-manage */,
+				F56550382B8EB67200369927 /* SystemStatus */,
+				F59236D12B8EA7C3005AFC6E /* Frameworks */,
 				F5CF31242B55A3DA00BA58EF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				F5CF31232B55A3DA00BA58EF /* beartracks-manage.app */,
+				F56550352B8EB67200369927 /* SystemStatusExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,6 +146,7 @@
 		F5CF31252B55A3DA00BA58EF /* beartracks-manage */ = {
 			isa = PBXGroup;
 			children = (
+				F59236EB2B8EABF0005AFC6E /* Info.plist */,
 				F5CF31262B55A3DA00BA58EF /* beartracks_manageApp.swift */,
 				F5CF31282B55A3DA00BA58EF /* SettingsView.swift */,
 				F58BA8AC2B57878100807838 /* CreateKeyView.swift */,
@@ -106,6 +178,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F56550342B8EB67200369927 /* SystemStatusExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F56550452B8EB67300369927 /* Build configuration list for PBXNativeTarget "SystemStatusExtension" */;
+			buildPhases = (
+				F56550312B8EB67200369927 /* Sources */,
+				F56550322B8EB67200369927 /* Frameworks */,
+				F56550332B8EB67200369927 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SystemStatusExtension;
+			productName = SystemStatusExtension;
+			productReference = F56550352B8EB67200369927 /* SystemStatusExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		F5CF31222B55A3DA00BA58EF /* beartracks-manage */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F5CF31312B55A3DB00BA58EF /* Build configuration list for PBXNativeTarget "beartracks-manage" */;
@@ -113,10 +202,12 @@
 				F5CF311F2B55A3DA00BA58EF /* Sources */,
 				F5CF31202B55A3DA00BA58EF /* Frameworks */,
 				F5CF31212B55A3DA00BA58EF /* Resources */,
+				F59236E32B8EA7C4005AFC6E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F56550432B8EB67300369927 /* PBXTargetDependency */,
 			);
 			name = "beartracks-manage";
 			productName = "beartracks-manage";
@@ -133,6 +224,9 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					F56550342B8EB67200369927 = {
+						CreatedOnToolsVersion = 15.2;
+					};
 					F5CF31222B55A3DA00BA58EF = {
 						CreatedOnToolsVersion = 15.2;
 					};
@@ -152,11 +246,20 @@
 			projectRoot = "";
 			targets = (
 				F5CF31222B55A3DA00BA58EF /* beartracks-manage */,
+				F56550342B8EB67200369927 /* SystemStatusExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F56550332B8EB67200369927 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F56550402B8EB67300369927 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F5CF31212B55A3DA00BA58EF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -169,6 +272,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F56550312B8EB67200369927 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F565503A2B8EB67200369927 /* SystemStatusBundle.swift in Sources */,
+				F565503C2B8EB67200369927 /* SystemStatusLiveActivity.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F5CF311F2B55A3DA00BA58EF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -185,6 +297,7 @@
 				F54A8D2A2B55AA4E005975A2 /* DataViewModel.swift in Sources */,
 				F54A8D242B55A463005975A2 /* LoginView.swift in Sources */,
 				F54A8D262B55A4ED005975A2 /* TabBarView.swift in Sources */,
+				F56550482B8EB9A100369927 /* SystemStatusLiveActivity.swift in Sources */,
 				F58BA8AD2B57878100807838 /* CreateKeyView.swift in Sources */,
 				F54A8D222B55A44C005975A2 /* URLSessionConfiguration.swift in Sources */,
 			);
@@ -192,7 +305,71 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		F56550432B8EB67300369927 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F56550342B8EB67200369927 /* SystemStatusExtension */;
+			targetProxy = F56550422B8EB67300369927 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		F56550462B8EB67300369927 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D6MFYYVHA8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SystemStatus/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SystemStatus;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage.SystemStatus";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F56550472B8EB67300369927 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D6MFYYVHA8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SystemStatus/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SystemStatus;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage.SystemStatus";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		F5CF312F2B55A3DB00BA58EF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -315,6 +492,7 @@
 		F5CF31322B55A3DB00BA58EF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -323,8 +501,10 @@
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "beartracks-manage/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Manage;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -336,7 +516,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.4;
+				MARKETING_VERSION = 5.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -348,6 +528,7 @@
 		F5CF31332B55A3DB00BA58EF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -356,8 +537,10 @@
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "beartracks-manage/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Manage;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -369,7 +552,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0.4;
+				MARKETING_VERSION = 5.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -381,6 +564,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F56550452B8EB67300369927 /* Build configuration list for PBXNativeTarget "SystemStatusExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F56550462B8EB67300369927 /* Debug */,
+				F56550472B8EB67300369927 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F5CF311E2B55A3DA00BA58EF /* Build configuration list for PBXProject "beartracks-manage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ActivityKit
 
 struct SettingsView: View {
     @Binding var loginRequired: Bool
@@ -14,7 +15,22 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack {
-                    HStack {
+                    VStack {
+                        Button("activity") {
+                            if ActivityAuthorizationInfo().areActivitiesEnabled {
+                                do {
+                                    let attrs = SystemStatusAttributes(hostname: "beartracks.io")
+                                    let initialState = SystemStatusAttributes.ContentState(total_mem: 1000, used_mem: 939, total_swap: 100, used_swap: 0, uptime: 2313124, load_one: 0.02, load_five: 0.85, load_fifteen: 0.93, sessions: 2)
+                                    
+                                    let activity = try Activity.request(
+                                        attributes: attrs,
+                                        content: .init(state: initialState, staleDate: nil),
+                                        pushType: nil
+                                    )
+                                } catch {}
+                            }
+                        }
+                        
                         Button("Log Out") {
                             if let cookies = HTTPCookieStorage.shared.cookies(for: sharedSession.configuration.urlCache?.cachedResponse(for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(string: "https://beartracks.io")!) {
                                 for cookie in cookies {

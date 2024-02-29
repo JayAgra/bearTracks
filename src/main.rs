@@ -739,7 +739,7 @@ async fn main() -> io::Result<()> {
                     .build()
             )
             // default headers for caching. overridden on most all api endpoints
-            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.0.4")))
+            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.0.5")))
             /* src  endpoints */
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))

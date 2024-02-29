@@ -80,7 +80,7 @@ async function uploadForm() {
         .then(async (response: { status: String }) => {
             switch (response.status) {
                 case "you_sketchy_motherfucker": {
-                    errorElement.innerText = "no special characters other than \"_\" or \"-\" in any field. 32 char max for all fields.";
+                    errorElement.innerText = "characters must only include a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \ _ [ _ ] { } | ? . ,";
                     errorReload();
                     break;
                 }
@@ -96,7 +96,7 @@ async function uploadForm() {
                 }
                 case "password_length": {
                     errorElement.innerText =
-                        "password length bad ( 8 <= len <= 32 )";
+                        "password length bad ( 8 <= len <= 64 )";
                     errorReload();
                     break;
                 }

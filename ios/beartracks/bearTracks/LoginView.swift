@@ -20,7 +20,7 @@ struct LoginView: View {
         VStack {
             Text("bearTracks")
                 .font(.title)
-            Text("v5.0.4 • 2024")
+            Text("v5.0.5 • 2024")
             if !loading {
                 if !create {
                     Text("log in")
@@ -125,7 +125,13 @@ struct LoginView: View {
                                 alertMessage = "bad credentials"
                             } else {
                                 if httpResponse.statusCode == 400 {
-                                    alertMessage = "you supplied some data the server didn't like very much. your username could have been taken or your team code was invalid. alternatively, either your username, full name, or password was not between 3 and 32 characters (8 min for password) or they contained special characters other than \"-\" or \"_\"."
+                                    alertMessage = "you supplied some data the server didn't like very much. your username, full name, and/or password contained characters other than a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \\ _ [ _ ] { } | ? . ,"
+                                } else if httpResponse.statusCode == 409 {
+                                    alertMessage = "username taken"
+                                } else if httpResponse.statusCode == 403 {
+                                    alertMessage = "bad access key"
+                                } else if httpResponse.statusCode == 413 {
+                                    alertMessage = "your username, full name, and/or password were not between 3 and 64 characters (8 min for password)"
                                 } else {
                                     alertMessage = "creation failed"
                                 }

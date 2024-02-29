@@ -40,10 +40,7 @@ class TeamStatController: ObservableObject {
 struct TeamStats: Codable {
     let team: Int
     let trap_note, climb, buddy_climb: Double?
-    let intake, travel, outtake, speaker, amplifier, total, points: DataStats
+    let intake, travel, outtake, speaker, amplifier, total, points, auto_preload, auto_wing, auto_center, auto_scores: DataStats
 }
 
-struct DataStats: Codable {
-    let first, median, third, mean, decaying: Int
-}
-
+struct DataStats: Codable { let first, median, third, mean, decaying: Int }

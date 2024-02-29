@@ -65,7 +65,8 @@ struct SettingsView: View {
                             }
                     }
                     Section {
-                        Button("Clear Cache") {
+                        Button("Clear Network Cache") {
+                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                             URLCache.shared.removeAllCachedResponses()
                         }
                         Button("Log Out") {

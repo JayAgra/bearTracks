@@ -26,7 +26,7 @@ class ScoutingController: ObservableObject {
     @Published public var defense: String = ""
     @Published public var driving: String = ""
     @Published public var overall: String = ""
-    @Published public var switches: (Bool, Bool, Bool) = (false, false, false)
+    @Published public var switches: (Bool, Bool, Bool, Int, Int, Int, Int) = (false, false, false, 0, 0, 0, 0)
     // submit sheet
     @Published public var showSubmitSheet: Bool = false
     @Published public var submitSheetType: SubmitSheetType = .waiting
@@ -55,28 +55,37 @@ class ScoutingController: ObservableObject {
     
     func clearSpeaker() {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
-            matchTimes.append(MatchTime(id: matchTimes.count, score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
+            matchTimes.append(MatchTime(score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
             times = [0, 0, 0]
-            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         }
     }
     
     func clearAmplifier() {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
-            matchTimes.append(MatchTime(id: matchTimes.count, score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
+            matchTimes.append(MatchTime(score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
             times = [0, 0, 0]
-            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+        }
+    }
+    
+    func clearShuttle() {
+        if times[0] != 0 || times[1] != 0 || times[2] != 0 {
+            matchTimes.append(MatchTime(score_type: 9, intake: times[0], travel: times[1], outtake: times[2]))
+            times = [0, 0, 0]
         }
     }
     
     func addEndgameValue(type: Int, value: Double) {
-        matchTimes.append(MatchTime(id: matchTimes.count, score_type: type, intake: value, travel: value, outtake: value))
+        matchTimes.append(MatchTime(score_type: type, intake: value, travel: value, outtake: value))
     }
     
     func submitData(completionBlock: @escaping ((SubmitSheetType, String)) -> Void) {
         addEndgameValue(type: 2, value: switches.0 ? 1 : 0)
         addEndgameValue(type: 3, value: switches.1 ? 1 : 0)
         addEndgameValue(type: 4, value: switches.2 ? 1 : 0)
+        addEndgameValue(type: 5, value: Double(switches.3))
+        addEndgameValue(type: 6, value: Double(switches.4))
+        addEndgameValue(type: 7, value: Double(switches.5))
+        addEndgameValue(type: 8, value: Double(switches.6))
         guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
         var encodedMatchTimes: String = ""
         do {
@@ -139,6 +148,7 @@ class ScoutingController: ObservableObject {
     }
     
     func resetControllerData() {
+        self.switches = (false, false, false, 0, 0, 0, 0)
         self.matchNumber = "--"
         self.teamNumber = "--"
         self.times = [0, 0, 0]
@@ -166,7 +176,6 @@ struct ScoutingDataExport: Codable {
 }
 
 struct MatchTime: Codable {
-    let id: Int
     let score_type: Int
     let intake: Double
     let travel: Double

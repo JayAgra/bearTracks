@@ -70,9 +70,9 @@ struct TeamViewStats: View {
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].total)))")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_scores)))")
                                 .font(.title)
-                            Text("total")
+                            Text("auto scores")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -94,6 +94,27 @@ struct TeamViewStats: View {
                             Text("\(Int(((teamDetail.teamData[0].buddy_climb ?? 0) * 100).rounded()))%")
                                 .font(.title)
                             Text("buddy climb")
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .padding([.top, .bottom])
+                    HStack {
+                        VStack {
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_preload)))")
+                                .font(.title)
+                            Text("auto preload")
+                        }
+                        .frame(maxWidth: .infinity)
+                        VStack {
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_wing)))")
+                                .font(.title)
+                            Text("auto wing")
+                        }
+                        .frame(maxWidth: .infinity)
+                        VStack {
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_center)))")
+                                .font(.title)
+                            Text("auto center")
                         }
                         .frame(maxWidth: .infinity)
                     }

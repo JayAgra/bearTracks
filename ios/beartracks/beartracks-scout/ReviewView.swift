@@ -24,7 +24,7 @@ struct ReviewView: View {
                         Text("Please fill in all three long form responses.")
                             .padding()
                     } else {
-                        Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())")
+                        Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2024"))")
                             .padding(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         ScrollView {
@@ -35,7 +35,7 @@ struct ReviewView: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 VStack {
                                     Divider()
-                                    ForEach(controller.getMatchTimes(), id: \.id) { matchTime in
+                                    ForEach(controller.getMatchTimes(), id: \.travel) { matchTime in
                                         VStack {
                                             HStack {
                                                 if matchTime.score_type == 0 {
@@ -50,18 +50,22 @@ struct ReviewView: View {
                                                     Spacer()
                                                     Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
                                                         .font(.title3)
+                                                } else if matchTime.score_type == 9 {
+                                                    Text("Shuttle")
+                                                        .font(.title3)
+                                                    Spacer()
+                                                    Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
+                                                        .font(.title3)
                                                 }
                                             }
-                                            if matchTime.score_type == 0 || matchTime.score_type == 1 {
-                                                HStack {
-                                                    Spacer()
-                                                    Text(String(format: "%.1f", matchTime.intake))
-                                                    Spacer()
-                                                    Text(String(format: "%.1f", matchTime.travel))
-                                                    Spacer()
-                                                    Text(String(format: "%.1f", matchTime.outtake))
-                                                    Spacer()
-                                                }
+                                            HStack {
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.intake))
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.travel))
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.outtake))
+                                                Spacer()
                                             }
                                         }
                                         .padding([.leading, .trailing])
