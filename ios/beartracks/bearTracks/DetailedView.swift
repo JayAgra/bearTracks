@@ -145,11 +145,17 @@ struct DetailedView: View {
                                                 Spacer()
                                                 Text("\(Int(matchTime.intake))")
                                                     .font(.title3)
+                                            case 9:
+                                                Text("Shuttle")
+                                                    .font(.title3)
+                                                Spacer()
+                                                Text("\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s")
+                                                    .font(.title3)
                                             default:
                                                 Text("Unknown entry")
                                             }
                                         }
-                                        if matchTime.score_type == 0 || matchTime.score_type == 1 {
+                                        if matchTime.score_type == 0 || matchTime.score_type == 1 || matchTime.score_type == 9 {
                                             HStack {
                                                 Spacer()
                                                 Label(String(format: "%.1f", matchTime.intake), systemImage: "tray.and.arrow.down")

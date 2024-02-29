@@ -57,7 +57,6 @@ class ScoutingController: ObservableObject {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
             matchTimes.append(MatchTime(score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
             times = [0, 0, 0]
-            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         }
     }
     
@@ -65,7 +64,13 @@ class ScoutingController: ObservableObject {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
             matchTimes.append(MatchTime(score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
             times = [0, 0, 0]
-            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+        }
+    }
+    
+    func clearShuttle() {
+        if times[0] != 0 || times[1] != 0 || times[2] != 0 {
+            matchTimes.append(MatchTime(score_type: 9, intake: times[0], travel: times[1], outtake: times[2]))
+            times = [0, 0, 0]
         }
     }
     

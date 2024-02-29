@@ -25,9 +25,26 @@ struct GameView: View {
                 VStack {
                     GeometryReader { geometry in
                         VStack {
-                            Text("\(String(format: "%.1f", holdLengths.0)) \(String(format: "%.1f", holdLengths.1)) \(String(format: "%.1f", holdLengths.2))")
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .padding(.top)
+                            HStack {
+                                Spacer()
+                                VStack {
+                                    Text("intake")
+                                    Text(String(format: "%.1f", holdLengths.0))
+                                }
+                                Spacer()
+                                VStack {
+                                    Text("move")
+                                    Text(String(format: "%.1f", holdLengths.1))
+                                }
+                                Spacer()
+                                VStack {
+                                    Text("outtake")
+                                    Text(String(format: "%.1f", holdLengths.2))
+                                }
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.top)
                             Spacer()
                             ZStack {
                                 HStack {
@@ -66,7 +83,11 @@ struct GameView: View {
                                         if self.ballOffset.height >= geometry.size.height * 0.2 {
                                             let boomThing = UIImpactFeedbackGenerator(style: .medium)
                                             boomThing.prepare(); boomThing.impactOccurred();
-                                            controller.clearAmplifier()
+                                            if self.ballOffset.height >= geometry.size.height * 0.475 {
+                                                controller.clearShuttle()
+                                            } else {
+                                                controller.clearAmplifier()
+                                            }
                                             self.holdLengths = (0, 0, 0)
                                         } else if self.ballOffset.height <= geometry.size.height * -0.2 {
                                             UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -154,7 +175,11 @@ struct GameView: View {
             if self.ballOffset.height < 0 {
                 return Image(systemName: "speaker.wave.2")
             } else {
-                return Image(systemName: "speaker.plus")
+                if abs(self.ballOffset.height) >= height * 0.475 {
+                    return Image(systemName: "airplane")
+                } else {
+                    return Image(systemName: "speaker.plus")
+                }
             }
         } else {
             switch position {
@@ -175,7 +200,11 @@ struct GameView: View {
             if self.ballOffset.height < 0 {
                 return Color.init(red: 184/255, green: 187/255, blue: 38/255)
             } else {
-                return Color.init(red: 250/255, green: 189/255, blue: 47/255)
+                if abs(self.ballOffset.height) >= height * 0.475 {
+                    return Color.init(red: 254/255, green: 128/255, blue: 25/255)
+                } else {
+                    return Color.init(red: 250/255, green: 189/255, blue: 47/255)
+                }
             }
         } else {
             switch position {

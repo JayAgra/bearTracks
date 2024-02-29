@@ -56,36 +56,44 @@ struct StartView: View {
                                 Stepper {
                                     Text("Scores (\(controller.switches.6))")
                                 } onIncrement: {
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.switches.6 += 1;
                                 } onDecrement: {
                                     if controller.switches.6 > 0 {
+                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.6 -= 1;
                                     }
                                 }
                                 Stepper {
                                     Text("Preloaded notes handled (\(controller.switches.5))")
                                 } onIncrement: {
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.switches.5 += 1;
                                 } onDecrement: {
                                     if controller.switches.5 > 0 {
+                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.5 -= 1;
                                     }
                                 }
                                 Stepper {
                                     Text("Alliance wing notes handled (\(controller.switches.4))")
                                 } onIncrement: {
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.switches.4 += 1;
                                 } onDecrement: {
                                     if controller.switches.4 > 0 {
+                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.4 -= 1;
                                     }
                                 }
                                 Stepper {
                                     Text("Neutral zone notes handled (\(controller.switches.3))")
                                 } onIncrement: {
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.switches.3 += 1;
                                 } onDecrement: {
                                     if controller.switches.3 > 0 {
+                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.3 -= 1;
                                     }
                                 }
