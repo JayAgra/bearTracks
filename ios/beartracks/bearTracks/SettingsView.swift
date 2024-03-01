@@ -170,17 +170,25 @@ struct SettingsView: View {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
+#if !os(visionOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
+#endif
                         } else {
+#if !os(visionOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.error)
+#endif
                         }
                     }
                 } else {
+#if !os(visionOS)
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
+#endif
                 }
             }.resume()
         } catch {
+#if !os(visionOS)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
+#endif
         }
     }
 }

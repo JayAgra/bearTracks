@@ -44,9 +44,12 @@ struct Teams: View {
                                     loadState.0 = true
                                 }
                                 .contentShape(Rectangle())
-                                #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
                                 .padding([.top, .bottom])
-                                #endif
+#endif
+#if !os(visionOS)
+                                .padding(.bottom)
+#endif
                             }
                             .contentShape(Rectangle())
                         }

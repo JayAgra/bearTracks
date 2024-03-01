@@ -31,7 +31,9 @@ struct TeamViewStats: View {
             .pickerStyle(.segmented)
             .padding()
             .onChange(of: teamDetail.statType) { value in
+#if !os(visionOS)
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+#endif
             }
             ScrollView {
                 if !teamDetail.teamData.isEmpty {

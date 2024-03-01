@@ -60,12 +60,17 @@ class DataViewModel: ObservableObject {
 }
 
 /// Represents a data entry containing a Brief data structure
-struct DataEntry: Codable {
+struct DataEntry: Codable, Identifiable {
+    var id = UUID()
     let Brief: BriefData
+    
+    private enum CodingKeys: String, CodingKey {
+        case Brief
+    }
 }
 
 /// Brief data structure from beartracks server
-struct BriefData: Codable {
+struct BriefData: Codable, Identifiable {
     let id: Int
     let event: String
     let season: Int
