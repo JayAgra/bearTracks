@@ -57,7 +57,7 @@ struct TeamView: View {
                     .frame(maxWidth: .infinity)
                     VStack {
                         Text(
-                            String(format: "%.1f", (dataItems.teamData.first?.rps ?? 0) / (dataItems.teamData.first?.count ?? 1))
+                            String(format: "%.1f", divideNotZero(num: dataItems.teamData.first?.rps ?? 0, denom: dataItems.teamData.first?.count ?? 1))
                         )
                             .font(.title)
                         Text("RPs / match")
@@ -118,6 +118,14 @@ struct TeamView: View {
         .padding()
         .onAppear() {
             dataItems.reload()
+        }
+    }
+    
+    private func divideNotZero(num: Int, denom: Int) -> Double {
+        if denom == 0 {
+            return 0.0
+        } else {
+            return  Double(num) / Double(denom)
         }
     }
 }

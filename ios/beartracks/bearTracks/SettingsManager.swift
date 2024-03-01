@@ -20,12 +20,4 @@ class SettingsManager {
         ]
         UserDefaults.standard.register(defaults: defaults)
     }
-
-    func saveSetting(value: String, forKey key: String) {
-        UserDefaults.standard.set(value, forKey: key)
-    }
-
-    func getSetting(forKey key: String) -> String? {
-        return UserDefaults.standard.string(forKey: key)
-    }
 }
