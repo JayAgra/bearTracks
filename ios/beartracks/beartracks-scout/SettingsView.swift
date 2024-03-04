@@ -36,6 +36,8 @@ struct SettingsView: View {
                         .pickerStyle(.menu)
                         .onChange(of: eventCodeInput) { _ in
                             UserDefaults.standard.set(eventCodeInput, forKey: "eventCode")
+                            controller.matchNumber = 0
+                            controller.teamNumber = "--"
                             controller.getMatches { result in
                                 controller.matchList = result
                             }
@@ -54,6 +56,8 @@ struct SettingsView: View {
                         .pickerStyle(.menu)
                         .onChange(of: seasonInput) { _ in
                             saveSeason()
+                            controller.matchNumber = 0
+                            controller.teamNumber = "--"
                             controller.getMatches { result in
                                 controller.matchList = result
                             }

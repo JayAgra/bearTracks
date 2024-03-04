@@ -47,7 +47,7 @@ struct Teams: View {
 #if targetEnvironment(macCatalyst)
                                 .padding([.top, .bottom])
 #endif
-#if !os(visionOS)
+#if os(visionOS)
                                 .padding(.bottom)
 #endif
                             }

@@ -20,28 +20,32 @@ struct StartView: View {
                             Text("\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2024"))")
                         }
                         Section {
-                            Picker("Match Number", selection: $controller.matchNumber) {
-                                Text("SELECT")
-                                    .tag("--")
-                                    .disabled(true)
-                                if !controller.matchList.isEmpty && !controller.matchList[0].Schedule.isEmpty {
-                                    ForEach(0...controller.matchList[0].Schedule.count, id: \.self) { id in
-                                        Text(String(id + 1))
-                                            .tag(String(id + 1))
-                                    }
+                            Stepper {
+                                HStack {
+                                    Text("Match Number: ")
+                                    Spacer()
+                                    Text("\(controller.matchNumber)")
+                                }
+                            } onIncrement: {
+                                if controller.matchNumber <= controller.matchList[0].Schedule.count {
+                                    controller.teamNumber = "--"
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                    controller.matchNumber += 1;
+                                }
+                            } onDecrement: {
+                                if controller.matchNumber > 1 {
+                                    controller.teamNumber = "--"
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                    controller.matchNumber -= 1;
                                 }
                             }
-                            .pickerStyle(.menu)
-                            .onChange(of: controller.matchNumber) { _ in
-                                controller.teamNumber = "--"
-                            }
-                            if controller.matchNumber != "--" {
+                            if controller.matchNumber != 0 {
                                 Picker("Team Number", selection: $controller.teamNumber) {
                                     Text("SELECT")
                                         .tag("--")
                                         .disabled(true)
                                     if !controller.matchList.isEmpty && !controller.matchList[0].Schedule.isEmpty {
-                                        ForEach(controller.matchList[0].Schedule[(Int(controller.matchNumber) ?? 1) - 1].teams, id: \.teamNumber) { team_entry in
+                                        ForEach(controller.matchList[0].Schedule[controller.matchNumber - 1].teams, id: \.teamNumber) { team_entry in
                                             Text(String(team_entry.teamNumber))
                                                 .tag(String(team_entry.teamNumber))
                                         }
@@ -50,52 +54,57 @@ struct StartView: View {
                                 .pickerStyle(.menu)
                             }
                         }
-                        if controller.matchNumber != "--"  && controller.teamNumber != "--" {
+                        if controller.matchNumber != 0  && controller.teamNumber != "--" {
                             Section {
                                 Text("Autonomous Period")
-                                Stepper {
-                                    Text("Scores (\(controller.switches.6))")
-                                } onIncrement: {
-                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                    controller.switches.6 += 1;
-                                } onDecrement: {
-                                    if controller.switches.6 > 0 {
-                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                        controller.switches.6 -= 1;
-                                    }
-                                }
                                 Stepper {
                                     Text("Preloaded notes handled (\(controller.switches.5))")
                                 } onIncrement: {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                    controller.switches.6 += 1;
                                     controller.switches.5 += 1;
                                 } onDecrement: {
                                     if controller.switches.5 > 0 {
                                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.5 -= 1;
+                                        scoresDecrement()
                                     }
                                 }
                                 Stepper {
                                     Text("Alliance wing notes handled (\(controller.switches.4))")
                                 } onIncrement: {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                    controller.switches.6 += 1;
                                     controller.switches.4 += 1;
                                 } onDecrement: {
                                     if controller.switches.4 > 0 {
                                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.4 -= 1;
+                                        scoresDecrement()
                                     }
                                 }
                                 Stepper {
                                     Text("Neutral zone notes handled (\(controller.switches.3))")
                                 } onIncrement: {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                    controller.switches.6 += 1;
                                     controller.switches.3 += 1;
                                 } onDecrement: {
                                     if controller.switches.3 > 0 {
                                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.3 -= 1;
+                                        scoresDecrement()
                                     }
+                                }
+                            }
+                            Section {
+                                Stepper {
+                                    Text("Scores (\(controller.switches.6))")
+                                } onIncrement: {
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                    controller.switches.6 += 1;
+                                } onDecrement: {
+                                    scoresDecrement()
                                 }
                             }
                         }
@@ -103,12 +112,19 @@ struct StartView: View {
                             Button("start teleop") {
                                 controller.advanceToTab(tab: .game)
                             }
-                            .disabled(controller.matchNumber == "--"  || controller.teamNumber == "--")
+                            .disabled(controller.matchNumber == 0  || controller.teamNumber == "--")
                         }
                     }
                 }
                 .navigationTitle("Match Scouting")
             }
+        }
+    }
+    
+    private func scoresDecrement() {
+        if controller.switches.6 > 0 {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            controller.switches.6 -= 1;
         }
     }
 }

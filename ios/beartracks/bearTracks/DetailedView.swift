@@ -87,7 +87,7 @@ struct DetailedView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             VStack {
                                 Divider()
-                                ForEach(gameData, id: \.id) { matchTime in
+                                ForEach(gameData) { matchTime in
                                     VStack {
                                         HStack {
                                             switch matchTime.score_type {
@@ -294,10 +294,17 @@ struct FullMainData: Codable {
 }
 
 /// 2024 season specific data structure for deocding the `game` key of `FullMainData`
-struct MatchTime2024: Codable {
-    let id: Int
+struct MatchTime2024: Codable, Identifiable {
+    var id = UUID()
     let score_type: Int
     let intake: Float
     let outtake: Float
     let travel: Float
+    
+    enum CodingKeys: CodingKey {
+        case score_type
+        case intake
+        case outtake
+        case travel
+    }
 }
