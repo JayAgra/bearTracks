@@ -18,7 +18,7 @@ struct EndView: View {
     var body: some View {
         NavigationStack {
                 VStack {
-                    if controller.getTeamNumber() != "--" || controller.getMatchNumber() != 0 {
+                    if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                         Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
                             .padding(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)

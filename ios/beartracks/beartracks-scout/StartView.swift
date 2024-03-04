@@ -27,7 +27,7 @@ struct StartView: View {
                                     Text("\(controller.matchNumber)")
                                 }
                             } onIncrement: {
-                                if controller.matchNumber <= controller.matchList[0].Schedule.count {
+                                if controller.matchNumber < controller.matchList[0].Schedule.count {
                                     controller.teamNumber = "--"
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.matchNumber += 1;
