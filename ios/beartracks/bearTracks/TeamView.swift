@@ -112,7 +112,11 @@ struct TeamView: View {
                         .navigationTitle("#\(dataItems.getSelectedItem())")
                 }
             } else {
-                Text("loading team...")
+                if dataItems.loadComplete.0 && dataItems.loadComplete.1 && (dataItems.teamData.isEmpty || dataItems.teamMatches.isEmpty) {
+                    Label("loading failed", systemImage: "xmark.seal.fill")
+                } else {
+                    Text("loading team...")
+                }
             }
         }
         .padding()
