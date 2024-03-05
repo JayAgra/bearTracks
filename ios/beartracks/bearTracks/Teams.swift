@@ -24,11 +24,19 @@ struct Teams: View {
                                 VStack {
                                     HStack {
                                         Text("\(String(index + 1))")
+#if !os(watchOS)
                                             .font(.title)
+#else
+                                            .font(.title3)
+#endif
                                             .padding(.leading)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Text("\(String(team.team.team))")
+#if !os(watchOS)
                                             .font(.title)
+#else
+                                            .font(.title3)
+#endif
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
                                     }
@@ -53,6 +61,22 @@ struct Teams: View {
                             }
                             .contentShape(Rectangle())
                         }
+#if os(watchOS)
+                        Section {
+                            VStack {
+                                NavigationLink(destination: SettingsView()) {
+                                    HStack {
+                                        Text("Settings")
+                                        Spacer()
+                                        Label("", systemImage: "chevron.forward")
+                                            .labelStyle(.iconOnly)
+                                    }
+                                    .padding([.leading, .trailing])
+                                }
+                            }
+                            .padding([.leading, .trailing])
+                        }
+#endif
                     }
                     .navigationTitle("Teams")
                     .navigationDestination(isPresented: $loadState.0) {

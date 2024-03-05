@@ -355,6 +355,19 @@ async fn manage_get_all_keys(db: web::Data<Databases>, user: db_auth::User) -> R
     }
 }
 
+// data dump
+async fn manage_data_dump(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(
+            HttpResponse::Ok()
+                .insert_header(("Cache-Control", "no-cache"))
+                .json(db_main::execute(&db.main, db_main::MainData::GetAllData, path).await?)
+        )
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
 // DELETE endpoint to remove a submission. used in /manage
 async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
@@ -799,6 +812,7 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/manage/all_users").route(web::get().to(manage_get_all_users)))
                 .service(web::resource("/api/v1/manage/team_users").route(web::get().to(manage_get_all_users_in_team)))
                 .service(web::resource("/api/v1/manage/all_access_keys").route(web::get().to(manage_get_all_keys)))
+                .service(web::resource("/api/v1/manage/dump_data/{args}*").route(web::get().to(manage_data_dump)))
                 // DELETE
                 .service(web::resource("/api/v1/manage/delete/{id}").route(web::delete().to(manage_delete_submission)))
                 .service(web::resource("/api/v1/manage/user/delete/{user_id}").route(web::delete().to(manage_delete_user)))

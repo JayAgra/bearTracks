@@ -70,7 +70,8 @@ pub enum MainData {
     BriefMatch,
     BriefUser,
     GetTeams,
-    Id
+    Id,
+    GetAllData
 }
 
 // execute query
@@ -95,6 +96,7 @@ pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> R
             MainData::BriefUser => get_brief_user(conn, path),
             MainData::GetTeams => get_all_teams(conn, path),
             MainData::Id => get_main_ids(conn, path),
+            MainData::GetAllData => get_all_data(conn, path),
         }
     })
     .await?
@@ -105,6 +107,13 @@ pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> R
 fn get_data_detailed(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
     let stmt = conn.prepare("SELECT * FROM main WHERE id=:id LIMIT 1;")?;
+    get_rows(stmt, [args[0].parse::<i64>().unwrap()])
+}
+
+// get all data
+fn get_all_data(conn: Connection, path: web::Path<String>) -> QueryResult {
+    let args = path.split("/").collect::<Vec<_>>();
+    let stmt = conn.prepare("SELECT * FROM main WHERE season=:season LIMIT 1;")?;
     get_rows(stmt, [args[0].parse::<i64>().unwrap()])
 }
 

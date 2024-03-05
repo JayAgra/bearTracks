@@ -85,7 +85,11 @@ struct TeamView: View {
                         VStack {
                             HStack {
                                 Text("match \(String(entry.Brief.match_num))")
+#if !os(watchOS)
                                     .font(.title)
+#else
+                                    .font(.title3)
+#endif
                                     .padding(.leading)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }

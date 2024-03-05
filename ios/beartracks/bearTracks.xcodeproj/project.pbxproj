@@ -40,6 +40,7 @@
 		F5B8D1C62B96729200D3F230 /* TeamStatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */; };
 		F5B8D1C72B9672A200D3F230 /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E442B527E050033DB0D /* DataViewModel.swift */; };
 		F5B8D1C92B96779400D3F230 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */; };
+		F5BDD40A2B96CD570099C7A7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E522B527E170033DB0D /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -335,6 +336,7 @@
 				F5B8D1C92B96779400D3F230 /* LoginView.swift in Sources */,
 				F5B8D1BE2B96715500D3F230 /* AppState.swift in Sources */,
 				F5B8D1C72B9672A200D3F230 /* DataViewModel.swift in Sources */,
+				F5BDD40A2B96CD570099C7A7 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,7 +586,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 10.2;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -616,7 +618,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 10.2;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};

@@ -35,7 +35,9 @@ struct SettingsView: View {
                                     .tag(teamNumberInput)
                             }
                         }
+#if !os(watchOS)
                         .pickerStyle(.menu)
+#endif
                         .onChange(of: teamNumberInput) { value in
                             UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(teamNumberInput, forKey: "teamNumber")
                         }
@@ -50,7 +52,9 @@ struct SettingsView: View {
                                     .tag(eventCodeInput)
                             }
                         }
+#if !os(watchOS)
                         .pickerStyle(.menu)
+#endif
                         .onChange(of: eventCodeInput) { value in
                             UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(eventCodeInput, forKey: "eventCode")
                         }
@@ -65,7 +69,9 @@ struct SettingsView: View {
                                     .tag(seasonInput)
                             }
                         }
+#if !os(watchOS)
                         .pickerStyle(.menu)
+#endif
                         .onChange(of: seasonInput) { value in
                             UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(seasonInput, forKey: "season")
                         }
@@ -126,6 +132,9 @@ struct SettingsView: View {
                 self.settingsOptions = result
             }
         }
+#if os(watchOS)
+        .ignoresSafeArea(edges: .bottom)
+#endif
     }
     
     func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) -> Void {
@@ -170,23 +179,23 @@ struct SettingsView: View {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
 #endif
                         } else {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
                         }
                     }
                 } else {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
                 }
             }.resume()
         } catch {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
         }
