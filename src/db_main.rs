@@ -1,6 +1,6 @@
 use actix_web::{error, web, Error};
 use regex::Regex;
-use rusqlite::{Statement, params};
+use rusqlite::{params, Statement};
 use serde::{Deserialize, Serialize};
 
 use crate::db_auth;
@@ -51,7 +51,7 @@ pub enum Main {
     },
     Id {
         id: i64,
-    }
+    },
 }
 
 // pool and connection types
@@ -72,11 +72,15 @@ pub enum MainData {
     BriefUser,
     GetTeams,
     Id,
-    GetAllData
+    GetAllData,
 }
 
 // execute query
-pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> Result<Vec<Main>, Error> {
+pub async fn execute(
+    pool: &Pool,
+    query: MainData,
+    path: web::Path<String>,
+) -> Result<Vec<Main>, Error> {
     // clone pool
     let pool = pool.clone();
 
@@ -86,19 +90,17 @@ pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> R
         .map_err(error::ErrorInternalServerError)?;
 
     // run query function based on provided enum
-    web::block(move || {
-        match query {
-            MainData::GetDataDetailed => get_data_detailed(conn, path),
-            MainData::DataExists => get_submission_exists(conn, path),
-            MainData::BriefSeason => get_brief_season(conn, path),
-            MainData::BriefEvent => get_brief_event(conn, path),
-            MainData::BriefTeam => get_brief_team(conn, path),
-            MainData::BriefMatch => get_brief_match(conn, path),
-            MainData::BriefUser => get_brief_user(conn, path),
-            MainData::GetTeams => get_all_teams(conn, path),
-            MainData::Id => get_main_ids(conn, path),
-            MainData::GetAllData => get_all_data(conn, path),
-        }
+    web::block(move || match query {
+        MainData::GetDataDetailed => get_data_detailed(conn, path),
+        MainData::DataExists => get_submission_exists(conn, path),
+        MainData::BriefSeason => get_brief_season(conn, path),
+        MainData::BriefEvent => get_brief_event(conn, path),
+        MainData::BriefTeam => get_brief_team(conn, path),
+        MainData::BriefMatch => get_brief_match(conn, path),
+        MainData::BriefUser => get_brief_user(conn, path),
+        MainData::GetTeams => get_all_teams(conn, path),
+        MainData::Id => get_main_ids(conn, path),
+        MainData::GetAllData => get_all_data(conn, path),
     })
     .await?
     .map_err(error::ErrorInternalServerError)
@@ -162,7 +164,8 @@ fn get_brief_user(conn: Connection, path: web::Path<String>) -> QueryResult {
 // get weight and team number for all teams at an event, for performance rankings
 fn get_all_teams(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
+    let stmt = conn
+        .prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
     get_team_rows(stmt, [args[0], args[1]])
 }
 
@@ -176,7 +179,7 @@ fn get_main_ids(conn: Connection, _path: web::Path<String>) -> QueryResult {
 fn get_exists_row(mut statement: Statement, params: [i64; 1]) -> QueryResult {
     statement
         .query_map(params, |row| {
-            Ok(Main::Exists { 
+            Ok(Main::Exists {
                 id: row.get(0)?,
                 team: row.get(1)?,
                 match_num: row.get(2)?,
@@ -189,7 +192,7 @@ fn get_exists_row(mut statement: Statement, params: [i64; 1]) -> QueryResult {
 fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
     statement
         .query_map(params, |row| {
-            Ok(Main::FullMain { 
+            Ok(Main::FullMain {
                 id: row.get(0)?,
                 event: row.get(1)?,
                 season: row.get(2)?,
@@ -204,7 +207,7 @@ fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
                 name: row.get(11)?,
                 from_team: row.get(12)?,
                 weight: row.get(13)?,
-                analysis: row.get(14)?
+                analysis: row.get(14)?,
             })
         })
         .and_then(Iterator::collect)
@@ -214,7 +217,7 @@ fn get_rows(mut statement: Statement, params: [i64; 1]) -> QueryResult {
 fn get_brief_rows(mut statement: Statement, params: [&str; 3]) -> QueryResult {
     statement
         .query_map(params, |row| {
-            Ok(Main::Brief { 
+            Ok(Main::Brief {
                 id: row.get(0)?,
                 event: row.get(1)?,
                 season: row.get(2)?,
@@ -236,7 +239,7 @@ fn get_team_rows(mut statement: Statement, params: [&str; 2]) -> QueryResult {
             Ok(Main::Team {
                 id: row.get(0)?,
                 team: row.get(1)?,
-                weight: row.get(2)?
+                weight: row.get(2)?,
             })
         })
         .and_then(Iterator::collect)
@@ -245,11 +248,7 @@ fn get_team_rows(mut statement: Statement, params: [&str; 2]) -> QueryResult {
 // results to enum for existing data
 fn get_id_rows(mut statement: Statement) -> QueryResult {
     statement
-        .query_map([], |row| {
-            Ok(Main::Id {
-                id: row.get(0)?
-            })
-        })
+        .query_map([], |row| Ok(Main::Id { id: row.get(0)? }))
         .and_then(Iterator::collect)
 }
 
@@ -265,11 +264,8 @@ pub async fn get_team_numbers(pool: &Pool, season: String) -> Result<Vec<i64>, E
     // run query function based on provided enum
     web::block(move || {
         let mut stmt = conn.prepare("SELECT team FROM main WHERE season=?1 ORDER BY id DESC;")?;
-        stmt
-        .query_map([season], |row| {
-            Ok(row.get(0)?)
-        })
-        .and_then(Iterator::collect)
+        stmt.query_map([season], |row| Ok(row.get(0)?))
+            .and_then(Iterator::collect)
     })
     .await?
     .map_err(error::ErrorInternalServerError)
@@ -295,7 +291,13 @@ pub struct Id {
     pub id: i64,
 }
 
-pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, data: web::Json<MainInsert>, user: db_auth::User) -> Result<Id, actix_web::Error> {
+pub async fn execute_insert(
+    pool: &Pool,
+    transact_pool: &Pool,
+    auth_pool: &Pool,
+    data: web::Json<MainInsert>,
+    user: db_auth::User,
+) -> Result<Id, actix_web::Error> {
     // clone pools for all databases
     let pool = pool.clone();
     let transact_pool = transact_pool.clone();
@@ -314,14 +316,18 @@ pub async fn execute_insert(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool,
         .await?
         .map_err(error::ErrorInternalServerError)?;
 
-    web::block(move || {
-        insert_main_data(conn, transact_conn, auth_conn, &data, user)
-    })
-    .await?
-    .map_err(error::ErrorInternalServerError)
+    web::block(move || insert_main_data(conn, transact_conn, auth_conn, &data, user))
+        .await?
+        .map_err(error::ErrorInternalServerError)
 }
 
-fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Connection, data: &web::Json<MainInsert>, user: db_auth::User) -> Result<Id, rusqlite::Error> {
+fn insert_main_data(
+    conn: Connection,
+    transact_conn: Connection,
+    auth_conn: Connection,
+    data: &web::Json<MainInsert>,
+    user: db_auth::User,
+) -> Result<Id, rusqlite::Error> {
     // analyze the data
     let analysis_results: analyze::AnalysisResults;
     analysis_results = match data.season {
@@ -331,37 +337,43 @@ fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Conn
     };
 
     // create mutable response object
-    let mut inserted_row = Id {
-        id: 0
-    };
+    let mut inserted_row = Id { id: 0 };
 
     let regex = Regex::new(r"[;'`:/*]").unwrap();
     // insert data into database
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
-    stmt.execute(
-        params![
-            data.event,
-            data.season,
-            data.team,
-            data.match_num,
-            data.level,
-            data.game,
-            regex.replace_all(data.defend.as_str(), "-"),
-            regex.replace_all(data.driving.as_str(), "-"),
-            regex.replace_all(data.overall.as_str(), "-"),
-            user.id,
-            user.full_name,
-            user.team,
-            analysis_results.weight,
-            analysis_results.analysis
-        ]
-    )?;
+    stmt.execute(params![
+        data.event,
+        data.season,
+        data.team,
+        data.match_num,
+        data.level,
+        data.game,
+        regex.replace_all(data.defend.as_str(), "-"),
+        regex.replace_all(data.driving.as_str(), "-"),
+        regex.replace_all(data.overall.as_str(), "-"),
+        user.id,
+        user.full_name,
+        user.team,
+        analysis_results.weight,
+        analysis_results.analysis
+    ])?;
 
     // update response object with the correct ID
     inserted_row.id = conn.last_insert_rowid();
 
     // insert transaction and update points. they're unused variables- i don't care if the points failed to credit
-    let _inserted = db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: user.id, trans_type: 0x1000, amount: 25, time: "".to_string() }).expect("oop");
+    let _inserted = db_transact::insert_transaction(
+        transact_conn,
+        db_transact::Transact {
+            id: 0,
+            user_id: user.id,
+            trans_type: 0x1000,
+            amount: 25,
+            time: "".to_string(),
+        },
+    )
+    .expect("oop");
     let _updated = db_auth::update_points(auth_conn, user.id, 25).expect("oop");
 
     // return response object
@@ -369,7 +381,12 @@ fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Conn
 }
 
 // function to delete data for users with admin access
-pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, path: web::Path<String>) -> Result<String, actix_web::Error> {
+pub async fn delete_by_id(
+    pool: &Pool,
+    transact_pool: &Pool,
+    auth_pool: &Pool,
+    path: web::Path<String>,
+) -> Result<String, actix_web::Error> {
     // clone pools for all three databases
     let pool = pool.clone();
     let transact_pool = transact_pool.clone();
@@ -394,17 +411,25 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
         // prepare statement
         let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1 RETURNING user_id;")?;
         // run query, mapping the result to a single Id object (containing the user id, not submission id) that will used to deduct points
-        let execution = stmt
-                        .query_row(params![target_id.parse::<i64>().unwrap()], |row| {
-                            Ok(Id {
-                                id: row.get(0)?,
-                            })
-                        });
+        let execution = stmt.query_row(params![target_id.parse::<i64>().unwrap()], |row| {
+            Ok(Id { id: row.get(0)? })
+        });
         if execution.is_ok() {
             // get the user id from the execution result
             let id: i64 = execution.unwrap().id;
             // insert transaction to deduct user points
-            if db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: id, trans_type: 8192, amount: -25, time: "".to_string() }).is_ok() {
+            if db_transact::insert_transaction(
+                transact_conn,
+                db_transact::Transact {
+                    id: 0,
+                    user_id: id,
+                    trans_type: 8192,
+                    amount: -25,
+                    time: "".to_string(),
+                },
+            )
+            .is_ok()
+            {
                 // deduct user points
                 if db_auth::update_points(auth_conn, id, -25).is_ok() {
                     // again, it doesn't really matter if points failed. send success anyways

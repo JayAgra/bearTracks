@@ -1,17 +1,21 @@
 use actix::Message;
 use actix::{Actor, StreamHandler};
-use actix_web::{web, error, HttpRequest, HttpResponse, Error};
+use actix_web::{error, web, Error, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
+use rand::{prelude::SliceRandom, Rng};
 use rusqlite;
-use rand::{Rng, prelude::SliceRandom};
 use tokio;
 
-use crate::{db_auth, Databases};
 use crate::db_transact;
+use crate::{db_auth, Databases};
 
 const SPIN_THING_SPINS: [i64; 12] = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
 
-pub async fn spin_thing(auth_pool: &db_auth::Pool, transact_pool: &db_transact::Pool, user: db_auth::User) -> Result<String, Error> {
+pub async fn spin_thing(
+    auth_pool: &db_auth::Pool,
+    transact_pool: &db_transact::Pool,
+    user: db_auth::User,
+) -> Result<String, Error> {
     // we need access to auth and transact because we're inserting a transaction
     let auth_pool = auth_pool.clone();
     let transact_pool = transact_pool.clone();
@@ -24,14 +28,16 @@ pub async fn spin_thing(auth_pool: &db_auth::Pool, transact_pool: &db_transact::
         .await?
         .map_err(error::ErrorInternalServerError)?;
 
-    web::block(move || {
-        spin_thing_process(auth_conn, transact_conn, user)
-    })
-    .await?
-    .map_err(error::ErrorInternalServerError)
+    web::block(move || spin_thing_process(auth_conn, transact_conn, user))
+        .await?
+        .map_err(error::ErrorInternalServerError)
 }
 
-fn spin_thing_process(auth_conn: db_auth::Connection, transact_conn: db_transact::Connection, user: db_auth::User) -> Result<String, rusqlite::Error> {
+fn spin_thing_process(
+    auth_conn: db_auth::Connection,
+    transact_conn: db_transact::Connection,
+    user: db_auth::User,
+) -> Result<String, rusqlite::Error> {
     // rig the spin
     let mut spin: i64 = rand::thread_rng().gen_range(0..11);
     for _i in 0..3 {
@@ -48,7 +54,16 @@ fn spin_thing_process(auth_conn: db_auth::Connection, transact_conn: db_transact
 
     // insert transaction & update points
     db_auth::update_points(auth_conn, user.id, SPIN_THING_SPINS[spin as usize])?;
-    db_transact::insert_transaction(transact_conn, db_transact::Transact { id: 0, user_id: user.id, trans_type: 0x1500, amount: SPIN_THING_SPINS[spin as usize], time: "".to_string() })?;
+    db_transact::insert_transaction(
+        transact_conn,
+        db_transact::Transact {
+            id: 0,
+            user_id: user.id,
+            trans_type: 0x1500,
+            amount: SPIN_THING_SPINS[spin as usize],
+            time: "".to_string(),
+        },
+    )?;
 
     // send spin to client
     Ok(format!("{{\"spin\": {}}}", spin))
@@ -60,14 +75,16 @@ fn spin_thing_process(auth_conn: db_auth::Connection, transact_conn: db_transact
 
 // suit and value array constants
 const SUITS: [&str; 4] = ["h", "d", "c", "s"];
-const VALUES: [&str; 13] = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+const VALUES: [&str; 13] = [
+    "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A",
+];
 
 #[derive(Clone, Debug)]
 struct BlackjackSession {
     game: BlackjackGame,
     user_id: i64,
     auth_db: db_auth::Pool,
-    transact_db: db_transact::Pool
+    transact_db: db_transact::Pool,
 }
 
 #[derive(Clone, Debug)]
@@ -135,8 +152,14 @@ impl Actor for BlackjackSession {
     }
 }
 
-impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError>> for BlackjackSession {
-    fn handle(&mut self, msg: Result<actix_http::ws::Message, actix_http::ws::ProtocolError>, ctx: &mut Self::Context) {
+impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError>>
+    for BlackjackSession
+{
+    fn handle(
+        &mut self,
+        msg: Result<actix_http::ws::Message, actix_http::ws::ProtocolError>,
+        ctx: &mut Self::Context,
+    ) {
         match msg {
             // text messages
             Ok(actix_http::ws::Message::Text(text)) => {
@@ -148,7 +171,8 @@ impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError
                             // clone the game
                             let mut game_state: BlackjackSession = self.clone();
                             // add a new card to hand, and save the new score to variable
-                            let new_score: i64 = self.get_card(&mut game_state.game.player.hand, "player", ctx);
+                            let new_score: i64 =
+                                self.get_card(&mut game_state.game.player.hand, "player", ctx);
                             // update actual instance's player hand and score
                             self.game.player.hand = game_state.game.player.hand;
                             self.game.player.score = new_score;
@@ -164,7 +188,8 @@ impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError
                                 // clone game
                                 let mut game_state: BlackjackSession = self.clone();
                                 // draw new dealer card and save score
-                                let new_score: i64 = self.get_card(&mut game_state.game.dealer.hand, "dealer", ctx);
+                                let new_score: i64 =
+                                    self.get_card(&mut game_state.game.dealer.hand, "dealer", ctx);
                                 // update actual game's variables
                                 self.game.dealer.hand = game_state.game.dealer.hand;
                                 self.game.dealer.score = new_score;
@@ -206,13 +231,19 @@ impl BlackjackSession {
         // update player score
         self.game.player.score = self.get_score(&self.game.player.hand);
         // send card to client
-        ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "player1"}}"#, card1.suit, card1.value));
+        ctx.text(format!(
+            r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "player1"}}"#,
+            card1.suit, card1.value
+        ));
 
         // second player card
         let card2: Card = self.new_card();
         self.game.player.hand.push(card2.clone());
         self.game.player.score = self.get_score(&self.game.player.hand);
-        ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "player2"}}"#, card2.suit, card2.value));
+        ctx.text(format!(
+            r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "player2"}}"#,
+            card2.suit, card2.value
+        ));
 
         // first dealer card
         let dealer_card: Card = self.new_card();
@@ -221,7 +252,10 @@ impl BlackjackSession {
         // update dealer score
         self.game.dealer.score = self.get_score(&self.game.dealer.hand);
         // first dealer card may be sent to client
-        ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "dealer1"}}"#, dealer_card.suit, dealer_card.value));
+        ctx.text(format!(
+            r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "dealer1"}}"#,
+            dealer_card.suit, dealer_card.value
+        ));
 
         // end if either player got blackjack
         if self.game.player.score == 21 || self.game.dealer.score == 21 {
@@ -230,7 +264,12 @@ impl BlackjackSession {
     }
 
     // get new card and return current score
-    fn get_card(&mut self, hand: &mut Vec<Card>, target: &str, ctx: &mut ws::WebsocketContext<Self>) -> i64 {
+    fn get_card(
+        &mut self,
+        hand: &mut Vec<Card>,
+        target: &str,
+        ctx: &mut ws::WebsocketContext<Self>,
+    ) -> i64 {
         // draw card
         let new_card = self.new_card();
         // insert into hand
@@ -245,14 +284,26 @@ impl BlackjackSession {
             self.game.player.hand = hand.clone();
             self.game.player.score = new_score;
             // send card to client
-            ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "{}{}"}}"#, new_card.suit, new_card.value, target, self.game.player.hand.len()));
+            ctx.text(format!(
+                r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "{}{}"}}"#,
+                new_card.suit,
+                new_card.value,
+                target,
+                self.game.player.hand.len()
+            ));
         } else {
             // update game instance
             self.game.dealer.hand = hand.clone();
             self.game.dealer.score = new_score;
             // send dealer card to client
             // this is safe because the dealer only draws once game is over
-            ctx.text(format!(r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "{}{}"}}"#, new_card.suit, new_card.value, target, self.game.dealer.hand.len()));
+            ctx.text(format!(
+                r#"{{"card": {{"suit": "{}", "value": "{}"}}, "target": "{}{}"}}"#,
+                new_card.suit,
+                new_card.value,
+                target,
+                self.game.dealer.hand.len()
+            ));
         }
 
         new_score
@@ -318,8 +369,7 @@ impl BlackjackSession {
                 credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, -10)
                     .await
                     .unwrap_or("bad".to_string());
-                }
-            );
+            });
         // if dealer busts
         } else if self.game.dealer.score > 21 {
             result = "WD".to_string();
@@ -327,8 +377,7 @@ impl BlackjackSession {
                 credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 10)
                     .await
                     .unwrap_or("bad".to_string());
-                }
-            );
+            });
         // if player score is more than dealer score
         } else if self.game.player.score > self.game.dealer.score {
             result = "WN".to_string();
@@ -336,8 +385,7 @@ impl BlackjackSession {
                 credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 10)
                     .await
                     .unwrap_or("bad".to_string());
-                }
-            );
+            });
         // if dealer score is more than player score
         } else if self.game.player.score < self.game.dealer.score {
             result = "LS".to_string();
@@ -345,8 +393,7 @@ impl BlackjackSession {
                 credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, -10)
                     .await
                     .unwrap_or("bad".to_string());
-                }
-            );
+            });
         // draw
         } else {
             result = "DR".to_string();
@@ -354,18 +401,25 @@ impl BlackjackSession {
                 credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 0)
                     .await
                     .unwrap_or("bad".to_string());
-                }
-            );
+            });
         }
 
         // send result
         ctx.text(format!(r#"{{"result": "{}"}}"#, result));
         // close socket
-        ctx.close(Some(ws::CloseReason { code: ws::CloseCode::Normal, description: Some("".to_string()) }));
+        ctx.close(Some(ws::CloseReason {
+            code: ws::CloseCode::Normal,
+            description: Some("".to_string()),
+        }));
     }
 }
 
-async fn credit_points(auth_pool: db_auth::Pool, transact_pool: db_transact::Pool, user_id: i64, amount: i64) -> Result<String, Error> {
+async fn credit_points(
+    auth_pool: db_auth::Pool,
+    transact_pool: db_transact::Pool,
+    user_id: i64,
+    amount: i64,
+) -> Result<String, Error> {
     let auth_conn = web::block(move || auth_pool.get())
         .await?
         .map_err(error::ErrorInternalServerError)?;
@@ -374,45 +428,57 @@ async fn credit_points(auth_pool: db_auth::Pool, transact_pool: db_transact::Poo
         .await?
         .map_err(error::ErrorInternalServerError)?;
 
-    web::block(move || {
-        credit_points_run(auth_conn, transact_conn, user_id, amount)
-    })
-    .await?
-    .map_err(error::ErrorInternalServerError)
+    web::block(move || credit_points_run(auth_conn, transact_conn, user_id, amount))
+        .await?
+        .map_err(error::ErrorInternalServerError)
 }
 
-fn credit_points_run(auth_conn: db_auth::Connection, transact_conn: db_transact::Connection, user_id: i64, amount: i64) -> Result<String, rusqlite::Error> {
+fn credit_points_run(
+    auth_conn: db_auth::Connection,
+    transact_conn: db_transact::Connection,
+    user_id: i64,
+    amount: i64,
+) -> Result<String, rusqlite::Error> {
     db_auth::update_points(auth_conn, user_id, amount)?;
     db_transact::insert_transaction(
-        transact_conn, 
+        transact_conn,
         db_transact::Transact {
             id: 0,
             user_id,
             trans_type: 0x1502,
             amount,
-            time: "".to_string()
-        }
+            time: "".to_string(),
+        },
     )?;
 
     Ok("ok".to_string())
 }
 
 // websocket route
-pub async fn websocket_route(req: HttpRequest, stream: web::Payload, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, Error> {
+pub async fn websocket_route(
+    req: HttpRequest,
+    stream: web::Payload,
+    db: web::Data<Databases>,
+    user: db_auth::User,
+) -> Result<HttpResponse, Error> {
     // start websocket connection with clean game state
-    ws::start(BlackjackSession {
-        game: BlackjackGame {
-            player: Player {
-                hand: Vec::new(),
-                score: 0
+    ws::start(
+        BlackjackSession {
+            game: BlackjackGame {
+                player: Player {
+                    hand: Vec::new(),
+                    score: 0,
+                },
+                dealer: Player {
+                    hand: Vec::new(),
+                    score: 0,
+                },
             },
-            dealer: Player {
-                hand: Vec::new(),
-                score: 0
-            },
+            user_id: user.id,
+            auth_db: db.auth.clone(),
+            transact_db: db.transact.clone(),
         },
-        user_id: user.id,
-        auth_db: db.auth.clone(),
-        transact_db: db.transact.clone()
-    }, &req, stream)
+        &req,
+        stream,
+    )
 }
