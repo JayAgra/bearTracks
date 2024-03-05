@@ -812,7 +812,7 @@ async fn main() -> io::Result<()> {
                 .service(web::resource("/api/v1/manage/all_users").route(web::get().to(manage_get_all_users)))
                 .service(web::resource("/api/v1/manage/team_users").route(web::get().to(manage_get_all_users_in_team)))
                 .service(web::resource("/api/v1/manage/all_access_keys").route(web::get().to(manage_get_all_keys)))
-                .service(web::resource("/api/v1/manage/dump_data/{args}*").route(web::get().to(manage_data_dump)))
+                .service(web::resource("/api/v1/manage/data_dump/{args}*").route(web::get().to(manage_data_dump)))
                 // DELETE
                 .service(web::resource("/api/v1/manage/delete/{id}").route(web::delete().to(manage_delete_submission)))
                 .service(web::resource("/api/v1/manage/user/delete/{user_id}").route(web::delete().to(manage_delete_user)))

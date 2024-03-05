@@ -1,4 +1,5 @@
 use actix_web::{error, web, Error};
+use regex::Regex;
 use rusqlite::{Statement, params};
 use serde::{Deserialize, Serialize};
 
@@ -113,7 +114,7 @@ fn get_data_detailed(conn: Connection, path: web::Path<String>) -> QueryResult {
 // get all data
 fn get_all_data(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT * FROM main WHERE season=:season LIMIT 1;")?;
+    let stmt = conn.prepare("SELECT * FROM main WHERE season=:season;")?;
     get_rows(stmt, [args[0].parse::<i64>().unwrap()])
 }
 
@@ -334,9 +335,27 @@ fn insert_main_data(conn: Connection, transact_conn: Connection, auth_conn: Conn
         id: 0
     };
 
+    let regex = Regex::new(r"[;'`:/*]").unwrap();
     // insert data into database
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
-    stmt.execute(params![data.event, data.season, data.team, data.match_num, data.level, data.game, data.defend, data.driving, data.overall, user.id, user.full_name, user.team, analysis_results.weight, analysis_results.analysis])?;
+    stmt.execute(
+        params![
+            data.event,
+            data.season,
+            data.team,
+            data.match_num,
+            data.level,
+            data.game,
+            regex.replace_all(data.defend.as_str(), "-"),
+            regex.replace_all(data.driving.as_str(), "-"),
+            regex.replace_all(data.overall.as_str(), "-"),
+            user.id,
+            user.full_name,
+            user.team,
+            analysis_results.weight,
+            analysis_results.analysis
+        ]
+    )?;
 
     // update response object with the correct ID
     inserted_row.id = conn.last_insert_rowid();
