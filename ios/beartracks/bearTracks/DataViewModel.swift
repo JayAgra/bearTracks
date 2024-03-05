@@ -19,7 +19,7 @@ class DataViewModel: ObservableObject {
     }
     
     func fetchEventJson(completionBlock: @escaping ([DataEntry]) -> Void) -> Void {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")") else {
             return
         }
         

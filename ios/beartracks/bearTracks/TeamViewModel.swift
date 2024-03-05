@@ -40,7 +40,7 @@ class TeamViewModel: ObservableObject {
     
     func fetchTeamMatchesJson(completionBlock: @escaping ([DataEntry]) -> Void) -> Void {
         self.loadComplete.0 = false;
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/team/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/\(targetTeam)") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/team/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(targetTeam)") else {
             return
         }
         
@@ -78,7 +78,7 @@ class TeamViewModel: ObservableObject {
     
     func fetchStatboticsTeamJson(completionBlock: @escaping (StatboticsTeamData) -> Void) -> Void {
         self.loadComplete.1 = false;
-        guard let url = URL(string: "https://api.statbotics.io/v2/team_event/\(targetTeam)/\(UserDefaults.standard.string(forKey: "season") ?? "2024")\(UserDefaults.standard.string(forKey: "eventCode")?.lowercased() ?? "cafr")") else {
+        guard let url = URL(string: "https://api.statbotics.io/v2/team_event/\(targetTeam)/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode")?.lowercased() ?? "cafr")") else {
             return
         }
         
@@ -112,9 +112,13 @@ class TeamViewModel: ObservableObject {
         self.fetchTeamMatchesJson() { (output) in
             self.teamMatches = output
         }
+#if !os(watchOS)
         self.fetchStatboticsTeamJson() { (output) in
             self.teamData = [output]
         }
+#else
+        self.loadComplete.1 = true
+#endif
     }
 }
 

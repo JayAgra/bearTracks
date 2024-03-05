@@ -14,7 +14,7 @@ public enum Tab {
 @main
 struct beartracksApp: App {
     let settingsManager = SettingsManager.shared
-    var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
+    var darkMode: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
     @StateObject private var appState = AppState()
     
     var body: some Scene {

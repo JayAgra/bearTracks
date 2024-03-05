@@ -11,16 +11,19 @@ import Combine
 class AppState: ObservableObject {
 #if targetEnvironment(macCatalyst)
     @Published public var selectedTab: Tab? = .teams
+#elseif os(watchOS)
 #else
     @Published public var selectedTab: Tab = .teams
 #endif
     @Published public var loginRequired: Bool = false
     private var cancellables: Set<AnyCancellable> = []
 
+#if !os(watchOS)
     init() {
         $selectedTab
             .receive(on: DispatchQueue.main)
             .sink { _ in }
             .store(in: &cancellables)
     }
+#endif
 }

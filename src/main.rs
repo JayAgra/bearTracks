@@ -6,7 +6,7 @@ use actix_session::{SessionMiddleware, Session, config::PersistentSession};
 use actix_web::{error, middleware::{self, DefaultHeaders}, web, App, Error as AWError, HttpRequest, HttpResponse, HttpServer, cookie::Key, Responder, FromRequest, dev::Payload, http::header::ContentType};
 use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
-use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
+use openssl::{ssl::{SslAcceptor, SslFiletype, SslMethod}, x509::X509};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest::Client;
 use serde::{Serialize, Deserialize};
@@ -495,7 +495,7 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
 }
 
 // if you aren't D6MFYYVHA8 you may want to change this
-const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\"]}}";
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(
         HttpResponse::Ok()
@@ -701,6 +701,10 @@ async fn main() -> io::Result<()> {
     let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
     builder.set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
     builder.set_certificate_chain_file("./ssl/cert.pem").unwrap();
+    let intermediate_cert_url = "https://letsencrypt.org/certs/lets-encrypt-r3.der";
+    let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url).unwrap().bytes().unwrap();
+    let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
+    builder.add_extra_chain_cert(intermediate_cert).unwrap();
 
     // config done. now, create the new HttpServer
     log::info!("[OK] starting bearTracks on port 443 and 80");
@@ -739,7 +743,7 @@ async fn main() -> io::Result<()> {
                     .build()
             )
             // default headers for caching. overridden on most all api endpoints
-            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.0.5")))
+            .wrap(DefaultHeaders::new().add(("Cache-Control", "public, max-age=23328000")).add(("X-bearTracks", "5.1.0")))
             /* src  endpoints */
                 // GET individual files
                 .route("/", web::get().to(static_files::static_index))

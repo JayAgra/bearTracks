@@ -25,7 +25,32 @@
 		F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
 		F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
 		F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */; };
+		F5B8D1AF2B9670F200D3F230 /* beartracks_watchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */; };
+		F5B8D1B32B9670F200D3F230 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B22B9670F200D3F230 /* Assets.xcassets */; };
+		F5B8D1B62B9670F200D3F230 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */; };
+		F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F5B8D1BD2B96710900D3F230 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
+		F5B8D1BE2B96715500D3F230 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
+		F5B8D1BF2B96716D00D3F230 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
+		F5B8D1C02B96719F00D3F230 /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4D2B527E170033DB0D /* Teams.swift */; };
+		F5B8D1C12B96720900D3F230 /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
+		F5B8D1C22B96727400D3F230 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
+		F5B8D1C32B96727A00D3F230 /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E402B527E050033DB0D /* DetailedView.swift */; };
+		F5B8D1C42B96728500D3F230 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
+		F5B8D1C62B96729200D3F230 /* TeamStatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */; };
+		F5B8D1C72B9672A200D3F230 /* DataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E442B527E050033DB0D /* DataViewModel.swift */; };
+		F5B8D1C92B96779400D3F230 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F5B8D1B72B9670F200D3F230 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F54E76B62B527D96003C65A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F5B8D1AB2B9670F200D3F230;
+			remoteInfo = "beartracks-watch Watch App";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		F5B95B632B58B04400AB888C /* Embed Foundation Extensions */ = {
@@ -44,6 +69,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
+				F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -70,12 +96,25 @@
 		F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_watchApp.swift; sourceTree = "<group>"; };
+		F5B8D1B22B9670F200D3F230 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F5B8D1C82B96762D00D3F230 /* beartracks-watch Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-watch Watch App.entitlements"; sourceTree = "<group>"; };
+		F5BDD4092B96B78D0099C7A7 /* beartracks-watch-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "beartracks-watch-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		F5D3D3402B5A098D00A88A00 /* bearTracks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = bearTracks.entitlements; sourceTree = "<group>"; };
 		F5D3D3452B5A17AE00A88A00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F54E76BB2B527D96003C65A2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5B8D1A92B9670F200D3F230 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -89,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				F54E76C02B527D96003C65A2 /* bearTracks */,
+				F5B8D1AD2B9670F200D3F230 /* beartracks-watch Watch App */,
 				F54E76BF2B527D96003C65A2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				F54E76BE2B527D96003C65A2 /* bearTracks.app */,
+				F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,6 +177,26 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		F5B8D1AD2B9670F200D3F230 /* beartracks-watch Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				F5BDD4092B96B78D0099C7A7 /* beartracks-watch-Watch-App-Info.plist */,
+				F5B8D1C82B96762D00D3F230 /* beartracks-watch Watch App.entitlements */,
+				F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */,
+				F5B8D1B22B9670F200D3F230 /* Assets.xcassets */,
+				F5B8D1B42B9670F200D3F230 /* Preview Content */,
+			);
+			path = "beartracks-watch Watch App";
+			sourceTree = "<group>";
+		};
+		F5B8D1B42B9670F200D3F230 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -152,10 +213,28 @@
 			buildRules = (
 			);
 			dependencies = (
+				F5B8D1B82B9670F200D3F230 /* PBXTargetDependency */,
 			);
 			name = bearTracks;
 			productName = bearTracks;
 			productReference = F54E76BE2B527D96003C65A2 /* bearTracks.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F5B8D1BC2B9670F200D3F230 /* Build configuration list for PBXNativeTarget "beartracks-watch Watch App" */;
+			buildPhases = (
+				F5B8D1A82B9670F200D3F230 /* Sources */,
+				F5B8D1A92B9670F200D3F230 /* Frameworks */,
+				F5B8D1AA2B9670F200D3F230 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "beartracks-watch Watch App";
+			productName = "beartracks-watch Watch App";
+			productReference = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -169,6 +248,9 @@
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					F54E76BD2B527D96003C65A2 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					F5B8D1AB2B9670F200D3F230 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
@@ -187,6 +269,7 @@
 			projectRoot = "";
 			targets = (
 				F54E76BD2B527D96003C65A2 /* bearTracks */,
+				F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -198,6 +281,15 @@
 			files = (
 				F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */,
 				F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5B8D1AA2B9670F200D3F230 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5B8D1B62B9670F200D3F230 /* Preview Assets.xcassets in Resources */,
+				F5B8D1B32B9670F200D3F230 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,7 +319,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F5B8D1A82B9670F200D3F230 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5B8D1C02B96719F00D3F230 /* Teams.swift in Sources */,
+				F5B8D1C32B96727A00D3F230 /* DetailedView.swift in Sources */,
+				F5B8D1C62B96729200D3F230 /* TeamStatController.swift in Sources */,
+				F5B8D1C12B96720900D3F230 /* LoginStateValidator.swift in Sources */,
+				F5B8D1C22B96727400D3F230 /* TeamView.swift in Sources */,
+				F5B8D1C42B96728500D3F230 /* TeamViewModel.swift in Sources */,
+				F5B8D1BF2B96716D00D3F230 /* SettingsManager.swift in Sources */,
+				F5B8D1BD2B96710900D3F230 /* URLSessionConfiguration.swift in Sources */,
+				F5B8D1AF2B9670F200D3F230 /* beartracks_watchApp.swift in Sources */,
+				F5B8D1C92B96779400D3F230 /* LoginView.swift in Sources */,
+				F5B8D1BE2B96715500D3F230 /* AppState.swift in Sources */,
+				F5B8D1C72B9672A200D3F230 /* DataViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F5B8D1B82B9670F200D3F230 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */;
+			targetProxy = F5B8D1B72B9670F200D3F230 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F54E76CA2B527D97003C65A2 /* Debug */ = {
@@ -358,7 +477,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -402,7 +521,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -437,6 +556,70 @@
 			};
 			name = Release;
 		};
+		F5B8D1BA2B9670F200D3F230 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = D6MFYYVHA8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "beartracks-watch-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "beartracks-watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jayagra.beartracks;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Debug;
+		};
+		F5B8D1BB2B9670F200D3F230 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = D6MFYYVHA8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "beartracks-watch-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "beartracks-watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jayagra.beartracks;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -454,6 +637,15 @@
 			buildConfigurations = (
 				F54E76CD2B527D97003C65A2 /* Debug */,
 				F54E76CE2B527D97003C65A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F5B8D1BC2B9670F200D3F230 /* Build configuration list for PBXNativeTarget "beartracks-watch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5B8D1BA2B9670F200D3F230 /* Debug */,
+				F5B8D1BB2B9670F200D3F230 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -17,7 +17,7 @@ class TeamStatController: ObservableObject {
     @Published public var teamData: [TeamStats] = []
 
     public func fetchTeamDataJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2024/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/\(teamNumber)") else { return }
+        guard let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2024/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(teamNumber)") else { return }
         sharedSession.dataTask(with: url) { data, _, error in
             if let data = data {
                 do {

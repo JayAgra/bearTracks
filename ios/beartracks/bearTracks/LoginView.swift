@@ -18,36 +18,49 @@ struct LoginView: View {
     
     var body: some View {
         VStack {
+#if !os(watchOS)
             Text("bearTracks")
                 .font(.title)
             Text("v5.1.0 • 2024")
+#endif
             if !loading {
                 if !create {
+#if !os(watchOS)
                     Text("log in")
                         .font(.title3)
                         .padding(.top)
+#endif
                     TextField("username", text: $authData[0])
+#if !os(watchOS)
                         .padding([.leading, .trailing, .bottom])
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+#endif
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .textContentType(.username)
                     SecureField("password", text: $authData[1])
+#if !os(watchOS)
                         .padding()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+#endif
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .textContentType(.password)
                     Button("login") {
                         authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
                     }
+#if !os(watchOS)
                     .padding()
+#endif
                     .font(.title3)
                     .buttonStyle(.bordered)
+#if !os(watchOS)
                     Button("create") {
                         self.create = true
                     }
+#endif
                 } else {
+#if !os(watchOS)
                     Text("create account")
                         .font(.title3)
                         .padding(.top)
@@ -83,6 +96,7 @@ struct LoginView: View {
                     Button("login") {
                         self.create = false
                     }
+#endif
                 }
             } else {
                 Spacer()
