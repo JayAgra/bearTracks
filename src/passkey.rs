@@ -1,8 +1,8 @@
-use std::{env, fmt, sync::RwLock};
 use actix_identity::Identity;
-use actix_session::{SessionGetError, SessionInsertError, Session};
+use actix_session::{Session, SessionGetError, SessionInsertError};
 use actix_web::{web, HttpResponse};
 use log::{error, info};
+use std::{env, fmt, sync::RwLock};
 use webauthn_rs::prelude::*;
 
 use crate::db_auth;
@@ -12,7 +12,11 @@ pub fn setup_passkeys() -> web::Data<webauthn_rs::Webauthn> {
     let rp_origin = Url::parse(format!("https://{}", &rp_id).as_str()).expect("[PASSKEY] bad url");
     let builder = WebauthnBuilder::new(&rp_id.as_str(), &rp_origin).expect("[PASSKEY] bad config");
     let builder = builder.rp_name("bearTracks");
-    let webauthn = web::Data::new(builder.build().expect("[PASSKEY] bad config (at build step)"));
+    let webauthn = web::Data::new(
+        builder
+            .build()
+            .expect("[PASSKEY] bad config (at build step)"),
+    );
 
     webauthn
 }
@@ -61,7 +65,12 @@ impl actix_web::ResponseError for Error {
     }
 }
 
-pub async fn webauthn_start_registration(auth_pool: &db_auth::Pool, user: db_auth::User, session: Session, webauthn: web::Data<Webauthn>) -> WebauthnResult<web::Json<CreationChallengeResponse>> {
+pub async fn webauthn_start_registration(
+    auth_pool: &db_auth::Pool,
+    user: db_auth::User,
+    session: Session,
+    webauthn: web::Data<Webauthn>,
+) -> WebauthnResult<web::Json<CreationChallengeResponse>> {
     session.remove("reg_state");
     let existing_keys = db_auth::get_passkeys(auth_pool, user.id.to_string()).await;
     if existing_keys.is_err() {
@@ -69,16 +78,22 @@ pub async fn webauthn_start_registration(auth_pool: &db_auth::Pool, user: db_aut
     }
 
     let existing_keys = existing_keys.unwrap();
-    let existing_keys = existing_keys.iter().map(|key| {
-        Some(key.cred_id().clone())
-    }).collect::<Option<Vec<Base64UrlSafeData>>>();
+    let existing_keys = existing_keys
+        .iter()
+        .map(|key| Some(key.cred_id().clone()))
+        .collect::<Option<Vec<Base64UrlSafeData>>>();
 
     let (ccr, reg_state) = webauthn
-                                .start_passkey_registration(Uuid::from_u128(user.id as u128), &user.username, &user.username, existing_keys)
-                                .map_err(|err| {
-                                    info!("challenge_register_start → {:?}", err);
-                                    Error::Unknown(err)
-                                })?;
+        .start_passkey_registration(
+            Uuid::from_u128(user.id as u128),
+            &user.username,
+            &user.username,
+            existing_keys,
+        )
+        .map_err(|err| {
+            info!("challenge_register_start → {:?}", err);
+            Error::Unknown(err)
+        })?;
 
     if let Err(err) = session.insert("reg_state", &reg_state) {
         error!("Failed to save reg_state to session storage!");
@@ -89,7 +104,13 @@ pub async fn webauthn_start_registration(auth_pool: &db_auth::Pool, user: db_aut
     Ok(web::Json(ccr))
 }
 
-pub async fn webauthn_finish_registration(auth_pool: &db_auth::Pool, user: db_auth::User, data: web::Json<RegisterPublicKeyCredential>, session: Session, webauthn: web::Data<Webauthn>) -> WebauthnResult<HttpResponse> {
+pub async fn webauthn_finish_registration(
+    auth_pool: &db_auth::Pool,
+    user: db_auth::User,
+    data: web::Json<RegisterPublicKeyCredential>,
+    session: Session,
+    webauthn: web::Data<Webauthn>,
+) -> WebauthnResult<HttpResponse> {
     let reg_state = match session.get("reg_state")? {
         Some(reg_state) => reg_state,
         None => return Err(Error::CorruptSession),
@@ -98,11 +119,11 @@ pub async fn webauthn_finish_registration(auth_pool: &db_auth::Pool, user: db_au
     session.remove("reg_state");
 
     let new_passkey = webauthn
-                .finish_passkey_registration(&data, &reg_state)
-                .map_err(|e| {
-                    info!("challenge_register_finish → {:?}", e);
-                    Error::BadRequest(e)
-                })?;
+        .finish_passkey_registration(&data, &reg_state)
+        .map_err(|e| {
+            info!("challenge_register_finish → {:?}", e);
+            Error::BadRequest(e)
+        })?;
 
     let insert = db_auth::set_passkey(auth_pool, new_passkey, user.id).await;
     if insert.is_err() {
@@ -113,14 +134,20 @@ pub async fn webauthn_finish_registration(auth_pool: &db_auth::Pool, user: db_au
     Ok(HttpResponse::Ok().finish())
 }
 
-pub async fn webauthn_start_authentication(auth_pool: &db_auth::Pool, username: String, session: Session, webauthn: web::Data<Webauthn>) -> WebauthnResult<web::Json<RequestChallengeResponse>> {
+pub async fn webauthn_start_authentication(
+    auth_pool: &db_auth::Pool,
+    username: String,
+    session: Session,
+    webauthn: web::Data<Webauthn>,
+) -> WebauthnResult<web::Json<RequestChallengeResponse>> {
     session.remove("auth_state");
 
     let target_user = db_auth::get_user_username(auth_pool, username.clone()).await;
     if target_user.is_err() {
         return Err(Error::UserNotFound);
     }
-    let user_credentials = db_auth::get_passkeys(auth_pool, target_user.unwrap().id.to_string()).await;
+    let user_credentials =
+        db_auth::get_passkeys(auth_pool, target_user.unwrap().id.to_string()).await;
     if user_credentials.is_err() {
         return Err(Error::UserHasNoCredentials);
     }
@@ -130,11 +157,11 @@ pub async fn webauthn_start_authentication(auth_pool: &db_auth::Pool, username: 
     }
 
     let (rcr, auth_state) = webauthn
-                                .start_passkey_authentication(&user_credentials)
-                                .map_err(|e| {
-                                    info!("challenge_authenticate_start → {:?}", e);
-                                    Error::Unknown(e)
-                                })?;
+        .start_passkey_authentication(&user_credentials)
+        .map_err(|e| {
+            info!("challenge_authenticate_start → {:?}", e);
+            Error::Unknown(e)
+        })?;
 
     session.insert("auth_state", (username, auth_state))?;
 
@@ -142,26 +169,37 @@ pub async fn webauthn_start_authentication(auth_pool: &db_auth::Pool, username: 
     Ok(web::Json(rcr))
 }
 
-pub async fn webauthn_finish_authentication(auth_pool: &db_auth::Pool, cred: web::Json<PublicKeyCredential>, session: Session, identity: Identity, webauthn: web::Data<Webauthn>, sessions: web::Data<RwLock<crate::Sessions>>) -> WebauthnResult<HttpResponse> {
-    let (username, auth_state): (String, PasskeyAuthentication) = session.get("auth_state")?.ok_or(Error::CorruptSession)?;
+pub async fn webauthn_finish_authentication(
+    auth_pool: &db_auth::Pool,
+    cred: web::Json<PublicKeyCredential>,
+    session: Session,
+    identity: Identity,
+    webauthn: web::Data<Webauthn>,
+    sessions: web::Data<RwLock<crate::Sessions>>,
+) -> WebauthnResult<HttpResponse> {
+    let (username, auth_state): (String, PasskeyAuthentication) =
+        session.get("auth_state")?.ok_or(Error::CorruptSession)?;
     session.remove("auth_state");
 
     let _auth_result = webauthn
-                        .finish_passkey_authentication(&cred, &auth_state)
-                        .map_err(|e| {
-                            info!("challenge_authenticate_finish → {:?}", e);
-                            Error::BadRequest(e)
-                        })?;
-    
+        .finish_passkey_authentication(&cred, &auth_state)
+        .map_err(|e| {
+            info!("challenge_authenticate_finish → {:?}", e);
+            Error::BadRequest(e)
+        })?;
+
     identity.remember(username.clone());
 
     let target_user_temp = db_auth::get_user_username(&auth_pool, username.clone()).await;
     if target_user_temp.is_err() {
-        return  Err(Error::BadRequest(WebauthnError::UserNotPresent));
+        return Err(Error::BadRequest(WebauthnError::UserNotPresent));
     }
     let target_user = target_user_temp.unwrap();
 
-    sessions.write().unwrap().user_map.insert(target_user.clone().username.to_string(), target_user.clone());
+    sessions.write().unwrap().user_map.insert(
+        target_user.clone().username.to_string(),
+        target_user.clone(),
+    );
 
     info!("[PASSKEY] auth success");
     Ok(HttpResponse::Ok().finish())

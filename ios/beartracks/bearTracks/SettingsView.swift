@@ -9,10 +9,10 @@ import SwiftUI
 
 /// Settings window for event config & logging out
 struct SettingsView: View {
-    @State private var teamNumberInput: String = UserDefaults.standard.string(forKey: "teamNumber") ?? ""
-    @State private var eventCodeInput: String = UserDefaults.standard.string(forKey: "eventCode") ?? ""
-    @State private var seasonInput: String = UserDefaults.standard.string(forKey: "season") ?? ""
-    @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
+    @State private var teamNumberInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? ""
+    @State private var eventCodeInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
+    @State private var seasonInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? ""
+    @State private var darkMode: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false
@@ -35,9 +35,11 @@ struct SettingsView: View {
                                     .tag(teamNumberInput)
                             }
                         }
+#if !os(watchOS)
                         .pickerStyle(.menu)
+#endif
                         .onChange(of: teamNumberInput) { value in
-                            UserDefaults.standard.set(teamNumberInput, forKey: "teamNumber")
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(teamNumberInput, forKey: "teamNumber")
                         }
                         Picker("Event Code", selection: $eventCodeInput) {
                             if !settingsOptions.isEmpty {
@@ -50,9 +52,11 @@ struct SettingsView: View {
                                     .tag(eventCodeInput)
                             }
                         }
+#if !os(watchOS)
                         .pickerStyle(.menu)
+#endif
                         .onChange(of: eventCodeInput) { value in
-                            UserDefaults.standard.set(eventCodeInput, forKey: "eventCode")
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(eventCodeInput, forKey: "eventCode")
                         }
                         Picker("Season", selection: $seasonInput) {
                             if !settingsOptions.isEmpty {
@@ -65,13 +69,15 @@ struct SettingsView: View {
                                     .tag(seasonInput)
                             }
                         }
+#if !os(watchOS)
                         .pickerStyle(.menu)
+#endif
                         .onChange(of: seasonInput) { value in
-                            UserDefaults.standard.set(seasonInput, forKey: "season")
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(seasonInput, forKey: "season")
                         }
                         Toggle("Dark Mode", isOn: $darkMode)
                         .onChange(of: darkMode) { value in
-                            UserDefaults.standard.set(darkMode, forKey: "darkMode")
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(darkMode, forKey: "darkMode")
                             showAlert = true
                         }
                     }
@@ -126,6 +132,9 @@ struct SettingsView: View {
                 self.settingsOptions = result
             }
         }
+#if os(watchOS)
+        .ignoresSafeArea(edges: .bottom)
+#endif
     }
     
     func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) -> Void {
@@ -170,23 +179,23 @@ struct SettingsView: View {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
 #endif
                         } else {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
                         }
                     }
                 } else {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
                 }
             }.resume()
         } catch {
-#if !os(visionOS)
+#if !os(visionOS) && !os(watchOS)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
         }

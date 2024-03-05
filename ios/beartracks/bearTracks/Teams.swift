@@ -24,11 +24,19 @@ struct Teams: View {
                                 VStack {
                                     HStack {
                                         Text("\(String(index + 1))")
+#if !os(watchOS)
                                             .font(.title)
+#else
+                                            .font(.title3)
+#endif
                                             .padding(.leading)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Text("\(String(team.team.team))")
+#if !os(watchOS)
                                             .font(.title)
+#else
+                                            .font(.title3)
+#endif
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
                                     }
@@ -47,12 +55,28 @@ struct Teams: View {
 #if targetEnvironment(macCatalyst)
                                 .padding([.top, .bottom])
 #endif
-#if !os(visionOS)
+#if os(visionOS)
                                 .padding(.bottom)
 #endif
                             }
                             .contentShape(Rectangle())
                         }
+#if os(watchOS)
+                        Section {
+                            VStack {
+                                NavigationLink(destination: SettingsView()) {
+                                    HStack {
+                                        Text("Settings")
+                                        Spacer()
+                                        Label("", systemImage: "chevron.forward")
+                                            .labelStyle(.iconOnly)
+                                    }
+                                    .padding([.leading, .trailing])
+                                }
+                            }
+                            .padding([.leading, .trailing])
+                        }
+#endif
                     }
                     .navigationTitle("Teams")
                     .navigationDestination(isPresented: $loadState.0) {
@@ -101,7 +125,7 @@ struct Teams: View {
     }
     
     func fetchTeamsJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/teams/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")") else {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/teams/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")") else {
             return
         }
         

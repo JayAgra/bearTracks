@@ -21,7 +21,7 @@ struct GameView: View {
     
     var body: some View {
         NavigationStack {
-            if controller.getTeamNumber() != "--" && controller.getMatchNumber() != "--" {
+            if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                 VStack {
                     GeometryReader { geometry in
                         VStack {
@@ -81,21 +81,43 @@ struct GameView: View {
                                     )
                                     .modifier(PressModifier(onPress: { self.actionState = .travel }, onRelease: {
                                         if self.ballOffset.height >= geometry.size.height * 0.2 {
-                                            let boomThing = UIImpactFeedbackGenerator(style: .medium)
-                                            boomThing.prepare(); boomThing.impactOccurred();
-                                            if self.ballOffset.height >= geometry.size.height * 0.475 {
-                                                controller.clearShuttle()
-                                            } else {
-                                                controller.clearAmplifier()
-                                            }
-                                            self.holdLengths = (0, 0, 0)
-                                        } else if self.ballOffset.height <= geometry.size.height * -0.2 {
                                             UINotificationFeedbackGenerator().notificationOccurred(.success)
                                             controller.clearSpeaker()
+                                            self.holdLengths = (0, 0, 0)
+                                        } else if self.ballOffset.height <= geometry.size.height * -0.2 {
+                                            if abs(self.ballOffset.height) >= geometry.size.height * 0.475 {
+                                                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                                                controller.clearShuttle()
+                                            } else {
+                                                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                                                controller.clearAmplifier()
+                                            }
                                             self.holdLengths = (0, 0, 0)
                                         }
                                         self.actionState = .neutral
                                     }))
+                                if controller.matchTimes.count == 0 {
+                                    VStack {
+                                        Spacer()
+                                        Text("↑ shuttle / other ↑")
+                                        Text("amplifier")
+                                        Spacer()
+                                        Spacer()
+                                        Spacer()
+                                        HStack {
+                                            Spacer()
+                                            Text("intake")
+                                            Spacer()
+                                            Text("travel")
+                                            Spacer()
+                                            Text("outtake")
+                                            Spacer()
+                                        }
+                                        Spacer()
+                                        Text("speaker")
+                                        Spacer()
+                                    }
+                                }
                             }
                             .padding(.bottom)
                             .onChange(of: actionState) { value in
@@ -157,9 +179,9 @@ struct GameView: View {
 
     private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat) {
         if abs(self.ballOffset.height) > totalHeight * 0.2 && abs(dragValue.translation.height) <= totalHeight * 0.2 {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        } else if abs(self.ballOffset.height) <= totalHeight * 0.2 && abs(dragValue.translation.height) > totalHeight * 0.2 {
             UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+        } else if abs(self.ballOffset.height) <= totalHeight * 0.2 && abs(dragValue.translation.height) > totalHeight * 0.2 {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }
         
         let newOffset = CGSize(
@@ -173,24 +195,24 @@ struct GameView: View {
     private func getUIImage(position: ActionState, height: CGFloat) -> Image {
         if abs(self.ballOffset.height) >= height * 0.2 {
             if self.ballOffset.height < 0 {
-                return Image(systemName: "speaker.wave.2")
-            } else {
                 if abs(self.ballOffset.height) >= height * 0.475 {
                     return Image(systemName: "airplane")
                 } else {
                     return Image(systemName: "speaker.plus")
                 }
+            } else {
+                return Image(systemName: "speaker.wave.2")
             }
         } else {
             switch position {
             case .neutral:
                 return Image(systemName: "arrow.left.and.right")
             case .intake:
-                return Image(systemName: "chevron.down")
+                return Image(systemName: "tray.and.arrow.down.fill")
             case .travel:
                 return Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
             case .outtake:
-                return Image(systemName: "chevron.up")
+                return Image(systemName: "paperplane.fill")
             }
         }
     }
@@ -198,13 +220,13 @@ struct GameView: View {
     private func getBallColor(position: ActionState, height: CGFloat) -> Color {
         if abs(self.ballOffset.height) >= height * 0.2 {
             if self.ballOffset.height < 0 {
-                return Color.init(red: 184/255, green: 187/255, blue: 38/255)
-            } else {
                 if abs(self.ballOffset.height) >= height * 0.475 {
                     return Color.init(red: 254/255, green: 128/255, blue: 25/255)
                 } else {
                     return Color.init(red: 250/255, green: 189/255, blue: 47/255)
                 }
+            } else {
+                return Color.init(red: 184/255, green: 187/255, blue: 38/255)
             }
         } else {
             switch position {

@@ -20,7 +20,8 @@ struct TeamView: View {
     
     var body: some View {
         VStack {
-            if !(dataItems.teamData.isEmpty || dataItems.teamMatches.isEmpty) {
+            if !dataItems.teamMatches.isEmpty {
+#if !os(watchOS)
                 HStack {
                     VStack {
                         Text(String(dataItems.teamData.first?.wins ?? 0))
@@ -78,12 +79,17 @@ struct TeamView: View {
                 }
                 .padding([.leading, .trailing])
                 Divider()
+#endif
                 List {
                     ForEach(dataItems.teamMatches) { entry in
                         VStack {
                             HStack {
                                 Text("match \(String(entry.Brief.match_num))")
+#if !os(watchOS)
                                     .font(.title)
+#else
+                                    .font(.title3)
+#endif
                                     .padding(.leading)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
@@ -112,7 +118,11 @@ struct TeamView: View {
                         .navigationTitle("#\(dataItems.getSelectedItem())")
                 }
             } else {
-                Text("loading team...")
+                if dataItems.loadComplete.0 && dataItems.loadComplete.1 && (dataItems.teamData.isEmpty || dataItems.teamMatches.isEmpty) {
+                    Label("loading failed", systemImage: "xmark.seal.fill")
+                } else {
+                    Text("loading team...")
+                }
             }
         }
         .padding()

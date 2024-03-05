@@ -15,13 +15,13 @@ class ScoutingController: ObservableObject {
     @Published public var currentTab: Tab = .start
     // basic meta
     private var eventCode: String = UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR"
-    @Published public var matchNumber: String = "--"
+    @Published public var matchNumber: Int = 0
     @Published public var teamNumber: String = "--"
     @Published public var matchList: [MatchData] = []
     // match buttons
     @Published public var times: [Double] = [0, 0, 0]
     // match time store
-    private var matchTimes: [MatchTime] = []
+    @Published public var matchTimes: [MatchTime] = []
     // qualitative data store
     @Published public var defense: String = ""
     @Published public var driving: String = ""
@@ -34,7 +34,7 @@ class ScoutingController: ObservableObject {
     private var submitSheetDetails: String = ""
     
     // getters
-    func getMatchNumber() -> String { return self.matchNumber }
+    func getMatchNumber() -> Int { return self.matchNumber }
     func getTeamNumber() -> String { return self.teamNumber }
     func getDefenseResponse() -> String { return self.defense }
     func getDrivingResponse() -> String { return self.driving }
@@ -44,7 +44,7 @@ class ScoutingController: ObservableObject {
     func getSubmitSheetDetails() -> String { return self.submitSheetDetails }
 
     // setters
-    func setMatchNumber(match: String) { self.matchNumber = match }
+    func setMatchNumber(match: Int) { self.matchNumber = match }
     func setTeamNumber(team: String) { self.teamNumber = team }
     func setDefenseResponse(response: String) { self.defense = response }
     func setDrivingResponse(response: String) { self.driving = response }
@@ -93,7 +93,7 @@ class ScoutingController: ObservableObject {
         } catch {
             encodedMatchTimes = ""
         }
-        let matchData = ScoutingDataExport(season: 2024, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR", match_num: Int(matchNumber) ?? 0, level: "Qualification", team: Int(teamNumber) ?? 0, game: encodedMatchTimes, defend: defense, driving: driving, overall: overall)
+        let matchData = ScoutingDataExport(season: 2024, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR", match_num: matchNumber, level: "Qualification", team: Int(teamNumber) ?? 0, game: encodedMatchTimes, defend: defense, driving: driving, overall: overall)
         do {
             let jsonData = try JSONEncoder().encode(matchData)
             var request = URLRequest(url: url)
@@ -149,7 +149,6 @@ class ScoutingController: ObservableObject {
     
     func resetControllerData() {
         self.switches = (false, false, false, 0, 0, 0, 0)
-        self.matchNumber = "--"
         self.teamNumber = "--"
         self.times = [0, 0, 0]
         self.matchTimes = []
@@ -175,11 +174,16 @@ struct ScoutingDataExport: Codable {
     let overall: String
 }
 
-struct MatchTime: Codable {
-    let score_type: Int
+struct MatchTime: Codable, Identifiable {
+    var id = UUID()
+    var score_type: Int
     let intake: Double
     let travel: Double
     let outtake: Double
+    
+    private enum CodingKeys: String, CodingKey {
+        case score_type, intake, travel, outtake
+    }
 }
 
 struct MatchData: Codable {

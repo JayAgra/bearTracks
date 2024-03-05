@@ -17,7 +17,7 @@ struct ReviewView: View {
         VStack {
             NavigationStack {
                 VStack {
-                    if controller.getTeamNumber() == "--" || controller.getMatchNumber() == "--" {
+                    if controller.getTeamNumber() == "--" || controller.getMatchNumber() == 0 {
                         Text("Please select a match number and event code on the start tab.")
                             .padding()
                     } else if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == "" || controller.getOverallResponse() == "" {
@@ -35,36 +35,29 @@ struct ReviewView: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 VStack {
                                     Divider()
-                                    ForEach(controller.getMatchTimes(), id: \.travel) { matchTime in
+                                    ForEach($controller.matchTimes) { $matchTime in
                                         VStack {
                                             HStack {
-                                                if matchTime.score_type == 0 {
+                                                Picker("Type", selection: $matchTime.score_type) {
                                                     Text("Speaker")
-                                                        .font(.title3)
-                                                    Spacer()
-                                                    Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
-                                                        .font(.title3)
-                                                } else if matchTime.score_type == 1 {
+                                                        .tag(0)
                                                     Text("Amplifier")
-                                                        .font(.title3)
-                                                    Spacer()
-                                                    Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
-                                                        .font(.title3)
-                                                } else if matchTime.score_type == 9 {
-                                                    Text("Shuttle")
-                                                        .font(.title3)
-                                                    Spacer()
-                                                    Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
-                                                        .font(.title3)
+                                                        .tag(1)
+                                                    Text("Shuttle/Other")
+                                                        .tag(9)
                                                 }
+                                                .pickerStyle(.menu)
+                                                Spacer()
+                                                Text(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))
+                                                    .font(.title3)
                                             }
                                             HStack {
                                                 Spacer()
-                                                Text(String(format: "%.1f", matchTime.intake))
+                                                Label(String(format: "%.1f", matchTime.intake), systemImage: "tray.and.arrow.down.fill")
                                                 Spacer()
-                                                Text(String(format: "%.1f", matchTime.travel))
+                                                Label(String(format: "%.1f", matchTime.travel), systemImage: "arrow.up.and.down.and.arrow.left.and.right")
                                                 Spacer()
-                                                Text(String(format: "%.1f", matchTime.outtake))
+                                                Label(String(format: "%.1f", matchTime.outtake), systemImage: "paperplane.fill")
                                                 Spacer()
                                             }
                                         }
@@ -104,16 +97,16 @@ struct ReviewView: View {
                                 }
                                 .padding()
                             }
-                        }
-                        Button("submit") {
-                            showSheet = true
-                            controller.submitData { result in
-                                self.submitSheetState = result.0
-                                self.submitError = result.1
+                            Button("submit") {
+                                showSheet = true
+                                controller.submitData { result in
+                                    self.submitSheetState = result.0
+                                    self.submitError = result.1
+                                }
                             }
+                            .padding()
+                            .buttonStyle(.borderedProminent)
                         }
-                        .padding()
-                        .buttonStyle(.borderedProminent)
                     }
                 }
                 .sheet(isPresented: $showSheet) {

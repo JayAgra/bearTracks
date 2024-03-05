@@ -18,6 +18,6 @@ class SettingsManager {
             "season": "2024",
             "darkMode": true,
         ]
-        UserDefaults.standard.register(defaults: defaults)
+        UserDefaults(suiteName: "group.com.jayagra.beartracks")?.register(defaults: defaults)
     }
 }

@@ -24,11 +24,19 @@ struct DetailedView: View {
                 if detailData[0].FullMain.season == 2024 {
                     ScrollView {
                         Text("Team \(String(detailData[0].FullMain.team))")
+#if !os(watchOS)
                             .font(.largeTitle)
+#else
+                            .font(.title3)
+#endif
                             .padding([.top, .leading])
                             .frame(maxWidth: .infinity, alignment: .leading)
                         Text("\(detailData[0].FullMain.level) \(String(detailData[0].FullMain.match_num)) @ \(detailData[0].FullMain.event) \(String(detailData[0].FullMain.season))")
+#if !os(watchOS)
                             .font(.title2)
+#else
+                            .font(.body)
+#endif
                             .padding(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         VStack {
@@ -43,19 +51,31 @@ struct DetailedView: View {
                             HStack {
                                 VStack {
                                     Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[3]))s")
+#if !os(watchOS)
                                         .font(.title)
+#else
+                                        .font(.title3)
+#endif
                                     Text("intake")
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
                                     Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[4]))s")
+#if !os(watchOS)
                                         .font(.title)
+#else
+                                        .font(.title3)
+#endif
                                     Text("travel")
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
                                     Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[5]))s")
+#if !os(watchOS)
                                         .font(.title)
+#else
+                                        .font(.title3)
+#endif
                                     Text("outtake")
                                 }
                                 .frame(maxWidth: .infinity)
@@ -67,13 +87,21 @@ struct DetailedView: View {
                             HStack {
                                 VStack {
                                     Text(String(detailData[0].FullMain.analysis.split(separator: ",")[6]))
+#if !os(watchOS)
                                         .font(.title)
+#else
+                                        .font(.title3)
+#endif
                                     Text("speaker")
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
                                     Text(String(detailData[0].FullMain.analysis.split(separator: ",")[7]))
+#if !os(watchOS)
                                         .font(.title)
+#else
+                                        .font(.title3)
+#endif
                                     Text("amplifier")
                                 }
                                 .frame(maxWidth: .infinity)
@@ -87,7 +115,7 @@ struct DetailedView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             VStack {
                                 Divider()
-                                ForEach(gameData, id: \.id) { matchTime in
+                                ForEach(gameData) { matchTime in
                                     VStack {
                                         HStack {
                                             switch matchTime.score_type {
@@ -159,10 +187,19 @@ struct DetailedView: View {
                                             HStack {
                                                 Spacer()
                                                 Label(String(format: "%.1f", matchTime.intake), systemImage: "tray.and.arrow.down")
+#if os(watchOS)
+                                                    .labelStyle(.titleOnly)
+#endif
                                                 Spacer()
                                                 Label(String(format: "%.1f", matchTime.travel), systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+#if os(watchOS)
+                                                    .labelStyle(.titleOnly)
+#endif
                                                 Spacer()
                                                 Label(String(format: "%.1f", matchTime.outtake), systemImage: "tray.and.arrow.up")
+#if os(watchOS)
+                                                    .labelStyle(.titleOnly)
+#endif
                                                 Spacer()
                                             }
                                             .padding(.top)
@@ -294,10 +331,17 @@ struct FullMainData: Codable {
 }
 
 /// 2024 season specific data structure for deocding the `game` key of `FullMainData`
-struct MatchTime2024: Codable {
-    let id: Int
+struct MatchTime2024: Codable, Identifiable {
+    var id = UUID()
     let score_type: Int
     let intake: Float
     let outtake: Float
     let travel: Float
+    
+    enum CodingKeys: CodingKey {
+        case score_type
+        case intake
+        case outtake
+        case travel
+    }
 }

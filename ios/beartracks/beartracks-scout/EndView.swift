@@ -9,11 +9,16 @@ import SwiftUI
 
 struct EndView: View {
     @EnvironmentObject var controller: ScoutingController
+    @FocusState private var activeBox: ActiveBox?
+    
+    enum ActiveBox: Hashable {
+        case defense, driving, overall
+    }
     
     var body: some View {
         NavigationStack {
                 VStack {
-                    if controller.getTeamNumber() != "--" || controller.getMatchNumber() != "--" {
+                    if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                         Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
                             .padding(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -42,6 +47,8 @@ struct EndView: View {
                                         )
                                         .frame(height: 150)
                                         .padding([.leading, .trailing])
+                                        .focused($activeBox, equals: .defense)
+                                        .onTapGesture { activeBox = .defense }
                                 }
                                 VStack {
                                     Text("How was the driving? Did the driver seem confident?")
@@ -54,6 +61,8 @@ struct EndView: View {
                                         )
                                         .frame(height: 150)
                                         .padding([.leading, .trailing])
+                                        .focused($activeBox, equals: .driving)
+                                        .onTapGesture { activeBox = .driving }
                                 }
                                 VStack {
                                     Text("Provide an overall description of the team's performance in this match")
@@ -66,6 +75,8 @@ struct EndView: View {
                                         )
                                         .frame(height: 150)
                                         .padding([.leading, .trailing])
+                                        .focused($activeBox, equals: .overall)
+                                        .onTapGesture { activeBox = .overall }
                                 }
                             }
                             .padding(.bottom)
@@ -74,6 +85,9 @@ struct EndView: View {
                             }
                             .padding()
                             .buttonStyle(.bordered)
+                        }
+                        .onTapGesture {
+                            activeBox = nil
                         }
                         Spacer()
                     } else {

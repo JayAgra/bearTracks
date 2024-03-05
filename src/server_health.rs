@@ -1,6 +1,6 @@
-use std::{env, sync::RwLock};
 use actix_web::web;
 use serde::Serialize;
+use std::{env, sync::RwLock};
 use sysinfo::SystemExt;
 
 use crate::Sessions;
@@ -36,6 +36,6 @@ pub fn get_server_health(session: web::Data<RwLock<Sessions>>) -> HealthData {
         load_avg_one: system.get_load_average().one,
         load_avg_five: system.get_load_average().five,
         load_avg_fifteen: system.get_load_average().fifteen,
-        sessions_size: session.read().unwrap().user_map.len() as i64
+        sessions_size: session.read().unwrap().user_map.len() as i64,
     }
 }
