@@ -354,13 +354,9 @@ async fn data_post_submit(
     db: web::Data<Databases>,
     user: db_auth::User,
 ) -> Result<HttpResponse, AWError> {
-    if user.team != 0 {
-        Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?))
-    } else {
-        Ok(access_denied_team())
-    }
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?))
 }
 
 // forward frc api data for teams [deprecated]
