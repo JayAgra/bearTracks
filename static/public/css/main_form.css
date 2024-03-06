@@ -24,6 +24,9 @@
 .continue_button:active, .time_button:active, .cycle_button:active {
     background-color: rgba(0, 0, 0, 0.45);
 }
+.continue_button:disabled {
+    color: gray;
+}
 .continue_button, .time_button {
     color: #0a84ff;
     min-width: 20vw;
@@ -33,6 +36,7 @@
     align-self: center;
     min-width: 15vw;
     max-width: 70vw;
+    min-height: 5vh;
 }
 .time_button {
     min-height: 30vh;
@@ -40,7 +44,7 @@
 .cycle_button {
     align-self: center;
     color: #32d74b;
-    min-width: 50vw;
+    min-width: 30vw;
     min-height: 10vh;
 }
 .counter {

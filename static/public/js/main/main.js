@@ -6,34 +6,29 @@ const API_MATCHES = ["/api/v1/events/matches/", /* season */ "/", /* event */ "/
 const API_WHOAMI = "/api/v1/whoami";
 const API_SUBMIT = "/api/v1/data/submit";
 var match_schedule;
+function getEventCookie() {
+    var cookieString = RegExp("92bdcf1af0a0a23d" + "=[^;]+").exec(document.cookie);
+    return decodeURIComponent(!!cookieString ? cookieString.toString().replace(/^[^=]+./, "") : "");
+}
 async function init() {
+    if (getEventCookie() == "") {
+        document.cookie = `92bdcf1af0a0a23d=CAFR; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure; SameSite=Lax`;
+    }
+    document.getElementById("selected_event_code").innerText = getEventCookie();
     _get(API_WHOAMI, null).then((result) => {
         console.info(result);
     }).catch((error) => {
         console.error(error);
         window.location.href = "/login";
     });
-    await load_data();
-    document.getElementById("event_code").addEventListener("change", () => {
-        load_matches(document.getElementById("event_code").value);
-    });
+    await load_matches(getEventCookie());
     document.getElementById("match_num_input").addEventListener("change", () => {
         match_num_entry(document.getElementById("match_num_input").value);
     });
 }
-async function load_data() {
-    _get(API_META, null).then((result) => {
-        result.events.forEach(event_code => {
-            document.getElementById("event_code").insertAdjacentHTML("beforeend", `<option value="${event_code}">${event_code}</option>`);
-        });
-        document.getElementById("event_code").value = "CAFR";
-        load_matches("CAFR");
-    }).catch((error) => {
-        alert(`failed to load valid event codes. ${error}`);
-    });
-}
 function load_matches(event = "CAFR") {
-    _get(API_MATCHES[0] + "2023" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
+    document.getElementsByClassName("continue_button")[0].disabled = true;
+    _get(API_MATCHES[0] + "2024" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
         if (result.Schedule.length != 0) {
             match_schedule = result.Schedule;
             document.getElementById("match_num_input").innerHTML = "";
@@ -41,6 +36,8 @@ function load_matches(event = "CAFR") {
                 document.getElementById("match_num_input").insertAdjacentHTML("beforeend", `<option value="${match.matchNumber}">${match.matchNumber}</option>`);
             });
             match_num_entry("1");
+            document.getElementById("match_num_input").value = "";
+            document.getElementById("team_number").value = "";
         }
         else {
             alert("match schedule is not yet posted");
@@ -55,6 +52,14 @@ function set_option(element, value) {
     element.innerText = value;
     element.value = value;
 }
+document.getElementById("team_number").onchange = () => {
+    if (document.getElementById("team_number").value == "") {
+        document.getElementsByClassName("continue_button")[0].disabled = true;
+    }
+    else {
+        document.getElementsByClassName("continue_button")[0].disabled = false;
+    }
+};
 function match_num_entry(entry) {
     let entry_num = Number(entry);
     let select_elements = document.getElementsByClassName("teamNumOption");
@@ -111,6 +116,20 @@ function end_cycle(type) {
 }
 cycle_buttons[0].addEventListener("click", () => { end_cycle(0); });
 cycle_buttons[1].addEventListener("click", () => { end_cycle(1); });
+cycle_buttons[2].addEventListener("click", () => { end_cycle(9); });
+document.querySelector("[name=defense]").onchange = check_responses;
+document.querySelector("[name=driving]").onchange = check_responses;
+document.querySelector("[name=overall]").onchange = check_responses;
+function check_responses() {
+    if (document.querySelector("[name=defense]").value.length > 0 &&
+        document.querySelector("[name=driving]").value.length > 0 &&
+        document.querySelector("[name=overall]").value.length > 0) {
+        document.getElementsByClassName("continue_button")[2].disabled = false;
+    }
+    else {
+        document.getElementsByClassName("continue_button")[2].disabled = true;
+    }
+}
 function submit() {
     if (document.querySelector("[name=defense]").value
         .length == 0 ||
@@ -132,7 +151,7 @@ function submit() {
     cycle_data.push({ id: cycle_data.length, score_type: 4, intake: Number(document.querySelector("[name=buddy_climb]").checked), travel: Number(document.querySelector("[name=buddy_climb]").checked), outtake: Number(document.querySelector("[name=buddy_climb]").checked) });
     const data = {
         season: 2024,
-        event: document.getElementById("event_code").value,
+        event: getEventCookie(),
         match_num: Number(document.getElementById("match_num_input").value),
         level: "Qualification",
         team: Number(document.getElementById("team_number").value),
@@ -152,4 +171,35 @@ function submit() {
         submit_text.innerHTML = `Error!<br>${error}`;
     });
 }
-document.getElementsByClassName("continue_button")[0].addEventListener("click", submit);
+function reset() {
+    clearInterval(timer_id[0]);
+    clearInterval(timer_id[1]);
+    clearInterval(timer_id[2]);
+    timer_id = [0, 0, 0];
+    timer_times = [0, 0, 0];
+    cycle_data = [];
+    document.querySelector("[name=defense]").value = "";
+    document.querySelector("[name=driving]").value = "";
+    document.querySelector("[name=overall]").value = "";
+    document.getElementById("team_number").value = "";
+    document.querySelector("[name=trap_note]").checked = false;
+    document.querySelector("[name=climb]").checked = false;
+    document.querySelector("[name=buddy_climb]").checked = false;
+    document.getElementById("submit_page").style.display = "none";
+    document.getElementById("form_content").style.display = "block";
+    let pages = Array.from(document.getElementsByClassName("form_pages"));
+    document.getElementsByClassName("continue_button")[0].disabled = true;
+    document.getElementsByClassName("continue_button")[2].disabled = true;
+    pages[1].style.display = "none";
+    pages[2].style.display = "none";
+    pages[0].style.display = "flex";
+}
+document.getElementById("scout_again").onclick = reset;
+document.getElementsByClassName("continue_button")[2].addEventListener("click", submit);
+function advance_page(current) {
+    let pages = Array.from(document.getElementsByClassName("form_pages"));
+    pages[current].style.display = "none";
+    pages[current + 1].style.display = "flex";
+}
+document.getElementsByClassName("continue_button")[0].addEventListener("click", () => { advance_page(0); });
+document.getElementsByClassName("continue_button")[1].addEventListener("click", () => { advance_page(1); });

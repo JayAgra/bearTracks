@@ -19,8 +19,12 @@
                 <button class="settingOpt std" onclick="window.location.href = '/passkey'"><p>Register Passkey</p></button><br><br>
                 <button class="settingOpt danger" onclick="window.location.href='logout'"><p>Log Out</p></button><br><br>
                 <button class="settingOpt plain" onclick="window.location.href='/'"><p>Back</p></button>
+                <fieldset>
+                    <label>Event Code&emsp;<span id="bad_event" style="color: red; display: none;"></span></label>
+                    <select name="event" id="event_code"></select>
+                </fieldset><br>
             </div>
         </div>
-        <script type="module" src="static/js/settings/settings.js"></script>
+        <script type="module" src="static/js/settings/settings.min.js"></script>
     </body>
 </html>
