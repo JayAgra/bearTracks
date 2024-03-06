@@ -28,7 +28,7 @@ async function init() {
 }
 function load_matches(event = "CAFR") {
     document.getElementsByClassName("continue_button")[0].disabled = true;
-    _get(API_MATCHES[0] + "2023" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
+    _get(API_MATCHES[0] + "2024" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
         if (result.Schedule.length != 0) {
             match_schedule = result.Schedule;
             document.getElementById("match_num_input").innerHTML = "";
