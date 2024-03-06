@@ -9,7 +9,18 @@ const API_SUBMIT = "/api/v1/data/submit";
 
 var match_schedule;
 
+function getEventCookie() {
+    var cookieString = RegExp("92bdcf1af0a0a23d" + "=[^;]+").exec(document.cookie);
+    return decodeURIComponent(!!cookieString ? cookieString.toString().replace(/^[^=]+./, "") : "");
+}
+
 async function init() {
+    if (getEventCookie() == "") {
+        document.cookie = `92bdcf1af0a0a23d=CAFR; expires=Fri, 31 Dec 9999 23:59:59 GMT; Secure; SameSite=Lax`;
+    }
+
+    (document.getElementById("selected_event_code") as HTMLSpanElement).innerText = getEventCookie();
+
     _get(API_WHOAMI, null).then((result) => {
         console.info(result)
     }).catch((error) => {
@@ -17,30 +28,15 @@ async function init() {
         window.location.href = "/login"
     })
 
-    await load_data();
-
-    (document.getElementById("event_code") as HTMLSelectElement).addEventListener("change", () => {
-        load_matches((document.getElementById("event_code") as HTMLSelectElement).value);
-    });
+    await load_matches(getEventCookie());
 
     (document.getElementById("match_num_input") as HTMLSelectElement).addEventListener("change", () => {
         match_num_entry((document.getElementById("match_num_input") as HTMLSelectElement).value);
     });
 }
 
-async function load_data() {
-    _get(API_META, null).then((result) => {
-        result.events.forEach(event_code => {
-            (document.getElementById("event_code") as HTMLSelectElement).insertAdjacentHTML("beforeend", `<option value="${event_code}">${event_code}</option>`);
-        });
-        (document.getElementById("event_code") as HTMLSelectElement).value = "CAFR"
-        load_matches("CAFR");
-    }).catch((error) => {
-        alert(`failed to load valid event codes. ${error}`);
-    });
-}
-
 function load_matches(event: String = "CAFR") {
+    (document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).disabled = true;
     _get(API_MATCHES[0] + "2023" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
         if (result.Schedule.length != 0) {
             match_schedule = result.Schedule;
@@ -49,6 +45,8 @@ function load_matches(event: String = "CAFR") {
                 (document.getElementById("match_num_input") as HTMLSelectElement).insertAdjacentHTML("beforeend", `<option value="${match.matchNumber}">${match.matchNumber}</option>`);
             });
             match_num_entry("1");
+            (document.getElementById("match_num_input") as HTMLSelectElement).value = "";
+            (document.getElementById("team_number") as HTMLSelectElement).value = "";
         } else {
             alert("match schedule is not yet posted");
             (document.getElementById("match_num_input") as HTMLSelectElement).innerHTML = ""
@@ -62,6 +60,14 @@ function load_matches(event: String = "CAFR") {
 function set_option(element: HTMLOptionElement, value: string) {
     element.innerText = value;
     element.value = value;
+}
+
+(document.getElementById("team_number") as HTMLSelectElement).onchange = () => {
+    if ((document.getElementById("team_number") as HTMLSelectElement).value == "") {
+        (document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).disabled = true;
+    } else {
+        (document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).disabled = false;
+    }
 }
 
 function match_num_entry(entry: String) {
@@ -131,6 +137,23 @@ function end_cycle(type: number) {
 
 cycle_buttons[0].addEventListener("click", () => { end_cycle(0) });
 cycle_buttons[1].addEventListener("click", () => { end_cycle(1) });
+cycle_buttons[2].addEventListener("click", () => { end_cycle(9) });
+
+(document.querySelector("[name=defense]") as HTMLTextAreaElement).onchange = check_responses;
+(document.querySelector("[name=driving]") as HTMLTextAreaElement).onchange = check_responses;
+(document.querySelector("[name=overall]") as HTMLTextAreaElement).onchange = check_responses;
+
+function check_responses() {
+    if (
+        (document.querySelector("[name=defense]") as HTMLTextAreaElement).value.length > 0 &&
+        (document.querySelector("[name=driving]") as HTMLTextAreaElement).value.length > 0 &&
+        (document.querySelector("[name=overall]") as HTMLTextAreaElement).value.length > 0
+    ) {
+        (document.getElementsByClassName("continue_button")![2] as HTMLButtonElement).disabled = false
+    } else {
+        (document.getElementsByClassName("continue_button")![2] as HTMLButtonElement).disabled = true
+    }
+}
 
 function submit() {
     if (
@@ -162,7 +185,7 @@ function submit() {
 
     const data = {
         season: 2024,
-        event: (document.getElementById("event_code") as HTMLSelectElement).value,
+        event: getEventCookie(),
         match_num: Number((document.getElementById("match_num_input") as HTMLSelectElement).value),
         level: "Qualification",
         team: Number((document.getElementById("team_number") as HTMLSelectElement).value),
@@ -183,4 +206,39 @@ function submit() {
     });
 }
 
-(document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).addEventListener("click", submit)
+function reset() {
+    clearInterval(timer_id[0]);
+    clearInterval(timer_id[1]);
+    clearInterval(timer_id[2]);
+    timer_id = [0, 0, 0];
+    timer_times = [0, 0, 0];
+    cycle_data = [];
+    (document.querySelector("[name=defense]") as HTMLTextAreaElement).value = "";
+    (document.querySelector("[name=driving]") as HTMLTextAreaElement).value = "";
+    (document.querySelector("[name=overall]") as HTMLTextAreaElement).value = "";
+    (document.getElementById("team_number") as HTMLSelectElement).value = "";
+    (document.querySelector("[name=trap_note]") as HTMLInputElement).checked = false;
+    (document.querySelector("[name=climb]") as HTMLInputElement).checked = false;
+    (document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked = false;
+    (document.getElementById("submit_page") as HTMLFormElement).style.display = "none";
+    (document.getElementById("form_content") as HTMLFormElement).style.display = "block";
+    let pages = Array.from(document.getElementsByClassName("form_pages")) as Array<HTMLDivElement>;
+    (document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).disabled = true;
+    (document.getElementsByClassName("continue_button")![2] as HTMLButtonElement).disabled = true;
+    pages[1].style.display = "none";
+    pages[2].style.display = "none";
+    pages[0].style.display = "flex";
+}
+
+(document.getElementById("scout_again") as HTMLButtonElement).onclick = reset;
+
+(document.getElementsByClassName("continue_button")![2] as HTMLButtonElement).addEventListener("click", submit);
+
+function advance_page(current: number) {
+    let pages = Array.from(document.getElementsByClassName("form_pages")) as Array<HTMLDivElement>;
+    pages[current].style.display = "none";
+    pages[current + 1].style.display = "flex";
+}
+
+(document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).addEventListener("click", () => { advance_page(0) });
+(document.getElementsByClassName("continue_button")![1] as HTMLButtonElement).addEventListener("click", () => { advance_page(1) });

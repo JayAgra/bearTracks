@@ -22,12 +22,11 @@
     <body class="gruvbox" style="width: 100vw;">
         <script>themeHandle()</script>
         <form id="form_content" style="display: block; width: 100vw;">
-                <h1 class="w3">bearTracks<br><span class="gametitle">CRESCENDO</span></h1>
-                <div class="VStack" style="align-items: center;">
+                <div class="VStack form_pages" style="align-items: center; display: flex;">
+                    <h1 class="w3">bearTracks<br><span class="gametitle">CRESCENDO</span></h1>
                     <div class="VStack" style="width: 80vw; align-items: baseline;">
                         <fieldset>
-                            <label>Event Code&emsp;<span id="bad_event" style="color: red; display: none;"></span></label>
-                            <select name="event" id="event_code"></select>
+                            <label>Event Code&emsp;<span id="selected_event_code">XXXX</span>&emsp;<span><a style="all: unset; color: #0a84ff;" href="/settings">change</a></span></label>
                         </fieldset><br>
                         <fieldset>
                             <label>Match Number&emsp;</label>
@@ -49,10 +48,10 @@
                             </select>
                         </fieldset><br>
                     </div>
+                    <button type="button" class="continue_button" disabled><h2>continue</h2></button>
                 </div>
-                <div class="VStack" style="align-items: center;">
-                    <div class="VStack" style="height: 80vh; width: 80vw;">
-                        <br><br><br>
+                <div class="VStack form_pages" style="align-items: center; display: none; overflow: hidden;">
+                    <div class="VStack" style="height: 100vh; width: 80vw;">
                         <div class="HStack">
                             <div class="VStack">
                                 <h1 class="counter">0.0</h1>
@@ -67,11 +66,16 @@
                                 <button class="time_button" type="button"><h1>out</h1></button>
                             </div>
                         </div>
-                        <button class="cycle_button" type="button" style="margin-top: 3vh; margin-bottom: 1vh"><h1>speaker</h1></button>
-                        <button class="cycle_button" type="button"><h1>amplifier</h1></button><br><br><br>
+                        <div class="HStack">
+                            <button class="cycle_button" type="button"><h1>speaker</h1></button>
+                            <button class="cycle_button" type="button"><h1>amplifier</h1></button>
+                            <button class="cycle_button" type="button" style="min-width: 10vw; color: #fe8019; margin: none;"><h2>other</h2></button>
+                        </div>
+                        <button type="button" class="continue_button"><h2>continue</h2></button>
                     </div>
                 </div>
-                <div class="VStack" style="align-items: center;">
+                <div class="VStack form_pages" style="align-items: center; display: none;">
+                    <h1 class="w3">bearTracks<br><span class="gametitle">CRESCENDO</span></h1>
                     <div class="HStack">
                         <p style="width: 9em; margin-top: 5px; text-align: left;">Trap note</p>
                         <div style="width: calc(80vw - 9em - 46px);"></div>
@@ -99,13 +103,13 @@
                         <label style="text-align: left;">Provide an overall description of the team's performance in this match</label>
                         <textarea rows="6" style="resize: none; margin-top: 1%; width: 80vw;" name="overall"></textarea>
                     </div>
+                    <br><button class="continue_button" type="button" disabled><h2>submit</h2></button><br><br><br>
                 </div>
-                <br><button class="continue_button" type="button"><h2>submit</h2></button><br><br><br>
         </form>
         <div id="submit_page" style="display: none; align-items: center;">
             <h1 style="padding-top: 25vh" id="submit_text">Submitting...</h1>
             <progress style="min-width: 75vw;" id="submit_progress"></progress><br>
-            <br><button type="button" class="continue_button" onclick="window.location.reload()" id="scout_again"><h2>scout again</h2></button><br><br>
+            <br><button type="button" class="continue_button" id="scout_again"><h2>scout again</h2></button><br><br>
             <image src="static/assets/checkmark.seal.fill.png" style="display: none; width: 150px" id="success_seal"></image>
             <image src="static/assets/xmark.seal.fill.png" style="display: none; width: 150px" id="failure_seal"></image>
         </div>
