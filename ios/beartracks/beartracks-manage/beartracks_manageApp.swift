@@ -9,9 +9,9 @@ import SwiftUI
 
 @main
 struct beartracks_manageApp: App {
-    var body: some Scene {
-        WindowGroup {
-            TabBarView()
-        }
+  var body: some Scene {
+    WindowGroup {
+      TabBarView()
     }
+  }
 }
