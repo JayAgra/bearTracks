@@ -7,8 +7,7 @@ use once_cell::sync::Lazy;
 use rand::distributions::{Alphanumeric, DistString};
 use std::{collections::HashMap, ops::Add, sync::Mutex};
 
-static SESSION_STATES: Lazy<Mutex<HashMap<String, State>>> =
-    Lazy::new(|| Mutex::new(HashMap::new()));
+static SESSION_STATES: Lazy<Mutex<HashMap<String, State>>> = Lazy::new(|| Mutex::new(HashMap::new()));
 
 pub(crate) struct State {
     session_state: HashMap<String, String>,
@@ -20,10 +19,7 @@ pub(crate) struct MemorySession;
 
 #[async_trait(?Send)]
 impl SessionStore for MemorySession {
-    async fn load(
-        &self,
-        session_key: &SessionKey,
-    ) -> Result<Option<HashMap<String, String>>, LoadError> {
+    async fn load(&self, session_key: &SessionKey) -> Result<Option<HashMap<String, String>>, LoadError> {
         let now = Utc::now();
 
         Ok(SESSION_STATES
@@ -34,11 +30,7 @@ impl SessionStore for MemorySession {
             .map(|state| state.session_state.clone()))
     }
 
-    async fn save(
-        &self,
-        session_state: HashMap<String, String>,
-        ttl: &Duration,
-    ) -> Result<SessionKey, SaveError> {
+    async fn save(&self, session_state: HashMap<String, String>, ttl: &Duration) -> Result<SessionKey, SaveError> {
         let mut session_key;
 
         loop {
@@ -53,35 +45,24 @@ impl SessionStore for MemorySession {
             }
         }
 
-        SESSION_STATES
-            .lock()
-            .map_err(|_| SaveError::Other(anyhow!("poison error")))?
-            .insert(
-                session_key.clone(),
-                State {
-                    session_state,
-                    valid_until: Utc::now()
-                        .add(chrono::Duration::nanoseconds(ttl.whole_nanoseconds() as i64)),
-                },
-            );
+        SESSION_STATES.lock().map_err(|_| SaveError::Other(anyhow!("poison error")))?.insert(
+            session_key.clone(),
+            State {
+                session_state,
+                valid_until: Utc::now().add(chrono::Duration::nanoseconds(ttl.whole_nanoseconds() as i64)),
+            },
+        );
 
-        Ok(SessionKey::try_from(session_key)
-            .map_err(|_| SaveError::Serialization(anyhow!("invalid session key")))?)
+        Ok(SessionKey::try_from(session_key).map_err(|_| SaveError::Serialization(anyhow!("invalid session key")))?)
     }
 
-    async fn update(
-        &self,
-        session_key: SessionKey,
-        session_state: HashMap<String, String>,
-        ttl: &Duration,
-    ) -> Result<SessionKey, UpdateError> {
+    async fn update(&self, session_key: SessionKey, session_state: HashMap<String, String>, ttl: &Duration) -> Result<SessionKey, UpdateError> {
         if let Some(entry) = SESSION_STATES
             .lock()
             .map_err(|_| UpdateError::Other(anyhow!("poison error")))?
             .get_mut(session_key.as_ref())
         {
-            entry.valid_until =
-                Utc::now().add(chrono::Duration::nanoseconds(ttl.whole_nanoseconds() as i64));
+            entry.valid_until = Utc::now().add(chrono::Duration::nanoseconds(ttl.whole_nanoseconds() as i64));
             entry.session_state = session_state;
 
             Ok(session_key)
@@ -90,28 +71,16 @@ impl SessionStore for MemorySession {
         }
     }
 
-    async fn update_ttl(
-        &self,
-        session_key: &SessionKey,
-        ttl: &Duration,
-    ) -> Result<(), anyhow::Error> {
-        if let Some(entry) = SESSION_STATES
-            .lock()
-            .map_err(|_| anyhow!("poison error"))?
-            .get_mut(session_key.as_ref())
-        {
-            entry.valid_until =
-                Utc::now().add(chrono::Duration::nanoseconds(ttl.whole_nanoseconds() as i64));
+    async fn update_ttl(&self, session_key: &SessionKey, ttl: &Duration) -> Result<(), anyhow::Error> {
+        if let Some(entry) = SESSION_STATES.lock().map_err(|_| anyhow!("poison error"))?.get_mut(session_key.as_ref()) {
+            entry.valid_until = Utc::now().add(chrono::Duration::nanoseconds(ttl.whole_nanoseconds() as i64));
         }
 
         Ok(())
     }
 
     async fn delete(&self, session_key: &SessionKey) -> Result<(), anyhow::Error> {
-        SESSION_STATES
-            .lock()
-            .map_err(|_| anyhow!("poison error"))?
-            .remove(session_key.as_ref());
+        SESSION_STATES.lock().map_err(|_| anyhow!("poison error"))?.remove(session_key.as_ref());
 
         Ok(())
     }

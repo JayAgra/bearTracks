@@ -41,21 +41,9 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     let analyzer = vader_sentiment::SentimentIntensityAnalyzer::new();
     let game_data = data.game.split(",").collect::<Vec<_>>();
     let analysis_results: Vec<f64> = vec![
-        analyzer
-            .polarity_scores(data.defend.as_str())
-            .get("compound")
-            .unwrap()
-            .clone(),
-        analyzer
-            .polarity_scores(data.driving.as_str())
-            .get("compound")
-            .unwrap()
-            .clone(),
-        analyzer
-            .polarity_scores(data.overall.as_str())
-            .get("compound")
-            .unwrap()
-            .clone(),
+        analyzer.polarity_scores(data.defend.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.driving.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.overall.as_str()).get("compound").unwrap().clone(),
     ];
 
     let mut score: f64 = 0.0;
@@ -208,10 +196,7 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
 
     let string_mps_scores: Vec<String> = mps_scores.iter().map(|float| float.to_string()).collect();
 
-    let string_analysis_results: Vec<String> = analysis_results
-        .iter()
-        .map(|float| float.to_string())
-        .collect();
+    let string_analysis_results: Vec<String> = analysis_results.iter().map(|float| float.to_string()).collect();
 
     Ok(AnalysisResults {
         weight: string_mps_scores.join(","),
@@ -229,25 +214,12 @@ pub struct MatchTime2024 {
 
 fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults, Error> {
     let analyzer = vader_sentiment::SentimentIntensityAnalyzer::new();
-    let game_data: Vec<MatchTime2024> =
-        serde_json::from_str(data.game.as_str()).expect("failed to convert");
+    let game_data: Vec<MatchTime2024> = serde_json::from_str(data.game.as_str()).expect("failed to convert");
 
     let analysis_results: Vec<f64> = vec![
-        analyzer
-            .polarity_scores(data.defend.as_str())
-            .get("compound")
-            .unwrap()
-            .clone(),
-        analyzer
-            .polarity_scores(data.driving.as_str())
-            .get("compound")
-            .unwrap()
-            .clone(),
-        analyzer
-            .polarity_scores(data.overall.as_str())
-            .get("compound")
-            .unwrap()
-            .clone(),
+        analyzer.polarity_scores(data.defend.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.driving.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.overall.as_str()).get("compound").unwrap().clone(),
     ];
 
     let mut score: f64 = 0.0;
@@ -294,9 +266,11 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
             8 => auto_scores = time.intake as i64,
             _ => {}
         }
-        intake_time += time.intake;
-        travel_time += time.travel;
-        outtake_time += time.outtake;
+        if time.score_type == 0 || time.score_type == 1 || time.score_type == 9 {
+            intake_time += time.intake;
+            travel_time += time.travel;
+            outtake_time += time.outtake;
+        }
     }
 
     score += auto_scores as f64 * 18.0;
@@ -316,8 +290,7 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         fast_intake = score * (100.0 / (intake_time / (game_data.len() - 3) as f64));
         fast_travel = score * (100.0 / (travel_time / (game_data.len() - 3) as f64));
         fast_shoot = score * (100.0 / (outtake_time / (game_data.len() - 3) as f64));
-        fast_cycle = score
-            * (100.0 / (intake_time + travel_time + outtake_time / (game_data.len() - 3) as f64));
+        fast_cycle = score * (100.0 / (intake_time + travel_time + outtake_time / (game_data.len() - 3) as f64));
     } else {
         fast_intake = 0.0;
         fast_travel = 0.0;
@@ -345,8 +318,7 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
 
     let string_mps_scores: Vec<String> = mps_scores.iter().map(|float| float.to_string()).collect();
 
-    let string_analysis_results: Vec<String> =
-        analysis.iter().map(|float| float.to_string()).collect();
+    let string_analysis_results: Vec<String> = analysis.iter().map(|float| float.to_string()).collect();
 
     Ok(AnalysisResults {
         weight: string_mps_scores.join(","),

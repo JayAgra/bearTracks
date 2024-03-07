@@ -27,26 +27,19 @@ pub struct CreateForm {
     password: String,
 }
 
-pub async fn create_account(
-    pool: &db_auth::Pool,
-    create_form: web::Json<CreateForm>,
-) -> impl Responder {
+pub async fn create_account(pool: &db_auth::Pool, create_form: web::Json<CreateForm>) -> impl Responder {
     // check password length is between 8 and 32, inclusive
     if create_form.password.len() >= 8 && create_form.password.len() <= 64 {
         // check if user is a sketchy motherfucker
         let regex = Regex::new(r"^[a-z0-9A-Z- ~!@#$%^&*()=+/\_[_]{}|?.,]{3,64}$").unwrap();
-        if !regex.is_match(&create_form.username)
-            || !regex.is_match(&create_form.password)
-            || !regex.is_match(&create_form.full_name)
-        {
+        if !regex.is_match(&create_form.username) || !regex.is_match(&create_form.password) || !regex.is_match(&create_form.full_name) {
             return HttpResponse::BadRequest()
                 .status(StatusCode::from_u16(400).unwrap())
                 .insert_header(("Cache-Control", "no-cache"))
                 .body("{\"status\": \"you_sketchy_motherfucker\"}");
         }
         // check if username is taken
-        let target_user_temp: Result<db_auth::User, actix_web::Error> =
-            db_auth::get_user_username(pool, create_form.username.clone()).await;
+        let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, create_form.username.clone()).await;
         if target_user_temp.is_ok() {
             return HttpResponse::BadRequest()
                 .status(StatusCode::from_u16(409).unwrap())
@@ -57,12 +50,7 @@ pub async fn create_account(
             // check access key validity
             if create_form.access != "00000" {
                 let access_key_temp: Result<Vec<db_auth::AccessKey>, actix_web::Error> =
-                    db_auth::get_access_key(
-                        pool,
-                        create_form.access.clone(),
-                        db_auth::AccessKeyQuery::ById,
-                    )
-                    .await;
+                    db_auth::get_access_key(pool, create_form.access.clone(), db_auth::AccessKeyQuery::ById).await;
                 if access_key_temp.is_err() {
                     return HttpResponse::BadRequest()
                         .status(StatusCode::from_u16(403).unwrap())
@@ -72,15 +60,14 @@ pub async fn create_account(
                     // insert into database
                     let access_key = access_key_temp.unwrap().first().cloned();
                     if let Some(valid_key) = access_key {
-                        let user_temp: Result<db_auth::User, actix_web::Error> =
-                            db_auth::create_user(
-                                pool,
-                                valid_key.team,
-                                html_escape::encode_text(&create_form.full_name).to_string(),
-                                html_escape::encode_text(&create_form.username).to_string(),
-                                html_escape::encode_text(&create_form.password).to_string(),
-                            )
-                            .await;
+                        let user_temp: Result<db_auth::User, actix_web::Error> = db_auth::create_user(
+                            pool,
+                            valid_key.team,
+                            html_escape::encode_text(&create_form.full_name).to_string(),
+                            html_escape::encode_text(&create_form.username).to_string(),
+                            html_escape::encode_text(&create_form.password).to_string(),
+                        )
+                        .await;
                         // send final success/failure for creation
                         if user_temp.is_err() {
                             return HttpResponse::BadRequest()
@@ -139,8 +126,7 @@ pub async fn login(
     login_form: web::Json<LoginForm>,
 ) -> impl Responder {
     // try to get target user from database
-    let target_user_temp: Result<db_auth::User, actix_web::Error> =
-        db_auth::get_user_username(pool, login_form.username.clone()).await;
+    let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
     if target_user_temp.is_err() {
         // query error, send failure response
         return HttpResponse::BadRequest()
@@ -171,10 +157,11 @@ pub async fn login(
             // save the username to the identity
             identity.remember(login_form.username.clone());
             // write the user object to the session
-            session.write().unwrap().user_map.insert(
-                target_user.clone().username.to_string(),
-                target_user.clone(),
-            );
+            session
+                .write()
+                .unwrap()
+                .user_map
+                .insert(target_user.clone().username.to_string(), target_user.clone());
             // if admin, send admin success response
             if target_user.admin == "true" {
                 // user is admin, send admin response for client cookie
@@ -214,12 +201,8 @@ pub async fn login(
     }
 }
 
-pub async fn delete_account(
-    pool: &db_auth::Pool,
-    login_form: web::Json<LoginForm>,
-) -> Result<HttpResponse, actix_web::Error> {
-    let target_user_temp: Result<db_auth::User, actix_web::Error> =
-        db_auth::get_user_username(pool, login_form.username.clone()).await;
+pub async fn delete_account(pool: &db_auth::Pool, login_form: web::Json<LoginForm>) -> Result<HttpResponse, actix_web::Error> {
+    let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
     if target_user_temp.is_err() {
         return Ok(HttpResponse::BadRequest()
             .status(StatusCode::from_u16(400).unwrap())
@@ -240,12 +223,7 @@ pub async fn delete_account(
             .is_ok()
         {
             Ok(HttpResponse::Ok().json(
-                db_auth::execute_manage_user(
-                    &pool,
-                    db_auth::UserManageAction::DeleteUser,
-                    [target_user.id.to_string(), "".to_string()],
-                )
-                .await?,
+                db_auth::execute_manage_user(&pool, db_auth::UserManageAction::DeleteUser, [target_user.id.to_string(), "".to_string()]).await?,
             ))
         } else {
             Ok(HttpResponse::BadRequest()
@@ -261,10 +239,7 @@ pub async fn delete_account(
     }
 }
 
-pub async fn logout(
-    session: web::Data<RwLock<crate::Sessions>>,
-    identity: Identity,
-) -> HttpResponse {
+pub async fn logout(session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> HttpResponse {
     // if session exists, proceed
     if let Some(id) = identity.identity() {
         // forget identity

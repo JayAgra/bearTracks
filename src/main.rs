@@ -51,20 +51,12 @@ impl FromRequest for db_auth::User {
         let fut = Identity::from_request(req, payload);
         let session: Option<&web::Data<RwLock<Sessions>>> = req.app_data();
         if session.is_none() {
-            return Box::pin(async {
-                Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}"))
-            });
+            return Box::pin(async { Err(error::ErrorUnauthorized("{\"status\": \"unauthorized\"}")) });
         }
         let session = session.unwrap().clone();
         Box::pin(async move {
             if let Some(identity) = fut.await?.identity() {
-                if let Some(user) = session
-                    .read()
-                    .unwrap()
-                    .user_map
-                    .get(&identity)
-                    .map(|x| x.clone())
-                {
+                if let Some(user) = session.read().unwrap().user_map.get(&identity).map(|x| x.clone()) {
                     return Ok(user);
                 }
             };
@@ -95,23 +87,16 @@ fn unauthorized_response() -> HttpResponse {
 
 // pong!!
 async fn misc_ping() -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .body("pong"))
+    Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body("pong"))
 }
 
 // system is ok
 async fn debug_ok() -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .body("true"))
+    Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body("true"))
 }
 
 // create account endpoint
-async fn auth_post_create(
-    db: web::Data<Databases>,
-    data: web::Json<auth::CreateForm>,
-) -> impl Responder {
+async fn auth_post_create(db: web::Data<Databases>, data: web::Json<auth::CreateForm>) -> impl Responder {
     auth::create_account(&db.auth, data).await
 }
 
@@ -126,18 +111,12 @@ async fn auth_post_login(
 }
 
 // delete account endpoint required for apple platforms
-async fn auth_post_delete(
-    db: web::Data<Databases>,
-    data: web::Json<auth::LoginForm>,
-) -> Result<HttpResponse, AWError> {
+async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginForm>) -> Result<HttpResponse, AWError> {
     Ok(auth::delete_account(&db.auth, data).await?)
 }
 
 // destroy session endpoint
-async fn auth_get_logout(
-    session: web::Data<RwLock<Sessions>>,
-    identity: Identity,
-) -> impl Responder {
+async fn auth_get_logout(session: web::Data<RwLock<Sessions>>, identity: Identity) -> impl Responder {
     auth::logout(session, identity).await
 }
 
@@ -173,15 +152,7 @@ async fn auth_psk_auth_start(
 ) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
-        .json(
-            passkey::webauthn_start_authentication(
-                &db.auth,
-                username.into_inner(),
-                session,
-                webauthn,
-            )
-            .await?,
-        ))
+        .json(passkey::webauthn_start_authentication(&db.auth, username.into_inner(), session, webauthn).await?))
 }
 
 // finish passkey authentication
@@ -193,10 +164,7 @@ async fn auth_psk_auth_finish(
     webauthn: web::Data<Webauthn>,
     sessions: web::Data<RwLock<Sessions>>,
 ) -> Result<HttpResponse, AWError> {
-    Ok(passkey::webauthn_finish_authentication(
-        &db.auth, cred, session, identity, webauthn, sessions,
-    )
-    .await?)
+    Ok(passkey::webauthn_finish_authentication(&db.auth, cred, session, identity, webauthn, sessions).await?)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -208,25 +176,23 @@ pub struct DataMeta {
 
 // valid entries metadata. iOS and web clients load from this.
 async fn data_get_meta() -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .json(DataMeta {
-            seasons: env::var("SEASONS")
-                .unwrap_or_else(|_| "0".to_string())
-                .split(",")
-                .map(|s| s.to_string())
-                .collect::<Vec<String>>(),
-            events: env::var("EVENTS")
-                .unwrap_or_else(|_| "0".to_string())
-                .split(",")
-                .map(|s| s.to_string())
-                .collect::<Vec<String>>(),
-            teams: env::var("TEAMS")
-                .unwrap_or_else(|_| "0".to_string())
-                .split(",")
-                .map(|s| s.to_string())
-                .collect::<Vec<String>>(),
-        }))
+    Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).json(DataMeta {
+        seasons: env::var("SEASONS")
+            .unwrap_or_else(|_| "0".to_string())
+            .split(",")
+            .map(|s| s.to_string())
+            .collect::<Vec<String>>(),
+        events: env::var("EVENTS")
+            .unwrap_or_else(|_| "0".to_string())
+            .split(",")
+            .map(|s| s.to_string())
+            .collect::<Vec<String>>(),
+        teams: env::var("TEAMS")
+            .unwrap_or_else(|_| "0".to_string())
+            .split(",")
+            .map(|s| s.to_string())
+            .collect::<Vec<String>>(),
+    }))
 }
 
 // access denied template
@@ -235,11 +201,7 @@ fn access_denied_team() -> HttpResponse {
 }
 
 // get detailed data by submission id. used in /detail
-async fn data_get_detailed(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_detailed(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -250,11 +212,7 @@ async fn data_get_detailed(
 }
 
 // check if a submission exists, by id. used in submit script to verify submission (verification is mostly a gimmick but whatever)
-async fn data_get_exists(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_exists(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -265,11 +223,7 @@ async fn data_get_exists(
 }
 
 // get summary of all data for a given team at an event in a season. used on /browse
-async fn data_get_main_brief_team(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_team(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -280,11 +234,7 @@ async fn data_get_main_brief_team(
 }
 
 // get summary of all data for a given match at an event, in a specified season. used on /browsw
-async fn data_get_main_brief_match(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_match(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -295,11 +245,7 @@ async fn data_get_main_brief_match(
 }
 
 // get summary of all data from an event, given a season. used for /browse
-async fn data_get_main_brief_event(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_event(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -309,11 +255,7 @@ async fn data_get_main_brief_event(
     }
 }
 
-async fn data_get_main_brief_season(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_season(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -324,11 +266,7 @@ async fn data_get_main_brief_season(
 }
 
 // get summary of all submissions created by a certain user id. used for /browse
-async fn data_get_main_brief_user(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -339,21 +277,14 @@ async fn data_get_main_brief_user(
 }
 
 // get basic data about all teams at an event, in a season. used for event rankings. ** NO AUTH **
-async fn data_get_main_teams(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-) -> Result<HttpResponse, AWError> {
+async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(db_main::execute(&db.main, db_main::MainData::GetTeams, path).await?))
 }
 
 // get POSTed data from form
-async fn data_post_submit(
-    data: web::Json<db_main::MainInsert>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?))
@@ -365,10 +296,7 @@ async fn event_get_frc_api(req: HttpRequest, path: web::Path<(String, String)>) 
 }
 
 // forward frc api data for events. used on main form to ensure entered matches and teams are valid
-async fn event_get_frc_api_matches(
-    req: HttpRequest,
-    path: web::Path<(String, String)>, /*, user: db_auth::User*/
-) -> HttpResponse {
+async fn event_get_frc_api_matches(req: HttpRequest, path: web::Path<(String, String)> /*, user: db_auth::User*/) -> HttpResponse {
     // if user.team != 0 {
     forward::forward_frc_api_event_matches(req, path).await
     // } else {
@@ -377,11 +305,7 @@ async fn event_get_frc_api_matches(
 }
 
 // get all valid submission IDs. used on /manage to create list of IDs that can be acted on
-async fn manage_get_submission_ids(
-    path: web::Path<String>,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_get_submission_ids(path: web::Path<String>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -392,62 +316,40 @@ async fn manage_get_submission_ids(
 }
 
 // gets list of all valid user ids, used in /manageScouts
-async fn manage_get_all_users(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_get_all_users(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .json(
-                db_auth::execute_get_users_mgmt(&db.auth, db_auth::UserQueryType::All, user)
-                    .await?,
-            ))
+            .json(db_auth::execute_get_users_mgmt(&db.auth, db_auth::UserQueryType::All, user).await?))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // gets list of users in a team, used in /manageTeam
-async fn manage_get_all_users_in_team(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_get_all_users_in_team(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" || user.team_admin != 0 {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .json(
-                db_auth::execute_get_users_mgmt(&db.auth, db_auth::UserQueryType::Team, user)
-                    .await?,
-            ))
+            .json(db_auth::execute_get_users_mgmt(&db.auth, db_auth::UserQueryType::Team, user).await?))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // gets all access keys, used for /manageTeams
-async fn manage_get_all_keys(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_get_all_keys(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .json(
-                db_auth::get_access_key(&db.auth, "".to_string(), db_auth::AccessKeyQuery::AllKeys)
-                    .await?,
-            ))
+            .json(db_auth::get_access_key(&db.auth, "".to_string(), db_auth::AccessKeyQuery::AllKeys).await?))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // data dump
-async fn manage_data_dump(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AWError> {
+async fn manage_data_dump(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -458,11 +360,7 @@ async fn manage_data_dump(
 }
 
 // DELETE endpoint to remove a submission. used in /manage
-async fn manage_delete_submission(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-    path: web::Path<String>,
-) -> Result<HttpResponse, AWError> {
+async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
@@ -473,59 +371,38 @@ async fn manage_delete_submission(
 }
 
 // DELETE endpoint to remove a user, used in /manageScouts
-async fn manage_delete_user(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_delete_user(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .body(
-                db_auth::execute_manage_user(
-                    &db.auth,
-                    db_auth::UserManageAction::DeleteUser,
-                    [
-                        req.match_info().get("user_id").unwrap().parse().unwrap(),
-                        "".to_string(),
-                    ],
-                )
-                .await?,
-            ))
+        Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body(
+            db_auth::execute_manage_user(
+                &db.auth,
+                db_auth::UserManageAction::DeleteUser,
+                [req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()],
+            )
+            .await?,
+        ))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // DELETE endpoint to remove a user, but for a team admin (requires that target user is member of team). used in /manageTeam
-async fn manage_delete_user_team_admin(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_delete_user_team_admin(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" || user.team_admin != 0 {
         if user.admin == "true"
-            || db_auth::get_user_id(
-                &db.auth,
-                req.match_info().get("user_id").unwrap().parse().unwrap(),
-            )
-            .await?
-            .team
+            || db_auth::get_user_id(&db.auth, req.match_info().get("user_id").unwrap().parse().unwrap())
+                .await?
+                .team
                 == user.team_admin
         {
-            Ok(HttpResponse::Ok()
-                .insert_header(("Cache-Control", "no-cache"))
-                .body(
-                    db_auth::execute_manage_user(
-                        &db.auth,
-                        db_auth::UserManageAction::DeleteUser,
-                        [
-                            req.match_info().get("user_id").unwrap().parse().unwrap(),
-                            "".to_string(),
-                        ],
-                    )
-                    .await?,
-                ))
+            Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body(
+                db_auth::execute_manage_user(
+                    &db.auth,
+                    db_auth::UserManageAction::DeleteUser,
+                    [req.match_info().get("user_id").unwrap().parse().unwrap(), "".to_string()],
+                )
+                .await?,
+            ))
         } else {
             Ok(unauthorized_response())
         }
@@ -535,164 +412,110 @@ async fn manage_delete_user_team_admin(
 }
 
 // DELETE endpoint to 86 an access key, used in /manageTeams
-async fn manage_delete_access_key(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_delete_access_key(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .body(
-                db_auth::delete_access_key(
-                    &db.auth,
-                    req.match_info()
-                        .get("access_key_id")
-                        .unwrap()
-                        .parse()
-                        .unwrap(),
-                )
-                .await?,
-            ))
+            .body(db_auth::delete_access_key(&db.auth, req.match_info().get("access_key_id").unwrap().parse().unwrap()).await?))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // patch to update a user's administration status, used in /manageScouts
-async fn manage_patch_admin(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_patch_admin(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .body(
-                db_auth::execute_manage_user(
-                    &db.auth,
-                    db_auth::UserManageAction::ModifyAdmin,
-                    [
-                        req.match_info().get("admin").unwrap().parse().unwrap(),
-                        req.match_info().get("user_id").unwrap().parse().unwrap(),
-                    ],
-                )
-                .await?,
-            ))
+        Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body(
+            db_auth::execute_manage_user(
+                &db.auth,
+                db_auth::UserManageAction::ModifyAdmin,
+                [
+                    req.match_info().get("admin").unwrap().parse().unwrap(),
+                    req.match_info().get("user_id").unwrap().parse().unwrap(),
+                ],
+            )
+            .await?,
+        ))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // patch to update a user's [team] administration status, used in /manageScouts
-async fn manage_patch_team_admin(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_patch_team_admin(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .body(
-                db_auth::execute_manage_user(
-                    &db.auth,
-                    db_auth::UserManageAction::ModifyTeamAdmin,
-                    [
-                        req.match_info().get("admin").unwrap().parse().unwrap(),
-                        req.match_info().get("user_id").unwrap().parse().unwrap(),
-                    ],
-                )
-                .await?,
-            ))
+        Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body(
+            db_auth::execute_manage_user(
+                &db.auth,
+                db_auth::UserManageAction::ModifyTeamAdmin,
+                [
+                    req.match_info().get("admin").unwrap().parse().unwrap(),
+                    req.match_info().get("user_id").unwrap().parse().unwrap(),
+                ],
+            )
+            .await?,
+        ))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // patch to update a user's points, used in /manageScouts
-async fn manage_patch_points(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_patch_points(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .body(
-                db_auth::execute_manage_user(
-                    &db.auth,
-                    db_auth::UserManageAction::ModifyPoints,
-                    [
-                        req.match_info().get("modify").unwrap().parse().unwrap(),
-                        req.match_info().get("user_id").unwrap().parse().unwrap(),
-                    ],
-                )
-                .await?,
-            ))
+        Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body(
+            db_auth::execute_manage_user(
+                &db.auth,
+                db_auth::UserManageAction::ModifyPoints,
+                [
+                    req.match_info().get("modify").unwrap().parse().unwrap(),
+                    req.match_info().get("user_id").unwrap().parse().unwrap(),
+                ],
+            )
+            .await?,
+        ))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // patch to modify an existing access key, used in /manageTeams
-async fn manage_patch_access_key(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_patch_access_key(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .body(
-                db_auth::update_access_key(
-                    &db.auth,
-                    req.match_info().get("key").unwrap().parse().unwrap(),
-                    req.match_info().get("id").unwrap().parse().unwrap(),
-                )
-                .await?,
-            ))
+        Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body(
+            db_auth::update_access_key(
+                &db.auth,
+                req.match_info().get("key").unwrap().parse().unwrap(),
+                req.match_info().get("id").unwrap().parse().unwrap(),
+            )
+            .await?,
+        ))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // post to create a new access key, used in /manageTeams
-async fn manage_post_access_key(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn manage_post_access_key(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
-        Ok(HttpResponse::Ok()
-            .insert_header(("Cache-Control", "no-cache"))
-            .body(
-                db_auth::create_access_key(
-                    &db.auth,
-                    req.match_info().get("key").unwrap().parse().unwrap(),
-                    req.match_info().get("team").unwrap().parse().unwrap(),
-                )
-                .await?,
-            ))
+        Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).body(
+            db_auth::create_access_key(
+                &db.auth,
+                req.match_info().get("key").unwrap().parse().unwrap(),
+                req.match_info().get("team").unwrap().parse().unwrap(),
+            )
+            .await?,
+        ))
     } else {
         Ok(unauthorized_response())
     }
 }
 
 // get transactions, used in /pointRecords
-async fn misc_get_transact_me(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn misc_get_transact_me(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
-        .json(
-            db_transact::execute(
-                &db.transact,
-                db_transact::TransactData::GetUserTransactions,
-                user,
-            )
-            .await?,
-        ))
+        .json(db_transact::execute(&db.transact, db_transact::TransactData::GetUserTransactions, user).await?))
 }
 
 // get to confirm session status and obtain current user id. used in main form to ensure session is active
@@ -705,26 +528,18 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
 // if you aren't D6MFYYVHA8 you may want to change this
 const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .content_type(ContentType::json())
-        .body(APPLE_APP_SITE_ASSOC))
+    Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
 }
 
 // get all points. used to construct the leaderboard
-async fn points_get_all(
-    db: web::Data<Databases>,
-    _user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn points_get_all(db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(db_auth::execute_scores(&db.auth, db_auth::AuthData::GetUserScores).await?))
 }
 
 // get spin wheel for the casino
-async fn casino_wheel(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn casino_wheel(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .body(casino::spin_thing(&db.auth, &db.transact, user).await?))
@@ -732,9 +547,7 @@ async fn casino_wheel(
 
 // get for debugging. returns the current user object.
 async fn debug_get_user(user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .json(user))
+    Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).json(user))
 }
 
 // server health for debug
@@ -745,52 +558,36 @@ async fn debug_health(session: web::Data<RwLock<Sessions>>) -> Result<HttpRespon
 }
 
 // get all user's owned cards
-async fn game_get_cards(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::get_owned_cards(&db.auth, user).await?))
 }
 
 // get random team from scouted teams
-async fn game_open_lootbox(
-    db: web::Data<Databases>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn game_open_lootbox(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::open_loot_box(&db.auth, &db.main, user).await?))
 }
 
 // set player's hand
-async fn game_set_hand(
-    db: web::Data<Databases>,
-    data: web::Json<game_api::CardsPostData>,
-    user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
+async fn game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::set_held_cards(&db.auth, user, &data).await?))
 }
 
-async fn game_get_team(
-    req: HttpRequest,
-    db: web::Data<Databases>,
-    _user: db_auth::User,
-) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .json(
-            game_api::execute(
-                &db.main,
-                req.match_info().get("season").unwrap().parse().unwrap(),
-                req.match_info().get("event").unwrap().parse().unwrap(),
-                req.match_info().get("team").unwrap().parse().unwrap(),
-            )
-            .await?,
-        ))
+async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).json(
+        game_api::execute(
+            &db.main,
+            req.match_info().get("season").unwrap().parse().unwrap(),
+            req.match_info().get("event").unwrap().parse().unwrap(),
+            req.match_info().get("team").unwrap().parse().unwrap(),
+        )
+        .await?,
+    ))
 }
 
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
@@ -823,20 +620,11 @@ async fn main() -> io::Result<()> {
     for i in 0..seasons.len() {
         for j in 0..events.len() {
             // cache team list
-            let team_target_url = format!(
-                "https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}",
-                seasons[i], events[j]
-            );
+            let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
             let team_client = Client::new();
             let team_response = team_client
                 .request(actix_http::Method::GET, team_target_url)
-                .header(
-                    "Authorization",
-                    format!(
-                        "Basic {}",
-                        env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())
-                    ),
-                )
+                .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
                 .send()
                 .await;
 
@@ -844,46 +632,23 @@ async fn main() -> io::Result<()> {
                 Ok(response) => {
                     if response.status() == 200 {
                         fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
-                        fs::write(
-                            format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]),
-                            response.text().await.unwrap(),
-                        )
-                        .expect(
-                            format!(
-                                "Failed to cache {}/{} team JSON. Could not write file.",
-                                seasons[i], events[j]
-                            )
-                            .as_str(),
-                        );
+                        fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), response.text().await.unwrap())
+                            .expect(format!("Failed to cache {}/{} team JSON. Could not write file.", seasons[i], events[j]).as_str());
                     } else {
-                        log::error!(
-                            "Failed to cache {}/{} team JSON. Response status {}.",
-                            seasons[i],
-                            events[j],
-                            response.status()
-                        );
+                        log::error!("Failed to cache {}/{} team JSON. Response status {}.", seasons[i], events[j], response.status());
                     }
                 }
                 Err(_) => {
-                    log::error!(
-                        "Failed to cache {}/{} team JSON. Response was not OK.",
-                        seasons[i],
-                        events[j]
-                    );
+                    log::error!("Failed to cache {}/{} team JSON. Response was not OK.", seasons[i], events[j]);
                 }
             }
 
-            let match_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
+            let match_target_url =
+                format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
             let match_client = Client::new();
             let match_response = match_client
                 .request(actix_http::Method::GET, match_target_url)
-                .header(
-                    "Authorization",
-                    format!(
-                        "Basic {}",
-                        env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())
-                    ),
-                )
+                .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
                 .send()
                 .await;
 
@@ -891,58 +656,34 @@ async fn main() -> io::Result<()> {
                 Ok(response) => {
                     if response.status() == 200 {
                         fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
-                        fs::write(
-                            format!("cache/frc_api/{}/{}/matches.json", seasons[i], events[j]),
-                            response.text().await.unwrap(),
-                        )
-                        .expect(
-                            format!(
-                                "Failed to cache {}/{} match JSON. Could not write file.",
-                                seasons[i], events[j]
-                            )
-                            .as_str(),
-                        );
+                        fs::write(format!("cache/frc_api/{}/{}/matches.json", seasons[i], events[j]), response.text().await.unwrap())
+                            .expect(format!("Failed to cache {}/{} match JSON. Could not write file.", seasons[i], events[j]).as_str());
                     } else {
-                        log::error!(
-                            "Failed to cache {}/{} match JSON. Response status {}.",
-                            seasons[i],
-                            events[j],
-                            response.status()
-                        );
+                        log::error!("Failed to cache {}/{} match JSON. Response status {}.", seasons[i], events[j], response.status());
                     }
                 }
                 Err(_) => {
-                    log::error!(
-                        "Failed to cache {}/{} match JSON. Response was not OK.",
-                        seasons[i],
-                        events[j]
-                    );
+                    log::error!("Failed to cache {}/{} match JSON. Response was not OK.", seasons[i], events[j]);
                 }
             }
         }
     }
 
     // hashmap w: web::Data<RwLock<Sessions>>ith user sessions in it
-    let sessions: web::Data<RwLock<Sessions>> = web::Data::new(RwLock::new(Sessions {
-        user_map: HashMap::new(),
-    }));
+    let sessions: web::Data<RwLock<Sessions>> = web::Data::new(RwLock::new(Sessions { user_map: HashMap::new() }));
 
     // main database connection
     let main_db_manager = SqliteConnectionManager::file("data.db");
     let main_db_pool = db_main::Pool::new(main_db_manager).unwrap();
     let main_db_connection = main_db_pool.get().expect("main db: connection failed");
-    main_db_connection
-        .execute_batch("PRAGMA journal_mode=WAL;")
-        .expect("main db: WAL failed");
+    main_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("main db: WAL failed");
     drop(main_db_connection);
 
     // auth database connection
     let auth_db_manager = SqliteConnectionManager::file("data_auth.db");
     let auth_db_pool = db_main::Pool::new(auth_db_manager).unwrap();
     let auth_db_connection = auth_db_pool.get().expect("auth db: connection failed");
-    auth_db_connection
-        .execute_batch("PRAGMA journal_mode=WAL;")
-        .expect("auth db: WAL failed");
+    auth_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("auth db: WAL failed");
     drop(auth_db_connection);
 
     // transaction database connection
@@ -971,17 +712,10 @@ async fn main() -> io::Result<()> {
      */
     // create ssl builder for tls config
     let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-    builder
-        .set_private_key_file("./ssl/key.pem", SslFiletype::PEM)
-        .unwrap();
-    builder
-        .set_certificate_chain_file("./ssl/cert.pem")
-        .unwrap();
+    builder.set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
+    builder.set_certificate_chain_file("./ssl/cert.pem").unwrap();
     let intermediate_cert_url = "https://letsencrypt.org/certs/lets-encrypt-r3.der";
-    let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url)
-        .unwrap()
-        .bytes()
-        .unwrap();
+    let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url).unwrap().bytes().unwrap();
     let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
     builder.add_extra_chain_cert(intermediate_cert).unwrap();
 
@@ -1247,17 +981,8 @@ async fn main() -> io::Result<()> {
             // POST
             .service(web::resource("/api/v1/game/set_hand").route(web::post().to(game_set_hand)))
     })
-    .bind_openssl(
-        format!(
-            "{}:443",
-            env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())
-        ),
-        builder,
-    )?
-    .bind((
-        env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()),
-        80,
-    ))?
+    .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
+    .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?
     .workers(8)
     .run()
     .await

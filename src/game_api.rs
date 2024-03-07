@@ -62,10 +62,7 @@ pub struct FrcApiTeams {
     pub teams: Vec<FrcApiTeam>,
 }
 
-pub async fn get_owned_cards(
-    pool: &db_auth::Pool,
-    user: db_auth::User,
-) -> Result<ClientInfo, Error> {
+pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Result<ClientInfo, Error> {
     let user_updated = db_auth::get_user_id(pool, user.id.to_string()).await?;
     if user_updated.data == "" {
         db_auth::update_user_data(
@@ -102,25 +99,19 @@ pub async fn get_owned_cards(
             username: user_updated.username,
             team: user_updated.team,
             score: user_updated.score,
-            game_data: serde_json::from_str::<GameUserData>(&user_updated.data).unwrap_or(
-                GameUserData {
-                    cards: vec![99999, 99998, 99997],
-                    hand: vec![99999, 99998, 99997],
-                    wins: 0,
-                    losses: 0,
-                    ties: 0,
-                    box_count: 0,
-                },
-            ),
+            game_data: serde_json::from_str::<GameUserData>(&user_updated.data).unwrap_or(GameUserData {
+                cards: vec![99999, 99998, 99997],
+                hand: vec![99999, 99998, 99997],
+                wins: 0,
+                losses: 0,
+                ties: 0,
+                box_count: 0,
+            }),
         })
     }
 }
 
-pub async fn open_loot_box(
-    auth_pool: &db_auth::Pool,
-    main_pool: &db_main::Pool,
-    user_param: db_auth::User,
-) -> Result<i64, Error> {
+pub async fn open_loot_box(auth_pool: &db_auth::Pool, main_pool: &db_main::Pool, user_param: db_auth::User) -> Result<i64, Error> {
     let user_queried = db_auth::get_user_id(auth_pool, user_param.id.to_string()).await;
     if !user_queried.is_ok() {
         return Ok(-1);
@@ -151,24 +142,15 @@ pub async fn open_loot_box(
                     .await?;
                 }
 
-                let mut current_user_data =
-                    serde_json::from_str::<GameUserData>(&user.data).unwrap();
+                let mut current_user_data = serde_json::from_str::<GameUserData>(&user.data).unwrap();
                 current_user_data.box_count += 1;
                 current_user_data.cards.push(card);
-                db_auth::update_user_data(
-                    auth_pool,
-                    user.id,
-                    serde_json::to_string(&current_user_data).unwrap_or("".to_string()),
-                )
-                .await?;
+                db_auth::update_user_data(auth_pool, user.id, serde_json::to_string(&current_user_data).unwrap_or("".to_string())).await?;
 
                 let auth_pool = auth_pool.clone();
-                let auth_conn = web::block(move || auth_pool.get())
-                    .await?
-                    .map_err(error::ErrorInternalServerError)?;
+                let auth_conn = web::block(move || auth_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
-                db_auth::update_points(auth_conn, user.id, -100)
-                    .map_err(error::ErrorInternalServerError)?;
+                db_auth::update_points(auth_conn, user.id, -100).map_err(error::ErrorInternalServerError)?;
 
                 Ok(card)
             } else {
@@ -185,11 +167,7 @@ pub struct CardsPostData {
     cards: Vec<i64>,
 }
 
-pub async fn set_held_cards(
-    auth_pool: &db_auth::Pool,
-    user_param: db_auth::User,
-    data: &web::Json<CardsPostData>,
-) -> Result<CardsPostData, Error> {
+pub async fn set_held_cards(auth_pool: &db_auth::Pool, user_param: db_auth::User, data: &web::Json<CardsPostData>) -> Result<CardsPostData, Error> {
     let user_queried = db_auth::get_user_id(auth_pool, user_param.id.to_string()).await;
     if !user_queried.is_ok() {
         return Ok(CardsPostData { cards: vec![-1, 3] });
@@ -211,12 +189,7 @@ pub async fn set_held_cards(
         }
         if !cards_not_ok {
             current_user_data.hand = data.cards.clone();
-            db_auth::update_user_data(
-                auth_pool,
-                user.id,
-                serde_json::to_string(&current_user_data).unwrap_or("".to_string()),
-            )
-            .await?;
+            db_auth::update_user_data(auth_pool, user.id, serde_json::to_string(&current_user_data).unwrap_or("".to_string())).await?;
             return Ok(CardsPostData {
                 cards: current_user_data.hand,
             });
@@ -268,42 +241,24 @@ struct MainAnalysis {
     analysis: String,
 }
 
-pub async fn execute(
-    pool: &db_main::Pool,
-    season: String,
-    event: String,
-    team: String,
-) -> Result<Team, Error> {
+pub async fn execute(pool: &db_main::Pool, season: String, event: String, team: String) -> Result<Team, Error> {
     let pool = pool.clone();
 
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
     web::block(move || get_team(conn, season, event, team))
         .await?
         .map_err(error::ErrorInternalServerError)
 }
 
-fn get_team(
-    conn: db_main::Connection,
-    season: String,
-    event: String,
-    team: String,
-) -> Result<Team, rusqlite::Error> {
-    let stmt = conn.prepare(
-        "SELECT analysis FROM main WHERE season=:season AND event=:event AND team=:team;",
-    )?;
+fn get_team(conn: db_main::Connection, season: String, event: String, team: String) -> Result<Team, rusqlite::Error> {
+    let stmt = conn.prepare("SELECT analysis FROM main WHERE season=:season AND event=:event AND team=:team;")?;
     get_rows(stmt, [season, event, team])
 }
 
 fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusqlite::Error> {
     let data: Vec<MainAnalysis> = statement
-        .query_map(params.clone(), |row| {
-            Ok(MainAnalysis {
-                analysis: row.get(0)?,
-            })
-        })
+        .query_map(params.clone(), |row| Ok(MainAnalysis { analysis: row.get(0)? }))
         .and_then(Iterator::collect)
         .unwrap();
 
@@ -325,45 +280,23 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
     };
 
     data.iter().for_each(|entry| {
-        let game_data: Vec<i64> = entry
-            .analysis
-            .split(",")
-            .map(|v| v.parse::<i64>().unwrap_or(0))
-            .collect();
-        data_arr
-            .trap_note
-            .push(game_data.get(0).unwrap_or(&0).clone());
+        let game_data: Vec<i64> = entry.analysis.split(",").map(|v| v.parse::<i64>().unwrap_or(0)).collect();
+        data_arr.trap_note.push(game_data.get(0).unwrap_or(&0).clone());
         data_arr.climb.push(game_data.get(1).unwrap_or(&0).clone());
-        data_arr
-            .buddy_climb
-            .push(game_data.get(2).unwrap_or(&0).clone());
+        data_arr.buddy_climb.push(game_data.get(2).unwrap_or(&0).clone());
         data_arr.intake.push(game_data.get(3).unwrap_or(&0).clone());
         data_arr.travel.push(game_data.get(4).unwrap_or(&0).clone());
-        data_arr
-            .outtake
-            .push(game_data.get(5).unwrap_or(&0).clone());
-        data_arr
-            .speaker
-            .push(game_data.get(6).unwrap_or(&0).clone());
-        data_arr
-            .amplifier
-            .push(game_data.get(7).unwrap_or(&0).clone());
+        data_arr.outtake.push(game_data.get(5).unwrap_or(&0).clone());
+        data_arr.speaker.push(game_data.get(6).unwrap_or(&0).clone());
+        data_arr.amplifier.push(game_data.get(7).unwrap_or(&0).clone());
         data_arr
             .shots
             .push(game_data.get(6).unwrap_or(&0).clone() + game_data.get(7).unwrap_or(&0).clone());
         data_arr.points.push(game_data.get(8).unwrap_or(&0).clone());
-        data_arr
-            .auto_preload
-            .push(game_data.get(9).unwrap_or(&0).clone());
-        data_arr
-            .auto_wing
-            .push(game_data.get(10).unwrap_or(&0).clone());
-        data_arr
-            .auto_center
-            .push(game_data.get(11).unwrap_or(&0).clone());
-        data_arr
-            .auto_scores
-            .push(game_data.get(12).unwrap_or(&0).clone());
+        data_arr.auto_preload.push(game_data.get(9).unwrap_or(&0).clone());
+        data_arr.auto_wing.push(game_data.get(10).unwrap_or(&0).clone());
+        data_arr.auto_center.push(game_data.get(11).unwrap_or(&0).clone());
+        data_arr.auto_scores.push(game_data.get(12).unwrap_or(&0).clone());
     });
 
     let intake_qrt = stats::quartiles_i64(&data_arr.intake);
@@ -394,8 +327,7 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
         team: params[2].parse::<i64>().unwrap_or(0),
         trap_note: data_arr.trap_note.iter().sum::<i64>() as f64 / data_arr.trap_note.len() as f64,
         climb: data_arr.climb.iter().sum::<i64>() as f64 / data_arr.climb.len() as f64,
-        buddy_climb: data_arr.buddy_climb.iter().sum::<i64>() as f64
-            / data_arr.buddy_climb.len() as f64,
+        buddy_climb: data_arr.buddy_climb.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
         intake: DataStats {
             first: intake_qrt[0],
             median: intake_qrt[1],

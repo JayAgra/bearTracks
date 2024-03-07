@@ -76,31 +76,27 @@ pub enum MainData {
 }
 
 // execute query
-pub async fn execute(
-    pool: &Pool,
-    query: MainData,
-    path: web::Path<String>,
-) -> Result<Vec<Main>, Error> {
+pub async fn execute(pool: &Pool, query: MainData, path: web::Path<String>) -> Result<Vec<Main>, Error> {
     // clone pool
     let pool = pool.clone();
 
     // get database connection
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
     // run query function based on provided enum
-    web::block(move || match query {
-        MainData::GetDataDetailed => get_data_detailed(conn, path),
-        MainData::DataExists => get_submission_exists(conn, path),
-        MainData::BriefSeason => get_brief_season(conn, path),
-        MainData::BriefEvent => get_brief_event(conn, path),
-        MainData::BriefTeam => get_brief_team(conn, path),
-        MainData::BriefMatch => get_brief_match(conn, path),
-        MainData::BriefUser => get_brief_user(conn, path),
-        MainData::GetTeams => get_all_teams(conn, path),
-        MainData::Id => get_main_ids(conn, path),
-        MainData::GetAllData => get_all_data(conn, path),
+    web::block(move || {
+        match query {
+            MainData::GetDataDetailed => get_data_detailed(conn, path),
+            MainData::DataExists => get_submission_exists(conn, path),
+            MainData::BriefSeason => get_brief_season(conn, path),
+            MainData::BriefEvent => get_brief_event(conn, path),
+            MainData::BriefTeam => get_brief_team(conn, path),
+            MainData::BriefMatch => get_brief_match(conn, path),
+            MainData::BriefUser => get_brief_user(conn, path),
+            MainData::GetTeams => get_all_teams(conn, path),
+            MainData::Id => get_main_ids(conn, path),
+            MainData::GetAllData => get_all_data(conn, path),
+        }
     })
     .await?
     .map_err(error::ErrorInternalServerError)
@@ -164,8 +160,7 @@ fn get_brief_user(conn: Connection, path: web::Path<String>) -> QueryResult {
 // get weight and team number for all teams at an event, for performance rankings
 fn get_all_teams(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn
-        .prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
+    let stmt = conn.prepare("SELECT id, team, weight FROM main WHERE season=?1 AND event=?2 GROUP BY team;")?;
     get_team_rows(stmt, [args[0], args[1]])
 }
 
@@ -257,15 +252,12 @@ pub async fn get_team_numbers(pool: &Pool, season: String) -> Result<Vec<i64>, E
     let pool = pool.clone();
 
     // get database connection
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
     // run query function based on provided enum
     web::block(move || {
         let mut stmt = conn.prepare("SELECT team FROM main WHERE season=?1 ORDER BY id DESC;")?;
-        stmt.query_map([season], |row| Ok(row.get(0)?))
-            .and_then(Iterator::collect)
+        stmt.query_map([season], |row| Ok(row.get(0)?)).and_then(Iterator::collect)
     })
     .await?
     .map_err(error::ErrorInternalServerError)
@@ -304,17 +296,11 @@ pub async fn execute_insert(
     let auth_pool = auth_pool.clone();
 
     // get connections to all databases
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
-    let transact_conn = web::block(move || transact_pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let transact_conn = web::block(move || transact_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
-    let auth_conn = web::block(move || auth_pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let auth_conn = web::block(move || auth_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
     web::block(move || insert_main_data(conn, transact_conn, auth_conn, &data, user))
         .await?
@@ -381,29 +367,18 @@ fn insert_main_data(
 }
 
 // function to delete data for users with admin access
-pub async fn delete_by_id(
-    pool: &Pool,
-    transact_pool: &Pool,
-    auth_pool: &Pool,
-    path: web::Path<String>,
-) -> Result<String, actix_web::Error> {
+pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, path: web::Path<String>) -> Result<String, actix_web::Error> {
     // clone pools for all three databases
     let pool = pool.clone();
     let transact_pool = transact_pool.clone();
     let auth_pool = auth_pool.clone();
 
     // get connections to all databases
-    let conn = web::block(move || pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
-    let transact_conn = web::block(move || transact_pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let transact_conn = web::block(move || transact_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
-    let auth_conn = web::block(move || auth_pool.get())
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+    let auth_conn = web::block(move || auth_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
     web::block(move || {
         // get the target id from request path
@@ -411,9 +386,7 @@ pub async fn delete_by_id(
         // prepare statement
         let mut stmt = conn.prepare("DELETE FROM main WHERE id=?1 RETURNING user_id;")?;
         // run query, mapping the result to a single Id object (containing the user id, not submission id) that will used to deduct points
-        let execution = stmt.query_row(params![target_id.parse::<i64>().unwrap()], |row| {
-            Ok(Id { id: row.get(0)? })
-        });
+        let execution = stmt.query_row(params![target_id.parse::<i64>().unwrap()], |row| Ok(Id { id: row.get(0)? }));
         if execution.is_ok() {
             // get the user id from the execution result
             let id: i64 = execution.unwrap().id;
