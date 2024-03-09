@@ -10,6 +10,7 @@
 		F5081BA22B741D15001497DB /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F540A13D2B549D2500611384 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
 		F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
+		F542E34C2B9C028F002F6E05 /* MatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */; };
 		F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54E76C12B527D96003C65A2 /* bearTracksApp.swift */; };
 		F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */; };
@@ -81,6 +82,7 @@
 		F5081BA12B741D15001497DB /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F540A13C2B549D2500611384 /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		F540A13E2B549D2E00611384 /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
+		F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDetailView.swift; sourceTree = "<group>"; };
 		F54E76BE2B527D96003C65A2 /* bearTracks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bearTracks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54E76C12B527D96003C65A2 /* bearTracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bearTracksApp.swift; sourceTree = "<group>"; };
 		F54E76C52B527D97003C65A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				F5AE2E402B527E050033DB0D /* DetailedView.swift */,
 				F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */,
 				F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */,
+				F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */,
 				F5AE2E3F2B527E050033DB0D /* MatchList.swift */,
 				F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */,
 				F5AE2E522B527E170033DB0D /* SettingsView.swift */,
@@ -316,6 +319,7 @@
 				F5081BA22B741D15001497DB /* AppState.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
 				F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */,
+				F542E34C2B9C028F002F6E05 /* MatchDetailView.swift in Sources */,
 				F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

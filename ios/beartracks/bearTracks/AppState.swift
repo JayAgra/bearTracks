@@ -16,6 +16,7 @@ class AppState: ObservableObject {
     @Published public var selectedTab: Tab = .teams
   #endif
   @Published public var loginRequired: Bool = false
+  @Published public var matchJson: [Match] = []
   private var cancellables: Set<AnyCancellable> = []
 
   #if !os(watchOS)
@@ -26,4 +27,35 @@ class AppState: ObservableObject {
         .store(in: &cancellables)
     }
   #endif
+}
+
+/// FRC API's Schedule structure
+struct MatchData: Codable {
+    let Schedule: [Match]
+}
+
+/// FRC API's Match structure
+struct Match: Codable, Identifiable {
+    var id = UUID()
+    let description: String
+    let startTime: String
+    let matchNumber: Int
+    let field: String
+    let tournamentLevel: String
+    let teams: [Team]
+    
+    private enum CodingKeys: String, CodingKey {
+        case description, startTime, matchNumber, field, tournamentLevel, teams
+    }
+}
+
+/// FRC API's Team structure
+struct Team: Codable, Identifiable {
+    var id = UUID()
+    let teamNumber: Int
+    let station: String
+    let surrogate: Bool
+    private enum CodingKeys: String, CodingKey {
+        case teamNumber, station, surrogate
+    }
 }
