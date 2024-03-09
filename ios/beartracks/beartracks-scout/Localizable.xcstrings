@@ -1,0 +1,774 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "%lld" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "↑ shuttle / other ↑" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lanzadera / otro"
+          }
+        }
+      }
+    },
+    "Alliance wing notes handled (%lld)" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas de la alianza manejadas"
+          }
+        }
+      }
+    },
+    "amplifier" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "amplificador"
+          }
+        }
+      }
+    },
+    "Amplifier" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amplificador"
+          }
+        }
+      }
+    },
+    "an app restart is required for the theme change to take effect" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "se requiere reiniciar la aplicación para que el cambio de tema surta efecto"
+          }
+        }
+      }
+    },
+    "Auth Error" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de autenticación"
+          }
+        }
+      }
+    },
+    "Autonomous Period" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Período autónomo"
+          }
+        }
+      }
+    },
+    "bearTracks" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bearTracks"
+          }
+        }
+      }
+    },
+    "Buddy climb" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escalando con compañero"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
+    "Clear Network Cache" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar la caché de red"
+          }
+        }
+      }
+    },
+    "Climb" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escalar"
+          }
+        }
+      }
+    },
+    "Confirm Deletion" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar eliminación"
+          }
+        }
+      }
+    },
+    "create" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "crear"
+          }
+        }
+      }
+    },
+    "create account" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "crear cuenta"
+          }
+        }
+      }
+    },
+    "Cycles" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciclos"
+          }
+        }
+      }
+    },
+    "Dark Mode" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo oscuro"
+          }
+        }
+      }
+    },
+    "Defense" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defensa"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
+          }
+        }
+      }
+    },
+    "Delete Account" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar cuenta"
+          }
+        }
+      }
+    },
+    "Did the robot play defense? If so, was it effective? Did it incur foul points?" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿El robot jugó a la defensiva? En caso afirmativo, ¿fue efectivo? ¿Incurrió puntos de falta?"
+          }
+        }
+      }
+    },
+    "done" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hecho"
+          }
+        }
+      }
+    },
+    "Driving" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manejando"
+          }
+        }
+      }
+    },
+    "end" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "final"
+          }
+        }
+      }
+    },
+    "error" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "error"
+          }
+        }
+      }
+    },
+    "Event Code" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código de evento"
+          }
+        }
+      }
+    },
+    "full name" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nombre completo"
+          }
+        }
+      }
+    },
+    "game" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "juego"
+          }
+        }
+      }
+    },
+    "go to endgame" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ir a la fase final"
+          }
+        }
+      }
+    },
+    "How was the driving? Did the driver seem confident?" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cómo fue la conducción? ¿El conductor parecía seguro?"
+          }
+        }
+      }
+    },
+    "intake" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "intake"
+          }
+        }
+      }
+    },
+    "log in" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cerrar sesión"
+          }
+        }
+      }
+    },
+    "Log Out" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iniciar sesión"
+          }
+        }
+      }
+    },
+    "login" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iniciar sesión"
+          }
+        }
+      }
+    },
+    "match %lld • team %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "match %1$lld • team %2$@"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "partido %1$lld • equipo %2$@"
+          }
+        }
+      }
+    },
+    "Match %lld • Team %@\n%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Match %1$lld • Team %2$@\n%3$@ (%4$@)"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partido %1$lld • Equipo %2$@ %3$@ (%4$@)"
+          }
+        }
+      }
+    },
+    "Match Number: " : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Número de la partida:"
+          }
+        }
+      }
+    },
+    "Match Scouting" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observación del partido"
+          }
+        }
+      }
+    },
+    "move" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mover"
+          }
+        }
+      }
+    },
+    "Neutral zone notes handled (%lld)" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas de la zona neutral manejadas (%lld)"
+          }
+        }
+      }
+    },
+    "ok" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ok"
+          }
+        }
+      }
+    },
+    "outtake" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "outtake"
+          }
+        }
+      }
+    },
+    "Overall" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En general"
+          }
+        }
+      }
+    },
+    "password" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "contraseña"
+          }
+        }
+      }
+    },
+    "Password" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contraseña"
+          }
+        }
+      }
+    },
+    "Please fill in all three long form responses." : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, complete las tres respuestas en un formato largo."
+          }
+        }
+      }
+    },
+    "Please select a match number and event code on the start tab." : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, seleccione un número de partida y código de evento en la pestaña de inicio."
+          }
+        }
+      }
+    },
+    "Preloaded notes handled (%lld)" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas precargadas manejadas (%lld)"
+          }
+        }
+      }
+    },
+    "Provide an overall description of the team's performance in this match" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proporcione una descripción general del rendimiento del equipo en esta partida"
+          }
+        }
+      }
+    },
+    "review" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "revisar"
+          }
+        }
+      }
+    },
+    "Scores (%lld)" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puntajes (%lld)"
+          }
+        }
+      }
+    },
+    "Season" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temporada"
+          }
+        }
+      }
+    },
+    "SELECT" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SELECCIONAR"
+          }
+        }
+      }
+    },
+    "settings" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "configuración"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración"
+          }
+        }
+      }
+    },
+    "Shuttle/Other" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lanzadera/Otro"
+          }
+        }
+      }
+    },
+    "speaker" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "altavoz"
+          }
+        }
+      }
+    },
+    "Speaker" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altavoz"
+          }
+        }
+      }
+    },
+    "start" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iniciar"
+          }
+        }
+      }
+    },
+    "start teleop" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iniciar teleoperador"
+          }
+        }
+      }
+    },
+    "submit" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enviar"
+          }
+        }
+      }
+    },
+    "submitting..." : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enviando…"
+          }
+        }
+      }
+    },
+    "team code" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "código de equipo"
+          }
+        }
+      }
+    },
+    "Team Number" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Número de equipo"
+          }
+        }
+      }
+    },
+    "theme change" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cambio de tema"
+          }
+        }
+      }
+    },
+    "this action is irreversable" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "esta acción es irreversible"
+          }
+        }
+      }
+    },
+    "This application is used to submit scouting data to bearTracks. To view this data, install the [data viewer](https://apps.apple.com/us/app/beartracks-data/id6475752596). The data viewer may only be used by users registered with a team (i.e. team code was not 00000). Team registration is free- to register your team or add yourself to a team after account creation, send an email to [admin@beartracks.io](mailto:admin@beartracks.io)." : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta aplicación se utiliza para enviar datos de exploración a bearTracks. Para ver estos datos, instale la [visualización de datos](https://apps.apple.com/us/app/beartracks-data/id6475752596). El visor de datos solo puede ser utilizado por usuarios registrados con un equipo (es decir, el código de equipo no era 00000). El registro de equipos es gratuito; para registrar su equipo o agregarse a un equipo después de crear una cuenta, envíe un correo electrónico a [admin@beartracks.io](mailto:admin@beartracks.io)."
+          }
+        }
+      }
+    },
+    "Trap note" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "trap note"
+          }
+        }
+      }
+    },
+    "travel" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "viajar"
+          }
+        }
+      }
+    },
+    "Type" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
+          }
+        }
+      }
+    },
+    "username" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nombre de usuario"
+          }
+        }
+      }
+    },
+    "Username" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de usuario"
+          }
+        }
+      }
+    },
+    "v%@ • 2024" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "v%@ • 2024"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
