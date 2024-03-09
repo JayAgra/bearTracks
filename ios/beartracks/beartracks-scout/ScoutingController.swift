@@ -84,17 +84,18 @@ class ScoutingController: ObservableObject {
   }
 
   func submitData(completionBlock: @escaping ((SubmitSheetType, String)) -> Void) {
-    addEndgameValue(type: 2, value: switches.0 ? 1 : 0)
-    addEndgameValue(type: 3, value: switches.1 ? 1 : 0)
-    addEndgameValue(type: 4, value: switches.2 ? 1 : 0)
-    addEndgameValue(type: 5, value: Double(switches.3))
-    addEndgameValue(type: 6, value: Double(switches.4))
-    addEndgameValue(type: 7, value: Double(switches.5))
-    addEndgameValue(type: 8, value: Double(switches.6))
+    var localTimeCopy = matchTimes;
+    localTimeCopy.append(MatchTime(score_type: 2, intake: switches.0 ? 1 : 0, travel: switches.0 ? 1 : 0, outtake: switches.0 ? 1 : 0))
+    localTimeCopy.append(MatchTime(score_type: 3, intake: switches.1 ? 1 : 0, travel: switches.1 ? 1 : 0, outtake: switches.1 ? 1 : 0))
+    localTimeCopy.append(MatchTime(score_type: 4, intake: switches.2 ? 1 : 0, travel: switches.2 ? 1 : 0, outtake: switches.2 ? 1 : 0))
+    localTimeCopy.append(MatchTime(score_type: 5, intake: Double(switches.3), travel: Double(switches.3), outtake: Double(switches.3)))
+    localTimeCopy.append(MatchTime(score_type: 6, intake: Double(switches.4), travel: Double(switches.4), outtake: Double(switches.4)))
+    localTimeCopy.append(MatchTime(score_type: 7, intake: Double(switches.5), travel: Double(switches.5), outtake: Double(switches.5)))
+    localTimeCopy.append(MatchTime(score_type: 8, intake: Double(switches.6), travel: Double(switches.6), outtake: Double(switches.6)))
     guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
     var encodedMatchTimes: String = ""
     do {
-      encodedMatchTimes = try String(data: JSONEncoder().encode(matchTimes), encoding: .utf8) ?? ""
+      encodedMatchTimes = try String(data: JSONEncoder().encode(localTimeCopy), encoding: .utf8) ?? ""
     } catch {
       encodedMatchTimes = ""
     }

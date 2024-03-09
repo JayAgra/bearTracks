@@ -40,41 +40,43 @@ struct ReviewView: View {
                 VStack {
                   Divider()
                   ForEach($controller.matchTimes) { $matchTime in
-                    VStack {
-                      HStack {
-                        Picker("Type", selection: $matchTime.score_type) {
-                          Text("Speaker")
-                            .tag(0)
-                          Text("Amplifier")
-                            .tag(1)
-                          Text("Shuttle/Other")
-                            .tag(9)
-                        }
-                        .pickerStyle(.menu)
-                        Spacer()
-                        Text(
-                          String(
-                            format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake)
-                        )
-                        .font(.title3)
+                      if matchTime.score_type == 0 || matchTime.score_type == 1 || matchTime.score_type == 9 {
+                          VStack {
+                              HStack {
+                                  Picker("Type", selection: $matchTime.score_type) {
+                                      Text("Speaker")
+                                          .tag(0)
+                                      Text("Amplifier")
+                                          .tag(1)
+                                      Text("Shuttle/Other")
+                                          .tag(9)
+                                  }
+                                  .pickerStyle(.menu)
+                                  Spacer()
+                                  Text(
+                                    String(
+                                        format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake)
+                                  )
+                                  .font(.title3)
+                              }
+                              HStack {
+                                  Spacer()
+                                  Label(
+                                    String(format: "%.1f", matchTime.intake),
+                                    systemImage: "tray.and.arrow.down.fill")
+                                  Spacer()
+                                  Label(
+                                    String(format: "%.1f", matchTime.travel),
+                                    systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+                                  Spacer()
+                                  Label(
+                                    String(format: "%.1f", matchTime.outtake), systemImage: "paperplane.fill")
+                                  Spacer()
+                              }
+                          }
+                          .padding([.leading, .trailing])
+                          Divider()
                       }
-                      HStack {
-                        Spacer()
-                        Label(
-                          String(format: "%.1f", matchTime.intake),
-                          systemImage: "tray.and.arrow.down.fill")
-                        Spacer()
-                        Label(
-                          String(format: "%.1f", matchTime.travel),
-                          systemImage: "arrow.up.and.down.and.arrow.left.and.right")
-                        Spacer()
-                        Label(
-                          String(format: "%.1f", matchTime.outtake), systemImage: "paperplane.fill")
-                        Spacer()
-                      }
-                    }
-                    .padding([.leading, .trailing])
-                    Divider()
                   }
                 }
                 .padding([.leading, .trailing, .bottom])

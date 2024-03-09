@@ -201,7 +201,7 @@ pub async fn login(
     }
 }
 
-pub async fn delete_account(pool: &db_auth::Pool, login_form: web::Json<LoginForm>) -> Result<HttpResponse, actix_web::Error> {
+pub async fn delete_account(pool: &db_auth::Pool, login_form: web::Json<LoginForm>, session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> Result<HttpResponse, actix_web::Error> {
     let target_user_temp: Result<db_auth::User, actix_web::Error> = db_auth::get_user_username(pool, login_form.username.clone()).await;
     if target_user_temp.is_err() {
         return Ok(HttpResponse::BadRequest()
@@ -222,6 +222,7 @@ pub async fn delete_account(pool: &db_auth::Pool, login_form: web::Json<LoginFor
             .verify_password(login_form.password.as_bytes(), &parsed_hash.unwrap())
             .is_ok()
         {
+            logout(session, identity).await;
             Ok(HttpResponse::Ok().json(
                 db_auth::execute_manage_user(&pool, db_auth::UserManageAction::DeleteUser, [target_user.id.to_string(), "".to_string()]).await?,
             ))
@@ -245,9 +246,7 @@ pub async fn logout(session: web::Data<RwLock<crate::Sessions>>, identity: Ident
         // forget identity
         identity.forget();
         // remove user object from the user hashmap
-        if let Some(_user) = session.write().unwrap().user_map.remove(&id) {
-            // log::info!("user {} logged out", user.username);
-        }
+        session.write().unwrap().user_map.remove(&id);
     }
 
     // send user to login page

@@ -111,8 +111,8 @@ async fn auth_post_login(
 }
 
 // delete account endpoint required for apple platforms
-async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginForm>) -> Result<HttpResponse, AWError> {
-    Ok(auth::delete_account(&db.auth, data).await?)
+async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginForm>, session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> Result<HttpResponse, AWError> {
+    Ok(auth::delete_account(&db.auth, data, session, identity).await?)
 }
 
 // destroy session endpoint

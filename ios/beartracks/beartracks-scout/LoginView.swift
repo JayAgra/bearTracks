@@ -19,7 +19,7 @@ struct LoginView: View {
     VStack {
       Text("bearTracks")
         .font(.title)
-      Text("v5.1.0 • 2024")
+        Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5") • 2024")
       if !loading {
         if !create {
           Text("log in")

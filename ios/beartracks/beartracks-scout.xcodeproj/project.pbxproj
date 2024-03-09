@@ -32,7 +32,7 @@
 		F509F6C02B54D9C0006FD9D5 /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F509F6C22B54D9DA006FD9D5 /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F509F6C42B54D9F4006FD9D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingController.swift; sourceTree = "<group>"; };
+		F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ScoutingController.swift; sourceTree = "<group>"; tabWidth = 4; };
 		F509F6C82B54E554006FD9D5 /* PressModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressModifier.swift; sourceTree = "<group>"; };
 		F56584052B54D52900F587C0 /* beartracks-scout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-scout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F56584082B54D52900F587C0 /* beartracks_scoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_scoutApp.swift; sourceTree = "<group>"; };
@@ -313,7 +313,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -331,7 +331,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-scout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -347,7 +347,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -365,7 +365,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-scout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
