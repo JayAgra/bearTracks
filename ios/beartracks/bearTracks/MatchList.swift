@@ -10,91 +10,57 @@ import SwiftUI
 /// List of all upcoming matches for the configured team number
 struct MatchList: View {
     @EnvironmentObject var appState: AppState
-    @State private var didInitialLoad: Bool = false
     @State private var loadFailed: Bool = false
     @State private var loadComplete: Bool = false
     @State private var selectedMatch: (Bool, Int) = (false, 0)
+    @State private var myTeamOnly = false
     
     var body: some View {
             NavigationStack {
                 if !appState.matchJson.isEmpty {
                     List {
                         ForEach(appState.matchJson) { match in
-                            NavigationLink(value: match.description) {
-                                VStack {
-                                    Text(String(match.description))
-                                        .font(.title3)
-                                    HStack {
-                                        Spacer()
-                                        VStack {
-                                            Text("\(String(match.teams[0].teamNumber))")
-                                                .font(.largeTitle)
-                                                .fontWeight(
-                                                    String(match.teams[0].teamNumber)
-                                                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
-                                                    ? .bold : .regular
-                                                )
-                                                .foregroundColor(Color.red)
-                                            Text("\(String(match.teams[3].teamNumber))")
-                                                .font(.largeTitle)
-                                                .fontWeight(
-                                                    String(match.teams[3].teamNumber)
-                                                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
-                                                    ? .bold : .regular
-                                                )
-                                                .foregroundColor(Color.blue)
+                            if !myTeamOnly || checkMatch(match: match) {
+                                NavigationLink(value: match.description) {
+                                    VStack {
+                                        Text(String(match.description))
+                                            .font(.title3)
+                                        HStack {
+                                            Spacer()
+                                            TeamNumberStack(match: match, num: 0)
+                                            Spacer()
+                                            TeamNumberStack(match: match, num: 1)
+                                            Spacer()
+                                            TeamNumberStack(match: match, num: 2)
+                                            Spacer()
                                         }
-                                        Spacer()
-                                        VStack {
-                                            Text("\(String(match.teams[1].teamNumber))")
-                                                .font(.largeTitle)
-                                                .fontWeight(
-                                                    String(match.teams[1].teamNumber)
-                                                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
-                                                    ? .bold : .regular
-                                                )
-                                                .foregroundColor(Color.red)
-                                            Text("\(String(match.teams[4].teamNumber))")
-                                                .font(.largeTitle)
-                                                .fontWeight(
-                                                    String(match.teams[4].teamNumber)
-                                                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
-                                                    ? .bold : .regular
-                                                )
-                                                .foregroundColor(Color.blue)
-                                        }
-                                        Spacer()
-                                        VStack {
-                                            Text("\(String(match.teams[2].teamNumber))")
-                                                .font(.largeTitle)
-                                                .fontWeight(
-                                                    String(match.teams[2].teamNumber)
-                                                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
-                                                    ? .bold : .regular
-                                                )
-                                                .foregroundColor(Color.red)
-                                            Text("\(String(match.teams[5].teamNumber))")
-                                                .font(.largeTitle)
-                                                .fontWeight(
-                                                    String(match.teams[5].teamNumber)
-                                                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
-                                                    ? .bold : .regular
-                                                )
-                                                .foregroundColor(Color.blue)
-                                        }
-                                        Spacer()
                                     }
                                 }
+                                .onTapGesture {
+                                    self.selectedMatch = (true, match.matchNumber);
+                                }
                             }
-                            .onTapGesture {
-                                self.selectedMatch = (true, match.matchNumber);
-                            }
-                            .navigationTitle("Matches")
-                            .navigationDestination(isPresented: $selectedMatch.0) {
-                                MatchDetailView(match: selectedMatch.1)
-                                    .navigationTitle("match \(selectedMatch.1)")
-                                    .environmentObject(appState)
-                            }
+                        }
+                    }
+                    .navigationTitle("Matches")
+                    .navigationDestination(isPresented: $selectedMatch.0) {
+                        MatchDetailView(match: selectedMatch.1)
+                            .navigationTitle("match \(selectedMatch.1)")
+                            .environmentObject(appState)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                self.myTeamOnly.toggle()
+                            }, label: {
+                                if myTeamOnly {
+                                    Label("teams", systemImage: "line.3.horizontal.decrease.circle.fill")
+                                        .labelStyle(.iconOnly)
+                                } else {
+                                    Label("teams", systemImage: "line.3.horizontal.decrease.circle")
+                                        .labelStyle(.iconOnly)
+                                }
+                            })
                         }
                     }
                 } else {
@@ -133,10 +99,7 @@ struct MatchList: View {
                 }
             }
             .onAppear {
-                if !didInitialLoad {
-                    fetchMatchJson()
-                    didInitialLoad = true
-                }
+                fetchMatchJson()
             }
     }
     
@@ -171,8 +134,45 @@ struct MatchList: View {
         }
         .resume()
     }
+    
+    private func checkMatch(match: Match) -> Bool {
+        let myteam = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? "766";
+        var isOk = false;
+        match.teams.forEach { team in
+            if String(team.teamNumber) == myteam {
+                isOk = true
+            }
+        }
+        return isOk;
+    }
 }
 
 #Preview {
     MatchList()
+}
+
+struct TeamNumberStack: View {
+    @State public var match: Match
+    @State public var num: Int
+    
+    var body: some View {
+        VStack {
+            Text("\(String(match.teams[num].teamNumber))")
+                .font(.largeTitle)
+                .fontWeight(
+                    String(match.teams[num].teamNumber)
+                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
+                    ? .bold : .regular
+                )
+                .foregroundColor(Color.red)
+            Text("\(String(match.teams[num + 3].teamNumber))")
+                .font(.largeTitle)
+                .fontWeight(
+                    String(match.teams[num + 3].teamNumber)
+                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
+                    ? .bold : .regular
+                )
+                .foregroundColor(Color.blue)
+        }
+    }
 }

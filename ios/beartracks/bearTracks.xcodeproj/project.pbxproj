@@ -29,7 +29,7 @@
 		F5B8D1AF2B9670F200D3F230 /* beartracks_watchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */; };
 		F5B8D1B32B9670F200D3F230 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B22B9670F200D3F230 /* Assets.xcassets */; };
 		F5B8D1B62B9670F200D3F230 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */; };
-		F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F5B8D1BD2B96710900D3F230 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
 		F5B8D1BE2B96715500D3F230 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F5B8D1BF2B96716D00D3F230 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
@@ -349,6 +349,7 @@
 /* Begin PBXTargetDependency section */
 		F5B8D1B82B9670F200D3F230 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */;
 			targetProxy = F5B8D1B72B9670F200D3F230 /* PBXContainerItemProxy */;
 		};
@@ -483,7 +484,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -503,7 +504,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = xros;
@@ -527,7 +528,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -547,7 +548,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = xros;
@@ -569,7 +570,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -582,7 +583,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -601,7 +602,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -614,7 +615,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;

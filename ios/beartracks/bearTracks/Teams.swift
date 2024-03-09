@@ -13,13 +13,14 @@ struct Teams: View {
     @State private var teamsList: [TeamData] = []
     @State private var loadState: (Bool, Bool, Bool) = (false, false, false)
     @State private var selectedItem: String = ""
+    @State private var searchText: String = ""
     
     var body: some View {
         VStack {
             NavigationStack {
                 if !teamsList.isEmpty && !teamsList[0].isEmpty {
                     List {
-                        ForEach(Array(teamsList[0].enumerated()), id: \.element.team.team) { index, team in
+                        ForEach(Array(searchResults.enumerated()), id: \.element.team.team) { index, team in
                             NavigationLink(value: String(team.team.team)) {
                                 VStack {
                                     HStack {
@@ -121,9 +122,18 @@ struct Teams: View {
                     }
                 }
             }
+            .searchable(text: $searchText)
         }
         .onAppear {
             fetchTeamsJson()
+        }
+    }
+    
+    var searchResults: [TeamElement] {
+        if searchText.isEmpty {
+            return teamsList[0]
+        } else {
+            return teamsList[0].filter { String($0.team.team).contains(searchText) }
         }
     }
     
