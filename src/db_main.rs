@@ -146,7 +146,7 @@ fn get_brief_team(conn: Connection, path: web::Path<String>) -> QueryResult {
 // get minimum required data from a specific match
 fn get_brief_match(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match_num=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], args[2]])
 }
 
