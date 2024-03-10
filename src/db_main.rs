@@ -325,7 +325,7 @@ fn insert_main_data(
     // create mutable response object
     let mut inserted_row = Id { id: 0 };
 
-    let regex = Regex::new(r"[;'`:/*]").unwrap();
+    let regex = Regex::new(r"[;`:/*]").unwrap();
     // insert data into database
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
     stmt.execute(params![
