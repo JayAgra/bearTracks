@@ -11,8 +11,7 @@ struct MatchDetailView: View {
     @State public var match: Int;
     @EnvironmentObject var appState: AppState;
     @State private var teams: [TeamStats] = [];
-    @State private var maximum: Int = 0;
-    @State private var detailMaximums: (Int, Int, Int, Int, Int, Int) = (0, 0, 0, 0, 0, 0)
+    @State private var detailMaximums: (Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1)
     
     var body: some View {
         VStack {
@@ -33,7 +32,7 @@ struct MatchDetailView: View {
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
                                         HStack {
-                                            ProgressView(value: Double(team.points.mean) / Double(max(maximum, 1)))
+                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
                                                 .padding([.leading, .trailing])
                                                 .tint(Color.red)
                                         }
@@ -51,7 +50,7 @@ struct MatchDetailView: View {
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
                                         HStack {
-                                            ProgressView(value: Double(team.points.mean) / Double(max(maximum, 1)))
+                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
                                                 .padding([.leading, .trailing])
                                                 .tint(Color.blue)
                                         }
@@ -68,12 +67,12 @@ struct MatchDetailView: View {
                         NumericalCompareView(teams: teams, title: "Outtake")
                         NumericalCompareView(teams: teams, title: "Performance Score")
                         Divider()
-                        BarThingyView(teams: teams, maximum: detailMaximums.0, title: "Speaker")
-                        BarThingyView(teams: teams, maximum: detailMaximums.1, title: "Amplifier")
-                        BarThingyView(teams: teams, maximum: detailMaximums.2, title: "Intake")
-                        BarThingyView(teams: teams, maximum: detailMaximums.3, title: "Travel")
-                        BarThingyView(teams: teams, maximum: detailMaximums.4, title: "Outtake")
-                        BarThingyView(teams: teams, maximum: detailMaximums.5, title: "Performance Score")
+                        BarThingyView(teams: teams, barMax: detailMaximums.0, title: "Speaker")
+                        BarThingyView(teams: teams, barMax: detailMaximums.1, title: "Amplifier")
+                        BarThingyView(teams: teams, barMax: detailMaximums.2, title: "Intake")
+                        BarThingyView(teams: teams, barMax: detailMaximums.3, title: "Travel")
+                        BarThingyView(teams: teams, barMax: detailMaximums.4, title: "Outtake")
+                        BarThingyView(teams: teams, barMax: detailMaximums.5, title: "Performance Score")
                     }
                 } else {
                     Spacer()
@@ -90,10 +89,15 @@ struct MatchDetailView: View {
                     .padding()
             }
         }
+        .refreshable {
+            self.teams = []
+            self.loadData()
+        }
     }
     
     private func loadData() {
-        appState.matchJson[match - 1].teams.forEach { team in
+        var teamSet = TeamSet()
+        appState.matchJson[match - 1].teams.enumerated().forEach { index, team in
             guard
                 let url = URL(
                     string:
@@ -105,17 +109,13 @@ struct MatchDetailView: View {
                     do {
                         let decoder = JSONDecoder()
                         let result = try decoder.decode(TeamStats.self, from: data)
-                        DispatchQueue.main.async {
-                            if result.points.mean > self.maximum {
-                                self.maximum = result.points.mean
-                            }
-                            if result.speaker.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.speaker.mean }
-                            if result.amplifier.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.amplifier.mean }
-                            if result.intake.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.intake.mean }
-                            if result.travel.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.travel.mean }
-                            if result.outtake.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.outtake.mean }
-                            if result.points.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.points.mean }
-                            self.teams.append(result)
+                        switch team.station {
+                        case "Red1": teamSet.Red1 = result
+                        case "Red2": teamSet.Red2 = result
+                        case "Red3": teamSet.Red3 = result
+                        case "Blue1": teamSet.Blue1 = result
+                        case "Blue2": teamSet.Blue2 = result
+                        default: teamSet.Blue3 = result
                         }
                     } catch {
                         print("parse error \(error)")
@@ -125,6 +125,16 @@ struct MatchDetailView: View {
                 }
             }
             .resume()
+        }
+        while (teamSet.Red1 == nil)  || (teamSet.Red2 == nil) || (teamSet.Red3 == nil) || (teamSet.Blue1 == nil) || (teamSet.Blue2 == nil) || (teamSet.Blue3 == nil) {}
+        self.teams = [teamSet.Red1!, teamSet.Red2!, teamSet.Red3!, teamSet.Blue1!, teamSet.Blue2!, teamSet.Blue3!];
+        teams.forEach { result in
+            if result.speaker.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.speaker.mean }
+            if result.amplifier.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.amplifier.mean }
+            if result.intake.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.intake.mean }
+            if result.travel.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.travel.mean }
+            if result.outtake.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.outtake.mean }
+            if result.points.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.points.mean }
         }
     }
     
@@ -168,7 +178,7 @@ struct NumericalCompareView: View {
 
 struct BarThingyView: View {
     @State public var teams: [TeamStats]
-    @State public var maximum: Int
+    @State public var barMax: Int
     @State public var title: String
     
     var body: some View {
@@ -178,13 +188,13 @@ struct BarThingyView: View {
             HStack {
                 VStack {
                     ForEach(Array(teams.prefix(3)), id: \.team) { team in
-                        ProgressView(value: Double(team[title].mean) / Double(max(maximum, 1)))
+                        ProgressView(value: Double(team[title].mean) / Double(barMax))
                             .tint(Color.red)
                     }
                 }
                 VStack {
                     ForEach(Array(teams.suffix(3)), id: \.team) { team in
-                        ProgressView(value: Double(team[title].mean) / Double(max(maximum, 1)))
+                        ProgressView(value: Double(team[title].mean) / Double(barMax))
                             .tint(Color.blue)
                     }
                 }
@@ -193,4 +203,9 @@ struct BarThingyView: View {
         }
         .padding()
     }
+}
+
+struct TeamSet {
+    var Red1, Red2, Red3: TeamStats?
+    var Blue1, Blue2, Blue3: TeamStats?
 }
