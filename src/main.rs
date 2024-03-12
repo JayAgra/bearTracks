@@ -763,7 +763,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-bearTracks", "5.1.1")),
+                    .add(("X-bearTracks", "5.1.2")),
             )
             /* src  endpoints */
             // GET individual files

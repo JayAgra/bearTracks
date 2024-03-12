@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "-" : {
+
+    },
     "%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -28,6 +31,7 @@
       }
     },
     "↑ shuttle / other ↑" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -36,6 +40,9 @@
           }
         }
       }
+    },
+    "⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Your scout lead will be notified." : {
+
     },
     "Alliance wing notes handled (%lld)" : {
       "localizations" : {
@@ -47,7 +54,11 @@
         }
       }
     },
+    "amp —" : {
+
+    },
     "amplifier" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -449,6 +460,9 @@
         }
       }
     },
+    "other" : {
+
+    },
     "outtake" : {
       "localizations" : {
         "es-419" : {
@@ -488,6 +502,9 @@
           }
         }
       }
+    },
+    "Persist Area Labels" : {
+
     },
     "Please fill in all three long form responses." : {
       "localizations" : {
@@ -600,6 +617,7 @@
       }
     },
     "speaker" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -618,6 +636,9 @@
           }
         }
       }
+    },
+    "speaker —" : {
+
     },
     "start" : {
       "localizations" : {

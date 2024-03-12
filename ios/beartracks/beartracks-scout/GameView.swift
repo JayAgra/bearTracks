@@ -25,26 +25,40 @@ struct GameView: View {
                 VStack {
                     GeometryReader { geometry in
                         VStack {
-                            HStack {
-                                Spacer()
-                                VStack {
-                                    Text("intake")
-                                    Text(String(format: "%.1f", holdLengths.0))
+                            ZStack {
+                                HStack {
+                                    Spacer()
+                                    VStack {
+                                        Text("intake")
+                                        Text(String(format: "%.1f", holdLengths.0))
+                                    }
+                                    Spacer()
+                                    VStack {
+                                        Text("move")
+                                        Text(String(format: "%.1f", holdLengths.1))
+                                    }
+                                    Spacer()
+                                    VStack {
+                                        Text("outtake")
+                                        Text(String(format: "%.1f", holdLengths.2))
+                                    }
+                                    Spacer()
                                 }
-                                Spacer()
-                                VStack {
-                                    Text("move")
-                                    Text(String(format: "%.1f", holdLengths.1))
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.top)
+                                if controller.matchTimes.count == 0 || UserDefaults.standard.bool(forKey: "showLabels") {
+                                    VStack {
+                                        HStack {
+                                            Text("other")
+                                                .foregroundStyle(getLabelColor())
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            Text("-")
+                                                .foregroundStyle(getLabelColor())
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        }
+                                    }
                                 }
-                                Spacer()
-                                VStack {
-                                    Text("outtake")
-                                    Text(String(format: "%.1f", holdLengths.2))
-                                }
-                                Spacer()
                             }
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.top)
                             Spacer()
                             ZStack {
                                 HStack {
@@ -102,25 +116,38 @@ struct GameView: View {
                                                 }
                                                 self.actionState = .neutral
                                             }))
-                                if controller.matchTimes.count == 0 {
+                                if controller.matchTimes.count == 0 || UserDefaults.standard.bool(forKey: "showLabels") {
                                     VStack {
                                         Spacer()
-                                        Text("↑ shuttle / other ↑")
-                                        Text("amplifier")
-                                        Spacer()
-                                        Spacer()
+                                        HStack {
+                                            Text("amp —")
+                                                .foregroundStyle(getLabelColor())
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        }
                                         Spacer()
                                         HStack {
                                             Spacer()
                                             Text("intake")
+                                                .foregroundStyle(getLabelColor())
                                             Spacer()
                                             Text("travel")
+                                                .foregroundStyle(getLabelColor())
                                             Spacer()
                                             Text("outtake")
+                                                .foregroundStyle(getLabelColor())
                                             Spacer()
                                         }
                                         Spacer()
-                                        Text("speaker")
+                                        Spacer()
+                                        Spacer()
+                                        Spacer()
+                                        Spacer()
+                                        Spacer()
+                                        HStack {
+                                            Text("speaker —")
+                                                .foregroundStyle(getLabelColor())
+                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                        }
                                         Spacer()
                                     }
                                 }
@@ -252,6 +279,14 @@ struct GameView: View {
             case .outtake:
                 return Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255)
             }
+        }
+    }
+    
+    private func getLabelColor() -> Color {
+        if controller.matchTimes.isEmpty {
+            return Color.primary
+        } else {
+            return Color.gray
         }
     }
 }

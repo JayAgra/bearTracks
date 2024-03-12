@@ -8,8 +8,8 @@
 import Foundation
 
 let sharedSession: URLSession = {
-  let configuration = URLSessionConfiguration.default
-  configuration.httpCookieStorage = HTTPCookieStorage.shared
-
-  return URLSession(configuration: configuration)
+    let configuration = URLSessionConfiguration.default
+    configuration.httpCookieStorage = HTTPCookieStorage.shared
+    
+    return URLSession(configuration: configuration)
 }()

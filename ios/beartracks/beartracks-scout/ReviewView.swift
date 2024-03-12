@@ -78,6 +78,9 @@ struct ReviewView: View {
                                             Divider()
                                         }
                                     }
+                                    if controller.matchTimes.isEmpty {
+                                        Text("⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Your scout lead will be notified.")
+                                    }
                                 }
                                 .padding([.leading, .trailing, .bottom])
                                 VStack {

@@ -9,24 +9,24 @@ import Combine
 import Foundation
 
 class AppState: ObservableObject {
-  #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
     @Published public var selectedTab: Tab? = .teams
-  #elseif os(watchOS)
-  #else
+#elseif os(watchOS)
+#else
     @Published public var selectedTab: Tab = .teams
-  #endif
-  @Published public var loginRequired: Bool = false
-  @Published public var matchJson: [Match] = []
-  private var cancellables: Set<AnyCancellable> = []
-
-  #if !os(watchOS)
+#endif
+    @Published public var loginRequired: Bool = false
+    @Published public var matchJson: [Match] = []
+    private var cancellables: Set<AnyCancellable> = []
+    
+#if !os(watchOS)
     init() {
-      $selectedTab
-        .receive(on: DispatchQueue.main)
-        .sink { _ in }
-        .store(in: &cancellables)
+        $selectedTab
+            .receive(on: DispatchQueue.main)
+            .sink { _ in }
+            .store(in: &cancellables)
     }
-  #endif
+#endif
 }
 
 /// FRC API's Schedule structure

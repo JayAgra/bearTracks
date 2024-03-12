@@ -12,6 +12,7 @@ struct MatchDetailView: View {
     @EnvironmentObject var appState: AppState;
     @State private var teams: [TeamStats] = [];
     @State private var detailMaximums: (Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1)
+    @State private var loadStarted: Bool = false
     
     var body: some View {
         VStack {
@@ -75,14 +76,13 @@ struct MatchDetailView: View {
                         BarThingyView(teams: teams, barMax: detailMaximums.5, title: "Performance Score")
                     }
                 } else {
-                    Spacer()
-                    ProgressView()
-                        .controlSize(.large)
-                        .padding()
-                    Spacer()
-                        .onAppear {
-                            self.loadData()
-                        }
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                            .controlSize(.large)
+                            .padding()
+                        Spacer()
+                    }
                 }
             } else {
                 Text("the match list for the selected competition was not loaded properly")
@@ -93,48 +93,76 @@ struct MatchDetailView: View {
             self.teams = []
             self.loadData()
         }
+        .onAppear {
+            if !loadStarted {
+                loadStarted = true
+                self.loadData()
+            }
+        }
+    }
+    
+    func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
+        guard
+            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2024/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(String(team))")
+        else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        
+        let requestTask = sharedSession.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(TeamStats.self, from: data)
+                    DispatchQueue.main.async {
+                        completionBlock(result)
+                    }
+                } catch {
+                    print("parse error")
+                    completionBlock(nil)
+                }
+            } else if let error = error {
+                print("fetch error: \(error)")
+                completionBlock(nil)
+            }
+        }
+        requestTask.resume()
     }
     
     private func loadData() {
         var teamSet = TeamSet()
-        appState.matchJson[match - 1].teams.enumerated().forEach { index, team in
-            guard
-                let url = URL(
-                    string:
-                        "https://beartracks.io/api/v1/game/team_data/2024/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(team.teamNumber)"
-                )
-            else { return }
-            sharedSession.dataTask(with: url) { data, _, error in
-                if let data = data {
-                    do {
-                        let decoder = JSONDecoder()
-                        let result = try decoder.decode(TeamStats.self, from: data)
-                        switch team.station {
-                        case "Red1": teamSet.Red1 = result
-                        case "Red2": teamSet.Red2 = result
-                        case "Red3": teamSet.Red3 = result
-                        case "Blue1": teamSet.Blue1 = result
-                        case "Blue2": teamSet.Blue2 = result
-                        default: teamSet.Blue3 = result
+        var local: [TeamStats] = []
+        fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
+            teamSet.Red1 = Red1Data
+            fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in
+                teamSet.Red2 = Red2Data
+                fetchTeamStats(team: appState.matchJson[match - 1].teams[2].teamNumber) { Red3Data in
+                    teamSet.Red3 = Red3Data
+                    fetchTeamStats(team: appState.matchJson[match - 1].teams[3].teamNumber) { Blue1Data in
+                        teamSet.Blue1 = Blue1Data
+                        fetchTeamStats(team: appState.matchJson[match - 1].teams[4].teamNumber) { Blue2Data in
+                            teamSet.Blue2 = Blue2Data
+                            fetchTeamStats(team: appState.matchJson[match - 1].teams[5].teamNumber) { Blue3Data in
+                                teamSet.Blue3 = Blue3Data
+                                local = [teamSet.Red1!, teamSet.Red2!, teamSet.Red3!, teamSet.Blue1!, teamSet.Blue2!, teamSet.Blue3!]
+                                local.forEach { result in
+                                    if result.speaker.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.speaker.mean }
+                                    if result.amplifier.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.amplifier.mean }
+                                    if result.intake.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.intake.mean }
+                                    if result.travel.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.travel.mean }
+                                    if result.outtake.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.outtake.mean }
+                                    if result.points.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.points.mean }
+                                }
+                                self.teams = local
+                            }
                         }
-                    } catch {
-                        print("parse error \(error)")
                     }
-                } else if let error = error {
-                    print("fetch error: \(error)")
                 }
             }
-            .resume()
-        }
-        while (teamSet.Red1 == nil)  || (teamSet.Red2 == nil) || (teamSet.Red3 == nil) || (teamSet.Blue1 == nil) || (teamSet.Blue2 == nil) || (teamSet.Blue3 == nil) {}
-        self.teams = [teamSet.Red1!, teamSet.Red2!, teamSet.Red3!, teamSet.Blue1!, teamSet.Blue2!, teamSet.Blue3!];
-        teams.forEach { result in
-            if result.speaker.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.speaker.mean }
-            if result.amplifier.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.amplifier.mean }
-            if result.intake.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.intake.mean }
-            if result.travel.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.travel.mean }
-            if result.outtake.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.outtake.mean }
-            if result.points.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.points.mean }
         }
     }
     

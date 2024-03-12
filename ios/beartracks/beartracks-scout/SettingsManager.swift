@@ -15,6 +15,7 @@ class SettingsManager {
             "eventCode": "CAFR",
             "season": "2024",
             "darkMode": true,
+            "showLabels": false
         ]
         UserDefaults.standard.register(defaults: defaults)
     }
