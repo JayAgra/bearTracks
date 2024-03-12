@@ -112,7 +112,7 @@ pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Resul
 }
 
 pub async fn get_owned_cards_by_user(pool: &db_auth::Pool, user: String) -> Result<ClientInfo, Error> {
-    let user_updated = db_auth::get_user_id(pool, user).await?;
+    let user_updated = db_auth::get_user_username(pool, user).await?;
     if user_updated.data == "" {
         db_auth::update_user_data(
             pool,
