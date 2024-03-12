@@ -93,7 +93,7 @@ struct EndView: View {
                     }
                     Spacer()
                 } else {
-                    Text("Please select a match number and event code on the start tab.")
+                    Text("Please select a match and team number on the start tab.")
                         .padding()
                 }
             }

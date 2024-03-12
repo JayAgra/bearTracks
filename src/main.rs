@@ -783,42 +783,18 @@ async fn main() -> io::Result<()> {
             .route("/main", web::get().to(static_files::static_main))
             .route("/login", web::get().to(static_files::static_login))
             .route("/passkey", web::get().to(static_files::static_passkey))
-            .route(
-                "/pointRecords",
-                web::get().to(static_files::static_point_records),
-            )
+            .route("/pointRecords", web::get().to(static_files::static_point_records))
             .route("/points", web::get().to(static_files::static_points))
-            .route(
-                "/safari-pinned-tab.svg",
-                web::get().to(static_files::static_safari_pinned),
-            )
+            .route("/safari-pinned-tab.svg", web::get().to(static_files::static_safari_pinned))
             .route("/scouts", web::get().to(static_files::static_scouts))
             .route("/settings", web::get().to(static_files::static_settings))
-            .route(
-                "/site.webmanifest",
-                web::get().to(static_files::static_webmanifest),
-            )
+            .route("/site.webmanifest", web::get().to(static_files::static_webmanifest))
             .route("/spin", web::get().to(static_files::static_spin))
-            .route(
-                "/android-chrome-192x192.png",
-                web::get().to(static_files::static_android_chrome_192),
-            )
-            .route(
-                "/android-chrome-512x512.png",
-                web::get().to(static_files::static_android_chrome_512),
-            )
-            .route(
-                "/apple-touch-icon.png",
-                web::get().to(static_files::static_apple_touch_icon),
-            )
-            .route(
-                "/favicon-16x16.png",
-                web::get().to(static_files::static_favicon_16),
-            )
-            .route(
-                "/favicon-32x32.png",
-                web::get().to(static_files::static_favicon_32),
-            )
+            .route("/android-chrome-192x192.png", web::get().to(static_files::static_android_chrome_192))
+            .route("/android-chrome-512x512.png", web::get().to(static_files::static_android_chrome_512))
+            .route("/apple-touch-icon.png", web::get().to(static_files::static_apple_touch_icon))
+            .route("/favicon-16x16.png", web::get().to(static_files::static_favicon_16))
+            .route("/favicon-32x32.png", web::get().to(static_files::static_favicon_32))
             .route("/favicon.ico", web::get().to(static_files::static_favicon))
             // GET folders
             .service(ResourceFiles::new("/static", generated))
@@ -826,9 +802,18 @@ async fn main() -> io::Result<()> {
             // GET
             .service(web::resource("/logout").route(web::get().to(auth_get_logout)))
             // POST
-            .service(web::resource("/api/v1/auth/create").route(web::post().to(auth_post_create)))
-            .service(web::resource("/api/v1/auth/login").route(web::post().to(auth_post_login)))
-            .service(web::resource("/api/v1/auth/delete").route(web::post().to(auth_post_delete)))
+            .service(
+                web::resource("/api/v1/auth/create")
+                    .route(web::post().to(auth_post_create)),
+            )
+            .service(
+                web::resource("/api/v1/auth/login")
+                    .route(web::post().to(auth_post_login)),
+            )
+            .service(
+                web::resource("/api/v1/auth/delete")
+                    .route(web::post().to(auth_post_delete)),
+            )
             .service(
                 web::resource("/api/v1/auth/passkey/register_start")
                     .route(web::post().to(auth_psk_create_start)),
@@ -847,12 +832,17 @@ async fn main() -> io::Result<()> {
             )
             /* data endpoints */
             // GET (✅)
-            .service(web::resource("/api/v1/data").route(web::get().to(data_get_meta)))
             .service(
-                web::resource("/api/v1/data/detail/{id}").route(web::get().to(data_get_detailed)),
+                web::resource("/api/v1/data")
+                    .route(web::get().to(data_get_meta)),
             )
             .service(
-                web::resource("/api/v1/data/exists/{id}").route(web::get().to(data_get_exists)),
+                web::resource("/api/v1/data/detail/{id}")
+                    .route(web::get().to(data_get_detailed)),
+            )
+            .service(
+                web::resource("/api/v1/data/exists/{id}")
+                    .route(web::get().to(data_get_exists)),
             )
             .service(
                 web::resource("/api/v1/data/brief/team/{args}*")
@@ -887,7 +877,10 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(event_get_frc_api_matches)),
             )
             // POST (✅)
-            .service(web::resource("/api/v1/data/submit").route(web::post().to(data_post_submit)))
+            .service(
+                web::resource("/api/v1/data/submit")
+                    .route(web::post().to(data_post_submit)),
+            )
             /* manage endpoints */
             // GET
             .service(
@@ -952,47 +945,73 @@ async fn main() -> io::Result<()> {
             /* user endpoints */
             /* casino endpoints */
             // GET
-            .service(web::resource("/api/v1/casino/spin_thing").route(web::get().to(casino_wheel)))
+            .service(
+                web::resource("/api/v1/casino/spin_thing")
+                    .route(web::get().to(casino_wheel)),
+            )
             .service(
                 web::resource("/api/v1/casino/blackjack")
                     .route(web::get().to(casino::websocket_route)),
             )
             /* points endpoints */
             // GET
-            .service(web::resource("/api/v1/points/all").route(web::get().to(points_get_all)))
+            .service(
+                web::resource("/api/v1/points/all")
+                    .route(web::get().to(points_get_all)),
+            )
             /* misc endpoints */
             // GET
             .service(
-                web::resource("/api/v1/transact/me").route(web::get().to(misc_get_transact_me)),
+                web::resource("/api/v1/transact/me")
+                    .route(web::get().to(misc_get_transact_me)),
             )
-            .service(web::resource("/api/v1/ping").route(web::get().to(misc_ping)))
-            .service(web::resource("/api/v1/whoami").route(web::get().to(misc_get_whoami)))
+            .service(
+                web::resource("/api/v1/ping")
+                    .route(web::get().to(misc_ping)),
+            )
+            .service(
+                web::resource("/api/v1/whoami")
+                    .route(web::get().to(misc_get_whoami)),
+            )
             .service(
                 web::resource("/apple-app-site-association")
                     .route(web::get().to(misc_apple_app_site_association)),
             )
             /* debug endpoints */
             // GET
-            .service(web::resource("/api/v1/debug/user").route(web::get().to(debug_get_user)))
-            .service(web::resource("/api/v1/debug/system").route(web::get().to(debug_health)))
-            .service(web::resource("/api/v1/debug/ok").route(web::get().to(debug_ok)))
+            .service(
+                web::resource("/api/v1/debug/user")
+                    .route(web::get().to(debug_get_user)),
+            )
+            .service(
+                web::resource("/api/v1/debug/system")
+                    .route(web::get().to(debug_health)),
+            )
+            .service(
+                web::resource("/api/v1/debug/ok")
+                    .route(web::get().to(debug_ok)),
+            )
             /* robot game endpoints */
             // GET
             .service(
-                web::resource("/api/v1/game/all_owned_cards").route(web::get().to(game_get_cards)),
+                web::resource("/api/v1/game/all_owned_cards")
+                    .route(web::get().to(game_get_cards)),
             )
             .service(
-                web::resource("/api/v1/game/owned_cards/{user}").route(web::get().to(game_get_cards_by_username)),
+                web::resource("/api/v1/game/owned_cards/{user}")
+                    .route(web::get().to(game_get_cards_by_username)),
             )
             .service(
                 web::resource("/api/v1/game/team_data/{season}/{event}/{team}")
                     .route(web::get().to(game_get_team)),
             )
             .service(
-                web::resource("/api/v1/game/open_lootbox").route(web::get().to(game_open_lootbox)),
+                web::resource("/api/v1/game/open_lootbox")
+                    .route(web::get().to(game_open_lootbox)),
             )
             // POST
-            .service(web::resource("/api/v1/game/set_hand").route(web::post().to(game_set_hand)))
+            .service(web::resource("/api/v1/game/set_hand")
+                .route(web::post().to(game_set_hand)))
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?

@@ -1,8 +1,15 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "-" : {
-
+    "—" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "—"
+          }
+        }
+      }
     },
     "%@ (%@)" : {
       "localizations" : {
@@ -42,7 +49,14 @@
       }
     },
     "⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Your scout lead will be notified." : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ No ingresaste a ningún ciclo. Si el robot no completó ningún ciclo, está bien. De lo contrario, NO envíe los datos y asegúrese de ingresar ciclos para su próximo partido. Se notificará a su líder de exploración."
+          }
+        }
+      }
     },
     "Alliance wing notes handled (%lld)" : {
       "localizations" : {
@@ -55,7 +69,14 @@
       }
     },
     "amp —" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "amplifier —"
+          }
+        }
+      }
     },
     "amplifier" : {
       "extractionState" : "stale",
@@ -461,7 +482,14 @@
       }
     },
     "other" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "otro"
+          }
+        }
+      }
     },
     "outtake" : {
       "localizations" : {
@@ -504,7 +532,14 @@
       }
     },
     "Persist Area Labels" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Persistir etiquetas de área"
+          }
+        }
+      }
     },
     "Please fill in all three long form responses." : {
       "localizations" : {
@@ -516,7 +551,18 @@
         }
       }
     },
+    "Please select a match and team number on the start tab." : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccione un partido y un número de equipo en la pestaña de inicio."
+          }
+        }
+      }
+    },
     "Please select a match number and event code on the start tab." : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -638,7 +684,14 @@
       }
     },
     "speaker —" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "altavoz —"
+          }
+        }
+      }
     },
     "start" : {
       "localizations" : {

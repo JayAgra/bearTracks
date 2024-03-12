@@ -18,7 +18,7 @@ struct ReviewView: View {
             NavigationStack {
                 VStack {
                     if controller.getTeamNumber() == "--" || controller.getMatchNumber() == 0 {
-                        Text("Please select a match number and event code on the start tab.")
+                        Text("Please select a match and team number on the start tab.")
                             .padding()
                     } else if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == ""
                                 || controller.getOverallResponse() == ""

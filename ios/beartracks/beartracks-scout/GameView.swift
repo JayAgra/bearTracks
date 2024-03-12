@@ -52,7 +52,7 @@ struct GameView: View {
                                             Text("other")
                                                 .foregroundStyle(getLabelColor())
                                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                            Text("-")
+                                            Text("—")
                                                 .foregroundStyle(getLabelColor())
                                                 .frame(maxWidth: .infinity, alignment: .trailing)
                                         }
@@ -125,6 +125,7 @@ struct GameView: View {
                                                 .frame(maxWidth: .infinity, alignment: .trailing)
                                         }
                                         Spacer()
+                                        Spacer()
                                         HStack {
                                             Spacer()
                                             Text("intake")
@@ -137,7 +138,6 @@ struct GameView: View {
                                                 .foregroundStyle(getLabelColor())
                                             Spacer()
                                         }
-                                        Spacer()
                                         Spacer()
                                         Spacer()
                                         Spacer()
@@ -185,7 +185,7 @@ struct GameView: View {
                 }
                 .navigationTitle("Match Scouting")
             } else {
-                Text("Please select a match number and event code on the start tab.")
+                Text("Please select a match and team number on the start tab.")
                     .padding()
                     .navigationTitle("Match Scouting")
             }
