@@ -80,10 +80,10 @@ pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Resul
         )
         .await?;
         Ok(ClientInfo {
-            id: -1,
-            username: "none".to_string(),
-            team: -1,
-            score: -1,
+            id: user.id,
+            username: user.username,
+            team: user.team,
+            score: user.score,
             game_data: GameUserData {
                 cards: vec![99999, 99998, 99997],
                 hand: vec![99999, 99998, 99997],
@@ -111,13 +111,62 @@ pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Resul
     }
 }
 
-pub async fn open_loot_box(auth_pool: &db_auth::Pool, main_pool: &db_main::Pool, user_param: db_auth::User) -> Result<i64, Error> {
+pub async fn get_owned_cards_by_user(pool: &db_auth::Pool, user: String) -> Result<ClientInfo, Error> {
+    let user_updated = db_auth::get_user_username(pool, user).await?;
+    if user_updated.data == "" {
+        db_auth::update_user_data(
+            pool,
+            user_updated.id,
+            serde_json::to_string(&GameUserData {
+                cards: vec![99999, 99998, 99997],
+                hand: vec![99999, 99998, 99997],
+                wins: 0,
+                losses: 0,
+                ties: 0,
+                box_count: 0,
+            })
+            .unwrap_or("".to_string()),
+        )
+        .await?;
+        Ok(ClientInfo {
+            id: user_updated.id,
+            username: user_updated.username,
+            team: user_updated.team,
+            score: user_updated.score,
+            game_data: GameUserData {
+                cards: vec![99999, 99998, 99997],
+                hand: vec![99999, 99998, 99997],
+                wins: 0,
+                losses: 0,
+                ties: 0,
+                box_count: 0,
+            },
+        })
+    } else {
+        Ok(ClientInfo {
+            id: user_updated.id,
+            username: user_updated.username,
+            team: user_updated.team,
+            score: user_updated.score,
+            game_data: serde_json::from_str::<GameUserData>(&user_updated.data).unwrap_or(GameUserData {
+                cards: vec![99999, 99998, 99997],
+                hand: vec![99999, 99998, 99997],
+                wins: 0,
+                losses: 0,
+                ties: 0,
+                box_count: 0,
+            }),
+        })
+    }
+}
+
+pub async fn open_loot_box(auth_pool: &db_auth::Pool, main_pool: &db_main::Pool, user_param: db_auth::User, event: String) -> Result<i64, Error> {
     let user_queried = db_auth::get_user_id(auth_pool, user_param.id.to_string()).await;
     if !user_queried.is_ok() {
         return Ok(-1);
     }
     let user = user_queried.unwrap();
-    let teams = db_main::get_team_numbers(main_pool, "2024".to_string()).await;
+    let teams = db_main::get_team_numbers_by_event(main_pool, "2024".to_string(), event).await;
     if teams.is_ok() {
         let team_list = teams.unwrap();
         if team_list.is_empty() {

@@ -10,6 +10,7 @@
 		F5081BA22B741D15001497DB /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F540A13D2B549D2500611384 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
 		F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
+		F542E34C2B9C028F002F6E05 /* MatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */; };
 		F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54E76C12B527D96003C65A2 /* bearTracksApp.swift */; };
 		F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */; };
@@ -28,7 +29,7 @@
 		F5B8D1AF2B9670F200D3F230 /* beartracks_watchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */; };
 		F5B8D1B32B9670F200D3F230 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B22B9670F200D3F230 /* Assets.xcassets */; };
 		F5B8D1B62B9670F200D3F230 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */; };
-		F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F5B8D1BD2B96710900D3F230 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
 		F5B8D1BE2B96715500D3F230 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F5B8D1BF2B96716D00D3F230 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
@@ -81,6 +82,7 @@
 		F5081BA12B741D15001497DB /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F540A13C2B549D2500611384 /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		F540A13E2B549D2E00611384 /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
+		F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDetailView.swift; sourceTree = "<group>"; };
 		F54E76BE2B527D96003C65A2 /* bearTracks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bearTracks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54E76C12B527D96003C65A2 /* bearTracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bearTracksApp.swift; sourceTree = "<group>"; };
 		F54E76C52B527D97003C65A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				F5AE2E402B527E050033DB0D /* DetailedView.swift */,
 				F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */,
 				F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */,
+				F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */,
 				F5AE2E3F2B527E050033DB0D /* MatchList.swift */,
 				F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */,
 				F5AE2E522B527E170033DB0D /* SettingsView.swift */,
@@ -316,6 +319,7 @@
 				F5081BA22B741D15001497DB /* AppState.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
 				F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */,
+				F542E34C2B9C028F002F6E05 /* MatchDetailView.swift in Sources */,
 				F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -345,6 +349,7 @@
 /* Begin PBXTargetDependency section */
 		F5B8D1B82B9670F200D3F230 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */;
 			targetProxy = F5B8D1B72B9670F200D3F230 /* PBXContainerItemProxy */;
 		};
@@ -479,7 +484,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -499,7 +504,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = xros;
@@ -523,7 +528,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 40;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -543,7 +548,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = xros;
@@ -565,7 +570,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -578,7 +583,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -597,7 +602,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -610,7 +615,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 5.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;

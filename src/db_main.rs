@@ -146,7 +146,7 @@ fn get_brief_team(conn: Connection, path: web::Path<String>) -> QueryResult {
 // get minimum required data from a specific match
 fn get_brief_match(conn: Connection, path: web::Path<String>) -> QueryResult {
     let args = path.split("/").collect::<Vec<_>>();
-    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match=?3 ORDER BY id DESC;")?;
+    let stmt = conn.prepare("SELECT id, event, season, team, match_num, user_id, name, from_team, weight FROM main WHERE season=?1 AND event=?2 AND match_num=?3 ORDER BY id DESC;")?;
     get_brief_rows(stmt, [args[0], args[1], args[2]])
 }
 
@@ -263,6 +263,22 @@ pub async fn get_team_numbers(pool: &Pool, season: String) -> Result<Vec<i64>, E
     .map_err(error::ErrorInternalServerError)
 }
 
+pub async fn get_team_numbers_by_event(pool: &Pool, season: String, event: String) -> Result<Vec<i64>, Error> {
+    // clone pool
+    let pool = pool.clone();
+
+    // get database connection
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    // run query function based on provided enum
+    web::block(move || {
+        let mut stmt = conn.prepare("SELECT team FROM main WHERE season=?1 AND event=?2 ORDER BY id DESC;")?;
+        stmt.query_map([season, event], |row| Ok(row.get(0)?)).and_then(Iterator::collect)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
 // incoming data structure for a new main form submission
 #[derive(Deserialize)]
 pub struct MainInsert {
@@ -325,7 +341,7 @@ fn insert_main_data(
     // create mutable response object
     let mut inserted_row = Id { id: 0 };
 
-    let regex = Regex::new(r"[;'`:/*]").unwrap();
+    let regex = Regex::new(r"[;`:/*]").unwrap();
     // insert data into database
     let mut stmt = conn.prepare("INSERT INTO main (event, season, team, match_num, level, game, defend, driving, overall, user_id, name, from_team, weight, analysis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")?;
     stmt.execute(params![
