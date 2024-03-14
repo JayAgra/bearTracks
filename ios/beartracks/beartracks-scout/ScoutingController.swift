@@ -102,7 +102,7 @@ class ScoutingController: ObservableObject {
         let matchData = ScoutingDataExport(
             season: 2024, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR",
             match_num: matchNumber, level: "Qualification", team: Int(teamNumber) ?? 0,
-            game: encodedMatchTimes, defend: defense, driving: driving, overall: overall)
+            game: encodedMatchTimes, defend: defense, driving: driving, overall: overall + "\n\niOS v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5")")
         do {
             let jsonData = try JSONEncoder().encode(matchData)
             var request = URLRequest(url: url)

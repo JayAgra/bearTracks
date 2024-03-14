@@ -42,6 +42,7 @@
 		F565840F2B54D52A00F587C0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F58565C32B7572B400C1606E /* beartracks-scout.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-scout.entitlements"; sourceTree = "<group>"; };
 		F5AD47CB2B54FF0500345122 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
+		F5B57DEE2BA2989E00C9D95F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +91,7 @@
 				F565840C2B54D52A00F587C0 /* Assets.xcassets */,
 				F55ABD6C2B9C40C4006E7FAF /* Localizable.xcstrings */,
 				F565840E2B54D52A00F587C0 /* Preview Content */,
+				F5B57DEE2BA2989E00C9D95F /* PrivacyInfo.xcprivacy */,
 			);
 			path = "beartracks-scout";
 			sourceTree = "<group>";

@@ -59,6 +59,7 @@
       }
     },
     "Alliance wing notes handled (%lld)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -69,6 +70,7 @@
       }
     },
     "amp —" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -79,7 +81,6 @@
       }
     },
     "amplifier" : {
-      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -140,6 +141,7 @@
       }
     },
     "Buddy climb" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -349,6 +351,16 @@
         }
       }
     },
+    "Harmony" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Armonía"
+          }
+        }
+      }
+    },
     "How was the driving? Did the driver seem confident?" : {
       "localizations" : {
         "es-419" : {
@@ -365,6 +377,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "intake"
+          }
+        }
+      }
+    },
+    "Left-Handed Labels" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiquetas para zurdos"
           }
         }
       }
@@ -452,6 +474,7 @@
       }
     },
     "move" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -461,7 +484,18 @@
         }
       }
     },
+    "Neutral notes handled (%lld)" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas neutrales manejadas (%lld)"
+          }
+        }
+      }
+    },
     "Neutral zone notes handled (%lld)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -532,6 +566,7 @@
       }
     },
     "Persist Area Labels" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -663,7 +698,6 @@
       }
     },
     "speaker" : {
-      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -684,6 +718,7 @@
       }
     },
     "speaker —" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -839,6 +874,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "v%@ • 2024"
+          }
+        }
+      }
+    },
+    "Wing notes handled (%lld)" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas de ala manejadas (%lld)"
           }
         }
       }

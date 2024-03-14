@@ -526,7 +526,7 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
 }
 
 // if you aren't D6MFYYVHA8 you may want to change this
-const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\"]}}";
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\",\"D6MFYYVHA8.com.jayagra.lydiasmvp\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
 }
@@ -574,10 +574,10 @@ async fn game_get_cards_by_username(db: web::Data<Databases>, req: HttpRequest) 
 
 
 // get random team from scouted teams
-async fn game_open_lootbox(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn game_open_lootbox(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
-        .json(game_api::open_loot_box(&db.auth, &db.main, user).await?))
+        .json(game_api::open_loot_box(&db.auth, &db.main, user, req.match_info().get("event").unwrap().parse().unwrap()).await?))
 }
 
 // set player's hand
@@ -1006,7 +1006,7 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(game_get_team)),
             )
             .service(
-                web::resource("/api/v1/game/open_lootbox")
+                web::resource("/api/v1/game/open_lootbox/{event}")
                     .route(web::get().to(game_open_lootbox)),
             )
             // POST

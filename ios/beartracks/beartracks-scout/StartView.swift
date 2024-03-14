@@ -65,18 +65,20 @@ struct StartView: View {
                                 Stepper {
                                     Text("Preloaded notes handled (\(controller.switches.5))")
                                 } onIncrement: {
-                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                    controller.switches.6 += 1
-                                    controller.switches.5 += 1
+                                    if controller.switches.5 == 0 {
+                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                        controller.switches.6 += 1
+                                        controller.switches.5 += 1
+                                    }
                                 } onDecrement: {
-                                    if controller.switches.5 > 0 {
+                                    if controller.switches.5 == 1 {
                                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.5 -= 1
                                         scoresDecrement()
                                     }
                                 }
                                 Stepper {
-                                    Text("Alliance wing notes handled (\(controller.switches.4))")
+                                    Text("Wing notes handled (\(controller.switches.4))")
                                 } onIncrement: {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.switches.6 += 1
@@ -89,7 +91,7 @@ struct StartView: View {
                                     }
                                 }
                                 Stepper {
-                                    Text("Neutral zone notes handled (\(controller.switches.3))")
+                                    Text("Neutral notes handled (\(controller.switches.3))")
                                 } onIncrement: {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.switches.6 += 1

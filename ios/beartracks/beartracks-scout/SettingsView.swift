@@ -12,7 +12,7 @@ struct SettingsView: View {
     UserDefaults.standard.string(forKey: "eventCode") ?? ""
     @State private var seasonInput: String = UserDefaults.standard.string(forKey: "season") ?? ""
     @State private var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
-    @State private var showLabels: Bool = UserDefaults.standard.bool(forKey: "showLabels")
+    @State private var leftHand: Bool = UserDefaults.standard.bool(forKey: "leftHand")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false
@@ -69,9 +69,9 @@ struct SettingsView: View {
                                 UserDefaults.standard.set(darkMode, forKey: "darkMode")
                                 showAlert = true
                             }
-                        Toggle("Persist Area Labels", isOn: $showLabels)
-                            .onChange(of: showLabels) { _ in
-                                UserDefaults.standard.set(showLabels, forKey: "showLabels")
+                        Toggle("Left-Handed Labels", isOn: $leftHand)
+                            .onChange(of: leftHand) { _ in
+                                UserDefaults.standard.set(leftHand, forKey: "leftHand")
                             }
                     }
                     Section {

@@ -263,6 +263,22 @@ pub async fn get_team_numbers(pool: &Pool, season: String) -> Result<Vec<i64>, E
     .map_err(error::ErrorInternalServerError)
 }
 
+pub async fn get_team_numbers_by_event(pool: &Pool, season: String, event: String) -> Result<Vec<i64>, Error> {
+    // clone pool
+    let pool = pool.clone();
+
+    // get database connection
+    let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    // run query function based on provided enum
+    web::block(move || {
+        let mut stmt = conn.prepare("SELECT team FROM main WHERE season=?1 AND event=?2 ORDER BY id DESC;")?;
+        stmt.query_map([season, event], |row| Ok(row.get(0)?)).and_then(Iterator::collect)
+    })
+    .await?
+    .map_err(error::ErrorInternalServerError)
+}
+
 // incoming data structure for a new main form submission
 #[derive(Deserialize)]
 pub struct MainInsert {

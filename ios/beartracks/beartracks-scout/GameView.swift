@@ -13,10 +13,15 @@ struct GameView: View {
     @State private var holdLengths: (TimeInterval, TimeInterval, TimeInterval) = (0.0, 0.0, 0.0)
     @State private var timer: Timer?
     @State private var actionState: ActionState = .neutral
+    @State private var releaseState: ReleaseState = .neutral
     @State private var ballOffset: CGSize = .zero
     
     enum ActionState {
         case neutral, intake, travel, outtake
+    }
+    
+    enum ReleaseState {
+        case neutral, speaker, amplifier, other
     }
     
     var body: some View {
@@ -30,31 +35,38 @@ struct GameView: View {
                                     Spacer()
                                     VStack {
                                         Text("intake")
+                                            .foregroundStyle(Color.gray)
                                         Text(String(format: "%.1f", holdLengths.0))
+                                            .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
                                     }
                                     Spacer()
                                     VStack {
-                                        Text("move")
+                                        Text("travel")
+                                            .foregroundStyle(Color.gray)
                                         Text(String(format: "%.1f", holdLengths.1))
+                                            .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
                                     }
                                     Spacer()
                                     VStack {
                                         Text("outtake")
+                                            .foregroundStyle(Color.gray)
                                         Text(String(format: "%.1f", holdLengths.2))
+                                            .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
                                     }
                                     Spacer()
                                 }
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .padding(.top)
-                                if controller.matchTimes.count == 0 || UserDefaults.standard.bool(forKey: "showLabels") {
-                                    VStack {
-                                        HStack {
+                                VStack {
+                                    HStack {
+                                        if releaseState == .other {
                                             Text("other")
-                                                .foregroundStyle(getLabelColor())
-                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .foregroundStyle(Color.init(red: 254 / 255, green: 128 / 255, blue: 25 / 255))
+                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
+                                        } else {
                                             Text("—")
-                                                .foregroundStyle(getLabelColor())
-                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                                .foregroundStyle(getLabelColor(state: true, type: nil))
+                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
                                         }
                                     }
                                 }
@@ -115,41 +127,48 @@ struct GameView: View {
                                                     self.holdLengths = (0, 0, 0)
                                                 }
                                                 self.actionState = .neutral
+                                                self.releaseState = .neutral
                                             }))
-                                if controller.matchTimes.count == 0 || UserDefaults.standard.bool(forKey: "showLabels") {
-                                    VStack {
-                                        Spacer()
-                                        HStack {
-                                            Text("amp —")
-                                                .foregroundStyle(getLabelColor())
-                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                VStack {
+                                    Spacer()
+                                    HStack {
+                                        if releaseState == .amplifier {
+                                            Text("amplifier")
+                                                .foregroundStyle(Color.init(red: 250 / 255, green: 189 / 255, blue: 47 / 255))
+                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
+                                        } else {
+                                            Text("—")
+                                                .foregroundStyle(getLabelColor(state: true, type: nil))
+                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
                                         }
+                                    }
+                                    Spacer(); Spacer()
+                                    HStack {
                                         Spacer()
+                                        
+                                        Text("intake")
+                                            .foregroundStyle(getLabelColor(state: false, type: .intake))
                                         Spacer()
-                                        HStack {
-                                            Spacer()
-                                            Text("intake")
-                                                .foregroundStyle(getLabelColor())
-                                            Spacer()
-                                            Text("travel")
-                                                .foregroundStyle(getLabelColor())
-                                            Spacer()
-                                            Text("outtake")
-                                                .foregroundStyle(getLabelColor())
-                                            Spacer()
-                                        }
+                                        Text("travel")
+                                            .foregroundStyle(getLabelColor(state: false, type: .travel))
                                         Spacer()
-                                        Spacer()
-                                        Spacer()
-                                        Spacer()
-                                        Spacer()
-                                        HStack {
-                                            Text("speaker —")
-                                                .foregroundStyle(getLabelColor())
-                                                .frame(maxWidth: .infinity, alignment: .trailing)
-                                        }
+                                        Text("outtake")
+                                            .foregroundStyle(getLabelColor(state: false, type: .outtake))
                                         Spacer()
                                     }
+                                    Spacer(); Spacer(); Spacer(); Spacer(); Spacer()
+                                    HStack {
+                                        if releaseState == .speaker {
+                                            Text("speaker")
+                                                .foregroundStyle(Color.init(red: 184 / 255, green: 187 / 255, blue: 38 / 255))
+                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
+                                        } else {
+                                            Text("—")
+                                                .foregroundStyle(getLabelColor(state: true, type: nil))
+                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
+                                        }
+                                    }
+                                    Spacer()
                                 }
                             }
                             .padding(.bottom)
@@ -210,26 +229,32 @@ struct GameView: View {
         }
     }
     
-    private func updateBallOffset(
-        dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat
-    ) {
-        if abs(self.ballOffset.height) > totalHeight * 0.2
-            && abs(dragValue.translation.height) <= totalHeight * 0.2
-        {
+    private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat) {
+        if abs(self.ballOffset.height) > totalHeight * 0.2 && abs(dragValue.translation.height) <= totalHeight * 0.2 {
             UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-        } else if abs(self.ballOffset.height) <= totalHeight * 0.2
-                    && abs(dragValue.translation.height) > totalHeight * 0.2
-        {
+        } else if abs(self.ballOffset.height) <= totalHeight * 0.2 && abs(dragValue.translation.height) > totalHeight * 0.2 {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }
         
         let newOffset = CGSize(
-            width: min(
-                max(dragValue.translation.width, (totalWidth * -0.5) + 30), (totalWidth * 0.5) - 30),
+            width: min(max(dragValue.translation.width, (totalWidth * -0.5) + 30), (totalWidth * 0.5) - 30),
             height: dragValue.translation.height
         )
-        
         self.ballOffset = newOffset
+        
+        if abs(self.ballOffset.height) >= totalHeight * 0.2 {
+            if self.ballOffset.height < 0 {
+                if abs(self.ballOffset.height) >= totalHeight * 0.475 {
+                    releaseState = .other
+                } else {
+                    releaseState = .amplifier
+                }
+            } else {
+                releaseState = .speaker
+            }
+        } else {
+            self.releaseState = .neutral
+        }
     }
     
     private func getUIImage(position: ActionState, height: CGFloat) -> Image {
@@ -282,11 +307,32 @@ struct GameView: View {
         }
     }
     
-    private func getLabelColor() -> Color {
-        if controller.matchTimes.isEmpty {
+    private func getLabelColor(state: Bool, type: ActionState?) -> Color {
+        if controller.matchTimes.isEmpty  && state {
             return Color.primary
         } else {
-            return Color.gray
+            if state || actionState != type {
+                return Color.gray
+            } else {
+                switch actionState {
+                case .neutral:
+                    return Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255)
+                case .intake:
+                    return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
+                case .travel:
+                    return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
+                case .outtake:
+                    return Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255)
+                }
+            }
+        }
+    }
+    
+    private func getLabelAlignment() -> Alignment {
+        if UserDefaults.standard.bool(forKey: "leftHand") {
+            return .trailing
+        } else {
+            return .leading
         }
     }
 }
