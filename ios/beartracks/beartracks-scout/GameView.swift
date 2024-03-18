@@ -25,7 +25,7 @@ struct GameView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                 VStack {
                     GeometryReader { geometry in
@@ -85,7 +85,7 @@ struct GameView: View {
                                     .overlay(
                                         getUIImage(position: actionState, height: geometry.size.height)
                                             .colorMultiply(Color.init(red: 0.1, green: 0.1, blue: 0.1))
-                                            .bold()
+                                            .font(Font.body.bold())
                                     )
                                     .frame(width: 50, height: 50)
                                     .offset(x: ballOffset.width, y: 0)

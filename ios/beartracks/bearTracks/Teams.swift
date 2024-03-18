@@ -12,16 +12,19 @@ import SwiftUI
 struct Teams: View {
     @State private var teamsList: [TeamData] = []
     @State private var loadState: (Bool, Bool, Bool) = (false, false, false)
-    @State private var selectedItem: String = ""
     @State private var searchText: String = ""
+    @State private var performanceValue: Int = 0
     
     var body: some View {
         VStack {
-            NavigationStack {
+            NavigationView {
                 if !teamsList.isEmpty && !teamsList[0].isEmpty {
                     List {
                         ForEach(Array(searchResults.enumerated()), id: \.element.team.team) { index, team in
-                            NavigationLink(value: String(team.team.team)) {
+                            NavigationLink(destination: {
+                                TeamView(team: String(team.team.team))
+                                    .navigationTitle("team \(String(team.team.team))")
+                            }, label: {
                                 VStack {
                                     HStack {
                                         Text("\(String(index + 1))")
@@ -41,52 +44,57 @@ struct Teams: View {
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
                                     }
-                                    .contentShape(Rectangle())
                                     HStack {
                                         ProgressView(
-                                            value: max(team.firstValue() ?? 0, 0)
-                                            / max(teamsList[0][0].firstValue() ?? 0, 1)
+                                            value: max(team.performanceValue(type: performanceValue) ?? 0, 0),
+                                            total: max(teamsList[0][0].performanceValue(type: performanceValue) ?? 0, 1)
                                         )
                                         .padding([.leading, .trailing])
                                     }
-                                    .contentShape(Rectangle())
                                 }
-                                .onTapGesture {
-                                    selectedItem = String(team.team.team)
-                                    loadState.0 = true
-                                }
-                                .contentShape(Rectangle())
 #if targetEnvironment(macCatalyst)
                                 .padding([.top, .bottom])
 #endif
 #if os(visionOS)
                                 .padding(.bottom)
 #endif
-                            }
-                            .contentShape(Rectangle())
+                            })
                         }
-#if os(watchOS)
-                        Section {
-                            VStack {
-                                NavigationLink(destination: SettingsView()) {
-                                    HStack {
-                                        Text("Settings")
-                                        Spacer()
-                                        Label("", systemImage: "chevron.forward")
-                                            .labelStyle(.iconOnly)
-                                    }
-                                    .padding([.leading, .trailing])
-                                }
-                            }
-                            .padding([.leading, .trailing])
-                        }
-#endif
                     }
                     .navigationTitle("Teams")
-                    .navigationDestination(isPresented: $loadState.0) {
-                        TeamView(team: selectedItem)
-                            .navigationTitle("team \(selectedItem)")
+#if !os(watchOS)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Picker(selection: $performanceValue, content: {
+                                Label("Standard", systemImage: "line.3.horizontal.decrease.circle")
+                                    .tag(0)
+                                Label("Intake Speed", systemImage: "tray.and.arrow.down")
+                                    .tag(1)
+                                Label("Movement Speed", systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+                                    .tag(2)
+                                Label("Outtake Speed", systemImage: "paperplane")
+                                    .tag(3)
+                                Label("Cycle Speed", systemImage: "arrow.triangle.2.circlepath")
+                                    .tag(4)
+                                Label("Defense", systemImage: "shield")
+                                    .tag(5)
+                            }, label: {
+                                Label("type", systemImage: "line.3.horizontal.decrease.circle")
+                                    .labelStyle(.iconOnly)
+                            })
+                            .onChange(of: performanceValue) { _ in
+                                searchText = ""
+                                teamsList[0].sort {
+                                    if let mainWeightA = $0.performanceValue(type: performanceValue), let mainWeightB = $1.performanceValue(type: performanceValue) {
+                                        return mainWeightA > mainWeightB
+                                    } else {
+                                        return true
+                                    }
+                                }
+                            }
+                        }
                     }
+#endif
                 } else {
                     if loadState.1 {
                         VStack {
@@ -100,13 +108,29 @@ struct Teams: View {
                         .navigationTitle("Teams")
                     } else {
                         if loadState.2 {
-                            VStack {
+                            Form {
                                 Label("none", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
                                     .foregroundStyle(Color.pink)
                                 Text("no data")
                                     .padding(.bottom)
+#if os(watchOS)
+                                Section {
+                                    VStack {
+                                        NavigationLink(destination: SettingsView()) {
+                                            HStack {
+                                                Text("Settings")
+                                                Spacer()
+                                                Label("", systemImage: "chevron.forward")
+                                                    .labelStyle(.iconOnly)
+                                            }
+                                            .padding([.leading, .trailing])
+                                        }
+                                    }
+                                    .padding([.leading, .trailing])
+                                }
+#endif
                             }
                             .navigationTitle("Teams")
                         } else {
@@ -153,7 +177,7 @@ struct Teams: View {
                     let decoder = JSONDecoder()
                     var result = try decoder.decode(TeamData.self, from: data)
                     result.sort {
-                        if let mainWeightA = $0.firstValue(), let mainWeightB = $1.firstValue() {
+                        if let mainWeightA = $0.performanceValue(type: 0), let mainWeightB = $1.performanceValue(type: 0) {
                             return mainWeightA > mainWeightB
                         } else {
                             return true
@@ -186,8 +210,17 @@ struct TeamElement: Codable {
         case team = "Team"
     }
     
-    func firstValue() -> Float? {
-        return team.weight.components(separatedBy: ",").compactMap({ Float($0) }).first
+    func performanceValue(type: Int) -> Float? {
+        let teamWeights = team.weight.components(separatedBy: ",").compactMap({ Float($0) })
+        if teamWeights.count > type {
+            if teamWeights[type] == .infinity {
+                return 0
+            } else {
+                return teamWeights[type]
+            }
+        } else {
+            return 0
+        }
     }
 }
 

@@ -10,13 +10,14 @@ import SwiftUI
 struct EndView: View {
     @EnvironmentObject var controller: ScoutingController
     @FocusState private var activeBox: ActiveBox?
+    @State private var defense: Bool = false
     
     enum ActiveBox: Hashable {
         case defense, driving, overall
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                     Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
@@ -37,20 +38,30 @@ struct EndView: View {
                             }
                             .padding()
                             VStack {
-                                Text(
-                                    "Did the robot play defense? If so, was it effective? Did it incur foul points?"
-                                )
-                                .padding([.leading, .top])
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                TextEditor(text: $controller.defense)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(Color.gray, lineWidth: 1)
-                                    )
-                                    .frame(height: 150)
-                                    .padding([.leading, .trailing])
-                                    .focused($activeBox, equals: .defense)
-                                    .onTapGesture { activeBox = .defense }
+                                Toggle("Defense", isOn: $defense)
+                                    .padding()
+                                    .onChange(of: defense) { _ in
+                                        if !defense {
+                                            controller.defense = "No"
+                                        } else {
+                                            controller.defense = ""
+                                        }
+                                    }
+                                    Text("Did the robot play defense? If so, was it effective? Did it incur foul points?")
+                                        .padding(.leading)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .foregroundStyle(defense ? Color.primary : Color.gray)
+                                    TextEditor(text: $controller.defense)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.gray, lineWidth: 1)
+                                        )
+                                        .frame(height: 150)
+                                        .padding([.leading, .trailing])
+                                        .focused($activeBox, equals: .defense)
+                                        .onTapGesture { activeBox = .defense }
+                                        .disabled(!defense)
+                                        .foregroundStyle(defense ? Color.primary : Color.gray)
                             }
                             VStack {
                                 Text("How was the driving? Did the driver seem confident?")

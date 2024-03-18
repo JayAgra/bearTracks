@@ -11,10 +11,10 @@ import SwiftUI
 struct TeamView: View {
     @ObservedObject var dataItems: TeamViewModel
     @State private var showStats: Bool = false
-    @State private var showSheet: Bool = false
     
     init(team: String) {
         self.dataItems = TeamViewModel(team: team)
+        dataItems.reload()
     }
     
     var body: some View {
@@ -85,46 +85,43 @@ struct TeamView: View {
 #endif
                 List {
                     ForEach(dataItems.teamMatches) { entry in
-                        VStack {
-                            HStack {
-                                Text("match \(String(entry.Brief.match_num))")
+                        NavigationLink(destination: {
+                            DetailedView(model: String(entry.Brief.id))
+                                .navigationTitle("#\(String(entry.Brief.id))")
+                        }, label: {
+                            VStack {
+                                HStack {
+                                    Text("match \(String(entry.Brief.match_num))")
 #if !os(watchOS)
-                                    .font(.title)
+                                        .font(.title)
 #else
-                                    .font(.title3)
+                                        .font(.title3)
 #endif
+                                        .padding(.leading)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                HStack {
+                                    Text(
+                                        "#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team)) (\(entry.Brief.name))"
+                                    )
                                     .padding(.leading)
                                     .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                HStack {
+                                    ProgressView(
+                                        value: (max(
+                                            entry.Brief.weight.components(separatedBy: ",").compactMap({ Float($0) }).first
+                                            ?? 0, 0)) / max(dataItems.maximumValue, 1)
+                                    )
+                                    .padding([.leading, .trailing])
+                                }
                             }
-                            HStack {
-                                Text(
-                                    "#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team)) (\(entry.Brief.name))"
-                                )
-                                .padding(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            HStack {
-                                ProgressView(
-                                    value: (max(
-                                        entry.Brief.weight.components(separatedBy: ",").compactMap({ Float($0) }).first
-                                        ?? 0, 0)) / max(dataItems.maximumValue, 1)
-                                )
-                                .padding([.leading, .trailing])
-                            }
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            dataItems.setSelectedItem(item: String(entry.Brief.id))
-                            showSheet = true
-                        }
+                            .contentShape(Rectangle())
+                        })
 #if targetEnvironment(macCatalyst)
                         .padding([.top, .bottom])
 #endif
                     }
-                }
-                .navigationDestination(isPresented: $showSheet) {
-                    DetailedView(model: dataItems.getSelectedItem())
-                        .navigationTitle("#\(dataItems.getSelectedItem())")
                 }
             } else {
                 if dataItems.loadComplete.0 && dataItems.loadComplete.1
@@ -135,10 +132,6 @@ struct TeamView: View {
                     Text("loading team...")
                 }
             }
-        }
-        .padding()
-        .onAppear {
-            dataItems.reload()
         }
     }
     

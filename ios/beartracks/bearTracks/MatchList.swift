@@ -12,16 +12,19 @@ struct MatchList: View {
     @EnvironmentObject var appState: AppState
     @State private var loadFailed: Bool = false
     @State private var loadComplete: Bool = false
-    @State private var selectedMatch: (Bool, Int) = (false, 0)
     @State private var myTeamOnly = false
     
     var body: some View {
-            NavigationStack {
+            NavigationView {
                 if !appState.matchJson.isEmpty {
                     List {
                         ForEach(appState.matchJson) { match in
                             if !myTeamOnly || checkMatch(match: match) {
-                                NavigationLink(value: match.description) {
+                                NavigationLink(destination: {
+                                    MatchDetailView(match: match.matchNumber)
+                                        .navigationTitle("match \(match.matchNumber)")
+                                        .environmentObject(appState)
+                                }, label: {
                                     VStack {
                                         Text(String(match.description))
                                             .font(.title3)
@@ -35,29 +38,22 @@ struct MatchList: View {
                                             Spacer()
                                         }
                                     }
-                                }
-                                .onTapGesture {
-                                    self.selectedMatch = (true, match.matchNumber);
-                                }
+                                    .padding([.top, .bottom])
+                                })
                             }
                         }
                     }
                     .navigationTitle("Matches")
-                    .navigationDestination(isPresented: $selectedMatch.0) {
-                        MatchDetailView(match: selectedMatch.1)
-                            .navigationTitle("match \(selectedMatch.1)")
-                            .environmentObject(appState)
-                    }
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             Button(action: {
                                 self.myTeamOnly.toggle()
                             }, label: {
                                 if myTeamOnly {
-                                    Label("teams", systemImage: "line.3.horizontal.decrease.circle.fill")
+                                    Label("Show Mine", systemImage: "line.3.horizontal.decrease.circle.fill")
                                         .labelStyle(.iconOnly)
                                 } else {
-                                    Label("teams", systemImage: "line.3.horizontal.decrease.circle")
+                                    Label("Show All", systemImage: "line.3.horizontal.decrease.circle")
                                         .labelStyle(.iconOnly)
                                 }
                             })

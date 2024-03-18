@@ -286,7 +286,7 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     let fast_shoot: f64;
     let fast_cycle: f64;
 
-    if game_data.len() > 3 {
+    if game_data.len() > 7 {
         fast_intake = score * (100.0 / (intake_time / (game_data.len() - 3) as f64));
         fast_travel = score * (100.0 / (travel_time / (game_data.len() - 3) as f64));
         fast_shoot = score * (100.0 / (outtake_time / (game_data.len() - 3) as f64));
@@ -298,7 +298,7 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         fast_cycle = 0.0;
     }
 
-    let mps_scores: Vec<f64> = vec![score, fast_intake, fast_travel, fast_shoot, fast_cycle];
+    let mps_scores: Vec<f64> = vec![score, fast_intake, fast_travel, fast_shoot, fast_cycle, analysis_results[0]];
 
     let analysis: Vec<i64> = vec![
         real_bool_to_num(trap_note) as i64,

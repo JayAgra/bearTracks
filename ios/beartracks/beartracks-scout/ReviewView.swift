@@ -15,20 +15,16 @@ struct ReviewView: View {
     
     var body: some View {
         VStack {
-            NavigationStack {
+            NavigationView {
                 VStack {
                     if controller.getTeamNumber() == "--" || controller.getMatchNumber() == 0 {
                         Text("Please select a match and team number on the start tab.")
                             .padding()
-                    } else if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == ""
-                                || controller.getOverallResponse() == ""
-                    {
+                    } else if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == "" || controller.getOverallResponse() == "" {
                         Text("Please fill in all three long form responses.")
                             .padding()
                     } else {
-                        Text(
-                            "Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2024"))"
-                        )
+                        Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2024"))")
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         ScrollView {
@@ -123,6 +119,11 @@ struct ReviewView: View {
                             }
                             .padding()
                             .buttonStyle(.borderedProminent)
+                        }
+                        .onAppear {
+                            if self.controller.defense == "" {
+                                controller.defense = "No"
+                            }
                         }
                     }
                 }

@@ -13,7 +13,7 @@ struct StartView: View {
     
     var body: some View {
         VStack {
-            NavigationStack {
+            NavigationView {
                 VStack {
                     Form {
                         Section {

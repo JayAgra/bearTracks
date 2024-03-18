@@ -10,16 +10,17 @@ import SwiftUI
 /// View for a list of all data
 struct DataView: View {
     @ObservedObject var dataItems: DataViewModel = DataViewModel()
-    @State private var showSheet: Bool = false
-    @State private var selectedItem: String = "-1"
     
     var body: some View {
         VStack {
-            NavigationStack {
+            NavigationView {
                 if !dataItems.dataEntries.isEmpty {
                     List {
                         ForEach(dataItems.dataEntries, id: \.Brief.id) { entry in
-                            VStack {
+                            NavigationLink(destination: {
+                                DetailedView(model: String(entry.Brief.id))
+                                    .navigationTitle("#\(String(entry.Brief.id))")
+                            }, label: {
                                 VStack {
                                     HStack {
                                         Text("\(String(entry.Brief.team))")
@@ -40,21 +41,13 @@ struct DataView: View {
                                     }
                                 }
                                 .contentShape(Rectangle())
-                                .onTapGesture {
-                                    selectedItem = String(entry.Brief.id)
-                                    showSheet = true
-                                }
 #if targetEnvironment(macCatalyst)
                                 .padding([.top, .bottom])
 #endif
-                            }
+                            })
                         }
                     }
                     .navigationTitle("Data")
-                    .navigationDestination(isPresented: $showSheet) {
-                        DetailedView(model: selectedItem)
-                            .navigationTitle("#\(selectedItem)")
-                    }
                 } else {
                     if dataItems.loadFailed {
                         VStack {

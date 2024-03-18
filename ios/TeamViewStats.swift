@@ -12,31 +12,32 @@ struct TeamViewStats: View {
     
     init(teamNum: String) {
         self.teamDetail.teamNumber = teamNum
+        self.teamDetail.fetchTeamDataJson()
     }
     
     var body: some View {
-        NavigationStack {
-            Picker("type", selection: $teamDetail.statType) {
-                Text("avg")
-                    .tag(StatType.mean)
-                Text("25th")
-                    .tag(StatType.first)
-                Text("median")
-                    .tag(StatType.median)
-                Text("75th")
-                    .tag(StatType.third)
-                Text("decaying")
-                    .tag(StatType.decay)
-            }
-            .pickerStyle(.segmented)
-            .padding()
-            .onChange(of: teamDetail.statType) { value in
-#if !os(visionOS)
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-#endif
-            }
+        VStack {
             ScrollView {
                 if !teamDetail.teamData.isEmpty {
+                    Picker("type", selection: $teamDetail.statType) {
+                        Text("avg")
+                            .tag(StatType.mean)
+                        Text("25th")
+                            .tag(StatType.first)
+                        Text("median")
+                            .tag(StatType.median)
+                        Text("75th")
+                            .tag(StatType.third)
+                        Text("decaying")
+                            .tag(StatType.decay)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding()
+#if !os(visionOS)
+                    .onChange(of: teamDetail.statType) { value in
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    }
+#endif
                     HStack {
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].intake)))s")
@@ -142,16 +143,10 @@ struct TeamViewStats: View {
                 }
             }
             .navigationTitle("\(teamDetail.teamNumber) stats")
-            .onAppear() {
-                teamDetail.fetchTeamDataJson()
-            }
-            .refreshable {
-                teamDetail.fetchTeamDataJson()
-            }
         }
     }
     
-    func getRelevantData(item: DataStats) -> Int {
+    private func getRelevantData(item: DataStats) -> Int {
         switch teamDetail.statType {
         case .mean:
             return item.mean

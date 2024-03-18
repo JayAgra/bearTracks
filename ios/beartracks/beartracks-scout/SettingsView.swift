@@ -20,7 +20,7 @@ struct SettingsView: View {
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 Form {
                     Section {

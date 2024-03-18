@@ -22,41 +22,33 @@ struct beartracksApp: App {
         WindowGroup {
             if !appState.loginRequired {
 #if targetEnvironment(macCatalyst)
-                NavigationSplitView(
-                    sidebar: {
-                        List(selection: $appState.selectedTab) {
-                            NavigationLink(value: Tab.teams) {
-                                Label("teams", systemImage: "list.number")
-                            }
-                            NavigationLink(value: Tab.matches) {
-                                Label("matches", systemImage: "calendar")
-                            }
-                            NavigationLink(value: Tab.data) {
-                                Label("data", systemImage: "magnifyingglass")
-                            }
-                            NavigationLink(value: Tab.settings) {
-                                Label("settings", systemImage: "gear")
-                            }
-                        }
-                        .navigationTitle("bearTracks")
-                    },
-                    detail: {
-                        switch appState.selectedTab {
-                        case .teams:
-                            Teams()
-                        case .matches:
-                            MatchList()
-                        case .data:
-                            DataView()
-                        case .settings:
-                            SettingsView()
-                                .environmentObject(appState)
-                        case nil:
-                            LoginView()
-                                .environmentObject(appState)
-                        }
+                NavigationView {
+                    List(selection: $appState.selectedTab) {
+                        Label("teams", systemImage: "list.number")
+                            .tag(Tab.teams)
+                        Label("matches", systemImage: "calendar")
+                            .tag(Tab.matches)
+                        Label("data", systemImage: "magnifyingglass")
+                            .tag(Tab.data)
+                        Label("settings", systemImage: "gear")
+                            .tag(Tab.settings)
                     }
-                )
+                    .navigationTitle("bearTracks")
+                    switch appState.selectedTab {
+                    case .teams:
+                        Teams()
+                    case .matches:
+                        MatchList()
+                    case .data:
+                        DataView()
+                    case .settings:
+                        SettingsView()
+                            .environmentObject(appState)
+                    case nil:
+                        LoginView()
+                            .environmentObject(appState)
+                    }
+                }
                 .preferredColorScheme(darkMode ? .dark : .light)
                 .onAppear {
                     checkLoginState { isLoggedIn in

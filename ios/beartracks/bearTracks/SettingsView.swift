@@ -24,7 +24,7 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 Form {
                     Section {
@@ -105,7 +105,7 @@ struct SettingsView: View {
                                 appState.loginRequired = true
                             }
                         }
-                        .foregroundStyle(Color.pink)
+                        .foregroundColor(Color.pink)
                     }
                     Section {
                         Button("Delete Account") {

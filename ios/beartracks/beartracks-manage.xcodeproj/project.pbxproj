@@ -82,6 +82,7 @@
 		F5CF31282B55A3DA00BA58EF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5CF312A2B55A3DB00BA58EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5CF312D2B55A3DB00BA58EF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F5EB6AA82BA29D7200B0E1B7 /* beartracks-manage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-manage.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +147,7 @@
 		F5CF31252B55A3DA00BA58EF /* beartracks-manage */ = {
 			isa = PBXGroup;
 			children = (
+				F5EB6AA82BA29D7200B0E1B7 /* beartracks-manage.entitlements */,
 				F59236EB2B8EABF0005AFC6E /* Info.plist */,
 				F5CF31262B55A3DA00BA58EF /* beartracks_manageApp.swift */,
 				F5CF31282B55A3DA00BA58EF /* SettingsView.swift */,
@@ -495,6 +497,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "beartracks-manage/beartracks-manage.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-manage/Preview Content\"";
@@ -531,6 +534,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "beartracks-manage/beartracks-manage.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-manage/Preview Content\"";

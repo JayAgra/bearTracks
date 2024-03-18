@@ -18,7 +18,6 @@ class TeamViewModel: ObservableObject {
     @Published private(set) var teamMatches: [DataEntry]
     @Published private(set) var teamData: [StatboticsTeamData]
     @Published private(set) var maximumValue: Float = 0
-    @Published private(set) var selectedItem: String = "-1"
     @State private var isShowingSheet = false
     @Published public var targetTeam: String = "-1"
     @Published public var loadComplete: (Bool, Bool) = (false, false)
@@ -28,14 +27,6 @@ class TeamViewModel: ObservableObject {
         self.teamMatches = []
         self.teamData = []
         self.reload()
-    }
-    
-    func setSelectedItem(item: String) {
-        selectedItem = item
-    }
-    
-    func getSelectedItem() -> String {
-        return selectedItem
     }
     
     func fetchTeamMatchesJson(completionBlock: @escaping ([DataEntry]) -> Void) {
