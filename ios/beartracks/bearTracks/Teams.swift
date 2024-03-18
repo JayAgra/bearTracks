@@ -59,7 +59,28 @@ struct Teams: View {
                                 .padding(.bottom)
 #endif
                             })
+#if os(iOS)
+                            .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
+#elseif targetEnvironment(macCatalyst)
+                            .listRowBackground(Color.primary.colorInvert())
+#endif
                         }
+#if os(watchOS)
+                        Section {
+                            VStack {
+                                NavigationLink(destination: SettingsView()) {
+                                    HStack {
+                                        Text("Settings")
+                                        Spacer()
+                                        Label("", systemImage: "chevron.forward")
+                                            .labelStyle(.iconOnly)
+                                    }
+                                    .padding([.leading, .trailing])
+                                }
+                            }
+                            .padding([.leading, .trailing])
+                        }
+#endif
                     }
                     .navigationTitle("Teams")
 #if !os(watchOS)

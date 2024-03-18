@@ -58,9 +58,9 @@ The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended 
 |             | Scout | Data | Manage |
 |-------------|------|-------|--------|
 | iOS 17      | ✅    | ✅     | ✅      |
-| iOS 16      | ✅    | ✅     | ❌      |
+| iOS 16, 15  | ✅    | ✅     | ❌      |
 | macOS 14    | ✅    | ✅     | ✅      |
-| macOS 13    | ✅    | ✅     | ❌      |
+| macOS 13, 12| ✅    | ✅     | ❌      |
 | App Store   | ✅    | ✅     | ❌      |
 | Web (PWA)   | ✅    | ❌     | ❌      |
 

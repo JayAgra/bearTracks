@@ -24,11 +24,11 @@ struct DataView: View {
                                 VStack {
                                     HStack {
                                         Text("\(String(entry.Brief.team))")
-                                            .font(.title)
+                                            .font(UIDevice.current.userInterfaceIdiom != .pad ? .title : .title2)
                                             .padding(.leading)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                         Text("match \(String(entry.Brief.match_num))")
-                                            .font(.title)
+                                            .font(UIDevice.current.userInterfaceIdiom != .pad ? .title : .title2)
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
                                     }
@@ -45,6 +45,11 @@ struct DataView: View {
                                 .padding([.top, .bottom])
 #endif
                             })
+#if os(iOS)
+                            .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
+#elseif targetEnvironment(macCatalyst)
+                            .listRowBackground(Color.primary.colorInvert())
+#endif
                         }
                     }
                     .navigationTitle("Data")

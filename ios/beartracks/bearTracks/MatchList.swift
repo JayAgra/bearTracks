@@ -38,8 +38,12 @@ struct MatchList: View {
                                             Spacer()
                                         }
                                     }
-                                    .padding([.top, .bottom])
                                 })
+#if os(iOS)
+                                .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
+#elseif targetEnvironment(macCatalyst)
+                                .listRowBackground(Color.primary.colorInvert())
+#endif
                             }
                         }
                     }
@@ -154,7 +158,7 @@ struct TeamNumberStack: View {
     var body: some View {
         VStack {
             Text("\(String(match.teams[num].teamNumber))")
-                .font(.largeTitle)
+                .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .largeTitle)
                 .fontWeight(
                     String(match.teams[num].teamNumber)
                     == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
@@ -162,7 +166,7 @@ struct TeamNumberStack: View {
                 )
                 .foregroundColor(Color.red)
             Text("\(String(match.teams[num + 3].teamNumber))")
-                .font(.largeTitle)
+                .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .largeTitle)
                 .fontWeight(
                     String(match.teams[num + 3].teamNumber)
                     == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
