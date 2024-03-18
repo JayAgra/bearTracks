@@ -123,7 +123,6 @@ var cycle_data: Array<any> = []
 function end_cycle(type: number) {
     if (timer_times[0] != 0 || timer_times[1] != 0 || timer_times[2] != 0) {
         cycle_data.push({
-            id: cycle_data.length,
             score_type: type, // 0 for speaker, 1 for amplifier, 2 for trap, 3 for climb, 4 for buddy
             intake: Math.round(timer_times[0] * 10) / 10,
             travel: Math.round(timer_times[1] * 10) / 10,
@@ -179,9 +178,13 @@ function submit() {
     
     submit_text.innerText = "Submitting...";
 
-    cycle_data.push({ id: cycle_data.length, score_type: 2, intake: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked) });
-    cycle_data.push({ id: cycle_data.length, score_type: 3, intake: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked) });
-    cycle_data.push({ id: cycle_data.length, score_type: 4, intake: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 2, intake: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 3, intake: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 4, intake: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 5, intake: Number((document.querySelector("[name=auto_neutral]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_neutral]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_neutral]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 6, intake: Number((document.querySelector("[name=auto_wing]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_wing]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_wing]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 7, intake: Number((document.querySelector("[name=auto_preload]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_preload]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_preload]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 8, intake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked) });
 
     const data = {
         season: 2024,

@@ -103,7 +103,6 @@ var cycle_data = [];
 function end_cycle(type) {
     if (timer_times[0] != 0 || timer_times[1] != 0 || timer_times[2] != 0) {
         cycle_data.push({
-            id: cycle_data.length,
             score_type: type,
             intake: Math.round(timer_times[0] * 10) / 10,
             travel: Math.round(timer_times[1] * 10) / 10,
@@ -146,9 +145,13 @@ function submit() {
     document.getElementById("submit_page").style.display = "block";
     var submit_text = document.getElementById("submit_text"), submit_progress = document.getElementById("submit_progress"), continue_button = document.getElementById("scout_again"), success_seal = document.getElementById("success_seal"), failure_seal = document.getElementById("failure_seal");
     submit_text.innerText = "Submitting...";
-    cycle_data.push({ id: cycle_data.length, score_type: 2, intake: Number(document.querySelector("[name=trap_note]").checked), travel: Number(document.querySelector("[name=trap_note]").checked), outtake: Number(document.querySelector("[name=trap_note]").checked) });
-    cycle_data.push({ id: cycle_data.length, score_type: 3, intake: Number(document.querySelector("[name=climb]").checked), travel: Number(document.querySelector("[name=climb]").checked), outtake: Number(document.querySelector("[name=climb]").checked) });
-    cycle_data.push({ id: cycle_data.length, score_type: 4, intake: Number(document.querySelector("[name=buddy_climb]").checked), travel: Number(document.querySelector("[name=buddy_climb]").checked), outtake: Number(document.querySelector("[name=buddy_climb]").checked) });
+    cycle_data.push({ score_type: 2, intake: Number(document.querySelector("[name=trap_note]").checked), travel: Number(document.querySelector("[name=trap_note]").checked), outtake: Number(document.querySelector("[name=trap_note]").checked) });
+    cycle_data.push({ score_type: 3, intake: Number(document.querySelector("[name=climb]").checked), travel: Number(document.querySelector("[name=climb]").checked), outtake: Number(document.querySelector("[name=climb]").checked) });
+    cycle_data.push({ score_type: 4, intake: Number(document.querySelector("[name=buddy_climb]").checked), travel: Number(document.querySelector("[name=buddy_climb]").checked), outtake: Number(document.querySelector("[name=buddy_climb]").checked) });
+    cycle_data.push({ score_type: 5, intake: Number(document.querySelector("[name=auto_neutral]").checked), travel: Number(document.querySelector("[name=auto_neutral]").checked), outtake: Number(document.querySelector("[name=auto_neutral]").checked) });
+    cycle_data.push({ score_type: 6, intake: Number(document.querySelector("[name=auto_wing]").checked), travel: Number(document.querySelector("[name=auto_wing]").checked), outtake: Number(document.querySelector("[name=auto_wing]").checked) });
+    cycle_data.push({ score_type: 7, intake: Number(document.querySelector("[name=auto_preload]").checked), travel: Number(document.querySelector("[name=auto_preload]").checked), outtake: Number(document.querySelector("[name=auto_preload]").checked) });
+    cycle_data.push({ score_type: 8, intake: Number(document.querySelector("[name=auto_scores]").checked), travel: Number(document.querySelector("[name=auto_scores]").checked), outtake: Number(document.querySelector("[name=auto_scores]").checked) });
     const data = {
         season: 2024,
         event: getEventCookie(),
