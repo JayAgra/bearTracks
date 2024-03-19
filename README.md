@@ -32,12 +32,12 @@ For use on production, replace `<DOMAIN>` with your domain, and run this with po
 ```sh
 # new certificate. run commands from ~/bearTracks
 certbot certonly --standalone --keep-until-expiring --agree-tos -d "<DOMAIN>"
-cp /etc/letsencrypt/live/<DOMAIN>.io/cert.pem ssl/cert.pem
-cp /etc/letsencrypt/live/<DOMAIN>.io/privkey.pem ssl/key.pem
+cp /etc/letsencrypt/live/<DOMAIN>/cert.pem ssl/cert.pem
+cp /etc/letsencrypt/live/<DOMAIN>/privkey.pem ssl/key.pem
 # renew certificate. run from ~/bearTracks
 certbot renew
-cp /etc/letsencrypt/live/<DOMAIN>.io/cert.pem ssl/cert.pem
-cp /etc/letsencrypt/live/<DOMAIN>.io/privkey.pem ssl/key.pem
+cp /etc/letsencrypt/live/<DOMAIN>/cert.pem ssl/cert.pem
+cp /etc/letsencrypt/live/<DOMAIN>/privkey.pem ssl/key.pem
 ```
 ### running server
 To start the server from a ssh session, run the following command from the ~/bearTracks directory.

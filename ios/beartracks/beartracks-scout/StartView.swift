@@ -14,7 +14,6 @@ struct StartView: View {
     var body: some View {
         VStack {
             NavigationView {
-                VStack {}
                 VStack {
                     Form {
                         Section {

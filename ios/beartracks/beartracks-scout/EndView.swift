@@ -18,7 +18,6 @@ struct EndView: View {
     
     var body: some View {
         NavigationView {
-            VStack {}
             VStack {
                 if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                     Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
