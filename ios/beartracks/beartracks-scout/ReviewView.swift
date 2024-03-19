@@ -16,6 +16,7 @@ struct ReviewView: View {
     var body: some View {
         VStack {
             NavigationView {
+                VStack {}
                 VStack {
                     if controller.getTeamNumber() == "--" || controller.getMatchNumber() == 0 {
                         Text("Please select a match and team number on the start tab.")

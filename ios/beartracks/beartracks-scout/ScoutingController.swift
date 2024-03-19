@@ -23,7 +23,7 @@ class ScoutingController: ObservableObject {
     // match time store
     @Published public var matchTimes: [MatchTime] = []
     // qualitative data store
-    @Published public var defense: String = ""
+    @Published public var defense: String = "No"
     @Published public var driving: String = ""
     @Published public var overall: String = ""
     @Published public var switches: (Bool, Bool, Bool, Int, Int, Int, Int) = (

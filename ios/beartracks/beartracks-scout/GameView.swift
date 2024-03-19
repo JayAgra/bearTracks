@@ -26,6 +26,7 @@ struct GameView: View {
     
     var body: some View {
         NavigationView {
+            VStack {}
             if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                 VStack {
                     GeometryReader { geometry in
