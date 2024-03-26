@@ -1,3 +1,4 @@
+use a2;
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
@@ -19,10 +20,11 @@ use openssl::{
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock};
+use std::{collections::HashMap, env, fs, io, pin::Pin, sync::{Arc, RwLock}};
 use webauthn_rs::prelude::*;
 
 mod analyze;
+mod apn;
 mod auth;
 mod casino;
 mod db_auth;
@@ -599,6 +601,18 @@ async fn game_get_team(req: HttpRequest, db: web::Data<Databases> /*, _user: db_
     ))
 }
 
+#[derive(Serialize)]
+struct ApiResponse {
+    data: String,
+}
+
+async fn trigger_notification(client: web::Data<Arc<a2::Client>>, device_token: web::Path<String>) -> impl Responder {
+    match apn::send_notification(client.get_ref(), device_token.as_str()).await {
+        Ok(_) => HttpResponse::Ok().json(ApiResponse { data: "Notification sent.".to_string() }),
+        Err(err) => HttpResponse::InternalServerError().body(err.to_string()),
+    }
+}
+
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 #[actix_web::main]
@@ -728,6 +742,16 @@ async fn main() -> io::Result<()> {
     let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
     builder.add_extra_chain_cert(intermediate_cert).unwrap();
 
+    let client = match apn::setup_client() {
+        Ok(client) => client,
+        Err(err) => {
+            log::error!("Failed to setup client on error: {}", err);
+            std::process::exit(1)
+        },
+    };
+
+    let client = Arc::new(client);
+
     // config done. now, create the new HttpServer
     log::info!("[OK] starting bearTracks on port 443 and 80");
 
@@ -745,6 +769,8 @@ async fn main() -> io::Result<()> {
             .app_data(sessions.clone())
             // add webauthn to app data
             .app_data(passkey::setup_passkeys())
+            // apn client
+            .app_data(web::Data::new(client.clone()))
             // use governor ratelimiting as middleware
             .wrap(Governor::new(&governor_conf))
             // use cookie id system middleware
@@ -772,7 +798,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-bearTracks", "5.1.3")),
+                    .add(("X-bearTracks", "5.2.0")),
             )
             /* src  endpoints */
             // GET individual files
@@ -989,6 +1015,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/debug/ok")
                     .route(web::get().to(debug_ok)),
+            )
+            .service(
+                web::resource("/api/v1/trigger_notification/{device_token}")
+                    .route(web::get().to(trigger_notification)),
             )
             /* robot game endpoints */
             // GET
