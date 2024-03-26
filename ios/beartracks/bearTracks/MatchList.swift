@@ -158,7 +158,11 @@ struct TeamNumberStack: View {
     var body: some View {
         VStack {
             Text("\(String(match.teams[num].teamNumber))")
+#if os(visionOS)
+                .font(.title2)
+#else
                 .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .largeTitle)
+#endif
                 .fontWeight(
                     String(match.teams[num].teamNumber)
                     == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
@@ -166,7 +170,11 @@ struct TeamNumberStack: View {
                 )
                 .foregroundColor(Color.red)
             Text("\(String(match.teams[num + 3].teamNumber))")
+#if os(visionOS)
+                .font(.title2)
+#else
                 .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .largeTitle)
+#endif
                 .fontWeight(
                     String(match.teams[num + 3].teamNumber)
                     == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")

@@ -24,18 +24,27 @@ struct DataView: View {
                                 VStack {
                                     HStack {
                                         Text("\(String(entry.Brief.team))")
-                                            .font(UIDevice.current.userInterfaceIdiom != .pad ? .title : .title2)
+#if os(visionOS)
+                .font(.title2)
+#else
+                .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .title)
+#endif
                                             .padding(.leading)
                                             .frame(maxWidth: .infinity, alignment: .leading)
+#if os(visionOS)
                                         Text("match \(String(entry.Brief.match_num))")
-                                            .font(UIDevice.current.userInterfaceIdiom != .pad ? .title : .title2)
+                                            .font(.title3)
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
+#else
+                                        Text("match \(String(entry.Brief.match_num))")
+                                            .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .title)
+                                            .padding(.trailing)
+                                            .frame(maxWidth: .infinity, alignment: .trailing)
+#endif
                                     }
                                     HStack {
-                                        Text(
-                                            "#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team))"
-                                        )
+                                        Text("#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team))")
                                         .padding(.leading)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     }
