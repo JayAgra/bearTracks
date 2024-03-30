@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Login sheet view
 struct LoginView: View {
     @State private var showAlert = false
     @State private var authData: [String] = ["", "", "", ""]
@@ -31,7 +30,7 @@ struct LoginView: View {
                         .padding(.top)
 #endif
                     TextField("username", text: $authData[0])
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
                         .padding([.leading, .trailing, .bottom])
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 #endif
@@ -39,7 +38,7 @@ struct LoginView: View {
                         .textInputAutocapitalization(.never)
                         .textContentType(.username)
                     SecureField("password", text: $authData[1])
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
                         .padding()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 #endif
@@ -60,7 +59,7 @@ struct LoginView: View {
                     }
 #endif
                 } else {
-#if !os(watchOS)
+#if !os(watchOS) && !os(tvOS)
                     Text("create account")
                         .font(.title3)
                         .padding(.top)
@@ -106,7 +105,9 @@ struct LoginView: View {
             } else {
                 Spacer()
                 ProgressView()
+#if !os(tvOS)
                     .controlSize(.large)
+#endif
                     .padding()
                 Spacer()
             }

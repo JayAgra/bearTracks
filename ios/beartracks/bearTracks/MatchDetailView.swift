@@ -8,55 +8,70 @@
 import SwiftUI
 
 struct MatchDetailView: View {
-    @State public var match: Int;
-    @EnvironmentObject var appState: AppState;
-    @State private var teams: [TeamStats] = [];
+    @State public var match: Int
+    @EnvironmentObject var appState: AppState
+    @State private var teams: [TeamStats] = []
     @State private var detailMaximums: (Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1)
     @State private var loadStarted: Bool = false
+    @State private var eventCodeInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
+    @State private var settingsOptions: [DataMetadata] = []
     
     var body: some View {
+#if !os(tvOS)
         VStack {
-            if appState.matchJson.count != 0 {
+            if appState.matchJson.count != 0 && appState.matchJson.count >= match {
                 if teams.count == 6 {
                     ScrollView {
+                        Text("Match \(String(match))")
+                            .font(.largeTitle)
                         Text("+\(calculateWinner().0)%")
                             .font(.title)
                             .foregroundStyle(calculateWinner().1 ? Color.red : Color.blue)
                         HStack {
                             VStack {
                                 ForEach(Array(teams.prefix(3)), id: \.team) { team in
-                                    VStack {
-                                        HStack {
-                                            Text(String(team.team))
-                                                .font(.title2)
-                                                .foregroundStyle(Color.primary)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                    NavigationLink(destination: {
+                                        TeamView(dataItems: TeamViewModel(team: String(team.team)))
+                                            .environmentObject(appState)
+                                    }, label: {
+                                        VStack {
+                                            HStack {
+                                                Text(String(team.team))
+                                                    .font(.title2)
+                                                    .foregroundStyle(Color.primary)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                            HStack {
+                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                    .padding([.leading, .trailing])
+                                                    .tint(Color.red)
+                                            }
                                         }
-                                        HStack {
-                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
-                                                .padding([.leading, .trailing])
-                                                .tint(Color.red)
-                                        }
-                                    }
-                                    .padding()
+                                        .padding()
+                                    })
                                 }
                             }
                             VStack {
                                 ForEach(Array(teams.suffix(3)), id: \.team) { team in
-                                    VStack {
-                                        HStack {
-                                            Text(String(team.team))
-                                                .font(.title2)
-                                                .foregroundStyle(Color.primary)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                    NavigationLink(destination: {
+                                        TeamView(dataItems: TeamViewModel(team: String(team.team)))
+                                            .environmentObject(appState)
+                                    }, label: {
+                                        VStack {
+                                            HStack {
+                                                Text(String(team.team))
+                                                    .font(.title2)
+                                                    .foregroundStyle(Color.primary)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                            HStack {
+                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                    .padding([.leading, .trailing])
+                                                    .tint(Color.blue)
+                                            }
                                         }
-                                        HStack {
-                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
-                                                .padding([.leading, .trailing])
-                                                .tint(Color.blue)
-                                        }
-                                    }
-                                    .padding()
+                                        .padding()
+                                    })
                                 }
                             }
                         }
@@ -90,15 +105,166 @@ struct MatchDetailView: View {
             }
         }
         .refreshable {
-            self.teams = []
-            self.loadData()
-        }
-        .onAppear {
-            if !loadStarted {
-                loadStarted = true
+            if appState.matchJson.count != 0 && appState.matchJson.count >= match {
+                self.teams = []
                 self.loadData()
             }
         }
+        .onAppear {
+            if appState.matchJson.count != 0 && appState.matchJson.count >= match {
+                if !loadStarted {
+                    loadStarted = true
+                    self.loadData()
+                }
+            }
+        }
+#else
+        NavigationStack {
+            if appState.matchJson.count != 0 && appState.matchJson.count >= match {
+                if teams.count == 6 {
+                    ScrollView {
+                        Text("Match \(String(match))")
+                            .font(.largeTitle)
+                        Text("+\(calculateWinner().0)%")
+                            .font(.title)
+                            .foregroundStyle(calculateWinner().1 ? Color.red : Color.blue)
+                        HStack {
+                            VStack {
+                                ForEach(Array(teams.prefix(3)), id: \.team) { team in
+                                        VStack {
+                                            HStack {
+                                                Text(String(team.team))
+                                                    .font(.title2)
+                                                    .foregroundStyle(Color.primary)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                            HStack {
+                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                    .padding([.leading, .trailing])
+                                                    .tint(Color.red)
+                                            }
+                                        }
+                                        .padding()
+                                }
+                            }
+                            VStack {
+                                ForEach(Array(teams.suffix(3)), id: \.team) { team in
+                                        VStack {
+                                            HStack {
+                                                Text(String(team.team))
+                                                    .font(.title2)
+                                                    .foregroundStyle(Color.primary)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                            HStack {
+                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                    .padding([.leading, .trailing])
+                                                    .tint(Color.blue)
+                                            }
+                                        }
+                                        .padding()
+                                }
+                            }
+                        }
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            EventSelectButton
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                match -= 1
+                                self.loadData()
+                            }, label: {
+                                Label("", systemImage: "chevron.left")
+                            })
+                            .disabled(match == 1)
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                self.loadData()
+                            }, label: {
+                                Label("", systemImage: "arrow.clockwise")
+                            })
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                match += 1
+                                self.loadData()
+                            }, label: {
+                                Label("", systemImage: "chevron.right")
+                            })
+                            .disabled(match ==  appState.matchJson.count)
+                        }
+                    }
+                    .onAppear {
+                        loadSettingsJson { result in
+                            self.settingsOptions = result
+                        }
+                    }
+                } else {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                            .padding()
+                        Spacer()
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            EventSelectButton
+                        }
+                    }
+                }
+            } else {
+                VStack {
+                    Text("the match list for the selected competition was not loaded properly")
+                        .padding()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        EventSelectButton
+                    }
+                }
+            }
+        }
+        .refreshable {
+            if appState.matchJson.count != 0 && appState.matchJson.count >= match {
+                self.teams = []
+                self.loadData()
+            }
+        }
+        .onAppear {
+            loadSettingsJson { result in
+                self.settingsOptions = result
+            }
+            if appState.matchJson.count != 0 && appState.matchJson.count >= match {
+                if !loadStarted {
+                    loadStarted = true
+                    self.loadData()
+                }
+            }
+        }
+#endif
+    }
+    
+    var EventSelectButton: some View {
+        Button(action: {
+            loadSettingsJson { result in
+                self.settingsOptions = result
+            }
+            if !settingsOptions.isEmpty && !settingsOptions[0].events.isEmpty {
+                let ci = (settingsOptions[0].events.firstIndex{$0 == UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR"} ?? 0)
+                if ci == settingsOptions[0].events.count - 1 {
+                    UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[0], forKey: "eventCode")
+                } else {
+                    UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[ci + 1], forKey: "eventCode")
+                }
+                self.loadData()
+            }
+        }, label: {
+            Label(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR", systemImage: "flag.checkered")
+                .labelStyle(.titleOnly)
+        })
     }
     
     func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
@@ -176,6 +342,35 @@ struct MatchDetailView: View {
         }
         return (Int(pcnt.rounded()), redScore > blueScore)
     }
+    
+    func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) {
+        guard let url = URL(string: "https://beartracks.io/api/v1/data") else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        let requestTask = sharedSession.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(DataMetadata.self, from: data)
+                    DispatchQueue.main.async {
+                        completionBlock([result])
+                    }
+                } catch {
+                    print("parse error")
+                    completionBlock([])
+                }
+            } else if let error = error {
+                print("fetch error: \(error)")
+                completionBlock([])
+            }
+        }
+        requestTask.resume()
+    }
 }
 
 #Preview {
@@ -237,3 +432,11 @@ struct TeamSet {
     var Red1, Red2, Red3: TeamStats?
     var Blue1, Blue2, Blue3: TeamStats?
 }
+
+#if os(tvOS)
+struct DataMetadata: Codable {
+    let seasons: [String]
+    let events: [String]
+    let teams: [String]
+}
+#endif

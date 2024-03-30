@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Settings window for event config & logging out
 struct SettingsView: View {
     @State private var teamNumberInput: String =
     UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? ""
@@ -201,23 +200,23 @@ struct SettingsView: View {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-#if !os(visionOS) && !os(watchOS)
+#if !os(visionOS) && !os(watchOS) && !os(tvOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
 #endif
                         } else {
-#if !os(visionOS) && !os(watchOS)
+#if !os(visionOS) && !os(watchOS) && !os(tvOS)
                             UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
                         }
                     }
                 } else {
-#if !os(visionOS) && !os(watchOS)
+#if !os(visionOS) && !os(watchOS) && !os(tvOS)
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
                 }
             }.resume()
         } catch {
-#if !os(visionOS) && !os(watchOS)
+#if !os(visionOS) && !os(watchOS) && !os(tvOS)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
 #endif
         }
@@ -231,8 +230,6 @@ struct SettingsView_Preview: PreviewProvider {
     }
 }
 
-/// Data structure of the metadata call to bearTracks API.
-/// > Used to provide season, event, and team options
 struct DataMetadata: Codable {
     let seasons: [String]
     let events: [String]

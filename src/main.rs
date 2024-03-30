@@ -29,6 +29,7 @@ mod auth;
 mod casino;
 mod db_auth;
 mod db_main;
+mod db_pit;
 mod db_transact;
 mod forward;
 mod game_api;

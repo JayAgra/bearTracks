@@ -16,7 +16,7 @@ struct beartracksApp: App {
     let settingsManager = SettingsManager.shared
     var darkMode: Bool =
     UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
-    @StateObject private var appState = AppState()
+    @StateObject public var appState = AppState()
     
     var body: some Scene {
         WindowGroup {
@@ -37,10 +37,13 @@ struct beartracksApp: App {
                     switch appState.selectedTab {
                     case .teams:
                         Teams()
+                            .environmentObject(appState)
                     case .matches:
                         MatchList()
+                            .environmentObject(appState)
                     case .data:
                         DataView()
+                            .environmentObject(appState)
                     case .settings:
                         SettingsView()
                             .environmentObject(appState)
@@ -59,16 +62,19 @@ struct beartracksApp: App {
 #else
                 TabView(selection: $appState.selectedTab) {
                     Teams()
+                        .environmentObject(appState)
                         .tabItem {
                             Label("teams", systemImage: "list.number")
                         }
                         .tag(Tab.teams)
                     MatchList()
+                        .environmentObject(appState)
                         .tabItem {
                             Label("matches", systemImage: "calendar")
                         }
                         .tag(Tab.matches)
                     DataView()
+                        .environmentObject(appState)
                         .tabItem {
                             Label("data", systemImage: "magnifyingglass")
                         }
