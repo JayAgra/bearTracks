@@ -30,48 +30,48 @@ struct MatchDetailView: View {
                         HStack {
                             VStack {
                                 ForEach(Array(teams.prefix(3)), id: \.team) { team in
-                                    NavigationLink(destination: {
-                                        TeamView(dataItems: TeamViewModel(team: String(team.team)))
-                                            .environmentObject(appState)
-                                    }, label: {
-                                        VStack {
+                                    VStack {
+                                        NavigationLink(destination: {
+                                            TeamView(dataItems: TeamViewModel(team: String(team.team)))
+                                                .environmentObject(appState)
+                                        }, label: {
                                             HStack {
                                                 Text(String(team.team))
                                                     .font(.title2)
                                                     .foregroundStyle(Color.primary)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                             }
-                                            HStack {
-                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
-                                                    .padding([.leading, .trailing])
-                                                    .tint(Color.red)
-                                            }
+                                        })
+                                        HStack {
+                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                .padding([.leading, .trailing])
+                                                .tint(Color.red)
                                         }
-                                        .padding()
-                                    })
+                                    }
+                                    .padding()
                                 }
                             }
                             VStack {
                                 ForEach(Array(teams.suffix(3)), id: \.team) { team in
-                                    NavigationLink(destination: {
-                                        TeamView(dataItems: TeamViewModel(team: String(team.team)))
-                                            .environmentObject(appState)
-                                    }, label: {
-                                        VStack {
+                                    VStack {
+                                        NavigationLink(destination: {
+                                            TeamView(dataItems: TeamViewModel(team: String(team.team)))
+                                                .environmentObject(appState)
+                                        }, label: {
                                             HStack {
                                                 Text(String(team.team))
                                                     .font(.title2)
                                                     .foregroundStyle(Color.primary)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                             }
-                                            HStack {
-                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
-                                                    .padding([.leading, .trailing])
-                                                    .tint(Color.blue)
-                                            }
+                                        })
+                                        HStack {
+                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                .padding([.leading, .trailing])
+                                                .tint(Color.blue)
                                         }
-                                        .padding()
-                                    })
+                                    }
+                                    .padding()
                                 }
                             }
                         }
