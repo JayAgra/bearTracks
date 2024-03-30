@@ -57,6 +57,7 @@
 		F5B8D1C62B96729200D3F230 /* TeamStatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */; };
 		F5B8D1C92B96779400D3F230 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */; };
 		F5BDD40A2B96CD570099C7A7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E522B527E170033DB0D /* SettingsView.swift */; };
+		F5C346C12BB796CB00087B69 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5C346C02BB796CB00087B69 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +174,7 @@
 		F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5B8D1C82B96762D00D3F230 /* beartracks-watch Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-watch Watch App.entitlements"; sourceTree = "<group>"; };
 		F5BDD4092B96B78D0099C7A7 /* beartracks-watch-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "beartracks-watch-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
+		F5C346C02BB796CB00087B69 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F5D3D3402B5A098D00A88A00 /* bearTracks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = bearTracks.entitlements; sourceTree = "<group>"; };
 		F5D3D3452B5A17AE00A88A00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -273,6 +275,7 @@
 				F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */,
 				F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */,
 				F54E76C52B527D97003C65A2 /* Assets.xcassets */,
+				F5C346C02BB796CB00087B69 /* PrivacyInfo.xcprivacy */,
 				F54E76C72B527D97003C65A2 /* Preview Content */,
 			);
 			path = bearTracks;
@@ -480,6 +483,7 @@
 			files = (
 				F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */,
 				F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */,
+				F5C346C12BB796CB00087B69 /* PrivacyInfo.xcprivacy in Resources */,
 				F51BC0CA2BB71B74009587C1 /* stickers.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
