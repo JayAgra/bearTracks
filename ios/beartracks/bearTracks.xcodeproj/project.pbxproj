@@ -8,11 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		F5081BA22B741D15001497DB /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
-		F51BC0B92BB71AF5009587C1 /* stickers StickerPackExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F51BC0B82BB71AF5009587C1 /* stickers StickerPackExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F51BC0C62BB71B2D009587C1 /* Stickers.xcstickers in Resources */ = {isa = PBXBuildFile; fileRef = F51BC0A02BB717D1009587C1 /* Stickers.xcstickers */; };
-		F51BC0C72BB71B2E009587C1 /* Stickers.xcstickers in Resources */ = {isa = PBXBuildFile; fileRef = F51BC0A02BB717D1009587C1 /* Stickers.xcstickers */; };
-		F51BC0CA2BB71B74009587C1 /* stickers.app in Resources */ = {isa = PBXBuildFile; fileRef = F51BC0B52BB71AF5009587C1 /* stickers.app */; platformFilter = ios; };
-		F51BC0CF2BB71CB5009587C1 /* stickers StickerPackExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F51BC0B82BB71AF5009587C1 /* stickers StickerPackExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F51BC0CF2BB71CB5009587C1 /* stickers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F51BC0B82BB71AF5009587C1 /* stickers.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F535387A2BB4D03F00D15A15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F53F36422BB74B0A008F196B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F53F36412BB74B0A008F196B /* Assets.xcassets */; };
 		F53F36452BB74B0A008F196B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F53F36442BB74B0A008F196B /* Preview Assets.xcassets */; };
@@ -68,20 +65,6 @@
 			remoteGlobalIDString = F51BC0982BB717D1009587C1;
 			remoteInfo = "bearTracks-stickers";
 		};
-		F51BC0BA2BB71AF5009587C1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F54E76B62B527D96003C65A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F51BC0B72BB71AF5009587C1;
-			remoteInfo = "sitckers StickerPackExtension";
-		};
-		F51BC0CB2BB71C9F009587C1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F54E76B62B527D96003C65A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F51BC0B42BB71AF5009587C1;
-			remoteInfo = sitckers;
-		};
 		F51BC0CD2BB71CB2009587C1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F54E76B62B527D96003C65A2 /* Project object */;
@@ -106,24 +89,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		F51BC0C22BB71AF5009587C1 /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				F51BC0B92BB71AF5009587C1 /* stickers StickerPackExtension.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F5B95B632B58B04400AB888C /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				F51BC0CF2BB71CB5009587C1 /* stickers StickerPackExtension.appex in Embed Foundation Extensions */,
+				F51BC0CF2BB71CB5009587C1 /* stickers.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -144,8 +116,7 @@
 /* Begin PBXFileReference section */
 		F5081BA12B741D15001497DB /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F51BC0A02BB717D1009587C1 /* Stickers.xcstickers */ = {isa = PBXFileReference; lastKnownFileType = folder.stickers; name = Stickers.xcstickers; path = "bearTracks-stickers StickerPackExtension/Stickers.xcstickers"; sourceTree = "<group>"; };
-		F51BC0B52BB71AF5009587C1 /* stickers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = stickers.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F51BC0B82BB71AF5009587C1 /* stickers StickerPackExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "stickers StickerPackExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F51BC0B82BB71AF5009587C1 /* stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = stickers.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F53F363B2BB74B09008F196B /* beartracks-matches.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-matches.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F53F36412BB74B0A008F196B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F53F36442BB74B0A008F196B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -246,8 +217,7 @@
 			children = (
 				F54E76BE2B527D96003C65A2 /* bearTracks.app */,
 				F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */,
-				F51BC0B52BB71AF5009587C1 /* stickers.app */,
-				F51BC0B82BB71AF5009587C1 /* stickers StickerPackExtension.appex */,
+				F51BC0B82BB71AF5009587C1 /* stickers.appex */,
 				F53F363B2BB74B09008F196B /* beartracks-matches.app */,
 			);
 			name = Products;
@@ -312,26 +282,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F51BC0B42BB71AF5009587C1 /* stickers */ = {
+		F51BC0B72BB71AF5009587C1 /* stickers */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F51BC0C32BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers" */;
-			buildPhases = (
-				F51BC0B32BB71AF5009587C1 /* Resources */,
-				F51BC0C22BB71AF5009587C1 /* Embed Foundation Extensions */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F51BC0BB2BB71AF5009587C1 /* PBXTargetDependency */,
-			);
-			name = stickers;
-			productName = sitckers;
-			productReference = F51BC0B52BB71AF5009587C1 /* stickers.app */;
-			productType = "com.apple.product-type.application.messages";
-		};
-		F51BC0B72BB71AF5009587C1 /* stickers StickerPackExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers StickerPackExtension" */;
+			buildConfigurationList = F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers" */;
 			buildPhases = (
 				F51BC0B62BB71AF5009587C1 /* Resources */,
 			);
@@ -339,9 +292,9 @@
 			);
 			dependencies = (
 			);
-			name = "stickers StickerPackExtension";
+			name = stickers;
 			productName = "sitckers StickerPackExtension";
-			productReference = F51BC0B82BB71AF5009587C1 /* stickers StickerPackExtension.appex */;
+			productReference = F51BC0B82BB71AF5009587C1 /* stickers.appex */;
 			productType = "com.apple.product-type.app-extension.messages-sticker-pack";
 		};
 		F53F363A2BB74B09008F196B /* beartracks-matches */ = {
@@ -376,7 +329,6 @@
 			dependencies = (
 				F5B8D1B82B9670F200D3F230 /* PBXTargetDependency */,
 				F51BC0B22BB71ABB009587C1 /* PBXTargetDependency */,
-				F51BC0CC2BB71C9F009587C1 /* PBXTargetDependency */,
 				F51BC0CE2BB71CB2009587C1 /* PBXTargetDependency */,
 				F51BC0D12BB71CB5009587C1 /* PBXTargetDependency */,
 			);
@@ -412,9 +364,6 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
-					F51BC0B42BB71AF5009587C1 = {
-						CreatedOnToolsVersion = 15.2;
-					};
 					F51BC0B72BB71AF5009587C1 = {
 						CreatedOnToolsVersion = 15.2;
 					};
@@ -444,22 +393,13 @@
 			targets = (
 				F54E76BD2B527D96003C65A2 /* bearTracks */,
 				F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */,
-				F51BC0B42BB71AF5009587C1 /* stickers */,
-				F51BC0B72BB71AF5009587C1 /* stickers StickerPackExtension */,
+				F51BC0B72BB71AF5009587C1 /* stickers */,
 				F53F363A2BB74B09008F196B /* beartracks-matches */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F51BC0B32BB71AF5009587C1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F51BC0C72BB71B2E009587C1 /* Stickers.xcstickers in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		F51BC0B62BB71AF5009587C1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -484,7 +424,6 @@
 				F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */,
 				F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */,
 				F5C346C12BB796CB00087B69 /* PrivacyInfo.xcprivacy in Resources */,
-				F51BC0CA2BB71B74009587C1 /* stickers.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,27 +506,15 @@
 			platformFilter = ios;
 			targetProxy = F51BC0B12BB71ABB009587C1 /* PBXContainerItemProxy */;
 		};
-		F51BC0BB2BB71AF5009587C1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F51BC0B72BB71AF5009587C1 /* stickers StickerPackExtension */;
-			targetProxy = F51BC0BA2BB71AF5009587C1 /* PBXContainerItemProxy */;
-		};
-		F51BC0CC2BB71C9F009587C1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			platformFilter = ios;
-			target = F51BC0B42BB71AF5009587C1 /* stickers */;
-			targetProxy = F51BC0CB2BB71C9F009587C1 /* PBXContainerItemProxy */;
-		};
 		F51BC0CE2BB71CB2009587C1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = F51BC0B42BB71AF5009587C1 /* stickers */;
 			targetProxy = F51BC0CD2BB71CB2009587C1 /* PBXContainerItemProxy */;
 		};
 		F51BC0D12BB71CB5009587C1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = F51BC0B72BB71AF5009587C1 /* stickers StickerPackExtension */;
+			target = F51BC0B72BB71AF5009587C1 /* stickers */;
 			targetProxy = F51BC0D02BB71CB5009587C1 /* PBXContainerItemProxy */;
 		};
 		F5B8D1B82B9670F200D3F230 /* PBXTargetDependency */ = {
@@ -612,7 +539,7 @@
 				INFOPLIST_KEY_NSStickerSharingLevel = OS;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers.StickerPackExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -633,55 +560,9 @@
 				INFOPLIST_KEY_NSStickerSharingLevel = OS;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers.StickerPackExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		F51BC0C42BB71AF5009587C1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = D6MFYYVHA8;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = sitckers/Info.plist;
-				INFOPLIST_KEY_NSStickerSharingLevel = OS;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		F51BC0C52BB71AF5009587C1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = D6MFYYVHA8;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = sitckers/Info.plist;
-				INFOPLIST_KEY_NSStickerSharingLevel = OS;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIRequiredDeviceCapabilities = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1021,20 +902,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers StickerPackExtension" */ = {
+		F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F51BC0C02BB71AF5009587C1 /* Debug */,
 				F51BC0C12BB71AF5009587C1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F51BC0C32BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F51BC0C42BB71AF5009587C1 /* Debug */,
-				F51BC0C52BB71AF5009587C1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

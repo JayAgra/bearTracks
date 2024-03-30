@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
-               BuildableName = "stickers StickerPackExtension.appex"
-               BlueprintName = "stickers StickerPackExtension"
+               BuildableName = "stickers.appex"
+               BlueprintName = "stickers"
                ReferencedContainer = "container:bearTracks.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -57,9 +57,15 @@
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
       <RemoteRunnable
-         runnableDebuggingMode = "0"
-         BundleIdentifier = "com.apple.MobileSMS"
-         RemotePath = "/Applications/MobileSMS.app">
+         runnableDebuggingMode = "1"
+         BundleIdentifier = "com.apple.MobileSMS">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
+            BuildableName = "stickers.appex"
+            BlueprintName = "stickers"
+            ReferencedContainer = "container:bearTracks.xcodeproj">
+         </BuildableReference>
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference
