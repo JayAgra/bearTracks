@@ -333,16 +333,11 @@ impl BlackjackSession {
         // if player busts
         if self.game.player.score > 21 {
             result = "LB".to_string();
-            tokio::spawn(async move {
-                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, -10)
-                    .await
-                    .unwrap_or("bad".to_string());
-            });
         // if dealer busts
         } else if self.game.dealer.score > 21 {
             result = "WD".to_string();
             tokio::spawn(async move {
-                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 10)
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 20)
                     .await
                     .unwrap_or("bad".to_string());
             });
@@ -350,23 +345,18 @@ impl BlackjackSession {
         } else if self.game.player.score > self.game.dealer.score {
             result = "WN".to_string();
             tokio::spawn(async move {
-                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 10)
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 20)
                     .await
                     .unwrap_or("bad".to_string());
             });
         // if dealer score is more than player score
         } else if self.game.player.score < self.game.dealer.score {
             result = "LS".to_string();
-            tokio::spawn(async move {
-                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, -10)
-                    .await
-                    .unwrap_or("bad".to_string());
-            });
         // draw
         } else {
             result = "DR".to_string();
             tokio::spawn(async move {
-                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 0)
+                credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, 10)
                     .await
                     .unwrap_or("bad".to_string());
             });
@@ -415,6 +405,12 @@ fn credit_points_run(
 
 // websocket route
 pub async fn websocket_route(req: HttpRequest, stream: web::Payload, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, Error> {
+    let db_clones = db.clone();
+
+    credit_points(db_clones.auth.clone(), db_clones.transact.clone(), user.id.clone(), -10)
+        .await
+        .unwrap_or("bad".to_string());
+
     // start websocket connection with clean game state
     ws::start(
         BlackjackSession {

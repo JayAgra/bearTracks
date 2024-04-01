@@ -29,8 +29,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F51BC0B42BB71AF5009587C1"
-               BuildableName = "stickers.app"
+               BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
+               BuildableName = "stickers.appex"
                BlueprintName = "stickers"
                ReferencedContainer = "container:bearTracks.xcodeproj">
             </BuildableReference>
@@ -67,15 +67,6 @@
             ReferencedContainer = "container:bearTracks.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F51BC0B42BB71AF5009587C1"
-            BuildableName = "stickers.app"
-            BlueprintName = "stickers"
-            ReferencedContainer = "container:bearTracks.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -89,8 +80,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F51BC0B42BB71AF5009587C1"
-            BuildableName = "stickers.app"
+            BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
+            BuildableName = "stickers.appex"
             BlueprintName = "stickers"
             ReferencedContainer = "container:bearTracks.xcodeproj">
          </BuildableReference>
