@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Manages defaults for `UserDefaults`
 class SettingsManager {
     static let shared = SettingsManager()
     

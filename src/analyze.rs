@@ -298,7 +298,14 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         fast_cycle = 0.0;
     }
 
-    let mps_scores: Vec<f64> = vec![score, fast_intake, fast_travel, fast_shoot, fast_cycle, analysis_results[0]];
+    let mps_scores: Vec<f64> = vec![
+        score,
+        fast_intake,
+        fast_travel,
+        fast_shoot,
+        fast_cycle,
+        analysis_results[0]
+    ];
 
     let analysis: Vec<i64> = vec![
         real_bool_to_num(trap_note) as i64,

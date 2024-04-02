@@ -283,6 +283,12 @@ async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) 
         .json(db_main::execute(&db.main, db_main::MainData::GetTeams, path).await?))
 }
 
+async fn data_get_scouted_teams(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_main::get_team_numbers(&db.main, req.match_info().get("season").unwrap().parse().unwrap()).await?))
+}
+
 // get POSTed data from form
 async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
@@ -745,6 +751,7 @@ async fn main() -> io::Result<()> {
             .app_data(sessions.clone())
             // add webauthn to app data
             .app_data(passkey::setup_passkeys())
+            // apn client
             // use governor ratelimiting as middleware
             .wrap(Governor::new(&governor_conf))
             // use cookie id system middleware
@@ -772,7 +779,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-bearTracks", "5.1.3")),
+                    .add(("X-bearTracks", "5.2.0")),
             )
             /* src  endpoints */
             // GET individual files
@@ -799,7 +806,10 @@ async fn main() -> io::Result<()> {
             .service(ResourceFiles::new("/static", generated))
             /* auth endpoints */
             // GET
-            .service(web::resource("/logout").route(web::get().to(auth_get_logout)))
+            .service(
+                web::resource("/logout")
+                .route(web::get().to(auth_get_logout))
+            )
             // POST
             .service(
                 web::resource("/api/v1/auth/create")
@@ -866,6 +876,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/data/teams/{args}*")
                     .route(web::get().to(data_get_main_teams)),
+            )
+            .service(
+                web::resource("/api/v1/data/scouted_teams/{season}")
+                    .route(web::get().to(data_get_scouted_teams)),
             ) // season/event
             .service(
                 web::resource("/api/v1/events/teams/{season}/{event}")
@@ -1013,8 +1027,10 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(game_open_lootbox)),
             )
             // POST
-            .service(web::resource("/api/v1/game/set_hand")
-                .route(web::post().to(game_set_hand)))
+            .service(
+                web::resource("/api/v1/game/set_hand")
+                    .route(web::post().to(game_set_hand))
+            )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?

@@ -7,34 +7,34 @@
 
 import SwiftUI
 
-/// List of all upcoming matches for the configured team number
 struct MatchList: View {
     @EnvironmentObject var appState: AppState
     @State private var loadFailed: Bool = false
     @State private var loadComplete: Bool = false
     @State private var myTeamOnly = false
+    @State var selectedMatch: Int? = nil
     
     var body: some View {
             NavigationView {
                 if !appState.matchJson.isEmpty {
                     List {
-                        ForEach(appState.matchJson) { match in
-                            if !myTeamOnly || checkMatch(match: match) {
-                                NavigationLink(destination: {
-                                    MatchDetailView(match: match.matchNumber)
-                                        .navigationTitle("match \(match.matchNumber)")
+                        ForEach(0..<appState.matchJson.count, id: \.self) { index in
+                            if !myTeamOnly || checkMatch(match: appState.matchJson[index]) {
+                                NavigationLink(tag: index, selection: self.$selectedMatch, destination: {
+                                    MatchDetailView(match: appState.matchJson[index].matchNumber)
+                                        .navigationTitle("match \(appState.matchJson[index].matchNumber)")
                                         .environmentObject(appState)
                                 }, label: {
                                     VStack {
-                                        Text(String(match.description))
+                                        Text(String(appState.matchJson[index].description))
                                             .font(.title3)
                                         HStack {
                                             Spacer()
-                                            TeamNumberStack(match: match, num: 0)
+                                            TeamNumberStack(match: appState.matchJson[index], num: 0)
                                             Spacer()
-                                            TeamNumberStack(match: match, num: 1)
+                                            TeamNumberStack(match: appState.matchJson[index], num: 1)
                                             Spacer()
-                                            TeamNumberStack(match: match, num: 2)
+                                            TeamNumberStack(match: appState.matchJson[index], num: 2)
                                             Spacer()
                                         }
                                     }
@@ -64,7 +64,7 @@ struct MatchList: View {
                         }
                     }
                 } else {
-                    if loadFailed {
+                    if appState.matchJsonStatus.1 {
                         VStack {
                             Label("failed", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
@@ -75,7 +75,7 @@ struct MatchList: View {
                         }
                         .navigationTitle("Matches")
                     } else {
-                        if loadComplete {
+                        if appState.matchJsonStatus.0 {
                             VStack {
                                 Label("none", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
@@ -98,41 +98,12 @@ struct MatchList: View {
                     }
                 }
             }
+            .refreshable {
+                appState.fetchMatchJson()
+            }
             .onAppear {
-                fetchMatchJson()
+                appState.fetchMatchJson()
             }
-    }
-    
-    func fetchMatchJson() {
-        guard
-            let url = URL(
-                string:
-                    "https://beartracks.io/api/v1/events/matches/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/qualification/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? "766")"
-            )
-        else {
-            return
-        }
-        
-        sharedSession.dataTask(with: url) { data, _, error in
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let result = try decoder.decode(MatchData.self, from: data)
-                    DispatchQueue.main.async {
-                        self.loadComplete = true
-                        self.loadFailed = false
-                        self.appState.matchJson = result.Schedule
-                    }
-                } catch {
-                    print("parse error")
-                    self.loadFailed = true
-                }
-            } else if let error = error {
-                print("fetch error: \(error)")
-                self.loadFailed = true
-            }
-        }
-        .resume()
     }
     
     private func checkMatch(match: Match) -> Bool {

@@ -203,6 +203,9 @@ struct GameView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .navigationTitle("Match Scouting")
+                .onAppear {
+                    holdLengths = (0.0, 0.0, 0.0)
+                }
             } else {
                 Text("Please select a match and team number on the start tab.")
                     .padding()

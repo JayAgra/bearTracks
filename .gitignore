@@ -10,6 +10,7 @@ pkg*
 Cargo.lock
 .env
 ssl/*.pem
+keys/*.p8
 .vscode*
 *.swiftpm/
 *.swiftpm/*

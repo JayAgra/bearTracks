@@ -8,22 +8,21 @@
 import Foundation
 import SwiftUI
 
-/// Shows listing of top teams by scouting data performance, not RPs
 struct Teams: View {
-    @State private var teamsList: [TeamData] = []
-    @State private var loadState: (Bool, Bool, Bool) = (false, false, false)
-    @State private var searchText: String = ""
+    @EnvironmentObject var appState: AppState
     @State private var performanceValue: Int = 0
+    @State var firstPaint = true
+    @State var selectedTeam: Int? = nil
     
     var body: some View {
         VStack {
             NavigationView {
-                if !teamsList.isEmpty && !teamsList[0].isEmpty {
+                if !appState.teamsList.isEmpty && !appState.teamsList[0].isEmpty {
                     List {
-                        ForEach(Array(searchResults.enumerated()), id: \.element.team.team) { index, team in
-                            NavigationLink(destination: {
-                                TeamView(team: String(team.team.team))
-                                    .navigationTitle("team \(String(team.team.team))")
+                        ForEach(Array(appState.teamsList[0].enumerated()), id: \.element.team.team) { index, team in
+                            NavigationLink(tag: index, selection: self.$selectedTeam, destination: {
+                                TeamView(dataItems: TeamViewModel(team: String(team.team.team)))
+                                    .environmentObject(appState)
                             }, label: {
                                 VStack {
                                     HStack {
@@ -47,7 +46,7 @@ struct Teams: View {
                                     HStack {
                                         ProgressView(
                                             value: max(team.performanceValue(type: performanceValue) ?? 0, 0),
-                                            total: max(teamsList[0][0].performanceValue(type: performanceValue) ?? 0, 1)
+                                            total: max(appState.teamsList[0][0].performanceValue(type: performanceValue) ?? 0, 1)
                                         )
                                         .padding([.leading, .trailing])
                                     }
@@ -68,7 +67,7 @@ struct Teams: View {
 #if os(watchOS)
                         Section {
                             VStack {
-                                NavigationLink(destination: SettingsView()) {
+                                NavigationLink(destination: SettingsView().environmentObject(appState)) {
                                     HStack {
                                         Text("Settings")
                                         Spacer()
@@ -104,8 +103,7 @@ struct Teams: View {
                                     .labelStyle(.iconOnly)
                             })
                             .onChange(of: performanceValue) { _ in
-                                searchText = ""
-                                teamsList[0].sort {
+                                appState.teamsList[0].sort {
                                     if let mainWeightA = $0.performanceValue(type: performanceValue), let mainWeightB = $1.performanceValue(type: performanceValue) {
                                         return mainWeightA > mainWeightB
                                     } else {
@@ -117,7 +115,7 @@ struct Teams: View {
                     }
 #endif
                 } else {
-                    if loadState.1 {
+                    if appState.teamsLoadStatus.1 {
                         VStack {
                             Label("failed", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
@@ -128,7 +126,7 @@ struct Teams: View {
                         }
                         .navigationTitle("Teams")
                     } else {
-                        if loadState.2 {
+                        if appState.teamsLoadStatus.2 {
                             Form {
                                 Label("none", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
@@ -167,97 +165,19 @@ struct Teams: View {
                     }
                 }
             }
-            .searchable(text: $searchText)
+        }
+        .refreshable {
+            appState.fetchTeamsJson()
         }
         .onAppear {
-            fetchTeamsJson()
-        }
-    }
-    
-    var searchResults: [TeamElement] {
-        if searchText.isEmpty {
-            return teamsList[0]
-        } else {
-            return teamsList[0].filter { String($0.team.team).contains(searchText) }
-        }
-    }
-    
-    func fetchTeamsJson() {
-        guard
-            let url = URL(
-                string:
-                    "https://beartracks.io/api/v1/data/teams/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")"
-            )
-        else {
-            return
-        }
-        
-        sharedSession.dataTask(with: url) { data, _, error in
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    var result = try decoder.decode(TeamData.self, from: data)
-                    result.sort {
-                        if let mainWeightA = $0.performanceValue(type: 0), let mainWeightB = $1.performanceValue(type: 0) {
-                            return mainWeightA > mainWeightB
-                        } else {
-                            return true
-                        }
-                    }
-                    DispatchQueue.main.async {
-                        self.loadState = (self.loadState.0, false, true)
-                        self.teamsList = [result]
-                    }
-                } catch {
-                    print("parse error \(error)")
-                    self.loadState.1 = true
-                }
-            } else if let error = error {
-                print("fetch error: \(error)")
-                self.loadState.1 = true
+            if firstPaint {
+                appState.fetchTeamsJson()
+                firstPaint = false
             }
-        }.resume()
+        }
     }
 }
 
 #Preview {
     Teams()
 }
-
-struct TeamElement: Codable {
-    let team: TeamEl
-    
-    enum CodingKeys: String, CodingKey {
-        case team = "Team"
-    }
-    
-    func performanceValue(type: Int) -> Float? {
-        let teamWeights = team.weight.components(separatedBy: ",").compactMap({ Float($0) })
-        if teamWeights.count > type {
-            if teamWeights[type] == .infinity {
-                return 0
-            } else {
-                return teamWeights[type]
-            }
-        } else {
-            return 0
-        }
-    }
-}
-
-/// bearTracks API response structure
-struct TeamEl: Codable {
-    let id: Int
-    let team: Int
-    let weight: String
-    
-    enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case team = "team"
-        case weight = "weight"
-    }
-}
-
-/// Alias of `TeamEl` to match the exact structure of API response
-/// > Can remove this in future versions
-typealias TeamData = [TeamElement]

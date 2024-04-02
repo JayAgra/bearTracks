@@ -328,12 +328,10 @@ struct DetailedView: View {
     }
 }
 
-/// Contains for FullMainData to match API response
 struct DetailedData: Codable {
     let FullMain: FullMainData
 }
 
-/// All data stored about a submission. Works across seasons.
 struct FullMainData: Codable {
     let id: Int
     let event: String
@@ -352,7 +350,6 @@ struct FullMainData: Codable {
     let analysis: String
 }
 
-/// 2024 season specific data structure for deocding the `game` key of `FullMainData`
 struct MatchTime2024: Codable, Identifiable {
     var id = UUID()
     let score_type: Int

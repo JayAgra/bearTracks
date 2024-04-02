@@ -62,7 +62,7 @@ async function uploadForm() {
         .then(async (response) => {
         switch (response.status) {
             case "you_sketchy_motherfucker": {
-                errorElement.innerText = "characters must only include a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \ _ [ _ ] { } | ? . ,";
+                errorElement.innerText = "characters must only include a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \ _ { } | ? . ,";
                 errorReload();
                 break;
             }

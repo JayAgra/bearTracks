@@ -7,23 +7,26 @@
 
 import SwiftUI
 
-/// View for a list of all data
 struct DataView: View {
-    @ObservedObject var dataItems: DataViewModel = DataViewModel()
+    @EnvironmentObject var appState: AppState
+    @State var selectedEntry: Int? = nil
+    @State var loadFailed: Bool = false
+    @State var loadComplete: Bool = false
     
     var body: some View {
         VStack {
             NavigationView {
-                if !dataItems.dataEntries.isEmpty {
+                if !appState.dataEntries.isEmpty {
                     List {
-                        ForEach(dataItems.dataEntries, id: \.Brief.id) { entry in
-                            NavigationLink(destination: {
-                                DetailedView(model: String(entry.Brief.id))
-                                    .navigationTitle("#\(String(entry.Brief.id))")
+                        ForEach(0..<appState.dataEntries.count, id: \.self) { index in
+                            NavigationLink(tag: index, selection: self.$selectedEntry, destination: {
+                                DetailedView(model: String(appState.dataEntries[index].Brief.id))
+                                    .navigationTitle("#\(String(appState.dataEntries[index].Brief.id))")
+                                    .environmentObject(appState)
                             }, label: {
                                 VStack {
                                     HStack {
-                                        Text("\(String(entry.Brief.team))")
+                                        Text("\(String(appState.dataEntries[index].Brief.team))")
 #if os(visionOS)
                 .font(.title2)
 #else
@@ -32,19 +35,19 @@ struct DataView: View {
                                             .padding(.leading)
                                             .frame(maxWidth: .infinity, alignment: .leading)
 #if os(visionOS)
-                                        Text("match \(String(entry.Brief.match_num))")
+                                        Text("match \(String(appState.dataEntries[index].Brief.match_num))")
                                             .font(.title3)
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
 #else
-                                        Text("match \(String(entry.Brief.match_num))")
+                                        Text("match \(String(appState.dataEntries[index].Brief.match_num))")
                                             .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .title)
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
 #endif
                                     }
                                     HStack {
-                                        Text("#\(String(entry.Brief.id)) • from \(String(entry.Brief.from_team))")
+                                        Text("#\(String(appState.dataEntries[index].Brief.id)) • from \(String(appState.dataEntries[index].Brief.from_team))")
                                         .padding(.leading)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     }
@@ -63,7 +66,7 @@ struct DataView: View {
                     }
                     .navigationTitle("Data")
                 } else {
-                    if dataItems.loadFailed {
+                    if self.loadFailed {
                         VStack {
                             Label("failed", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
@@ -74,7 +77,7 @@ struct DataView: View {
                         }
                         .navigationTitle("Data")
                     } else {
-                        if dataItems.loadComplete {
+                        if self.loadComplete {
                             VStack {
                                 Label("none", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
@@ -98,10 +101,10 @@ struct DataView: View {
                 }
             }
             .refreshable {
-                dataItems.reload()
+                appState.reloadDataJson()
             }
             .onAppear {
-                dataItems.reload()
+                appState.reloadDataJson()
             }
         }
     }
