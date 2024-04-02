@@ -283,6 +283,12 @@ async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) 
         .json(db_main::execute(&db.main, db_main::MainData::GetTeams, path).await?))
 }
 
+async fn data_get_scouted_teams(req: HttpRequest, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_main::get_team_numbers(&db.main, req.match_info().get("season").unwrap().parse().unwrap()).await?))
+}
+
 // get POSTed data from form
 async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
@@ -870,6 +876,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/data/teams/{args}*")
                     .route(web::get().to(data_get_main_teams)),
+            )
+            .service(
+                web::resource("/api/v1/data/scouted_teams/{season}")
+                    .route(web::get().to(data_get_scouted_teams)),
             ) // season/event
             .service(
                 web::resource("/api/v1/events/teams/{season}/{event}")
