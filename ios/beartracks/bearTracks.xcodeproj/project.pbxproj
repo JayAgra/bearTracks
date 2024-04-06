@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		F5081BA22B741D15001497DB /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F51BC0C62BB71B2D009587C1 /* Stickers.xcstickers in Resources */ = {isa = PBXBuildFile; fileRef = F51BC0A02BB717D1009587C1 /* Stickers.xcstickers */; };
-		F51BC0CF2BB71CB5009587C1 /* stickers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F51BC0B82BB71AF5009587C1 /* stickers.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F51BC0CF2BB71CB5009587C1 /* bearTracks Stickers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F51BC0B82BB71AF5009587C1 /* bearTracks Stickers.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F535387A2BB4D03F00D15A15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F53F36422BB74B0A008F196B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F53F36412BB74B0A008F196B /* Assets.xcassets */; };
 		F53F36452BB74B0A008F196B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F53F36442BB74B0A008F196B /* Preview Assets.xcassets */; };
@@ -42,7 +42,7 @@
 		F5B8D1AF2B9670F200D3F230 /* beartracks_watchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */; };
 		F5B8D1B32B9670F200D3F230 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B22B9670F200D3F230 /* Assets.xcassets */; };
 		F5B8D1B62B9670F200D3F230 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */; };
-		F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F5B8D1B92B9670F200D3F230 /* bearTracks Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F5B8D1AC2B9670F200D3F230 /* bearTracks Watch App.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F5B8D1BD2B96710900D3F230 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
 		F5B8D1BE2B96715500D3F230 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F5B8D1BF2B96716D00D3F230 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
@@ -95,7 +95,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				F51BC0CF2BB71CB5009587C1 /* stickers.appex in Embed Foundation Extensions */,
+				F51BC0CF2BB71CB5009587C1 /* bearTracks Stickers.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,7 +106,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				F5B8D1B92B9670F200D3F230 /* beartracks-watch Watch App.app in Embed Watch Content */,
+				F5B8D1B92B9670F200D3F230 /* bearTracks Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -116,8 +116,8 @@
 /* Begin PBXFileReference section */
 		F5081BA12B741D15001497DB /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F51BC0A02BB717D1009587C1 /* Stickers.xcstickers */ = {isa = PBXFileReference; lastKnownFileType = folder.stickers; name = Stickers.xcstickers; path = "bearTracks-stickers StickerPackExtension/Stickers.xcstickers"; sourceTree = "<group>"; };
-		F51BC0B82BB71AF5009587C1 /* stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = stickers.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		F53F363B2BB74B09008F196B /* beartracks-matches.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-matches.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F51BC0B82BB71AF5009587C1 /* bearTracks Stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "bearTracks Stickers.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F53F363B2BB74B09008F196B /* bearTracks TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bearTracks TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F53F36412BB74B0A008F196B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F53F36442BB74B0A008F196B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F53F36552BB75112008F196B /* bearTracks-matches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "bearTracks-matches.swift"; sourceTree = "<group>"; };
@@ -139,7 +139,7 @@
 		F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5B8D1AC2B9670F200D3F230 /* bearTracks Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bearTracks Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_watchApp.swift; sourceTree = "<group>"; };
 		F5B8D1B22B9670F200D3F230 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5B8D1B52B9670F200D3F230 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -216,9 +216,9 @@
 			isa = PBXGroup;
 			children = (
 				F54E76BE2B527D96003C65A2 /* bearTracks.app */,
-				F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */,
-				F51BC0B82BB71AF5009587C1 /* stickers.appex */,
-				F53F363B2BB74B09008F196B /* beartracks-matches.app */,
+				F5B8D1AC2B9670F200D3F230 /* bearTracks Watch App.app */,
+				F51BC0B82BB71AF5009587C1 /* bearTracks Stickers.appex */,
+				F53F363B2BB74B09008F196B /* bearTracks TV.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -282,9 +282,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F51BC0B72BB71AF5009587C1 /* stickers */ = {
+		F51BC0B72BB71AF5009587C1 /* bearTracks Stickers */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers" */;
+			buildConfigurationList = F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "bearTracks Stickers" */;
 			buildPhases = (
 				F51BC0B62BB71AF5009587C1 /* Resources */,
 			);
@@ -292,14 +292,14 @@
 			);
 			dependencies = (
 			);
-			name = stickers;
+			name = "bearTracks Stickers";
 			productName = "sitckers StickerPackExtension";
-			productReference = F51BC0B82BB71AF5009587C1 /* stickers.appex */;
+			productReference = F51BC0B82BB71AF5009587C1 /* bearTracks Stickers.appex */;
 			productType = "com.apple.product-type.app-extension.messages-sticker-pack";
 		};
-		F53F363A2BB74B09008F196B /* beartracks-matches */ = {
+		F53F363A2BB74B09008F196B /* bearTracks TV */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F53F36482BB74B0A008F196B /* Build configuration list for PBXNativeTarget "beartracks-matches" */;
+			buildConfigurationList = F53F36482BB74B0A008F196B /* Build configuration list for PBXNativeTarget "bearTracks TV" */;
 			buildPhases = (
 				F53F36372BB74B09008F196B /* Sources */,
 				F53F36382BB74B09008F196B /* Frameworks */,
@@ -309,9 +309,9 @@
 			);
 			dependencies = (
 			);
-			name = "beartracks-matches";
+			name = "bearTracks TV";
 			productName = "beartracks-matches";
-			productReference = F53F363B2BB74B09008F196B /* beartracks-matches.app */;
+			productReference = F53F363B2BB74B09008F196B /* bearTracks TV.app */;
 			productType = "com.apple.product-type.application";
 		};
 		F54E76BD2B527D96003C65A2 /* bearTracks */ = {
@@ -337,9 +337,9 @@
 			productReference = F54E76BE2B527D96003C65A2 /* bearTracks.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */ = {
+		F5B8D1AB2B9670F200D3F230 /* bearTracks Watch App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F5B8D1BC2B9670F200D3F230 /* Build configuration list for PBXNativeTarget "beartracks-watch Watch App" */;
+			buildConfigurationList = F5B8D1BC2B9670F200D3F230 /* Build configuration list for PBXNativeTarget "bearTracks Watch App" */;
 			buildPhases = (
 				F5B8D1A82B9670F200D3F230 /* Sources */,
 				F5B8D1A92B9670F200D3F230 /* Frameworks */,
@@ -349,9 +349,9 @@
 			);
 			dependencies = (
 			);
-			name = "beartracks-watch Watch App";
+			name = "bearTracks Watch App";
 			productName = "beartracks-watch Watch App";
-			productReference = F5B8D1AC2B9670F200D3F230 /* beartracks-watch Watch App.app */;
+			productReference = F5B8D1AC2B9670F200D3F230 /* bearTracks Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -392,9 +392,9 @@
 			projectRoot = "";
 			targets = (
 				F54E76BD2B527D96003C65A2 /* bearTracks */,
-				F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */,
-				F51BC0B72BB71AF5009587C1 /* stickers */,
-				F53F363A2BB74B09008F196B /* beartracks-matches */,
+				F5B8D1AB2B9670F200D3F230 /* bearTracks Watch App */,
+				F51BC0B72BB71AF5009587C1 /* bearTracks Stickers */,
+				F53F363A2BB74B09008F196B /* bearTracks TV */,
 			);
 		};
 /* End PBXProject section */
@@ -514,13 +514,13 @@
 		F51BC0D12BB71CB5009587C1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = F51BC0B72BB71AF5009587C1 /* stickers */;
+			target = F51BC0B72BB71AF5009587C1 /* bearTracks Stickers */;
 			targetProxy = F51BC0D02BB71CB5009587C1 /* PBXContainerItemProxy */;
 		};
 		F5B8D1B82B9670F200D3F230 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = F5B8D1AB2B9670F200D3F230 /* beartracks-watch Watch App */;
+			target = F5B8D1AB2B9670F200D3F230 /* bearTracks Watch App */;
 			targetProxy = F5B8D1B72B9670F200D3F230 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -579,7 +579,7 @@
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = bearTrackss;
+				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
@@ -609,7 +609,7 @@
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = bearTrackss;
+				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
@@ -848,7 +848,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "beartracks-watch-Watch-App-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "beartracks-watch";
+				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jayagra.beartracks;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -880,7 +880,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "beartracks-watch-Watch-App-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "beartracks-watch";
+				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jayagra.beartracks;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -902,7 +902,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "stickers" */ = {
+		F51BC0BF2BB71AF5009587C1 /* Build configuration list for PBXNativeTarget "bearTracks Stickers" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F51BC0C02BB71AF5009587C1 /* Debug */,
@@ -911,7 +911,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F53F36482BB74B0A008F196B /* Build configuration list for PBXNativeTarget "beartracks-matches" */ = {
+		F53F36482BB74B0A008F196B /* Build configuration list for PBXNativeTarget "bearTracks TV" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F53F36462BB74B0A008F196B /* Debug */,
@@ -938,7 +938,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F5B8D1BC2B9670F200D3F230 /* Build configuration list for PBXNativeTarget "beartracks-watch Watch App" */ = {
+		F5B8D1BC2B9670F200D3F230 /* Build configuration list for PBXNativeTarget "bearTracks Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F5B8D1BA2B9670F200D3F230 /* Debug */,

@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
-               BuildableName = "stickers.appex"
-               BlueprintName = "stickers"
+               BuildableName = "bearTracks Stickers.appex"
+               BlueprintName = "bearTracks Stickers"
                ReferencedContainer = "container:bearTracks.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
-               BuildableName = "stickers.appex"
-               BlueprintName = "stickers"
+               BuildableName = "bearTracks Stickers.appex"
+               BlueprintName = "bearTracks Stickers"
                ReferencedContainer = "container:bearTracks.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
-            BuildableName = "stickers.appex"
-            BlueprintName = "stickers"
+            BuildableName = "bearTracks Stickers.appex"
+            BlueprintName = "bearTracks Stickers"
             ReferencedContainer = "container:bearTracks.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
@@ -81,8 +81,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F51BC0B72BB71AF5009587C1"
-            BuildableName = "stickers.appex"
-            BlueprintName = "stickers"
+            BuildableName = "bearTracks Stickers.appex"
+            BlueprintName = "bearTracks Stickers"
             ReferencedContainer = "container:bearTracks.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
