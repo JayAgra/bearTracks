@@ -1,3 +1,5 @@
+// ap stats has nothing on this file
+
 pub fn quartiles_i64(data: &Vec<i64>) -> Vec<i64> {
     if data.len() > 0 {
         let mut sorted_data = data.clone();
@@ -31,7 +33,7 @@ pub fn means_i64(data: &Vec<i64>, first_wt: f64) -> Vec<i64> {
     if data.len() > 0 {
         let mut means: Vec<i64> = Vec::new();
         means.push(data.iter().sum::<i64>() / data.len() as i64);
-        means.push(((data[0] as f64 * first_wt) + (data.iter().sum::<i64>() as f64 * (1.0 - first_wt))) as i64);
+        means.push(((data[0] as f64 * first_wt) + (data.iter().sum::<i64>() as f64 * (1.0 - first_wt))) as i64 / data.len() as i64);
         return means;
     }
     return vec![0, 0];
