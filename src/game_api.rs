@@ -1,3 +1,6 @@
+// *** code retained if game-like features are relevant in future *** //
+
+/*
 use actix_web::{error, web, Error};
 use rand::seq::SliceRandom;
 use rusqlite::Statement;
@@ -461,3 +464,4 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
         },
     })
 }
+*/
