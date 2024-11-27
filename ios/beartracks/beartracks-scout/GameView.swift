@@ -34,21 +34,21 @@ struct GameView: View {
                                 HStack {
                                     Spacer()
                                     VStack {
-                                        Text("intake")
+                                        Text("Intake")
                                             .foregroundStyle(Color.gray)
                                         Text(String(format: "%.1f", holdLengths.0))
                                             .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
                                     }
                                     Spacer()
                                     VStack {
-                                        Text("travel")
+                                        Text("Travel")
                                             .foregroundStyle(Color.gray)
                                         Text(String(format: "%.1f", holdLengths.1))
                                             .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
                                     }
                                     Spacer()
                                     VStack {
-                                        Text("outtake")
+                                        Text("Outtake")
                                             .foregroundStyle(Color.gray)
                                         Text(String(format: "%.1f", holdLengths.2))
                                             .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
@@ -60,7 +60,7 @@ struct GameView: View {
                                 VStack {
                                     HStack {
                                         if releaseState == .other {
-                                            Text("other")
+                                            Text("Other")
                                                 .foregroundStyle(Color.init(red: 254 / 255, green: 128 / 255, blue: 25 / 255))
                                                 .frame(maxWidth: .infinity, alignment: getLabelAlignment())
                                         } else {
@@ -133,7 +133,7 @@ struct GameView: View {
                                     Spacer()
                                     HStack {
                                         if releaseState == .amplifier {
-                                            Text("amplifier")
+                                            Text("Amplifier")
                                                 .foregroundStyle(Color.init(red: 250 / 255, green: 189 / 255, blue: 47 / 255))
                                                 .frame(maxWidth: .infinity, alignment: getLabelAlignment())
                                         } else {
@@ -146,13 +146,13 @@ struct GameView: View {
                                     HStack {
                                         Spacer()
                                         
-                                        Text("intake")
+                                        Text("Intake")
                                             .foregroundStyle(getLabelColor(state: false, type: .intake))
                                         Spacer()
-                                        Text("travel")
+                                        Text("Travel")
                                             .foregroundStyle(getLabelColor(state: false, type: .travel))
                                         Spacer()
-                                        Text("outtake")
+                                        Text("Outtake")
                                             .foregroundStyle(getLabelColor(state: false, type: .outtake))
                                         Spacer()
                                     }
@@ -189,12 +189,12 @@ struct GameView: View {
                                 UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                             }
                             Spacer()
-                            Button("go to endgame") {
+                            Button("Start Endgame") {
                                 controller.advanceToTab(tab: .end)
                             }
                             .padding()
                             .buttonStyle(.bordered)
-                            Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
+                            Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())")
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .padding(.bottom)
                         }

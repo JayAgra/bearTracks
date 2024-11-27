@@ -20,15 +20,15 @@ struct TeamViewStats: View {
             ScrollView {
                 if !teamDetail.teamData.isEmpty {
                     Picker("type", selection: $teamDetail.statType) {
-                        Text("avg")
+                        Text("Avg")
                             .tag(StatType.mean)
                         Text("25th")
                             .tag(StatType.first)
-                        Text("median")
+                        Text("Median")
                             .tag(StatType.median)
                         Text("75th")
                             .tag(StatType.third)
-                        Text("decaying")
+                        Text("Decaying")
                             .tag(StatType.decay)
                     }
                     .pickerStyle(.segmented)
@@ -42,19 +42,19 @@ struct TeamViewStats: View {
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].intake)))s")
                                 .font(.title)
-                            Text("intake")
+                            Text("Intake")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].travel)))s")
                                 .font(.title)
-                            Text("move")
+                            Text("Move")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].outtake)))s")
                                 .font(.title)
-                            Text("outtake")
+                            Text("Outtake")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -63,19 +63,19 @@ struct TeamViewStats: View {
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].speaker)))")
                                 .font(.title)
-                            Text("speaker")
+                            Text("Speaker")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].amplifier)))")
                                 .font(.title)
-                            Text("amplifier")
+                            Text("Amplifier")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_scores)))")
                                 .font(.title)
-                            Text("auto scores")
+                            Text("Auto scores")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -84,19 +84,19 @@ struct TeamViewStats: View {
                         VStack {
                             Text("\(Int(((teamDetail.teamData[0].trap_note ?? 0) * 100).rounded()))%")
                                 .font(.title)
-                            Text("trap note")
+                            Text("Trap note")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(Int(((teamDetail.teamData[0].climb ?? 0) * 100).rounded()))%")
                                 .font(.title)
-                            Text("climb")
+                            Text("Climb")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(Int(((teamDetail.teamData[0].buddy_climb ?? 0) * 100).rounded()))%")
                                 .font(.title)
-                            Text("buddy climb")
+                            Text("Buddy climb")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -105,19 +105,19 @@ struct TeamViewStats: View {
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_preload)))")
                                 .font(.title)
-                            Text("auto preload")
+                            Text("Auto preload")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_wing)))")
                                 .font(.title)
-                            Text("auto wing")
+                            Text("Auto wing")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_center)))")
                                 .font(.title)
-                            Text("auto center")
+                            Text("Auto center")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -126,7 +126,7 @@ struct TeamViewStats: View {
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].points))) pts")
                                 .font(.title)
-                            Text("performance rating")
+                            Text("Performance rating")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -137,7 +137,7 @@ struct TeamViewStats: View {
                     ProgressView()
                         .controlSize(.large)
                         .padding()
-                    Text("loading")
+                    Text("Loading...")
                         .font(.title)
                     Spacer()
                 }

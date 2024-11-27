@@ -22,19 +22,19 @@ struct TeamView: View {
                                 VStack {
                                     Text(String(dataItems.teamData.first?.wins ?? 0))
                                         .font(.title)
-                                    Text("wins")
+                                    Text("Wins")
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
                                     Text(String(dataItems.teamData.first?.losses ?? 0))
                                         .font(.title)
-                                    Text("losses")
+                                    Text("Losses")
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
                                     Text(String(dataItems.teamData.first?.ties ?? 0))
                                         .font(.title)
-                                    Text("ties")
+                                    Text("Ties")
                                 }
                                 .frame(maxWidth: .infinity)
                             }
@@ -43,7 +43,7 @@ struct TeamView: View {
                                 VStack {
                                     Text(String(dataItems.teamData.first?.rank ?? 99))
                                         .font(.title)
-                                    Text("rank")
+                                    Text("Rank")
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
@@ -79,7 +79,7 @@ struct TeamView: View {
                             }, label: {
                                 VStack {
                                     HStack {
-                                        Text("match \(String(dataItems.teamMatches[index].Brief.match_num))")
+                                        Text("Match \(String(dataItems.teamMatches[index].Brief.match_num))")
 #if !os(watchOS)
                                             .font(.title)
 #else
@@ -112,13 +112,13 @@ struct TeamView: View {
                 }
             } else {
                 if dataItems.loadComplete.0 && dataItems.loadComplete.1 && (dataItems.teamData.isEmpty || dataItems.teamMatches.isEmpty) {
-                    Label("loading failed", systemImage: "xmark.seal.fill").navigationTitle("team \(String(dataItems.targetTeam))")
+                    Label("Loading failed", systemImage: "xmark.seal.fill").navigationTitle("Team \(String(dataItems.targetTeam))")
                 } else {
-                    Text("loading team...").navigationTitle("team \(String(dataItems.targetTeam))")
+                    Text("Loading team...").navigationTitle("Team \(String(dataItems.targetTeam))")
                 }
             }
         }
-        .navigationTitle("team \(String(dataItems.targetTeam))")
+        .navigationTitle("Team \(String(dataItems.targetTeam))")
     }
     
     private func divideNotZero(num: Int, denom: Int) -> Double {

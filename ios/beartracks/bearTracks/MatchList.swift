@@ -22,7 +22,7 @@ struct MatchList: View {
                             if !myTeamOnly || checkMatch(match: appState.matchJson[index]) {
                                 NavigationLink(tag: index, selection: self.$selectedMatch, destination: {
                                     MatchDetailView(match: appState.matchJson[index].matchNumber)
-                                        .navigationTitle("match \(appState.matchJson[index].matchNumber)")
+                                        .navigationTitle("Match \(appState.matchJson[index].matchNumber)")
                                         .environmentObject(appState)
                                 }, label: {
                                     VStack {
@@ -66,11 +66,11 @@ struct MatchList: View {
                 } else {
                     if appState.matchJsonStatus.1 {
                         VStack {
-                            Label("failed", systemImage: "xmark.seal.fill")
+                            Label("Failed", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
                                 .labelStyle(.iconOnly)
                                 .foregroundStyle(Color.pink)
-                            Text("load failed")
+                            Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
                                 .padding(.bottom)
                         }
                         .navigationTitle("Matches")
@@ -81,16 +81,16 @@ struct MatchList: View {
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
                                     .foregroundStyle(Color.pink)
-                                Text("matches not yet posted")
+                                Text("The match list returned was empty. This is not an error. If matches are already available online, the server will cache them upon restarting nightly.")
                                     .padding(.bottom)
                             }
                             .navigationTitle("Matches")
                         } else {
                             VStack {
-                                Label("loading", systemImage: "hourglass")
+                                Label("Loading", systemImage: "hourglass")
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
-                                Text("loading matches...")
+                                Text("Loading...")
                                     .padding(.bottom)
                             }
                             .navigationTitle("Matches")

@@ -14,8 +14,7 @@ public enum Tab {
 @main
 struct beartracksApp: App {
     let settingsManager = SettingsManager.shared
-    var darkMode: Bool =
-    UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
+    var darkMode: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
     @StateObject public var appState = AppState()
     
     var body: some Scene {
@@ -64,25 +63,25 @@ struct beartracksApp: App {
                     Teams()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("teams", systemImage: "list.number")
+                            Label("Teams", systemImage: "list.number")
                         }
                         .tag(Tab.teams)
                     MatchList()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("matches", systemImage: "calendar")
+                            Label("Matches", systemImage: "calendar")
                         }
                         .tag(Tab.matches)
                     DataView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("data", systemImage: "magnifyingglass")
+                            Label("Data", systemImage: "magnifyingglass")
                         }
                         .tag(Tab.data)
                     SettingsView()
                         .environmentObject(appState)
                         .tabItem {
-                            Label("settings", systemImage: "gear")
+                            Label("Settings", systemImage: "gear")
                         }
                         .tag(Tab.settings)
                 }

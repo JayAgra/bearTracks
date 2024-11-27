@@ -8,14 +8,11 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var teamNumberInput: String =
-    UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? ""
-    @State private var eventCodeInput: String =
-    UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
-    @State private var seasonInput: String =
-    UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? ""
-    @State private var darkMode: Bool =
-    UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
+    @State private var teamNumberInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? ""
+    @State private var eventCodeInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
+    @State private var seasonInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? ""
+    @State private var darkMode: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
+    @State private var allData: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "useAllCompData") ?? false
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false
@@ -42,8 +39,7 @@ struct SettingsView: View {
                         .pickerStyle(.menu)
 #endif
                         .onChange(of: teamNumberInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
-                                teamNumberInput, forKey: "teamNumber")
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(teamNumberInput, forKey: "teamNumber")
                         }
                         Picker("Event Code", selection: $eventCodeInput) {
                             if !settingsOptions.isEmpty {
@@ -60,8 +56,7 @@ struct SettingsView: View {
                         .pickerStyle(.menu)
 #endif
                         .onChange(of: eventCodeInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
-                                eventCodeInput, forKey: "eventCode")
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(eventCodeInput, forKey: "eventCode")
                         }
                         Picker("Season", selection: $seasonInput) {
                             if !settingsOptions.isEmpty {
@@ -81,10 +76,13 @@ struct SettingsView: View {
                             UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
                                 seasonInput, forKey: "season")
                         }
+                        Toggle("Use all data for match predictions. This setting can be useful for the early matches of a competition, but is **not reccomended beyond the halfway point** unless prediction data is extremely inaccurate.", isOn: $allData)
+                            .onChange(of: allData) { value in
+                                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(allData, forKey: "useAllCompData")
+                            }
                         Toggle("Dark Mode", isOn: $darkMode)
                             .onChange(of: darkMode) { value in
-                                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
-                                    darkMode, forKey: "darkMode")
+                                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(darkMode, forKey: "darkMode")
                                 showAlert = true
                             }
                     }
@@ -120,8 +118,8 @@ struct SettingsView: View {
                 isPresented: $showAlert,
                 content: {
                     Alert(
-                        title: Text("theme change"),
-                        message: Text("an app restart is required for the theme change to take effect"),
+                        title: Text("Theme Change"),
+                        message: Text("An app restart is required for the theme change to take effect."),
                         dismissButton: .default(Text("ok"))
                     )
                 }
@@ -145,7 +143,7 @@ struct SettingsView: View {
                         })
                 },
                 message: {
-                    Text("this action is irreversable")
+                    Text("This action is irreversable.")
                 })
         }
         .onAppear {
@@ -176,11 +174,11 @@ struct SettingsView: View {
                         completionBlock([result])
                     }
                 } catch {
-                    print("parse error")
+                    print("Parse error")
                     completionBlock([])
                 }
             } else if let error = error {
-                print("fetch error: \(error)")
+                print("Fetch error: \(error)")
                 completionBlock([])
             }
         }

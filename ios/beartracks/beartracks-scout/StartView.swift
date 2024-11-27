@@ -116,7 +116,7 @@ struct StartView: View {
                             }
                         }
                         Section {
-                            Button("start teleop") {
+                            Button("Start Teleop") {
                                 controller.advanceToTab(tab: .game)
                             }
                             .disabled(controller.matchNumber == 0 || controller.teamNumber == "--")

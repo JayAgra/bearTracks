@@ -75,7 +75,7 @@ struct ReviewView: View {
                                         }
                                     }
                                     if controller.matchTimes.isEmpty {
-                                        Text("⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Your scout lead will be notified.")
+                                        Text("⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Application administrators will be notified of this submission, identifying you and your team as the submitter.")
                                     }
                                 }
                                 .padding([.leading, .trailing, .bottom])
@@ -110,7 +110,7 @@ struct ReviewView: View {
                                 }
                                 .padding()
                             }
-                            Button("submit") {
+                            Button("Submit") {
                                 showSheet = true
                                 controller.submitData { result in
                                     self.submitSheetState = result.0
@@ -141,19 +141,19 @@ struct ReviewView: View {
                                     .controlSize(.large)
                                     .padding()
                             }
-                            Text("submitting...")
+                            Text("Submitting...")
                                 .font(.title)
                             Spacer()
                         }
                     case .done:
                         VStack {
                             Spacer()
-                            Label("done", systemImage: "checkmark.seal.fill")
+                            Label("Done", systemImage: "checkmark.seal.fill")
                                 .labelStyle(.iconOnly)
                                 .font(.largeTitle)
                                 .foregroundStyle(Color.green)
                                 .padding()
-                            Text("done")
+                            Text("Done!")
                                 .font(.title)
                             Spacer()
                         }
@@ -165,12 +165,12 @@ struct ReviewView: View {
                     case .error:
                         VStack {
                             Spacer()
-                            Label("done", systemImage: "xmark.seal.fill")
+                            Label("Done", systemImage: "xmark.seal.fill")
                                 .labelStyle(.iconOnly)
                                 .font(.largeTitle)
                                 .foregroundStyle(Color.red)
                                 .padding()
-                            Text("error")
+                            Text("Fatal Error. Retry at will.")
                                 .font(.title)
                                 .padding()
                             Text(submitError)

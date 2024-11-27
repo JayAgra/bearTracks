@@ -123,7 +123,7 @@ class ScoutingController: ObservableObject {
                         completionBlock((.error, "Client response handling error"))
                     }
                 } else {
-                    completionBlock((.error, "server response do be nil"))
+                    completionBlock((.error, "server response do be nil 😳"))
                 }
             }
             requestTask.resume()

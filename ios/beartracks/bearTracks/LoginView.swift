@@ -25,11 +25,11 @@ struct LoginView: View {
             if !loading {
                 if !create {
 #if !os(watchOS)
-                    Text("log in")
+                    Text("Log In")
                         .font(.title3)
                         .padding(.top)
 #endif
-                    TextField("username", text: $authData[0])
+                    TextField("Username", text: $authData[0])
 #if !os(watchOS) && !os(tvOS)
                         .padding([.leading, .trailing, .bottom])
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -37,7 +37,7 @@ struct LoginView: View {
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .textContentType(.username)
-                    SecureField("password", text: $authData[1])
+                    SecureField("Password", text: $authData[1])
 #if !os(watchOS) && !os(tvOS)
                         .padding()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -45,7 +45,7 @@ struct LoginView: View {
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .textContentType(.password)
-                    Button("login") {
+                    Button("Log In") {
                         authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
                     }
 #if !os(watchOS)
@@ -54,39 +54,39 @@ struct LoginView: View {
                     .font(.title3)
                     .buttonStyle(.bordered)
 #if !os(watchOS)
-                    Button("create") {
+                    Button("Create") {
                         self.create = true
                     }
 #endif
                 } else {
 #if !os(watchOS) && !os(tvOS)
-                    Text("create account")
+                    Text("Create Account")
                         .font(.title3)
                         .padding(.top)
-                    TextField("team code", text: $authData[3])
+                    TextField("Team code", text: $authData[3])
                         .padding([.leading, .trailing])
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .keyboardType(.numberPad)
                         .onChange(of: authData[3]) { _ in
                             authData[3] = String(authData[3].prefix(5))
                         }
-                    TextField("full name", text: $authData[2])
+                    TextField("Full name", text: $authData[2])
                         .padding([.leading, .trailing])
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .textContentType(.name)
-                    TextField("username", text: $authData[0])
+                    TextField("Username", text: $authData[0])
                         .padding([.leading, .trailing])
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .textContentType(.username)
-                    SecureField("password", text: $authData[1])
+                    SecureField("Password", text: $authData[1])
                         .padding([.leading, .trailing])
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .textContentType(.newPassword)
-                    Button("create") {
+                    Button("Create") {
                         authAction(
                             type: "create",
                             data: [
@@ -97,7 +97,7 @@ struct LoginView: View {
                     .padding()
                     .font(.title3)
                     .buttonStyle(.bordered)
-                    Button("login") {
+                    Button("Log In") {
                         self.create = false
                     }
 #endif
@@ -117,9 +117,9 @@ struct LoginView: View {
             isPresented: $showAlert,
             content: {
                 Alert(
-                    title: Text("Auth Error"),
+                    title: Text("Authentication Error"),
                     message: Text(alertMessage),
-                    dismissButton: .default(Text("ok"))
+                    dismissButton: .default(Text("OK"))
                 )
             })
     }
@@ -144,20 +144,20 @@ struct LoginView: View {
                             loading = false
                             showAlert = true
                             if type == "login" {
-                                alertMessage = "bad credentials"
+                                alertMessage = "Bad Credentials"
                             } else {
                                 if httpResponse.statusCode == 400 {
                                     alertMessage =
-                                    "you supplied some data the server didn't like very much. your username, full name, and/or password contained characters other than a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \\ _ [ _ ] { } | ? . ,"
+                                    "You supplied some data the server did not like. Your account was **not** created. Please try agian following these conditions- your Username, Full name, and Password must contain only the following characters: a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \\ _ { } | ? . ,"
                                 } else if httpResponse.statusCode == 409 {
-                                    alertMessage = "username taken"
+                                    alertMessage = "Username taken. Your account was **not** created. Please try again with a new username."
                                 } else if httpResponse.statusCode == 403 {
-                                    alertMessage = "bad access key"
+                                    alertMessage = "Invalid access key. Ask your team lead or the application developers for another one. If your team failed to provide any data at a competition, your team's access key may have been indefinitely revoked. Your account was **not** created."
                                 } else if httpResponse.statusCode == 413 {
                                     alertMessage =
-                                    "your username, full name, and/or password were not between 3 and 64 characters (8 min for password)"
+                                    "Field lengths- your Username, Full name, and Password must be between 3 and 64 characters (8 min for password). Your account was **not** created. Please try agian, abiding by these requirements."
                                 } else {
-                                    alertMessage = "creation failed"
+                                    alertMessage = "Account creation failed. Your account was **not** created. Please try again (unexpected error)."
                                 }
                             }
                         }
@@ -165,13 +165,13 @@ struct LoginView: View {
                 } else {
                     loading = false
                     showAlert = true
-                    alertMessage = "network error"
+                    alertMessage = "Network Error"
                 }
             }.resume()
         } catch {
             loading = false
             showAlert = true
-            alertMessage = "failed to serialize auth object"
+            alertMessage = "Fatal Client Error: Failed to serialize authentication object"
         }
     }
 }

@@ -99,7 +99,7 @@ struct Teams: View {
                                 Label("Defense", systemImage: "shield")
                                     .tag(5)
                             }, label: {
-                                Label("type", systemImage: "line.3.horizontal.decrease.circle")
+                                Label("Type", systemImage: "line.3.horizontal.decrease.circle")
                                     .labelStyle(.iconOnly)
                             })
                             .onChange(of: performanceValue) { _ in
@@ -117,22 +117,22 @@ struct Teams: View {
                 } else {
                     if appState.teamsLoadStatus.1 {
                         VStack {
-                            Label("failed", systemImage: "xmark.seal.fill")
+                            Label("Failed", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
                                 .labelStyle(.iconOnly)
                                 .foregroundStyle(Color.pink)
-                            Text("load failed")
+                            Text("Load failed")
                                 .padding(.bottom)
                         }
                         .navigationTitle("Teams")
                     } else {
                         if appState.teamsLoadStatus.2 {
                             Form {
-                                Label("none", systemImage: "questionmark.app.dashed")
+                                Label("None", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
                                     .foregroundStyle(Color.pink)
-                                Text("no data")
+                                Text("No data")
                                     .padding(.bottom)
 #if os(watchOS)
                                 Section {
@@ -154,10 +154,10 @@ struct Teams: View {
                             .navigationTitle("Teams")
                         } else {
                             VStack {
-                                Label("loading", systemImage: "hourglass")
+                                Label("Loading", systemImage: "hourglass")
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
-                                Text("loading teams...")
+                                Text("Loading...")
                                     .padding(.bottom)
                             }
                             .navigationTitle("Teams")

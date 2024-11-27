@@ -35,19 +35,19 @@ struct DataView: View {
                                             .padding(.leading)
                                             .frame(maxWidth: .infinity, alignment: .leading)
 #if os(visionOS)
-                                        Text("match \(String(appState.dataEntries[index].Brief.match_num))")
+                                        Text("Match \(String(appState.dataEntries[index].Brief.match_num))")
                                             .font(.title3)
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
 #else
-                                        Text("match \(String(appState.dataEntries[index].Brief.match_num))")
+                                        Text("Match \(String(appState.dataEntries[index].Brief.match_num))")
                                             .font(UIDevice.current.userInterfaceIdiom == .pad ? .title2 : .title)
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
 #endif
                                     }
                                     HStack {
-                                        Text("#\(String(appState.dataEntries[index].Brief.id)) • from \(String(appState.dataEntries[index].Brief.from_team))")
+                                        Text("#\(String(appState.dataEntries[index].Brief.id)) • by \(String(appState.dataEntries[index].Brief.from_team))")
                                         .padding(.leading)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     }
@@ -68,31 +68,31 @@ struct DataView: View {
                 } else {
                     if self.loadFailed {
                         VStack {
-                            Label("failed", systemImage: "xmark.seal.fill")
+                            Label("Failute", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
                                 .labelStyle(.iconOnly)
                                 .foregroundStyle(Color.pink)
-                            Text("load failed")
+                            Text("Encountered a fatal error when attempting to load data.")
                                 .padding(.bottom)
                         }
                         .navigationTitle("Data")
                     } else {
                         if self.loadComplete {
                             VStack {
-                                Label("none", systemImage: "questionmark.app.dashed")
+                                Label("None", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
                                     .foregroundStyle(Color.pink)
-                                Text("no data")
+                                Text("No data was returned.")
                                     .padding(.bottom)
                             }
                             .navigationTitle("Data")
                         } else {
                             VStack {
-                                Label("loading", systemImage: "hourglass")
+                                Label("Loading", systemImage: "hourglass")
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
-                                Text("loading data...")
+                                Text("Loading...")
                                     .padding(.bottom)
                             }
                             .navigationTitle("Data")

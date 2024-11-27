@@ -16,7 +16,7 @@ struct SettingsView: View {
             ScrollView {
                 VStack {
                     VStack {
-                        Button("activity") {
+                        Button("Activity") {
                             if ActivityAuthorizationInfo().areActivitiesEnabled {
                                     self.fetchStatusJson { (status) in
                                         do {

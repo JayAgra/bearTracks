@@ -38,24 +38,24 @@ struct CreateKeyView: View {
                         if requestStatus.2 {
                             VStack {
                                 Spacer()
-                                Label("error", systemImage: "xmark.seal.fill")
+                                Label("Error", systemImage: "xmark.seal.fill")
                                     .labelStyle(.iconOnly)
                                     .font(.largeTitle)
                                     .foregroundStyle(Color.red)
                                     .padding()
-                                Text("error")
+                                Text("Error")
                                     .font(.title)
                                 Spacer()
                             }
                         } else {
                             VStack {
                                 Spacer()
-                                Label("done", systemImage: "checkmark.seal.fill")
+                                Label("Done", systemImage: "checkmark.seal.fill")
                                     .labelStyle(.iconOnly)
                                     .font(.largeTitle)
                                     .foregroundStyle(Color.green)
                                     .padding()
-                                Text("done")
+                                Text("Done")
                                     .font(.title)
                                 Spacer()
                             }
@@ -67,7 +67,7 @@ struct CreateKeyView: View {
                         ProgressView()
                             .controlSize(.large)
                             .padding()
-                        Text("creating...")
+                        Text("Creating...")
                             .font(.title)
                         Spacer()
                     }
@@ -99,7 +99,7 @@ struct CreateKeyView: View {
                     }
                 }
             } else if let error = error {
-                print("fetch error: \(error)")
+                print("Fetch error: \(error)")
                 self.requestStatus = (false, true, true)
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }

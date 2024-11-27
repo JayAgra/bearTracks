@@ -1,3 +1,5 @@
+// using include str here because i don't like to have to deal with folders and shit
+
 use actix_web::{
     http::header::{CacheControl, CacheDirective, ContentType},
     HttpRequest, HttpResponse,

@@ -100,7 +100,7 @@ struct MatchDetailView: View {
                     }
                 }
             } else {
-                Text("the match list for the selected competition was not loaded properly")
+                Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
                     .padding()
             }
         }
@@ -217,7 +217,7 @@ struct MatchDetailView: View {
                 }
             } else {
                 VStack {
-                    Text("the match list for the selected competition was not loaded properly")
+                    Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
                         .padding()
                 }
                 .toolbar {
@@ -259,6 +259,8 @@ struct MatchDetailView: View {
                 } else {
                     UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[ci + 1], forKey: "eventCode")
                 }
+                match = 0
+                appState.fetchMatchJson()
                 self.loadData()
             }
         }, label: {
@@ -269,11 +271,11 @@ struct MatchDetailView: View {
     
     func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
         guard
-            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2024/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(String(team))")
+            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2024/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "useAllCompData") ?? false ? "ALL" : UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(String(team))")
         else {
             return
         }
-        
+        // useAllCompData
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
@@ -288,11 +290,11 @@ struct MatchDetailView: View {
                         completionBlock(result)
                     }
                 } catch {
-                    print("parse error")
+                    print("Parse error")
                     completionBlock(nil)
                 }
             } else if let error = error {
-                print("fetch error: \(error)")
+                print("Fetch error: \(error)")
                 completionBlock(nil)
             }
         }
@@ -361,11 +363,11 @@ struct MatchDetailView: View {
                         completionBlock([result])
                     }
                 } catch {
-                    print("parse error")
+                    print("Parse error")
                     completionBlock([])
                 }
             } else if let error = error {
-                print("fetch error: \(error)")
+                print("Fetch error: \(error)")
                 completionBlock([])
             }
         }

@@ -16,6 +16,7 @@ class SettingsManager {
             "eventCode": "CAFR",
             "season": "2024",
             "darkMode": true,
+            "useAllCompData": false,
         ]
         UserDefaults(suiteName: "group.com.jayagra.beartracks")?.register(defaults: defaults)
     }

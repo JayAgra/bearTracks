@@ -42,7 +42,7 @@ struct DetailedView: View {
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         VStack {
-                            Text("Author:")
+                            Text("Author: ")
                                 .fontWeight(.bold)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             Text("\(detailData[0].FullMain.name) (\(String(detailData[0].FullMain.from_team)))")
@@ -112,7 +112,7 @@ struct DetailedView: View {
                         }
                         .padding([.top, .leading])
                         VStack {
-                            Text("cycles")
+                            Text("Cycles")
                                 .font(.title2)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             VStack {
@@ -275,11 +275,11 @@ struct DetailedView: View {
                         .padding([.top, .leading])
                     }  // end scrollview
                 } else {
-                    Text("unsupported season")
+                    Text("Error: Unsupported Season")
                         .padding(.bottom)
                 }
             } else {
-                Text("loading details...")
+                Text("Loading...")
                     .padding(.bottom)
             }
         }
@@ -305,15 +305,15 @@ struct DetailedView: View {
                                 self.gameData = try decoder.decode(
                                     [MatchTime2024].self, from: Data(result[0].FullMain.game.utf8))
                             } catch {
-                                print("parse error")
+                                print("Parse error")
                             }
                         }
                     }
                 } catch {
-                    print("parse error")
+                    print("Parse error")
                 }
             } else if let error = error {
-                print("fetch error: \(error)")
+                print("Fetch error: \(error)")
             }
         }
         .resume()

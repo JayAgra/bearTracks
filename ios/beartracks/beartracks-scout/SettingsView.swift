@@ -112,8 +112,8 @@ struct SettingsView: View {
                 isPresented: $showAlert,
                 content: {
                     Alert(
-                        title: Text("theme change"),
-                        message: Text("an app restart is required for the theme change to take effect"),
+                        title: Text("Theme Change"),
+                        message: Text("An app restart is required for the theme change to take effect"),
                         dismissButton: .default(Text("ok"))
                     )
                 }
@@ -137,7 +137,7 @@ struct SettingsView: View {
                         })
                 },
                 message: {
-                    Text("this action is irreversable")
+                    Text("**This action is irreversable.**")
                 })
         }
         .onAppear {

@@ -93,11 +93,11 @@ class TeamViewModel: ObservableObject {
                         completionBlock(result)
                     }
                 } catch {
-                    print("parse error \(error)")
+                    print("Parse error \(error)")
                     return
                 }
             } else if let error = error {
-                print("fetch error: \(error)")
+                print("Fetch error: \(error)")
                 return
             }
         }

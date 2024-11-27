@@ -21,6 +21,8 @@ pub struct HealthData {
     pub sessions_size: i64,
 }
 
+// this exists only so i can have the cool little live activity thing on the manage app. that's it.
+
 pub fn get_server_health(session: web::Data<RwLock<Sessions>>) -> HealthData {
     let mut system = sysinfo::System::new_all();
     system.refresh_all();

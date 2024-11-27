@@ -29,12 +29,13 @@ mod db_auth;
 mod db_main;
 mod db_transact;
 mod forward;
-mod game_api;
 mod passkey;
 mod server_health;
 mod session;
 mod static_files;
 mod stats;
+
+// mod game_api;
 
 // hashmap containing user session IDs
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -563,46 +564,53 @@ async fn debug_health(session: web::Data<RwLock<Sessions>>) -> Result<HttpRespon
         .json(server_health::get_server_health(session)))
 }
 
+// *** code retained if game-like features are relevant in future *** //
+
 // get all user's owned cards
-async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .json(game_api::get_owned_cards(&db.auth, user).await?))
+async fn game_get_cards(/*db: web::Data<Databases>, user: db_auth::User*/) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::NotImplemented().body("game discontinued"))
+    // Ok(HttpResponse::Ok()
+    //     .insert_header(("Cache-Control", "no-cache"))
+    //     .json(game_api::get_owned_cards(&db.auth, user).await?))
 }
 
 // get all user's owned cards (by a username)
 // ** NO AUTH **
-async fn game_get_cards_by_username(db: web::Data<Databases>, req: HttpRequest) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .json(game_api::get_owned_cards_by_user(&db.auth, req.match_info().get("user").unwrap().parse().unwrap()).await?))
+async fn game_get_cards_by_username(/*db: web::Data<Databases>, req: HttpRequest*/) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::NotImplemented().body("game discontinued"))
+    // Ok(HttpResponse::Ok()
+    //     .insert_header(("Cache-Control", "no-cache"))
+    //     .json(game_api::get_owned_cards_by_user(&db.auth, req.match_info().get("user").unwrap().parse().unwrap()).await?))
 }
 
 // get random team from scouted teams
-async fn game_open_lootbox(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .json(game_api::open_loot_box(&db.auth, &db.main, user, req.match_info().get("event").unwrap().parse().unwrap()).await?))
+async fn game_open_lootbox(/*req: HttpRequest, db: web::Data<Databases>, user: db_auth::User*/) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::NotImplemented().body("game discontinued"))
+    // Ok(HttpResponse::Ok()
+    //     .insert_header(("Cache-Control", "no-cache"))
+    //     .json(game_api::open_loot_box(&db.auth, &db.main, user, req.match_info().get("event").unwrap().parse().unwrap()).await?))
 }
 
 // set player's hand
-async fn game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok()
-        .insert_header(("Cache-Control", "no-cache"))
-        .json(game_api::set_held_cards(&db.auth, user, &data).await?))
+async fn game_set_hand(/*db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User*/) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::NotImplemented().body("game discontinued"))
+    // Ok(HttpResponse::Ok()
+    //     .insert_header(("Cache-Control", "no-cache"))
+    //     .json(game_api::set_held_cards(&db.auth, user, &data).await?))
 }
 
 // ** NO AUTH **
-async fn game_get_team(req: HttpRequest, db: web::Data<Databases> /*, _user: db_auth::User*/) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).json(
-        game_api::execute(
-            &db.main,
-            req.match_info().get("season").unwrap().parse().unwrap(),
-            req.match_info().get("event").unwrap().parse().unwrap(),
-            req.match_info().get("team").unwrap().parse().unwrap(),
-        )
-        .await?,
-    ))
+async fn game_get_team(/*req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User*/) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::NotImplemented().body("game discontinued"))
+    // Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).json(
+    //     game_api::execute(
+    //         &db.main,
+    //         req.match_info().get("season").unwrap().parse().unwrap(),
+    //         req.match_info().get("event").unwrap().parse().unwrap(),
+    //         req.match_info().get("team").unwrap().parse().unwrap(),
+    //     )
+    //     .await?,
+    // ))
 }
 
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
@@ -1004,7 +1012,7 @@ async fn main() -> io::Result<()> {
                 web::resource("/api/v1/debug/ok")
                     .route(web::get().to(debug_ok)),
             )
-            /* robot game endpoints */
+            /* robot game endpoints (killed)
             // GET
             .service(
                 web::resource("/api/v1/game/all_owned_cards")
@@ -1031,6 +1039,7 @@ async fn main() -> io::Result<()> {
                 web::resource("/api/v1/game/set_hand")
                     .route(web::post().to(game_set_hand))
             )
+            */
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?

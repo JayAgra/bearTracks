@@ -20,7 +20,7 @@ struct EndView: View {
         NavigationView {
             VStack {
                 if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
-                    Text("match \(controller.getMatchNumber()) • team \(controller.getTeamNumber())")
+                    Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())")
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     ScrollView {
@@ -93,7 +93,7 @@ struct EndView: View {
                             }
                         }
                         .padding(.bottom)
-                        Button("review") {
+                        Button("Continue to Review") {
                             controller.advanceToTab(tab: .review)
                         }
                         .padding()
