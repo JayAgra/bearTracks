@@ -335,6 +335,7 @@ fn insert_main_data(
     analysis_results = match data.season {
         2023 => analyze::analyze_data(data, analyze::Season::S2023),
         2024 => analyze::analyze_data(data, analyze::Season::S2024),
+        2025 => analyze::analyze_data(data, analyze::Season::S2025),
         _ => analyze::analyze_data(data, analyze::Season::S2024),
     };
 

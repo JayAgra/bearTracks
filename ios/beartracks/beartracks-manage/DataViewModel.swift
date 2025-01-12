@@ -30,7 +30,7 @@ class DataViewModel: ObservableObject {
         guard
             let url = URL(
                 string:
-                    "https://beartracks.io/api/v1/data/brief/season/\(UserDefaults.standard.string(forKey: "season") ?? "2024")"
+                    "https://beartracks.io/api/v1/data/brief/season/\(UserDefaults.standard.string(forKey: "season") ?? "2025")"
             )
         else {
             return

@@ -20,7 +20,7 @@ struct LoginView: View {
 #if !os(watchOS)
             Text("bearTracks")
                 .font(.title)
-            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5") • 2024")
+            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5") • 2025")
 #endif
             if !loading {
                 if !create {

@@ -1,5 +1,5 @@
 use actix_web::{web, Error};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de};
 use vader_sentiment;
 
 use super::db_main;
@@ -7,6 +7,7 @@ use super::db_main;
 pub(crate) enum Season {
     S2023,
     S2024,
+    S2025
 }
 
 fn bool_to_num(value: &str) -> f64 {
@@ -34,6 +35,7 @@ pub fn analyze_data(data: &web::Json<db_main::MainInsert>, season: Season) -> An
     match season {
         Season::S2023 => season_2023(data).unwrap(),
         Season::S2024 => season_2024(data).unwrap(),
+        Season::S2025 => season_2025(data).unwrap(),
     }
 }
 
@@ -321,6 +323,149 @@ fn season_2024(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         auto_wing,
         auto_center,
         auto_scores,
+    ];
+
+    let string_mps_scores: Vec<String> = mps_scores.iter().map(|float| float.to_string()).collect();
+
+    let string_analysis_results: Vec<String> = analysis.iter().map(|float| float.to_string()).collect();
+
+    Ok(AnalysisResults {
+        weight: string_mps_scores.join(","),
+        analysis: string_analysis_results.join(","),
+    })
+}
+
+fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults, Error> {
+    let analyzer = vader_sentiment::SentimentIntensityAnalyzer::new();
+    // use MatchTime2024 is basically universal
+    let game_data: Vec<MatchTime2024> = serde_json::from_str(data.game.as_str()).expect("failed to convert");
+
+    let analysis_results: Vec<f64> = vec![
+        analyzer.polarity_scores(data.defend.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.driving.as_str()).get("compound").unwrap().clone(),
+        analyzer.polarity_scores(data.overall.as_str()).get("compound").unwrap().clone(),
+    ];
+
+    let mut score: f64 = 0.0;
+
+    score += (analysis_results[0] + 1.0) * 3.75;
+    score += (analysis_results[1] + 1.0) * 3.75;
+    score += (analysis_results[2] + 1.0) * 7.5;
+
+    let mut intake_time: f64 = 0.0;         // 0 (reserved)
+    let mut travel_time: f64 = 0.0;         // 1 (reserved)
+    let mut outtake_time: f64 = 0.0;        // 2 (reserved)
+
+    let mut level_4: i64 = 0;               // 8
+    let mut level_3: i64 = 0;               // 7
+    let mut level_2: i64 = 0;               // 6
+    let mut level_1: i64 = 0;               // 5
+    let mut processor: i64 = 0;             // 4
+    let mut net: i64 = 0;                   // 3
+
+    let mut park: bool = false;             // 9
+    let mut shallow_cage: bool = false;     // 10
+    let mut deep_cage: bool = false;        // 11
+
+    let mut leave: bool = false;            // 12
+    let mut auto_score: i64 = 0;            // 13
+
+    for time in &game_data {
+        match time.score_type {
+            0 => {} //
+            1 => {} //   RESERVED
+            2 => {} //
+            3 => net += 1,
+            4 => processor += 1,
+            5 => level_1 += 1,
+            6 => level_2 += 1,
+            7 => level_3 += 1,
+            8 => level_4 += 1,
+            9 => {
+                if time.intake == 1.0 {
+                    park = true
+                }
+            }
+            10 => {
+                if time.intake == 1.0 {
+                    shallow_cage = true
+                }
+            }
+            11 => {
+                if time.intake == 1.0 {
+                    deep_cage = true
+                }
+            }
+            12 => {
+                if time.intake == 1.0 {
+                    leave = true
+                }
+            }
+            13 => auto_score += 1,
+            _ => {}
+        }
+        if time.score_type == 0 || time.score_type == 1 || time.score_type == 9 {
+            intake_time += time.intake;
+            travel_time += time.travel;
+            outtake_time += time.outtake;
+        }
+    }
+
+    score += auto_score as f64 * 9.0;       // place high value on this
+    score += net as f64 * 4.0;
+    score += processor as f64 * 5.0;        // place low value on this
+    score += level_1 as f64 * 2.0;
+    score += level_2 as f64 * 3.0;
+    score += level_3 as f64 * 4.0;
+    score += level_4 as f64 * 5.0;
+
+    score += real_bool_to_num(leave) * 3.0;
+    score += real_bool_to_num(park) * 2.0;
+    score += real_bool_to_num(shallow_cage) * 6.0;
+    score += real_bool_to_num(deep_cage) * 12.0;
+
+    let fast_intake: f64;
+    let fast_travel: f64;
+    let fast_shoot: f64;
+    let fast_cycle: f64;
+
+    if game_data.len() > 7 {
+        fast_intake = score * (100.0 / (intake_time / (game_data.len() - 3) as f64));
+        fast_travel = score * (100.0 / (travel_time / (game_data.len() - 3) as f64));
+        fast_shoot = score * (100.0 / (outtake_time / (game_data.len() - 3) as f64));
+        fast_cycle = score * (100.0 / (intake_time + travel_time + outtake_time / (game_data.len() - 3) as f64));
+    } else {
+        fast_intake = 0.0;
+        fast_travel = 0.0;
+        fast_shoot = 0.0;
+        fast_cycle = 0.0;
+    }
+
+    let mps_scores: Vec<f64> = vec![
+        score,
+        fast_intake,
+        fast_travel,
+        fast_shoot,
+        fast_cycle,
+        analysis_results[0]
+    ];
+
+    let analysis: Vec<i64> = vec![
+        real_bool_to_num(leave) as i64,
+        real_bool_to_num(park) as i64,
+        real_bool_to_num(shallow_cage) as i64,
+        real_bool_to_num(deep_cage) as i64,
+        intake_time as i64,
+        travel_time as i64,
+        outtake_time as i64,
+        net,
+        processor,
+        level_1,
+        level_2,
+        level_3,
+        level_4,
+        score as i64,
+        auto_score
     ];
 
     let string_mps_scores: Vec<String> = mps_scores.iter().map(|float| float.to_string()).collect();

@@ -45,15 +45,7 @@ struct SettingsView: View {
                             }
                         }
                         Picker("Season", selection: $seasonInput) {
-                            if !settingsOptions.isEmpty {
-                                ForEach(settingsOptions[0].seasons, id: \.self) { season in
-                                    Text(season)
-                                        .tag(season)
-                                }
-                            } else {
-                                Text(seasonInput)
-                                    .tag(seasonInput)
-                            }
+                            Text("2025").tag("2025")
                         }
                         .pickerStyle(.menu)
                         .onChange(of: seasonInput) { _ in

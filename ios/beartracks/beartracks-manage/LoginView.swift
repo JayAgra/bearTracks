@@ -18,7 +18,7 @@ struct LoginView: View {
         VStack {
             Text("bearTracks")
                 .font(.title)
-            Text("v5.0.1 • 2024")
+            Text("v5.0.1 • 2025")
             TextField("Username", text: $username)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())

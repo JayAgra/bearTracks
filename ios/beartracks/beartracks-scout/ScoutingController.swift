@@ -28,6 +28,15 @@ class ScoutingController: ObservableObject {
     @Published public var overall: String = ""
     @Published public var switches: (Bool, Bool, Bool, Int, Int, Int, Int) = (
         false, false, false, 0, 0, 0, 0
+        /*
+         1 -
+         2 -
+         3 -
+         4 - algae handled, auto period
+         5 - coral handled, auto period
+         6 - auto period scores
+         7 -
+         */
     )
     // submit sheet
     @Published public var showSubmitSheet: Bool = false
@@ -100,7 +109,7 @@ class ScoutingController: ObservableObject {
             encodedMatchTimes = ""
         }
         let matchData = ScoutingDataExport(
-            season: 2024, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR",
+            season: 2025, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR",
             match_num: matchNumber, level: "Qualification", team: Int(teamNumber) ?? 0,
             game: encodedMatchTimes, defend: defense, driving: driving, overall: overall + "\n\niOS v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5")")
         do {
@@ -136,7 +145,7 @@ class ScoutingController: ObservableObject {
         guard
             let url = URL(
                 string:
-                    "https://beartracks.io/api/v1/events/matches/\(UserDefaults.standard.string(forKey: "season") ?? "2024")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/qualification/true"
+                    "https://beartracks.io/api/v1/events/matches/\(UserDefaults.standard.string(forKey: "season") ?? "2025")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/qualification/true"
             )
         else { return }
         var request = URLRequest(url: url)

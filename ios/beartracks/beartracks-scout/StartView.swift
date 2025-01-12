@@ -18,7 +18,7 @@ struct StartView: View {
                     Form {
                         Section {
                             Text(
-                                "\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2024"))"
+                                "\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))"
                             )
                         }
                         Section {
@@ -63,22 +63,22 @@ struct StartView: View {
                             Section {
                                 Text("Autonomous Period")
                                 Stepper {
-                                    Text("Preloaded notes handled (\(controller.switches.5))")
+                                    Text("Coral handled (\(controller.switches.5))")
                                 } onIncrement: {
-                                    if controller.switches.5 == 0 {
-                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                        controller.switches.6 += 1
-                                        controller.switches.5 += 1
-                                    }
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                    controller.switches.6 += 1
+                                    controller.switches.5 += 1
                                 } onDecrement: {
-                                    if controller.switches.5 == 1 {
+                                    if controller.switches.5 > 0 {
                                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.5 -= 1
                                         scoresDecrement()
+                                    } else {
+                                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                                     }
                                 }
                                 Stepper {
-                                    Text("Wing notes handled (\(controller.switches.4))")
+                                    Text("Algae handled (\(controller.switches.4))")
                                 } onIncrement: {
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.switches.6 += 1
@@ -88,19 +88,8 @@ struct StartView: View {
                                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                         controller.switches.4 -= 1
                                         scoresDecrement()
-                                    }
-                                }
-                                Stepper {
-                                    Text("Neutral notes handled (\(controller.switches.3))")
-                                } onIncrement: {
-                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                    controller.switches.6 += 1
-                                    controller.switches.3 += 1
-                                } onDecrement: {
-                                    if controller.switches.3 > 0 {
-                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                        controller.switches.3 -= 1
-                                        scoresDecrement()
+                                    } else {
+                                        UINotificationFeedbackGenerator().notificationOccurred(.error)
                                     }
                                 }
                             }
@@ -108,8 +97,12 @@ struct StartView: View {
                                 Stepper {
                                     Text("Scores (\(controller.switches.6))")
                                 } onIncrement: {
-                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                                    controller.switches.6 += 1
+                                    if controller.switches.6 < controller.switches.5 + controller.switches.4 {
+                                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                        controller.switches.6 += 1
+                                    } else {
+                                        UINotificationFeedbackGenerator().notificationOccurred(.error)
+                                    }
                                 } onDecrement: {
                                     scoresDecrement()
                                 }

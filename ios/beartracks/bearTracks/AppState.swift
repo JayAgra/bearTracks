@@ -35,7 +35,7 @@ class AppState: ObservableObject {
 #endif
     
     func fetchMatchJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/qualification/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? "766")") else { return }
+        guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2025")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/qualification/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? "766")") else { return }
         
         sharedSession.dataTask(with: url) { data, _, error in
             if let data = data {
@@ -59,7 +59,7 @@ class AppState: ObservableObject {
     }
     
     func fetchDataJson(completionBlock: @escaping ([DataEntry]) -> Void) {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")") else { return }
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/brief/event/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2025")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -95,7 +95,7 @@ class AppState: ObservableObject {
     }
     
     func fetchTeamsJson() {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/teams/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2024")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")") else { return }
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/teams/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2025")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")") else { return }
         
         sharedSession.dataTask(with: url) { data, _, error in
             if let data = data {
