@@ -6,7 +6,6 @@ authors = ["Jayen Agrawal"]
 description = "a scouting app for frc"
 readme = "README.md"
 repository = "https://github.com/JayAgra/bearTracks/"
-license = "MIT"
 build = "build.rs"
 
 [dependencies]

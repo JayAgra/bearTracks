@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "—" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -10,6 +11,9 @@
           }
         }
       }
+    },
+    "**This action is irreversable.**" : {
+
     },
     "%@ (%@)" : {
       "localizations" : {
@@ -48,7 +52,11 @@
         }
       }
     },
+    "⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Application administrators will be notified of this submission, identifying you and your team as the submitter." : {
+
+    },
     "⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Your scout lead will be notified." : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -57,6 +65,12 @@
           }
         }
       }
+    },
+    "2025" : {
+
+    },
+    "Algae handled (%lld)" : {
+
     },
     "Alliance wing notes handled (%lld)" : {
       "extractionState" : "stale",
@@ -81,6 +95,7 @@
       }
     },
     "amplifier" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -101,6 +116,7 @@
       }
     },
     "an app restart is required for the theme change to take effect" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -110,7 +126,11 @@
         }
       }
     },
+    "An app restart is required for the theme change to take effect" : {
+
+    },
     "Auth Error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -119,6 +139,9 @@
           }
         }
       }
+    },
+    "Authentication Error" : {
+
     },
     "Autonomous Period" : {
       "localizations" : {
@@ -191,7 +214,14 @@
         }
       }
     },
+    "Continue to Review" : {
+
+    },
+    "Coral handled (%lld)" : {
+
+    },
     "create" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -202,6 +232,7 @@
       }
     },
     "create account" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -210,6 +241,9 @@
           }
         }
       }
+    },
+    "Create Account" : {
+
     },
     "Cycles" : {
       "localizations" : {
@@ -272,6 +306,7 @@
       }
     },
     "done" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -280,6 +315,12 @@
           }
         }
       }
+    },
+    "Done" : {
+
+    },
+    "Done!" : {
+
     },
     "Driving" : {
       "localizations" : {
@@ -292,6 +333,7 @@
       }
     },
     "end" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -301,7 +343,11 @@
         }
       }
     },
+    "End" : {
+
+    },
     "error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -321,7 +367,11 @@
         }
       }
     },
+    "Fatal Error. Retry at will." : {
+
+    },
     "full name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -331,7 +381,11 @@
         }
       }
     },
+    "Full name" : {
+
+    },
     "game" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -341,7 +395,11 @@
         }
       }
     },
+    "Game" : {
+
+    },
     "go to endgame" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -372,6 +430,7 @@
       }
     },
     "intake" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -380,6 +439,21 @@
           }
         }
       }
+    },
+    "Intake" : {
+
+    },
+    "L0" : {
+
+    },
+    "L1" : {
+
+    },
+    "L2" : {
+
+    },
+    "L3" : {
+
     },
     "Left-Handed Labels" : {
       "localizations" : {
@@ -392,6 +466,7 @@
       }
     },
     "log in" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -400,6 +475,9 @@
           }
         }
       }
+    },
+    "Log In" : {
+
     },
     "Log Out" : {
       "localizations" : {
@@ -412,6 +490,7 @@
       }
     },
     "login" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -422,6 +501,7 @@
       }
     },
     "match %lld • team %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -433,6 +513,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "partido %1$lld • equipo %2$@"
+          }
+        }
+      }
+    },
+    "Match %lld • Team %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Match %1$lld • Team %2$@"
           }
         }
       }
@@ -484,7 +574,11 @@
         }
       }
     },
+    "Net" : {
+
+    },
     "Neutral notes handled (%lld)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -515,7 +609,11 @@
         }
       }
     },
+    "OK" : {
+
+    },
     "other" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -526,6 +624,7 @@
       }
     },
     "outtake" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -534,6 +633,9 @@
           }
         }
       }
+    },
+    "Outtake" : {
+
     },
     "Overall" : {
       "localizations" : {
@@ -546,6 +648,7 @@
       }
     },
     "password" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -608,6 +711,7 @@
       }
     },
     "Preloaded notes handled (%lld)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -628,6 +732,7 @@
       }
     },
     "review" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -636,6 +741,9 @@
           }
         }
       }
+    },
+    "Review" : {
+
     },
     "Scores (%lld)" : {
       "localizations" : {
@@ -668,6 +776,7 @@
       }
     },
     "settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -698,6 +807,7 @@
       }
     },
     "speaker" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -729,6 +839,7 @@
       }
     },
     "start" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -738,7 +849,14 @@
         }
       }
     },
+    "Start" : {
+
+    },
+    "Start Endgame" : {
+
+    },
     "start teleop" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -748,7 +866,11 @@
         }
       }
     },
+    "Start Teleop" : {
+
+    },
     "submit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -758,7 +880,11 @@
         }
       }
     },
+    "Submit" : {
+
+    },
     "submitting..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -768,7 +894,11 @@
         }
       }
     },
+    "Submitting..." : {
+
+    },
     "team code" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -777,6 +907,9 @@
           }
         }
       }
+    },
+    "Team code" : {
+
     },
     "Team Number" : {
       "localizations" : {
@@ -789,6 +922,7 @@
       }
     },
     "theme change" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -798,7 +932,11 @@
         }
       }
     },
+    "Theme Change" : {
+
+    },
     "this action is irreversable" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -829,6 +967,7 @@
       }
     },
     "travel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -837,6 +976,9 @@
           }
         }
       }
+    },
+    "Travel" : {
+
     },
     "Type" : {
       "localizations" : {
@@ -849,6 +991,7 @@
       }
     },
     "username" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -869,6 +1012,7 @@
       }
     },
     "v%@ • 2024" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -878,7 +1022,11 @@
         }
       }
     },
+    "v%@ • 2025" : {
+
+    },
     "Wing notes handled (%lld)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {

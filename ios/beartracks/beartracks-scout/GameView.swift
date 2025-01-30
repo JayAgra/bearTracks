@@ -21,12 +21,12 @@ struct GameView: View {
     }
     
     enum ReleaseState {
-        case neutral, speaker, amplifier, other
+        case neutral, l0, l1, l2, l3, net
     }
     
     var body: some View {
         NavigationView {
-            if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
+//            if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                 VStack {
                     GeometryReader { geometry in
                         VStack {
@@ -57,19 +57,6 @@ struct GameView: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .padding(.top)
-                                VStack {
-                                    HStack {
-                                        if releaseState == .other {
-                                            Text("Other")
-                                                .foregroundStyle(Color.init(red: 254 / 255, green: 128 / 255, blue: 25 / 255))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        } else {
-                                            Text("—")
-                                                .foregroundStyle(getLabelColor(state: true, type: nil))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        }
-                                    }
-                                }
                             }
                             Spacer()
                             ZStack {
@@ -77,34 +64,85 @@ struct GameView: View {
                                     Spacer()
                                     Capsule()
                                         .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
-                                        .frame(width: geometry.size.width * 0.8, height: 60)
+                                        .frame(width: geometry.size.width * 0.7, height: geometry.size.width * 0.15)
                                     Spacer()
                                 }
+                                VStack {
+                                    Capsule()
+                                        .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                                        .frame(width: geometry.size.width * 0.8, height: geometry.size.width * 0.15)
+                                        .rotationEffect(Angle(radians: Double.pi * 0.5))
+                                        .offset(x: geometry.size.width * 0.275)
+                                }
+                                VStack {
+                                    Capsule()
+                                        .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                                        .frame(width: geometry.size.width * 0.25, height: geometry.size.width * 0.15)
+                                        .rotationEffect(Angle(radians: Double.pi * -0.25))
+                                        .offset(x: geometry.size.width * 0.215, y: -27.5)
+                                }
+                                VStack {
+                                    Capsule()
+                                        .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                                        .frame(width: geometry.size.width * 0.25, height: geometry.size.width * 0.15)
+                                        .rotationEffect(Angle(radians: Double.pi * 0.25))
+                                        .offset(x: geometry.size.width * 0.215, y: 27.5)
+                                }
+                                VStack { // REFACTOR LATER
+                                    Spacer(); Spacer()
+                                    Text("Net")
+                                        .foregroundStyle(releaseState == .net ? Color.red : Color.gray)
+                                        .frame(alignment: getLabelAlignment())
+                                    Spacer()
+                                    Text("L3")
+                                        .foregroundStyle(releaseState == .l3 ? Color.orange : Color.gray)
+                                        .frame(alignment: getLabelAlignment())
+                                    Spacer()
+                                    Text("L2")
+                                        .foregroundStyle(releaseState == .l2 ? Color.yellow : Color.gray)
+                                        .frame(alignment: getLabelAlignment())
+                                    Spacer()
+                                    Text("L1")
+                                        .foregroundStyle(releaseState == .l1 ? Color.green : Color.gray)
+                                        .frame(alignment: getLabelAlignment())
+                                    Spacer()
+                                    Text("L0")
+                                        .foregroundStyle(releaseState == .l0 ? Color.blue : Color.gray)
+                                        .frame(alignment: getLabelAlignment())
+                                    Spacer(); Spacer()
+                                }
+                                .offset(x: geometry.size.width * 0.425)
                                 Circle()
-                                    .fill(getBallColor(position: actionState, height: geometry.size.height))
+                                    .fill(getBallColor(position: actionState, releasePosition: releaseState))
                                     .overlay(
-                                        getUIImage(position: actionState, height: geometry.size.height)
+                                        
+                                        getUIImage(position: actionState, releasePosition: releaseState)
                                             .colorMultiply(Color.init(red: 0.1, green: 0.1, blue: 0.1))
                                             .font(Font.body.bold())
                                     )
-                                    .frame(width: 50, height: 50)
-                                    .offset(x: ballOffset.width, y: 0)
+                                    .frame(width: geometry.size.width * 0.125, height: geometry.size.width * 0.125)
+                                    .offset(x: ballOffset.width, y: ballOffset.height * -1)
                                     .gesture(
                                         DragGesture()
                                             .onChanged { value in
                                                 self.updateBallOffset(
-                                                    dragValue: value, totalWidth: geometry.size.width * 0.8,
-                                                    totalHeight: geometry.size.height)
+                                                    dragValue: value, totalWidth: geometry.size.width * 0.7,
+                                                    totalHeight: geometry.size.width * 0.7)
                                                 self.updateTogglePosition(
-                                                    totalWidth: geometry.size.width * 0.8, height: geometry.size.height)
+                                                    totalWidth: geometry.size.width * 0.7, height: geometry.size.height)
                                             }
                                             .onEnded { _ in
-                                                withAnimation {
+                                                withAnimation(.linear(duration: 0.2)) {
                                                     if abs(self.ballOffset.height) >= geometry.size.height * 0.2 {
                                                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                                                     }
-                                                    self.ballOffset = .zero
-                                                    self.actionState = .neutral
+                                                    self.ballOffset.height = 0
+                                                }
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.125) {
+                                                    withAnimation {
+                                                        self.ballOffset.width = 0
+                                                        self.actionState = .neutral
+                                                    }
                                                 }
                                             }
                                     )
@@ -128,48 +166,9 @@ struct GameView: View {
                                                 }
                                                 self.actionState = .neutral
                                                 self.releaseState = .neutral
-                                            }))
-                                VStack {
-                                    Spacer()
-                                    HStack {
-                                        if releaseState == .amplifier {
-                                            Text("Amplifier")
-                                                .foregroundStyle(Color.init(red: 250 / 255, green: 189 / 255, blue: 47 / 255))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        } else {
-                                            Text("—")
-                                                .foregroundStyle(getLabelColor(state: true, type: nil))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        }
-                                    }
-                                    Spacer(); Spacer()
-                                    HStack {
-                                        Spacer()
-                                        
-                                        Text("Intake")
-                                            .foregroundStyle(getLabelColor(state: false, type: .intake))
-                                        Spacer()
-                                        Text("Travel")
-                                            .foregroundStyle(getLabelColor(state: false, type: .travel))
-                                        Spacer()
-                                        Text("Outtake")
-                                            .foregroundStyle(getLabelColor(state: false, type: .outtake))
-                                        Spacer()
-                                    }
-                                    Spacer(); Spacer(); Spacer(); Spacer(); Spacer()
-                                    HStack {
-                                        if releaseState == .speaker {
-                                            Text("speaker")
-                                                .foregroundStyle(Color.init(red: 184 / 255, green: 187 / 255, blue: 38 / 255))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        } else {
-                                            Text("—")
-                                                .foregroundStyle(getLabelColor(state: true, type: nil))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        }
-                                    }
-                                    Spacer()
-                                }
+                                            }
+                                        )
+                                    )
                             }
                             .padding(.bottom)
                             .onChange(of: actionState) { value in
@@ -206,11 +205,11 @@ struct GameView: View {
                 .onAppear {
                     holdLengths = (0.0, 0.0, 0.0)
                 }
-            } else {
-                Text("Please select a match and team number on the start tab.")
-                    .padding()
-                    .navigationTitle("Match Scouting")
-            }
+//            } else {
+//                Text("Please select a match and team number on the start tab.")
+//                    .padding()
+//                    .navigationTitle("Match Scouting")
+//            }
         }
     }
     
@@ -233,43 +232,82 @@ struct GameView: View {
     }
     
     private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat) {
-        if abs(self.ballOffset.height) > totalHeight * 0.2 && abs(dragValue.translation.height) <= totalHeight * 0.2 {
-            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-        } else if abs(self.ballOffset.height) <= totalHeight * 0.2 && abs(dragValue.translation.height) > totalHeight * 0.2 {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        if self.ballOffset.width >= totalWidth * 0.3125 {
+            if abs(self.ballOffset.height) < totalHeight * 0.15 && abs(dragValue.translation.height) >= totalHeight * 0.15 {
+                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            } else if abs(self.ballOffset.height) < totalHeight * 0.3 && abs(dragValue.translation.height) >= totalHeight * 0.3 {
+                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            }
         }
         
-        let newOffset = CGSize(
-            width: min(max(dragValue.translation.width, (totalWidth * -0.5) + 30), (totalWidth * 0.5) - 30),
-            height: dragValue.translation.height
-        )
+        var newOffset: CGSize;
+        let newWidth = min(max(dragValue.translation.width, (totalWidth * -0.3875)), (totalWidth * 0.3875))
+        let newHeight = min(max(dragValue.translation.height * -1, (totalWidth * -0.4) - 15), (totalWidth * 0.4) + 15)
+        if newWidth >= totalWidth * 0.3375 {
+            newOffset = CGSize(
+                width: totalWidth * 0.3925,
+                height: newHeight
+            )
+        } else if newWidth >= totalWidth * (0.215 + (0.125 / sqrt(2))) {
+            if abs(newHeight) <= totalWidth * 0.225 {
+                newOffset = CGSize(
+                    width: newWidth,
+                    height: (newWidth - (totalWidth * (0.215 + (0.125 / sqrt(2)))))
+                )
+            } else {
+                newOffset = CGSize(
+                    width: totalWidth * 0.3925,
+                    height: newHeight
+                )
+            }
+        } else {
+            newOffset = CGSize(
+                width: newWidth,
+                height: 0
+            )
+        }
+
         self.ballOffset = newOffset
-        
-        if abs(self.ballOffset.height) >= totalHeight * 0.2 {
-            if self.ballOffset.height < 0 {
-                if abs(self.ballOffset.height) >= totalHeight * 0.475 {
-                    releaseState = .other
+                      
+        if self.ballOffset.width >= totalWidth * 0.325 {
+            if abs(self.ballOffset.height) > totalWidth * 0.15 {
+                if self.ballOffset.height > 0 {
+                    if self.ballOffset.height < totalWidth * 0.3 {
+                        releaseState = .l3
+                    } else {
+                        releaseState = .net
+                    }
                 } else {
-                    releaseState = .amplifier
+                    if self.ballOffset.height > totalWidth * -0.3 {
+                        releaseState = .l1
+                    } else {
+                        releaseState = .l0
+                    }
                 }
             } else {
-                releaseState = .speaker
+                self.releaseState = .l2
             }
+            
         } else {
             self.releaseState = .neutral
         }
     }
     
-    private func getUIImage(position: ActionState, height: CGFloat) -> Image {
-        if abs(self.ballOffset.height) >= height * 0.2 {
-            if self.ballOffset.height < 0 {
-                if abs(self.ballOffset.height) >= height * 0.475 {
-                    return Image(systemName: "airplane")
-                } else {
-                    return Image(systemName: "speaker.plus")
-                }
-            } else {
-                return Image(systemName: "speaker.wave.2")
+    private func getUIImage(position: ActionState, releasePosition: ReleaseState) -> Image {
+        if releasePosition != .neutral {
+            switch releasePosition {
+            case .l0:
+                return Image(systemName: "1.circle.fill")
+            case .l1:
+                return Image(systemName: "2.circle.fill")
+            case .l2:
+                return Image(systemName: "3.circle.fill")
+            case .l3:
+                return Image(systemName: "4.circle.fill")
+            case .net:
+                return Image(systemName: "network")
+            case .neutral:
+                return Image(systemName: "minus")
             }
         } else {
             switch position {
@@ -285,16 +323,21 @@ struct GameView: View {
         }
     }
     
-    private func getBallColor(position: ActionState, height: CGFloat) -> Color {
-        if abs(self.ballOffset.height) >= height * 0.2 {
-            if self.ballOffset.height < 0 {
-                if abs(self.ballOffset.height) >= height * 0.475 {
-                    return Color.init(red: 254 / 255, green: 128 / 255, blue: 25 / 255)
-                } else {
-                    return Color.init(red: 250 / 255, green: 189 / 255, blue: 47 / 255)
-                }
-            } else {
-                return Color.init(red: 184 / 255, green: 187 / 255, blue: 38 / 255)
+    private func getBallColor(position: ActionState, releasePosition: ReleaseState) -> Color {
+        if releasePosition != .neutral {
+            switch releasePosition {
+            case .l0:
+                return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
+            case .l1:
+                return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
+            case .l2:
+                return Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255) // middle
+            case .l3:
+                return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
+            case .net:
+                return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
+            case .neutral:
+                return Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255)
             }
         } else {
             switch position {

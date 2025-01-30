@@ -1012,7 +1012,7 @@ async fn main() -> io::Result<()> {
                 web::resource("/api/v1/debug/ok")
                     .route(web::get().to(debug_ok)),
             )
-            /* robot game endpoints (killed)
+            // robot game endpoints (killed)
             // GET
             .service(
                 web::resource("/api/v1/game/all_owned_cards")
@@ -1039,7 +1039,6 @@ async fn main() -> io::Result<()> {
                 web::resource("/api/v1/game/set_hand")
                     .route(web::post().to(game_set_hand))
             )
-            */
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?
@@ -1047,3 +1046,4 @@ async fn main() -> io::Result<()> {
     .run()
     .await
 }
+
