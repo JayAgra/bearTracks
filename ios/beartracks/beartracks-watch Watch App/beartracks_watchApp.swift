@@ -17,9 +17,7 @@ struct beartracks_watch_Watch_AppApp: App {
       if !appState.loginRequired {
         Teams()
           .onAppear {
-            checkLoginState { isLoggedIn in
-              appState.loginRequired = !isLoggedIn
-            }
+              appState.checkLoginState()
           }
           .environmentObject(appState)
       } else {

@@ -22,6 +22,7 @@
 		F565840D2B54D52A00F587C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565840C2B54D52A00F587C0 /* Assets.xcassets */; };
 		F56584102B54D52A00F587C0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565840F2B54D52A00F587C0 /* Preview Assets.xcassets */; };
 		F5AD47CC2B54FF0500345122 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AD47CB2B54FF0500345122 /* ReviewView.swift */; };
+		F5BCB50B2D4C2E91008698A6 /* RegionalPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BCB50A2D4C2E91008698A6 /* RegionalPoints.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		F58565C32B7572B400C1606E /* beartracks-scout.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-scout.entitlements"; sourceTree = "<group>"; };
 		F5AD47CB2B54FF0500345122 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
 		F5B57DEE2BA2989E00C9D95F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F5BCB50A2D4C2E91008698A6 /* RegionalPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionalPoints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				F509F6BE2B54D8F2006FD9D5 /* SettingsManager.swift */,
 				F509F6BC2B54D810006FD9D5 /* SettingsView.swift */,
 				F509F6C02B54D9C0006FD9D5 /* URLSessionConfiguration.swift */,
+				F5BCB50A2D4C2E91008698A6 /* RegionalPoints.swift */,
 				F565840C2B54D52A00F587C0 /* Assets.xcassets */,
 				F55ABD6C2B9C40C4006E7FAF /* Localizable.xcstrings */,
 				F565840E2B54D52A00F587C0 /* Preview Content */,
@@ -183,6 +186,7 @@
 				F5AD47CC2B54FF0500345122 /* ReviewView.swift in Sources */,
 				F509F6BF2B54D8F2006FD9D5 /* SettingsManager.swift in Sources */,
 				F509F6C32B54D9DA006FD9D5 /* LoginStateValidator.swift in Sources */,
+				F5BCB50B2D4C2E91008698A6 /* RegionalPoints.swift in Sources */,
 				F509F6C72B54DAF2006FD9D5 /* ScoutingController.swift in Sources */,
 				F56584092B54D52900F587C0 /* beartracks_scoutApp.swift in Sources */,
 				F509F6C52B54D9F4006FD9D5 /* LoginView.swift in Sources */,

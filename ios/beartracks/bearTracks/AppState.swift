@@ -15,7 +15,7 @@ class AppState: ObservableObject {
 #else
     @Published public var selectedTab: Tab = .teams
 #endif
-    @Published public var loginRequired: Bool = false
+    @Published public var loginRequired: Bool = true
     @Published public var matchJson: [Match] = []
     @Published public var dataEntries: [DataEntry] = []
     @Published public var teamsList: [TeamData] = []
@@ -33,6 +33,27 @@ class AppState: ObservableObject {
             .store(in: &cancellables)
     }
 #endif
+    
+    func checkLoginState() {
+        guard let url = URL(string: "https://beartracks.io/api/v1/whoami") else {
+            self.loginRequired = true
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        let task = sharedSession.dataTask(with: request) { (data, response, error) in
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    self.loginRequired = false
+                } else {
+                    self.loginRequired = true
+                }
+            } else {
+                self.loginRequired = true
+            }
+        }
+        task.resume()
+    }
     
     func fetchMatchJson() {
         guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2025")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/qualification/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? "766")") else { return }

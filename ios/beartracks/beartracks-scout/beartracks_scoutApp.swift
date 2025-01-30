@@ -56,6 +56,11 @@ struct beartracks_scoutApp: App {
                 LoginView()
                     .preferredColorScheme(darkMode ? .dark : .light)
                     .environmentObject(scoutFormController)
+                    .onAppear {
+                        checkLoginState { isLoggedIn in
+                            scoutFormController.loginRequired = !isLoggedIn
+                        }
+                    }
             }
         }
     }

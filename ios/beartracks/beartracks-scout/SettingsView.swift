@@ -61,10 +61,13 @@ struct SettingsView: View {
                                 UserDefaults.standard.set(darkMode, forKey: "darkMode")
                                 showAlert = true
                             }
-                        Toggle("Left-Handed Labels", isOn: $leftHand)
-                            .onChange(of: leftHand) { _ in
-                                UserDefaults.standard.set(leftHand, forKey: "leftHand")
-                            }
+//                        Toggle("Left-Handed Labels", isOn: $leftHand)
+//                            .onChange(of: leftHand) { _ in
+//                                UserDefaults.standard.set(leftHand, forKey: "leftHand")
+//                            }
+                    }
+                    Section {
+                        NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
                     }
                     Section {
                         Button("Clear Network Cache") {

@@ -66,10 +66,37 @@
         }
       }
     },
+    "1st or 2nd" : {
+
+    },
+    "3rd" : {
+
+    },
+    "4th" : {
+
+    },
+    "5th or below" : {
+
+    },
+    "2023 or earlier" : {
+
+    },
+    "2024" : {
+
+    },
     "2025" : {
 
     },
+    "Algae" : {
+
+    },
     "Algae handled (%lld)" : {
+
+    },
+    "Alliance Capt, 0 for N/A (%lld)" : {
+
+    },
+    "Alliance Matches Won (%lld)" : {
 
     },
     "Alliance wing notes handled (%lld)" : {
@@ -106,6 +133,7 @@
       }
     },
     "Amplifier" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -152,6 +180,9 @@
           }
         }
       }
+    },
+    "Awards" : {
+
     },
     "bearTracks" : {
       "localizations" : {
@@ -265,6 +296,9 @@
         }
       }
     },
+    "Deep Climb" : {
+
+    },
     "Defense" : {
       "localizations" : {
         "es-419" : {
@@ -322,6 +356,9 @@
     "Done!" : {
 
     },
+    "Draft Order, 0 for N/A (%lld)" : {
+
+    },
     "Driving" : {
       "localizations" : {
         "es-419" : {
@@ -344,6 +381,9 @@
       }
     },
     "End" : {
+
+    },
+    "Engineering Inspiration" : {
 
     },
     "error" : {
@@ -410,6 +450,7 @@
       }
     },
     "Harmony" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -428,6 +469,9 @@
           }
         }
       }
+    },
+    "Impact" : {
+
     },
     "intake" : {
       "extractionState" : "stale",
@@ -456,6 +500,7 @@
 
     },
     "Left-Handed Labels" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -464,6 +509,18 @@
           }
         }
       }
+    },
+    "Level 0" : {
+
+    },
+    "Level 1" : {
+
+    },
+    "Level 2" : {
+
+    },
+    "Level 3" : {
+
     },
     "log in" : {
       "extractionState" : "stale",
@@ -574,9 +631,6 @@
         }
       }
     },
-    "Net" : {
-
-    },
     "Neutral notes handled (%lld)" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -598,6 +652,9 @@
           }
         }
       }
+    },
+    "None" : {
+
     },
     "ok" : {
       "localizations" : {
@@ -622,6 +679,9 @@
           }
         }
       }
+    },
+    "Other Awards" : {
+
     },
     "outtake" : {
       "extractionState" : "stale",
@@ -679,6 +739,9 @@
         }
       }
     },
+    "Place" : {
+
+    },
     "Please fill in all three long form responses." : {
       "localizations" : {
         "es-419" : {
@@ -731,6 +794,12 @@
         }
       }
     },
+    "Regional Points" : {
+
+    },
+    "Regional Points Calculator" : {
+
+    },
     "review" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -743,6 +812,12 @@
       }
     },
     "Review" : {
+
+    },
+    "Rookie All-Star" : {
+
+    },
+    "Rookie Bonus" : {
 
     },
     "Scores (%lld)" : {
@@ -797,6 +872,7 @@
       }
     },
     "Shuttle/Other" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -818,6 +894,7 @@
       }
     },
     "Speaker" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es-419" : {
           "stringUnit" : {
@@ -921,6 +998,9 @@
         }
       }
     },
+    "Team Rank (%lld)" : {
+
+    },
     "theme change" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -955,6 +1035,9 @@
           }
         }
       }
+    },
+    "Total Teams (%lld)" : {
+
     },
     "Trap note" : {
       "localizations" : {
@@ -1035,6 +1118,9 @@
           }
         }
       }
+    },
+    "Winning Matches Played (%lld)" : {
+
     }
   },
   "version" : "1.0"

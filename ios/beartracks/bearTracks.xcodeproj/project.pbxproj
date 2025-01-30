@@ -10,6 +10,7 @@
 		F5081BA22B741D15001497DB /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F51BC0C62BB71B2D009587C1 /* Stickers.xcstickers in Resources */ = {isa = PBXBuildFile; fileRef = F51BC0A02BB717D1009587C1 /* Stickers.xcstickers */; };
 		F51BC0CF2BB71CB5009587C1 /* bearTracks Stickers.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F51BC0B82BB71AF5009587C1 /* bearTracks Stickers.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F532B0342D4BE6D900B7C127 /* RegionalPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = F532B0322D4BE6D900B7C127 /* RegionalPoints.swift */; };
 		F535387A2BB4D03F00D15A15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F53F36422BB74B0A008F196B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F53F36412BB74B0A008F196B /* Assets.xcassets */; };
 		F53F36452BB74B0A008F196B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F53F36442BB74B0A008F196B /* Preview Assets.xcassets */; };
@@ -20,7 +21,6 @@
 		F53F36502BB74BFA008F196B /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
 		F53F36522BB74C20008F196B /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
 		F53F36532BB74C8E008F196B /* TeamStatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */; };
-		F53F36542BB74D12008F196B /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
 		F53F36562BB75112008F196B /* bearTracks-matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53F36552BB75112008F196B /* bearTracks-matches.swift */; };
 		F540A13D2B549D2500611384 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
 		F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
@@ -37,7 +37,6 @@
 		F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
 		F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E522B527E170033DB0D /* SettingsView.swift */; };
 		F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */; };
-		F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
 		F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */; };
 		F5B8D1AF2B9670F200D3F230 /* beartracks_watchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */; };
 		F5B8D1B32B9670F200D3F230 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5B8D1B22B9670F200D3F230 /* Assets.xcassets */; };
@@ -47,7 +46,6 @@
 		F5B8D1BE2B96715500D3F230 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5081BA12B741D15001497DB /* AppState.swift */; };
 		F5B8D1BF2B96716D00D3F230 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */; };
 		F5B8D1C02B96719F00D3F230 /* Teams.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E4D2B527E170033DB0D /* Teams.swift */; };
-		F5B8D1C12B96720900D3F230 /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */; };
 		F5B8D1C22B96727400D3F230 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
 		F5B8D1C32B96727A00D3F230 /* DetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E402B527E050033DB0D /* DetailedView.swift */; };
 		F5B8D1C42B96728500D3F230 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
@@ -117,6 +115,7 @@
 		F5081BA12B741D15001497DB /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		F51BC0A02BB717D1009587C1 /* Stickers.xcstickers */ = {isa = PBXFileReference; lastKnownFileType = folder.stickers; name = Stickers.xcstickers; path = "bearTracks-stickers StickerPackExtension/Stickers.xcstickers"; sourceTree = "<group>"; };
 		F51BC0B82BB71AF5009587C1 /* bearTracks Stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "bearTracks Stickers.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F532B0322D4BE6D900B7C127 /* RegionalPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionalPoints.swift; sourceTree = "<group>"; };
 		F53F363B2BB74B09008F196B /* bearTracks TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bearTracks TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F53F36412BB74B0A008F196B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F53F36442BB74B0A008F196B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -137,7 +136,6 @@
 		F5AE2E4E2B527E170033DB0D /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		F5AE2E522B527E170033DB0D /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
-		F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F5B8D1AC2B9670F200D3F230 /* bearTracks Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bearTracks Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5B8D1AE2B9670F200D3F230 /* beartracks_watchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_watchApp.swift; sourceTree = "<group>"; };
@@ -232,7 +230,6 @@
 				F54E76C12B527D96003C65A2 /* bearTracksApp.swift */,
 				F5AE2E452B527E050033DB0D /* DataView.swift */,
 				F5AE2E402B527E050033DB0D /* DetailedView.swift */,
-				F5AE2E5B2B52FD430033DB0D /* LoginStateValidator.swift */,
 				F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */,
 				F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */,
 				F5AE2E3F2B527E050033DB0D /* MatchList.swift */,
@@ -243,6 +240,7 @@
 				F540A13C2B549D2500611384 /* TeamView.swift */,
 				F540A13E2B549D2E00611384 /* TeamViewModel.swift */,
 				F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */,
+				F532B0322D4BE6D900B7C127 /* RegionalPoints.swift */,
 				F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */,
 				F54E76C52B527D97003C65A2 /* Assets.xcassets */,
 				F5C346C02BB796CB00087B69 /* PrivacyInfo.xcprivacy */,
@@ -446,7 +444,6 @@
 			files = (
 				F53F36492BB74BE1008F196B /* LoginView.swift in Sources */,
 				F53F36522BB74C20008F196B /* TeamViewModel.swift in Sources */,
-				F53F36542BB74D12008F196B /* LoginStateValidator.swift in Sources */,
 				F53F364E2BB74BF3008F196B /* SettingsManager.swift in Sources */,
 				F53F36502BB74BFA008F196B /* URLSessionConfiguration.swift in Sources */,
 				F53F364A2BB74BE4008F196B /* AppState.swift in Sources */,
@@ -465,11 +462,11 @@
 				F5AE2E5A2B5288FB0033DB0D /* URLSessionConfiguration.swift in Sources */,
 				F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */,
 				F5AE2E5E2B52FF3F0033DB0D /* LoginView.swift in Sources */,
+				F532B0342D4BE6D900B7C127 /* RegionalPoints.swift in Sources */,
 				F5AE2E472B527E050033DB0D /* DetailedView.swift in Sources */,
 				F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */,
 				F5AE2E582B527E170033DB0D /* SettingsView.swift in Sources */,
 				F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */,
-				F5AE2E5C2B52FD430033DB0D /* LoginStateValidator.swift in Sources */,
 				F59F8F7D2B7D2AD600D35A56 /* TeamStatController.swift in Sources */,
 				F5081BA22B741D15001497DB /* AppState.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
@@ -486,7 +483,6 @@
 				F5B8D1C02B96719F00D3F230 /* Teams.swift in Sources */,
 				F5B8D1C32B96727A00D3F230 /* DetailedView.swift in Sources */,
 				F5B8D1C62B96729200D3F230 /* TeamStatController.swift in Sources */,
-				F5B8D1C12B96720900D3F230 /* LoginStateValidator.swift in Sources */,
 				F5B8D1C22B96727400D3F230 /* TeamView.swift in Sources */,
 				F5B8D1C42B96728500D3F230 /* TeamViewModel.swift in Sources */,
 				F5B8D1BF2B96716D00D3F230 /* SettingsManager.swift in Sources */,
@@ -538,7 +534,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_NSStickerSharingLevel = OS;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 6.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -559,7 +555,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_NSStickerSharingLevel = OS;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 6.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

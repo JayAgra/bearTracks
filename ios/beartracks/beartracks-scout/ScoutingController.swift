@@ -10,11 +10,11 @@ import UIKit
 
 class ScoutingController: ObservableObject {
     // login state
-    @Published public var loginRequired: Bool = false
+    @Published public var loginRequired: Bool = true
     // tab selection
     @Published public var currentTab: Tab = .start
     // basic meta
-    private var eventCode: String = UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR"
+    private var eventCode: String = UserDefaults.standard.string(forKey: "eventCode") ?? "CASD"
     @Published public var matchNumber: Int = 0
     @Published public var teamNumber: String = "--"
     @Published public var matchList: [MatchData] = []
@@ -29,9 +29,9 @@ class ScoutingController: ObservableObject {
     @Published public var switches: (Bool, Bool, Bool, Int, Int, Int, Int) = (
         false, false, false, 0, 0, 0, 0
         /*
-         1 -
-         2 -
-         3 -
+         1 - trap note (old)
+         2 - climb
+         3 - deep climb
          4 - algae handled, auto period
          5 - coral handled, auto period
          6 - auto period scores
@@ -64,26 +64,10 @@ class ScoutingController: ObservableObject {
     // functional functions
     func advanceToTab(tab: Tab) { currentTab = tab }
     
-    func clearSpeaker() {
+    func clearScore(scoreType: Int) {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
             matchTimes.append(
-                MatchTime(score_type: 0, intake: times[0], travel: times[1], outtake: times[2]))
-            times = [0, 0, 0]
-        }
-    }
-    
-    func clearAmplifier() {
-        if times[0] != 0 || times[1] != 0 || times[2] != 0 {
-            matchTimes.append(
-                MatchTime(score_type: 1, intake: times[0], travel: times[1], outtake: times[2]))
-            times = [0, 0, 0]
-        }
-    }
-    
-    func clearShuttle() {
-        if times[0] != 0 || times[1] != 0 || times[2] != 0 {
-            matchTimes.append(
-                MatchTime(score_type: 9, intake: times[0], travel: times[1], outtake: times[2]))
+                MatchTime(score_type: scoreType, intake: times[0], travel: times[1], outtake: times[2]))
             times = [0, 0, 0]
         }
     }

@@ -33,7 +33,7 @@ struct EndView: View {
                                             controller.switches.2 = false
                                         }
                                     }
-                                Toggle("Harmony", isOn: $controller.switches.2)
+                                Toggle("Deep Climb", isOn: $controller.switches.2)
                                     .disabled(!controller.switches.1)
                             }
                             .padding()

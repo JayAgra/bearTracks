@@ -15,6 +15,9 @@ struct MatchDetailView: View {
     @State private var loadStarted: Bool = false
     @State private var eventCodeInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
     @State private var settingsOptions: [DataMetadata] = []
+    // dont even talk to me about this one
+    let emptyTeamStat = TeamStats(team: 0, trap_note: 0.0, climb: 0.0, buddy_climb: 0.0, intake: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), travel: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), outtake: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), speaker: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), amplifier: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), total: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), points: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_preload: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_wing: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_center: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_scores: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0))
+
     
     var body: some View {
 #if !os(tvOS)
@@ -300,7 +303,7 @@ struct MatchDetailView: View {
         }
         requestTask.resume()
     }
-    
+        
     private func loadData() {
         var teamSet = TeamSet()
         var local: [TeamStats] = []
@@ -316,7 +319,7 @@ struct MatchDetailView: View {
                             teamSet.Blue2 = Blue2Data
                             fetchTeamStats(team: appState.matchJson[match - 1].teams[5].teamNumber) { Blue3Data in
                                 teamSet.Blue3 = Blue3Data
-                                local = [teamSet.Red1!, teamSet.Red2!, teamSet.Red3!, teamSet.Blue1!, teamSet.Blue2!, teamSet.Blue3!]
+                                local = [teamSet.Red1 ?? emptyTeamStat, teamSet.Red2 ?? emptyTeamStat, teamSet.Red3 ?? emptyTeamStat, teamSet.Blue1 ?? emptyTeamStat, teamSet.Blue2 ?? emptyTeamStat, teamSet.Blue3 ?? emptyTeamStat]
                                 local.forEach { result in
                                     if result.speaker.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.speaker.mean }
                                     if result.amplifier.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.amplifier.mean }

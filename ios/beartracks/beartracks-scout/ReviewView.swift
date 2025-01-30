@@ -36,16 +36,15 @@ struct ReviewView: View {
                                 VStack {
                                     Divider()
                                     ForEach($controller.matchTimes) { $matchTime in
-                                        if matchTime.score_type == 0 || matchTime.score_type == 1 || matchTime.score_type == 9 {
+                                        if matchTime.score_type >= 4 || matchTime.score_type <= 8 {
                                             VStack {
                                                 HStack {
                                                     Picker("Type", selection: $matchTime.score_type) {
-                                                        Text("Speaker")
-                                                            .tag(0)
-                                                        Text("Amplifier")
-                                                            .tag(1)
-                                                        Text("Shuttle/Other")
-                                                            .tag(9)
+                                                        Text("Algae").tag(4)
+                                                        Text("Level 0").tag(5)
+                                                        Text("Level 1").tag(6)
+                                                        Text("Level 2").tag(7)
+                                                        Text("Level 3").tag(8)
                                                     }
                                                     .pickerStyle(.menu)
                                                     Spacer()

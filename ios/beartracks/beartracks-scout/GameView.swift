@@ -70,7 +70,7 @@ struct GameView: View {
                                 VStack {
                                     Capsule()
                                         .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
-                                        .frame(width: geometry.size.width * 0.8, height: geometry.size.width * 0.15)
+                                        .frame(width: geometry.size.width * 1, height: geometry.size.width * 0.15)
                                         .rotationEffect(Angle(radians: Double.pi * 0.5))
                                         .offset(x: geometry.size.width * 0.275)
                                 }
@@ -90,24 +90,24 @@ struct GameView: View {
                                 }
                                 VStack { // REFACTOR LATER
                                     Spacer(); Spacer()
-                                    Text("Net")
-                                        .foregroundStyle(releaseState == .net ? Color.red : Color.gray)
+                                    Text("Algae")
+                                        .foregroundStyle(releaseState == .net ? Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
                                     Text("L3")
-                                        .foregroundStyle(releaseState == .l3 ? Color.orange : Color.gray)
+                                        .foregroundStyle(releaseState == .l3 ? Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
                                     Text("L2")
-                                        .foregroundStyle(releaseState == .l2 ? Color.yellow : Color.gray)
+                                        .foregroundStyle(releaseState == .l2 ? Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
                                     Text("L1")
-                                        .foregroundStyle(releaseState == .l1 ? Color.green : Color.gray)
+                                        .foregroundStyle(releaseState == .l1 ? Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
                                     Text("L0")
-                                        .foregroundStyle(releaseState == .l0 ? Color.blue : Color.gray)
+                                        .foregroundStyle(releaseState == .l0 ? Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer(); Spacer()
                                 }
@@ -150,19 +150,24 @@ struct GameView: View {
                                         PressModifier(
                                             onPress: { self.actionState = .travel },
                                             onRelease: {
-                                                if self.ballOffset.height >= geometry.size.height * 0.2 {
+                                                switch releaseState {
+                                                case .neutral:
+                                                    return;
+                                                case .l0:
                                                     UINotificationFeedbackGenerator().notificationOccurred(.success)
-                                                    controller.clearSpeaker()
-                                                    self.holdLengths = (0, 0, 0)
-                                                } else if self.ballOffset.height <= geometry.size.height * -0.2 {
-                                                    if abs(self.ballOffset.height) >= geometry.size.height * 0.475 {
-                                                        UINotificationFeedbackGenerator().notificationOccurred(.error)
-                                                        controller.clearShuttle()
-                                                    } else {
-                                                        UINotificationFeedbackGenerator().notificationOccurred(.warning)
-                                                        controller.clearAmplifier()
-                                                    }
-                                                    self.holdLengths = (0, 0, 0)
+                                                    controller.clearScore(scoreType: 5); self.holdLengths = (0, 0, 0)
+                                                case .l1:
+                                                    UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                                                    controller.clearScore(scoreType: 6); self.holdLengths = (0, 0, 0)
+                                                case .l2:
+                                                    UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                                                    controller.clearScore(scoreType: 7); self.holdLengths = (0, 0, 0)
+                                                case .l3:
+                                                    UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                                                    controller.clearScore(scoreType: 8); self.holdLengths = (0, 0, 0)
+                                                case .net:
+                                                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                                    controller.clearScore(scoreType: 9); self.holdLengths = (0, 0, 0)
                                                 }
                                                 self.actionState = .neutral
                                                 self.releaseState = .neutral
@@ -232,17 +237,22 @@ struct GameView: View {
     }
     
     private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat) {
-        if self.ballOffset.width >= totalWidth * 0.3125 {
-            if abs(self.ballOffset.height) < totalHeight * 0.15 && abs(dragValue.translation.height) >= totalHeight * 0.15 {
+        if self.ballOffset.width >= totalWidth * 0.390625 {
+            if abs(self.ballOffset.height) < totalHeight * 0.1875 && abs(dragValue.translation.height) >= totalHeight * 0.1875 {
                 UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-            } else if abs(self.ballOffset.height) < totalHeight * 0.3 && abs(dragValue.translation.height) >= totalHeight * 0.3 {
+            } else if abs(self.ballOffset.height) < totalHeight * 0.375 && abs(dragValue.translation.height) >= totalHeight * 0.375 {
                 UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            }
+            if abs(self.ballOffset.height) > totalHeight * 0.1875 && abs(dragValue.translation.height) < totalHeight * 0.1875 {
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            } else if abs(self.ballOffset.height) > totalHeight * 0.375 && abs(dragValue.translation.height) < totalHeight * 0.375 {
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
             }
         }
         
         var newOffset: CGSize;
         let newWidth = min(max(dragValue.translation.width, (totalWidth * -0.3875)), (totalWidth * 0.3875))
-        let newHeight = min(max(dragValue.translation.height * -1, (totalWidth * -0.4) - 15), (totalWidth * 0.4) + 15)
+        let newHeight = min(max(dragValue.translation.height * -1, (totalWidth * -0.6125)), (totalWidth * 0.6125))
         if newWidth >= totalWidth * 0.3375 {
             newOffset = CGSize(
                 width: totalWidth * 0.3925,
@@ -270,15 +280,15 @@ struct GameView: View {
         self.ballOffset = newOffset
                       
         if self.ballOffset.width >= totalWidth * 0.325 {
-            if abs(self.ballOffset.height) > totalWidth * 0.15 {
+            if abs(self.ballOffset.height) > totalWidth * 0.1875 {
                 if self.ballOffset.height > 0 {
-                    if self.ballOffset.height < totalWidth * 0.3 {
+                    if self.ballOffset.height < totalWidth * 0.375 {
                         releaseState = .l3
                     } else {
                         releaseState = .net
                     }
                 } else {
-                    if self.ballOffset.height > totalWidth * -0.3 {
+                    if self.ballOffset.height > totalWidth * -0.375 {
                         releaseState = .l1
                     } else {
                         releaseState = .l0
@@ -305,7 +315,7 @@ struct GameView: View {
             case .l3:
                 return Image(systemName: "4.circle.fill")
             case .net:
-                return Image(systemName: "network")
+                return Image(systemName: "leaf.fill")
             case .neutral:
                 return Image(systemName: "minus")
             }
