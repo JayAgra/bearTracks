@@ -533,7 +533,7 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
 }
 
 // if you aren't D6MFYYVHA8 you may want to change this
-const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\",\"D6MFYYVHA8.com.jayagra.lydiasmvp\"]}}";
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
 }
