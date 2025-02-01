@@ -82,7 +82,7 @@ class ScoutingController: ObservableObject {
         localTimeCopy.append(MatchTime(score_type: 10, intake: switches.1 ? 1 : 0, travel: switches.1 ? 1 : 0, outtake: switches.1 ? 1 : 0)) // climb
         localTimeCopy.append(MatchTime(score_type: 11, intake: switches.2 ? 1 : 0, travel: switches.2 ? 1 : 0, outtake: switches.2 ? 1 : 0)) // climb deep
         localTimeCopy.append(MatchTime(score_type: 14, intake: Double(switches.4), travel: Double(switches.4), outtake: Double(switches.4))) // algae handled auto
-        localTimeCopy.append(MatchTime(score_type: 15, intake: Double(switches.5), travel: Double(switches.5), outtake: Double(switches.5)))
+        localTimeCopy.append(MatchTime(score_type: 15, intake: Double(switches.5), travel: Double(switches.5), outtake: Double(switches.5))) // coral handled
         localTimeCopy.append(MatchTime(score_type: 13, intake: Double(switches.6), travel: Double(switches.6), outtake: Double(switches.6))) // auto scores
         guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
         var encodedMatchTimes: String = ""

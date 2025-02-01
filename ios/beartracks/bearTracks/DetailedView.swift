@@ -21,7 +21,7 @@ struct DetailedView: View {
     var body: some View {
         VStack {
             if !detailData.isEmpty {
-                if detailData[0].FullMain.season == 2024 {
+                if detailData[0].FullMain.season == 2025 {
                     ScrollView {
                         Text("Team \(String(detailData[0].FullMain.team))")
 #if !os(watchOS)
@@ -52,7 +52,7 @@ struct DetailedView: View {
                         VStack {
                             HStack {
                                 VStack {
-                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[3]))s")
+                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[4]))s")
 #if !os(watchOS)
                                         .font(.title)
 #else
@@ -62,7 +62,7 @@ struct DetailedView: View {
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
-                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[4]))s")
+                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[5]))s")
 #if !os(watchOS)
                                         .font(.title)
 #else
@@ -72,7 +72,7 @@ struct DetailedView: View {
                                 }
                                 .frame(maxWidth: .infinity)
                                 VStack {
-                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[5]))s")
+                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[6]))s")
 #if !os(watchOS)
                                         .font(.title)
 #else
@@ -88,23 +88,30 @@ struct DetailedView: View {
                         VStack {
                             HStack {
                                 VStack {
-                                    Text(String(detailData[0].FullMain.analysis.split(separator: ",")[6]))
-#if !os(watchOS)
-                                        .font(.title)
-#else
-                                        .font(.title3)
-#endif
-                                    Text("speaker")
-                                }
-                                .frame(maxWidth: .infinity)
-                                VStack {
                                     Text(String(detailData[0].FullMain.analysis.split(separator: ",")[7]))
 #if !os(watchOS)
                                         .font(.title)
 #else
                                         .font(.title3)
 #endif
-                                    Text("amplifier")
+                                    Text("algae")
+                                }
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text(
+                                        String(
+                                            detailData[0].FullMain.analysis.split(separator: ",")[8] +
+                                            detailData[0].FullMain.analysis.split(separator: ",")[9] +
+                                            detailData[0].FullMain.analysis.split(separator: ",")[10] +
+                                            detailData[0].FullMain.analysis.split(separator: ",")[11]
+                                        )
+                                    )
+#if !os(watchOS)
+                                        .font(.title)
+#else
+                                        .font(.title3)
+#endif
+                                    Text("coral")
                                 }
                                 .frame(maxWidth: .infinity)
                             }
@@ -121,79 +128,65 @@ struct DetailedView: View {
                                     VStack {
                                         HStack {
                                             switch matchTime.score_type {
-                                            case 0:
-                                                Text("Speaker")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text(
-                                                    "\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s"
-                                                )
-                                                .font(.title3)
-                                            case 1:
-                                                Text("Amplifier")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text(
-                                                    "\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s"
-                                                )
-                                                .font(.title3)
-                                            case 2:
-                                                Text("Trap Note")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")")
-                                                    .font(.title3)
-                                            case 3:
-                                                Text("Climb")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")")
-                                                    .font(.title3)
                                             case 4:
-                                                Text("Buddy Climb")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")")
-                                                    .font(.title3)
-                                            case 5:
-                                                Text("Auto Neutral Handle")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text("\(Int(matchTime.intake))")
-                                                    .font(.title3)
-                                            case 6:
-                                                Text("Auto Wing Handle")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text("\(Int(matchTime.intake))")
-                                                    .font(.title3)
-                                            case 7:
-                                                Text("Auto Preload Handle")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text("\(Int(matchTime.intake))")
-                                                    .font(.title3)
-                                            case 8:
-                                                Text("Auto Scores")
-                                                    .font(.title3)
-                                                Spacer()
-                                                Text("\(Int(matchTime.intake))")
-                                                    .font(.title3)
-                                            case 9:
-                                                Text("Shuttle")
-                                                    .font(.title3)
+                                                Text("Algae").font(.title3)
                                                 Spacer()
                                                 Text(
                                                     "\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s"
-                                                )
-                                                .font(.title3)
+                                                ).font(.title3)
+                                            case 5:
+                                                Text("Level 1").font(.title3)
+                                                Spacer()
+                                                Text(
+                                                    "\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s"
+                                                ).font(.title3)
+                                            case 6:
+                                                Text("Level 2").font(.title3)
+                                                Spacer()
+                                                Text(
+                                                    "\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s"
+                                                ).font(.title3)
+                                            case 7:
+                                                Text("Level 3").font(.title3)
+                                                Spacer()
+                                                Text(
+                                                    "\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s"
+                                                ).font(.title3)
+                                            case 8:
+                                                Text("Level 4").font(.title3)
+                                                Spacer()
+                                                Text(
+                                                    "\(String(format: "%.1f", matchTime.intake + matchTime.travel + matchTime.outtake))s"
+                                                ).font(.title3)
+                                            case 9:
+                                                Text("Endgame Park").font(.title3)
+                                                Spacer()
+                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")").font(.title3)
+                                            case 10:
+                                                Text("Climb").font(.title3)
+                                                Spacer()
+                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")").font(.title3)
+                                            case 11:
+                                                Text("Deep Cage").font(.title3)
+                                                Spacer()
+                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")").font(.title3)
+                                            case 13:
+                                                Text("Auto Scores").font(.title3)
+                                                Spacer()
+                                                Text("\(Int(matchTime.intake))").font(.title3)
+                                            case 14:
+                                                Text("Auto Algae Attempts").font(.title3)
+                                                Spacer()
+                                                Text("\(Int(matchTime.intake))").font(.title3)
+                                            case 15:
+                                                Text("Auto Coral Attempts").font(.title3)
+                                                Spacer()
+                                                Text("\(Int(matchTime.intake))").font(.title3)
                                             default:
                                                 Text("Unknown entry")
                                             }
                                         }
-                                        if matchTime.score_type == 0 || matchTime.score_type == 1
-                                            || matchTime.score_type == 9
-                                        {
+                                        if matchTime.score_type >= 4 && matchTime.score_type <= 8 {
                                             HStack {
                                                 Spacer()
                                                 Label(
@@ -300,7 +293,7 @@ struct DetailedView: View {
                     let result = try decoder.decode([DetailedData].self, from: data)
                     DispatchQueue.main.async {
                         self.detailData = result
-                        if !result.isEmpty && result[0].FullMain.season == 2024 {
+                        if !result.isEmpty && result[0].FullMain.season == 2025 {
                             do {
                                 self.gameData = try decoder.decode(
                                     [MatchTime2024].self, from: Data(result[0].FullMain.game.utf8))

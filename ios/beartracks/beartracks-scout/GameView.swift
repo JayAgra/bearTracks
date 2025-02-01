@@ -70,7 +70,7 @@ struct GameView: View {
                                 VStack {
                                     Capsule()
                                         .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
-                                        .frame(width: geometry.size.width * 1, height: geometry.size.width * 0.15)
+                                        .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.15)
                                         .rotationEffect(Angle(radians: Double.pi * 0.5))
                                         .offset(x: geometry.size.width * 0.275)
                                 }
@@ -94,19 +94,19 @@ struct GameView: View {
                                         .foregroundStyle(releaseState == .net ? Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
-                                    Text("L3")
+                                    Text("L4")
                                         .foregroundStyle(releaseState == .l3 ? Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
-                                    Text("L2")
+                                    Text("L3")
                                         .foregroundStyle(releaseState == .l2 ? Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
-                                    Text("L1")
+                                    Text("L2")
                                         .foregroundStyle(releaseState == .l1 ? Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer()
-                                    Text("L0")
+                                    Text("L1")
                                         .foregroundStyle(releaseState == .l0 ? Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255) : Color.gray)
                                         .frame(alignment: getLabelAlignment())
                                     Spacer(); Spacer()
@@ -167,7 +167,7 @@ struct GameView: View {
                                                     controller.clearScore(scoreType: 8); self.holdLengths = (0, 0, 0)
                                                 case .net:
                                                     UINotificationFeedbackGenerator().notificationOccurred(.success)
-                                                    controller.clearScore(scoreType: 9); self.holdLengths = (0, 0, 0)
+                                                    controller.clearScore(scoreType: 4); self.holdLengths = (0, 0, 0)
                                                 }
                                                 self.actionState = .neutral
                                                 self.releaseState = .neutral
@@ -253,7 +253,7 @@ struct GameView: View {
         
         var newOffset: CGSize;
         let newWidth = min(max(dragValue.translation.width, (totalWidth * -0.3875)), (totalWidth * 0.3875))
-        let newHeight = min(max(dragValue.translation.height * -1, (totalWidth * -0.6125)), (totalWidth * 0.6125))
+        let newHeight = min(max(dragValue.translation.height * -1, (totalWidth * -0.54)), (totalWidth * 0.54))
         if newWidth >= totalWidth * 0.3375 {
             newOffset = CGSize(
                 width: totalWidth * 0.3925,
