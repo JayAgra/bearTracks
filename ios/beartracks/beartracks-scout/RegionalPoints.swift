@@ -86,7 +86,8 @@ struct RegionalPoints: View {
                         Text("5th or below").tag(0)
                         Text("4th").tag(7)
                         Text("3rd").tag(13)
-                        Text("1st or 2nd").tag(20)
+                        Text("2nd").tag(20)
+                        Text("1st").tag(21)
                     }
                     .pickerStyle(.menu)
                     Stepper {
@@ -179,10 +180,17 @@ func awards(awards: Int) -> Int {
 
 func playoffAdvancement(allianceFinish: Int, matchesWon: Int, winningMatchesPlayed: Int) -> Int {
     if matchesWon != 0 {
-        let playedPercentage: Double = Double(winningMatchesPlayed) / Double(matchesWon)
-        let points: Double = playedPercentage * Double(allianceFinish)
-        
-        return Int(points.rounded())
+        if allianceFinish != 21 {
+            let playedPercentage: Double = Double(winningMatchesPlayed) / Double(matchesWon)
+            let points: Double = playedPercentage * Double(allianceFinish)
+            
+            return Int(points.rounded())
+        } else {
+            let playedPercentage: Double = Double(winningMatchesPlayed) / Double(matchesWon)
+            let points: Double = playedPercentage * Double(allianceFinish - 1)
+            
+            return Int(points.rounded()) + 10
+        }
     } else { return 0 }
 }
 

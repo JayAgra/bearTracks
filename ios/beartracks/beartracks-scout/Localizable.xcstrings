@@ -65,7 +65,11 @@
         }
       }
     },
+    "1st" : {
+
+    },
     "1st or 2nd" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -80,6 +84,9 @@
           }
         }
       }
+    },
+    "2nd" : {
+
     },
     "3rd" : {
       "localizations" : {
@@ -897,9 +904,6 @@
         }
       }
     },
-    "Log In           " : {
-
-    },
     "Log Out" : {
       "localizations" : {
         "en" : {
@@ -1510,9 +1514,6 @@
           }
         }
       }
-    },
-    "Use Passkey" : {
-
     },
     "Username" : {
       "localizations" : {
