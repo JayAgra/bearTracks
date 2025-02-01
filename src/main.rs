@@ -998,6 +998,10 @@ async fn main() -> io::Result<()> {
                 web::resource("/apple-app-site-association")
                     .route(web::get().to(misc_apple_app_site_association)),
             )
+            .service(
+                web::resource("/.well-known/apple-app-site-association")
+                    .route(web::get().to(misc_apple_app_site_association)),
+            )
             /* debug endpoints */
             // GET
             .service(

@@ -216,6 +216,7 @@ struct GameView: View {
 //                    .navigationTitle("Match Scouting")
 //            }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     private func updateTogglePosition(totalWidth: CGFloat, height: CGFloat) {

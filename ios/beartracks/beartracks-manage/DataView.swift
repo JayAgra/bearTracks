@@ -56,7 +56,7 @@ struct DataView: View {
                         Alert(
                             title: Text("Delete Submission \(self.lastDeletedId)"),
                             message: Text(
-                                "are you sure you would like to delete the data? this action is irreversable."),
+                                "are you sure you would like to delete the data? this action is irreversible."),
                             primaryButton: .destructive(Text("Delete")) {
                                 dataItems.deleteSubmission(id: lastDeletedId)
                             },

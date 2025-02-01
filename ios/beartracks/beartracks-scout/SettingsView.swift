@@ -83,7 +83,7 @@ struct SettingsView: View {
                                 for cookie in cookies {
                                     sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
                                 }
-                                controller.loginRequired = true
+                                controller.loginRequired = 2
                             }
                         }
                         .foregroundStyle(Color.pink)
@@ -127,12 +127,12 @@ struct SettingsView: View {
                         "Delete", role: .destructive,
                         action: {
                             deleteAccount(data: ["username": deletionData.0, "password": deletionData.1])
-                            controller.loginRequired = true
+                            controller.loginRequired = 2
                             showConfirm = false
                         })
                 },
                 message: {
-                    Text("**This action is irreversable.**")
+                    Text("**This action is irreversible.**")
                 })
         }
         .onAppear {
@@ -140,6 +140,7 @@ struct SettingsView: View {
                 self.settingsOptions = result
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     func saveSeason() {

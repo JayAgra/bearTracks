@@ -118,6 +118,7 @@ struct StartView: View {
                 }
                 .navigationTitle("Match Scouting")
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
     

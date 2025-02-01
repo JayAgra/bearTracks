@@ -10,7 +10,7 @@ import UIKit
 
 class ScoutingController: ObservableObject {
     // login state
-    @Published public var loginRequired: Bool = true
+    @Published public var loginRequired: Int = 0
     // tab selection
     @Published public var currentTab: Tab = .start
     // basic meta
@@ -29,13 +29,13 @@ class ScoutingController: ObservableObject {
     @Published public var switches: (Bool, Bool, Bool, Int, Int, Int, Int) = (
         false, false, false, 0, 0, 0, 0
         /*
-         1 - trap note (old)
-         2 - climb
-         3 - deep climb
-         4 - algae handled, auto period
-         5 - coral handled, auto period
-         6 - auto period scores
-         7 -
+         0 - park
+         1 - climb
+         2 - deep climb
+         3 - algae handled, auto period
+         4 - coral handled, auto period
+         5 - auto period scores
+         6 -
          */
     )
     // submit sheet
@@ -78,13 +78,12 @@ class ScoutingController: ObservableObject {
     
     func submitData(completionBlock: @escaping ((SubmitSheetType, String)) -> Void) {
         var localTimeCopy = matchTimes;
-        localTimeCopy.append(MatchTime(score_type: 2, intake: switches.0 ? 1 : 0, travel: switches.0 ? 1 : 0, outtake: switches.0 ? 1 : 0))
-        localTimeCopy.append(MatchTime(score_type: 3, intake: switches.1 ? 1 : 0, travel: switches.1 ? 1 : 0, outtake: switches.1 ? 1 : 0))
-        localTimeCopy.append(MatchTime(score_type: 4, intake: switches.2 ? 1 : 0, travel: switches.2 ? 1 : 0, outtake: switches.2 ? 1 : 0))
-        localTimeCopy.append(MatchTime(score_type: 5, intake: Double(switches.3), travel: Double(switches.3), outtake: Double(switches.3)))
-        localTimeCopy.append(MatchTime(score_type: 6, intake: Double(switches.4), travel: Double(switches.4), outtake: Double(switches.4)))
-        localTimeCopy.append(MatchTime(score_type: 7, intake: Double(switches.5), travel: Double(switches.5), outtake: Double(switches.5)))
-        localTimeCopy.append(MatchTime(score_type: 8, intake: Double(switches.6), travel: Double(switches.6), outtake: Double(switches.6)))
+        localTimeCopy.append(MatchTime(score_type: 9, intake: switches.0 ? 1 : 0, travel: switches.0 ? 1 : 0, outtake: switches.0 ? 1 : 0)) // park
+        localTimeCopy.append(MatchTime(score_type: 10, intake: switches.1 ? 1 : 0, travel: switches.1 ? 1 : 0, outtake: switches.1 ? 1 : 0)) // climb
+        localTimeCopy.append(MatchTime(score_type: 11, intake: switches.2 ? 1 : 0, travel: switches.2 ? 1 : 0, outtake: switches.2 ? 1 : 0)) // climb deep
+        localTimeCopy.append(MatchTime(score_type: 14, intake: Double(switches.4), travel: Double(switches.4), outtake: Double(switches.4))) // algae handled auto
+        localTimeCopy.append(MatchTime(score_type: 15, intake: Double(switches.5), travel: Double(switches.5), outtake: Double(switches.5)))
+        localTimeCopy.append(MatchTime(score_type: 13, intake: Double(switches.6), travel: Double(switches.6), outtake: Double(switches.6))) // auto scores
         guard let url = URL(string: "https://beartracks.io/api/v1/data/submit") else { return }
         var encodedMatchTimes: String = ""
         do {
@@ -95,7 +94,7 @@ class ScoutingController: ObservableObject {
         let matchData = ScoutingDataExport(
             season: 2025, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR",
             match_num: matchNumber, level: "Qualification", team: Int(teamNumber) ?? 0,
-            game: encodedMatchTimes, defend: defense, driving: driving, overall: overall + "\n\niOS v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5")")
+            game: encodedMatchTimes, defend: defense, driving: driving, overall: overall + "\n\niOS v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "v6.0.x 2025 - error obtaining string")")
         do {
             let jsonData = try JSONEncoder().encode(matchData)
             var request = URLRequest(url: url)
@@ -162,6 +161,30 @@ class ScoutingController: ObservableObject {
         self.defense = ""
         self.driving = ""
         self.overall = ""
+    }
+    
+    func checkLoginState() {
+        guard let url = URL(string: "https://beartracks.io/api/v1/whoami") else {
+            self.loginRequired = 2
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let task = sharedSession.dataTask(with: request) { (data, response, error) in
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    self.loginRequired = 1
+                } else {
+                    self.loginRequired = 2
+                }
+            } else {
+                self.loginRequired = 2
+            }
+        }
+        
+        task.resume()
     }
 }
 

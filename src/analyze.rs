@@ -401,6 +401,8 @@ fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                 }
             }
             13 => auto_score += 1,
+            // 14 = auto algae
+            // 15 = auto not algae (coral?)
             _ => {}
         }
         if time.score_type == 0 || time.score_type == 1 || time.score_type == 9 {

@@ -56,7 +56,7 @@ struct TeamsView: View {
                         Alert(
                             title: Text("Delete Team Key for \(self.lastDeletedTeam.team)"),
                             message: Text(
-                                "are you sure you would like to delete this user? this action is irreversable."),
+                                "are you sure you would like to delete this user? this action is irreversible."),
                             primaryButton: .destructive(Text("Delete")) {
                                 teamsModel.deleteTeamKey(id: String(lastDeletedTeam.id))
                             },

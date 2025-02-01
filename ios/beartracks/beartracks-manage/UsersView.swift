@@ -45,7 +45,7 @@ struct UsersView: View {
                         Alert(
                             title: Text("Delete User \(self.lastDeletedId)"),
                             message: Text(
-                                "are you sure you would like to delete this user? this action is irreversable."),
+                                "are you sure you would like to delete this user? this action is irreversible."),
                             primaryButton: .destructive(Text("Delete")) {
                                 userModel.deleteUser(id: lastDeletedId)
                             },

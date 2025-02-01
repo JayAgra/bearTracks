@@ -184,6 +184,7 @@ struct ReviewView: View {
                 }
                 .navigationTitle("Match Scouting")
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }

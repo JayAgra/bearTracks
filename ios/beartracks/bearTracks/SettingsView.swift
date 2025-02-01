@@ -143,7 +143,7 @@ struct SettingsView: View {
                         })
                 },
                 message: {
-                    Text("This action is irreversable.")
+                    Text("This action is irreversible.")
                 })
         }
         .onAppear {
