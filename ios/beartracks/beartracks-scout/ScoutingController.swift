@@ -15,6 +15,7 @@ class ScoutingController: ObservableObject {
     @Published public var currentTab: Tab = .start
     // basic meta
     private var eventCode: String = UserDefaults.standard.string(forKey: "eventCode") ?? "CASD"
+    @Published public var selectedGameInterface: Int = UserDefaults.standard.integer(forKey: "gameInterface2025")
     @Published public var matchNumber: Int = 0
     @Published public var teamNumber: String = "--"
     @Published public var matchList: [MatchData] = []

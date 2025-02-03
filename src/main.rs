@@ -36,8 +36,6 @@ mod session;
 mod static_files;
 mod stats;
 
-// mod game_api;
-
 // hashmap containing user session IDs
 #[derive(Serialize, Deserialize, Default, Clone)]
 struct Sessions {
@@ -609,6 +607,10 @@ async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_aut
     ))
 }
 
+async fn return_discontinued_gone(req: HttpRequest) -> Result<HttpResponse, AWError> {
+    Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
+}
+
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 #[actix_web::main]
@@ -1012,19 +1014,22 @@ async fn main() -> io::Result<()> {
                 web::resource("/api/v1/debug/ok")
                     .route(web::get().to(debug_ok)),
             )
-            // robot game endpoints (killed)
+            // robot game endpoints (killed) (ish)
             // GET
             .service(
                 web::resource("/api/v1/game/all_owned_cards")
-                    .route(web::get().to(game_get_cards)),
+                    // .route(web::get().to(game_get_cards)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             .service(
                 web::resource("/api/v1/game/owned_cards/{user}")
-                    .route(web::get().to(game_get_cards_by_username)),
+                    // .route(web::get().to(game_get_cards_by_username)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             .service(
                 web::resource("/api/v1/game/my_owned_cards")
-                    .route(web::get().to(game_get_cards)),
+                    // .route(web::get().to(game_get_cards)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             .service(
                 web::resource("/api/v1/game/team_data/{season}/{event}/{team}")
@@ -1032,12 +1037,14 @@ async fn main() -> io::Result<()> {
             )
             .service(
                 web::resource("/api/v1/game/open_lootbox/{event}")
-                    .route(web::get().to(game_open_lootbox)),
+                    // .route(web::get().to(game_open_lootbox)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             // POST
             .service(
                 web::resource("/api/v1/game/set_hand")
-                    .route(web::post().to(game_set_hand))
+                    // .route(web::post().to(game_set_hand))
+                    .route(web::post().to(return_discontinued_gone))
             )
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
@@ -1046,4 +1053,3 @@ async fn main() -> io::Result<()> {
     .run()
     .await
 }
-

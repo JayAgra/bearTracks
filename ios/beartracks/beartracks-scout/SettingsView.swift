@@ -67,6 +67,16 @@ struct SettingsView: View {
 //                            }
                     }
                     Section {
+                        Picker("Game Interface", selection: $controller.selectedGameInterface) {
+                            Text("Slider").tag(0)
+                            Text("Buttons").tag(1)
+                        }
+                        .pickerStyle(.menu)
+                        .onChange(of: controller.selectedGameInterface) { _ in
+                            UserDefaults.standard.set(controller.selectedGameInterface, forKey: "gameInterface2025")
+                        }
+                    }
+                    Section {
                         NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
                     }
                     Section {

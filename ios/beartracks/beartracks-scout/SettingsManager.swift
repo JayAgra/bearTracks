@@ -15,7 +15,8 @@ class SettingsManager {
             "eventCode": "CAFR",
             "season": "2025",
             "darkMode": true,
-            "leftHand": false
+            "leftHand": false,
+            "gameInterface2025": 0
         ]
         UserDefaults.standard.register(defaults: defaults)
     }

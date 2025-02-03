@@ -328,6 +328,9 @@
         }
       }
     },
+    "Buttons" : {
+
+    },
     "Cancel" : {
       "localizations" : {
         "en" : {
@@ -712,6 +715,9 @@
         }
       }
     },
+    "Game Interface" : {
+
+    },
     "How was the driving? Did the driver seem confident?" : {
       "localizations" : {
         "en" : {
@@ -761,6 +767,7 @@
       }
     },
     "L0" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -824,7 +831,11 @@
         }
       }
     },
+    "L4" : {
+
+    },
     "Level 0" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -887,6 +898,9 @@
           }
         }
       }
+    },
+    "Level 4" : {
+
     },
     "Log In" : {
       "localizations" : {
@@ -1306,6 +1320,9 @@
           }
         }
       }
+    },
+    "Slider" : {
+
     },
     "Start" : {
       "localizations" : {

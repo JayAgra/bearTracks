@@ -302,7 +302,7 @@ pub async fn execute(pool: &db_main::Pool, season: String, event: String, team: 
 
 fn get_team(conn: db_main::Connection, season: String, event: String, team: String) -> Result<Team, rusqlite::Error> {
     if event == "ALL" {
-        let stmt = conn.prepare("SELECT analysis FROM main WHERE season=:season AND event!=:event AND team=:team;")?;
+        let stmt = conn.prepare("SELECT analysis FROM main WHERE season=:season AND game!=:event AND team=:team;")?;
         get_rows(stmt, [season, event, team])
     } else {
         let stmt = conn.prepare("SELECT analysis FROM main WHERE season=:season AND event=:event AND team=:team;")?;

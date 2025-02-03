@@ -49,75 +49,7 @@ struct DetailedView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding([.top, .leading])
-                        VStack {
-                            HStack {
-                                VStack {
-                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[4]))s")
-#if !os(watchOS)
-                                        .font(.title)
-#else
-                                        .font(.title3)
-#endif
-                                    Text("intake")
-                                }
-                                .frame(maxWidth: .infinity)
-                                VStack {
-                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[5]))s")
-#if !os(watchOS)
-                                        .font(.title)
-#else
-                                        .font(.title3)
-#endif
-                                    Text("travel")
-                                }
-                                .frame(maxWidth: .infinity)
-                                VStack {
-                                    Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[6]))s")
-#if !os(watchOS)
-                                        .font(.title)
-#else
-                                        .font(.title3)
-#endif
-                                    Text("outtake")
-                                }
-                                .frame(maxWidth: .infinity)
-                            }
-                            .padding()
-                        }
-                        .padding([.top, .leading])
-                        VStack {
-                            HStack {
-                                VStack {
-                                    Text(String(detailData[0].FullMain.analysis.split(separator: ",")[7]))
-#if !os(watchOS)
-                                        .font(.title)
-#else
-                                        .font(.title3)
-#endif
-                                    Text("algae")
-                                }
-                                .frame(maxWidth: .infinity)
-                                VStack {
-                                    Text(
-                                        String(
-                                            detailData[0].FullMain.analysis.split(separator: ",")[8] +
-                                            detailData[0].FullMain.analysis.split(separator: ",")[9] +
-                                            detailData[0].FullMain.analysis.split(separator: ",")[10] +
-                                            detailData[0].FullMain.analysis.split(separator: ",")[11]
-                                        )
-                                    )
-#if !os(watchOS)
-                                        .font(.title)
-#else
-                                        .font(.title3)
-#endif
-                                    Text("coral")
-                                }
-                                .frame(maxWidth: .infinity)
-                            }
-                            .padding()
-                        }
-                        .padding([.top, .leading])
+                        DetailedViewTopSection(detailData: detailData)
                         VStack {
                             Text("Cycles")
                                 .font(.title2)
@@ -278,6 +210,85 @@ struct DetailedView: View {
         }
         .onAppear {
             fetchDetailJson()
+        }
+    }
+    
+    struct DetailedViewTopSection: View {
+        var detailData: [DetailedData]
+        var totalCoral: Int
+        
+        init(detailData: [DetailedData]) {
+            self.detailData = detailData
+            // compiler shits itself if not written like this
+            self.totalCoral = Int(detailData[0].FullMain.analysis.split(separator: ",")[8]) ?? 0
+            totalCoral += Int(detailData[0].FullMain.analysis.split(separator: ",")[9]) ?? 0
+            totalCoral += Int(detailData[0].FullMain.analysis.split(separator: ",")[10]) ?? 0
+            totalCoral += Int(detailData[0].FullMain.analysis.split(separator: ",")[11]) ?? 0
+        }
+        
+        var body: some View {
+            VStack {
+                HStack {
+                    VStack {
+                        Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[4]))s")
+#if !os(watchOS)
+                            .font(.title)
+#else
+                            .font(.title3)
+#endif
+                        Text("intake")
+                    }
+                    .frame(maxWidth: .infinity)
+                    VStack {
+                        Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[5]))s")
+#if !os(watchOS)
+                            .font(.title)
+#else
+                            .font(.title3)
+#endif
+                        Text("travel")
+                    }
+                    .frame(maxWidth: .infinity)
+                    VStack {
+                        Text("\(String(detailData[0].FullMain.analysis.split(separator: ",")[6]))s")
+#if !os(watchOS)
+                            .font(.title)
+#else
+                            .font(.title3)
+#endif
+                        Text("outtake")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .padding()
+            }
+            .padding([.top, .leading])
+            VStack {
+                HStack {
+                    VStack {
+                        Text(String(detailData[0].FullMain.analysis.split(separator: ",")[7]))
+#if !os(watchOS)
+                            .font(.title)
+#else
+                            .font(.title3)
+#endif
+                        Text("algae")
+                    }
+                    .frame(maxWidth: .infinity)
+                    VStack {
+                        Text(String(totalCoral))
+#if !os(watchOS)
+                            .font(.title)
+#else
+                            .font(.title3)
+#endif
+                        Text("coral")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .padding()
+            }
+            .padding([.top, .leading])
         }
     }
     
