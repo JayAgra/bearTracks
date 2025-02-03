@@ -77,7 +77,7 @@ struct SettingsView: View {
                         }
                     }
                     Section {
-                        NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
+                        NavigationLink(destination: RegionalPoints().navigationTitle("Regional Points"), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
                     }
                     Section {
                         Button("Clear Network Cache") {

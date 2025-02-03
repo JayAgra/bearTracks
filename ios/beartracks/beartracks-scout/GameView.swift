@@ -21,7 +21,7 @@ struct GameView: View {
     
     var body: some View {
         NavigationView {
-//            if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
+            if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                 VStack {
                     GeometryReader { geometry in
                         VStack {
@@ -44,11 +44,11 @@ struct GameView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .navigationTitle("Match Scouting")
-//            } else {
-//                Text("Please select a match and team number on the start tab.")
-//                    .padding()
-//                    .navigationTitle("Match Scouting")
-//            }
+            } else {
+                Text("Please select a match and team number on the start tab.")
+                    .padding()
+                    .navigationTitle("Match Scouting")
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }
