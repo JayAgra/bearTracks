@@ -40,19 +40,19 @@ struct TeamViewStats: View {
 #endif
                     HStack {
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].intake)))s")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].intake_time)))s")
                                 .font(.title)
                             Text("Intake")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].travel)))s")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].travel_time)))s")
                                 .font(.title)
                             Text("Move")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].outtake)))s")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].outtake_time)))s")
                                 .font(.title)
                             Text("Outtake")
                         }
@@ -61,15 +61,15 @@ struct TeamViewStats: View {
                     .padding([.top, .bottom])
                     HStack {
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].speaker)))")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].algae)))")
                                 .font(.title)
-                            Text("Speaker")
+                            Text("Algae")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].amplifier)))")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].level_0) + getRelevantData(item: teamDetail.teamData[0].level_1) + getRelevantData(item: teamDetail.teamData[0].level_2) + getRelevantData(item: teamDetail.teamData[0].level_3)))")
                                 .font(.title)
-                            Text("Amplifier")
+                            Text("Coral")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
@@ -82,49 +82,28 @@ struct TeamViewStats: View {
                     .padding([.top, .bottom])
                     HStack {
                         VStack {
-                            Text("\(Int(((teamDetail.teamData[0].trap_note ?? 0) * 100).rounded()))%")
+                            Text("\(Int(((teamDetail.teamData[0].shallow_cage ?? 0) * 100).rounded()))%")
                                 .font(.title)
-                            Text("Trap note")
+                            Text("Cage")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(Int(((teamDetail.teamData[0].climb ?? 0) * 100).rounded()))%")
+                            Text("\(Int(((teamDetail.teamData[0].deep_cage ?? 0) * 100).rounded()))%")
                                 .font(.title)
-                            Text("Climb")
+                            Text("Deep Cage")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
-                            Text("\(Int(((teamDetail.teamData[0].buddy_climb ?? 0) * 100).rounded()))%")
+                            Text("\(Int(((teamDetail.teamData[0].park ?? 0) * 100).rounded()))%")
                                 .font(.title)
-                            Text("Buddy climb")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .padding([.top, .bottom])
-                    HStack {
-                        VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_preload)))")
-                                .font(.title)
-                            Text("Auto preload")
-                        }
-                        .frame(maxWidth: .infinity)
-                        VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_wing)))")
-                                .font(.title)
-                            Text("Auto wing")
-                        }
-                        .frame(maxWidth: .infinity)
-                        VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_center)))")
-                                .font(.title)
-                            Text("Auto center")
+                            Text("Park")
                         }
                         .frame(maxWidth: .infinity)
                     }
                     .padding([.top, .bottom])
                     HStack {
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].points))) pts")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].score))) pts")
                                 .font(.title)
                             Text("Performance rating")
                         }

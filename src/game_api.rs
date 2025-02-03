@@ -343,12 +343,12 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
         data_arr.travel_time.push(game_data.get(5).unwrap_or(&0).clone());
         data_arr.outtake_time.push(game_data.get(6).unwrap_or(&0).clone());
         data_arr.algae.push(game_data.get(7).unwrap_or(&0).clone());
-        data_arr.level_0.push(game_data.get(6).unwrap_or(&0).clone());
-        data_arr.level_1.push(game_data.get(7).unwrap_or(&0).clone());
-        data_arr.level_2.push(game_data.get(8).unwrap_or(&0).clone());
-        data_arr.level_3.push(game_data.get(9).unwrap_or(&0).clone());
-        data_arr.score.push(game_data.get(10).unwrap_or(&0).clone());
-        data_arr.auto_scores.push(game_data.get(11).unwrap_or(&0).clone());
+        data_arr.level_0.push(game_data.get(8).unwrap_or(&0).clone());
+        data_arr.level_1.push(game_data.get(9).unwrap_or(&0).clone());
+        data_arr.level_2.push(game_data.get(10).unwrap_or(&0).clone());
+        data_arr.level_3.push(game_data.get(11).unwrap_or(&0).clone());
+        data_arr.score.push(game_data.get(12).unwrap_or(&0).clone());
+        data_arr.auto_scores.push(game_data.get(13).unwrap_or(&0).clone());
     });
 
     let intake_time_qrt = stats::quartiles_i64(&data_arr.intake_time);

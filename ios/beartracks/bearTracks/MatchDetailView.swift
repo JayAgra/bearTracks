@@ -11,7 +11,7 @@ struct MatchDetailView: View {
     @State public var match: Int
     @EnvironmentObject var appState: AppState
     @State private var teams: [TeamStats] = []
-    @State private var detailMaximums: (Int, Int, Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1, 1, 1)
+    @State private var detailMaximums: (Int, Int, Int, Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1, 1, 1, 1)
     @State private var loadStarted: Bool = false
     @State private var eventCodeInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
     @State private var settingsOptions: [DataMetadata] = []
