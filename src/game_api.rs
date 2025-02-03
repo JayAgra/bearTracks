@@ -253,37 +253,37 @@ pub async fn set_held_cards(auth_pool: &db_auth::Pool, user_param: db_auth::User
 #[derive(Serialize)]
 pub struct Team {
     pub team: i64,
-    pub trap_note: f64,
-    pub climb: f64,
-    pub buddy_climb: f64,
-    pub intake: DataStats,
-    pub travel: DataStats,
-    pub outtake: DataStats,
-    pub speaker: DataStats,
-    pub amplifier: DataStats,
-    pub total: DataStats,
-    pub points: DataStats,
+    pub leave: f64,
+    pub park: f64,
+    pub shallow_cage: f64,
+    pub deep_cage: f64,
+    pub intake_time: DataStats,
+    pub travel_time: DataStats,
+    pub outtake_time: DataStats,
+    pub algae: DataStats,
+    pub level_0: DataStats,
+    pub level_1: DataStats,
+    pub level_2: DataStats,
+    pub level_3: DataStats,
+    pub score: DataStats,
     pub auto_scores: DataStats,
-    pub auto_preload: DataStats,
-    pub auto_wing: DataStats,
-    pub auto_center: DataStats,
 }
 
 struct TeamDataset {
-    trap_note: Vec<i64>,
-    climb: Vec<i64>,
-    buddy_climb: Vec<i64>,
-    intake: Vec<i64>,
-    travel: Vec<i64>,
-    outtake: Vec<i64>,
-    speaker: Vec<i64>,
-    amplifier: Vec<i64>,
-    shots: Vec<i64>,
-    points: Vec<i64>,
-    auto_preload: Vec<i64>,
-    auto_wing: Vec<i64>,
-    auto_center: Vec<i64>,
-    auto_scores: Vec<i64>,
+    leave: Vec<i64>,
+    park: Vec<i64>,
+    shallow_cage: Vec<i64>,
+    deep_cage: Vec<i64>,
+    intake_time: Vec<i64>,
+    travel_time: Vec<i64>,
+    outtake_time: Vec<i64>,
+    algae: Vec<i64>,
+    level_0: Vec<i64>,
+    level_1: Vec<i64>,
+    level_2: Vec<i64>,
+    level_3: Vec<i64>,
+    score: Vec<i64>,
+    auto_scores: Vec<i64>
 }
 
 struct MainAnalysis {
@@ -317,140 +317,130 @@ fn get_rows(mut statement: Statement, params: [String; 3]) -> Result<Team, rusql
         .unwrap();
 
     let mut data_arr: TeamDataset = TeamDataset {
-        trap_note: Vec::new(),
-        climb: Vec::new(),
-        buddy_climb: Vec::new(),
-        intake: Vec::new(),
-        travel: Vec::new(),
-        outtake: Vec::new(),
-        speaker: Vec::new(),
-        amplifier: Vec::new(),
-        points: Vec::new(),
-        shots: Vec::new(),
-        auto_preload: Vec::new(),
-        auto_wing: Vec::new(),
-        auto_center: Vec::new(),
+        leave: Vec::new(),
+        park: Vec::new(),
+        shallow_cage: Vec::new(),
+        deep_cage: Vec::new(),
+        intake_time: Vec::new(),
+        travel_time: Vec::new(),
+        outtake_time: Vec::new(),
+        algae: Vec::new(),
+        level_0: Vec::new(),
+        level_1: Vec::new(),
+        level_2: Vec::new(),
+        level_3: Vec::new(),
+        score: Vec::new(),
         auto_scores: Vec::new(),
     };
 
     data.iter().for_each(|entry| {
         let game_data: Vec<i64> = entry.analysis.split(",").map(|v| v.parse::<i64>().unwrap_or(0)).collect();
-        data_arr.trap_note.push(game_data.get(0).unwrap_or(&0).clone());
-        data_arr.climb.push(game_data.get(1).unwrap_or(&0).clone());
-        data_arr.buddy_climb.push(game_data.get(2).unwrap_or(&0).clone());
-        data_arr.intake.push(game_data.get(3).unwrap_or(&0).clone());
-        data_arr.travel.push(game_data.get(4).unwrap_or(&0).clone());
-        data_arr.outtake.push(game_data.get(5).unwrap_or(&0).clone());
-        data_arr.speaker.push(game_data.get(6).unwrap_or(&0).clone());
-        data_arr.amplifier.push(game_data.get(7).unwrap_or(&0).clone());
-        data_arr
-            .shots
-            .push(game_data.get(6).unwrap_or(&0).clone() + game_data.get(7).unwrap_or(&0).clone());
-        data_arr.points.push(game_data.get(8).unwrap_or(&0).clone());
-        data_arr.auto_preload.push(game_data.get(9).unwrap_or(&0).clone());
-        data_arr.auto_wing.push(game_data.get(10).unwrap_or(&0).clone());
-        data_arr.auto_center.push(game_data.get(11).unwrap_or(&0).clone());
-        data_arr.auto_scores.push(game_data.get(12).unwrap_or(&0).clone());
+        data_arr.leave.push(game_data.get(0).unwrap_or(&0).clone());
+        data_arr.park.push(game_data.get(1).unwrap_or(&0).clone());
+        data_arr.shallow_cage.push(game_data.get(2).unwrap_or(&0).clone());
+        data_arr.deep_cage.push(game_data.get(3).unwrap_or(&0).clone());
+        data_arr.intake_time.push(game_data.get(4).unwrap_or(&0).clone());
+        data_arr.travel_time.push(game_data.get(5).unwrap_or(&0).clone());
+        data_arr.outtake_time.push(game_data.get(6).unwrap_or(&0).clone());
+        data_arr.algae.push(game_data.get(7).unwrap_or(&0).clone());
+        data_arr.level_0.push(game_data.get(6).unwrap_or(&0).clone());
+        data_arr.level_1.push(game_data.get(7).unwrap_or(&0).clone());
+        data_arr.level_2.push(game_data.get(8).unwrap_or(&0).clone());
+        data_arr.level_3.push(game_data.get(9).unwrap_or(&0).clone());
+        data_arr.score.push(game_data.get(10).unwrap_or(&0).clone());
+        data_arr.auto_scores.push(game_data.get(11).unwrap_or(&0).clone());
     });
 
-    let intake_qrt = stats::quartiles_i64(&data_arr.intake);
-    let travel_qrt = stats::quartiles_i64(&data_arr.travel);
-    let outtake_qrt = stats::quartiles_i64(&data_arr.outtake);
-    let speaker_qrt = stats::quartiles_i64(&data_arr.speaker);
-    let amplifier_qrt = stats::quartiles_i64(&data_arr.amplifier);
-    let total_qrt = stats::quartiles_i64(&data_arr.shots);
-    let points_qrt = stats::quartiles_i64(&data_arr.points);
-    let auto_preload_qrt = stats::quartiles_i64(&data_arr.auto_preload);
-    let auto_wing_qrt = stats::quartiles_i64(&data_arr.auto_wing);
-    let auto_center_qrt = stats::quartiles_i64(&data_arr.auto_center);
+    let intake_time_qrt = stats::quartiles_i64(&data_arr.intake_time);
+    let travel_time_qrt = stats::quartiles_i64(&data_arr.travel_time);
+    let outtake_time_qrt = stats::quartiles_i64(&data_arr.outtake_time);
+    let algae_qrt = stats::quartiles_i64(&data_arr.algae);
+    let level_0_qrt = stats::quartiles_i64(&data_arr.level_0);
+    let level_1_qrt = stats::quartiles_i64(&data_arr.level_1);
+    let level_2_qrt = stats::quartiles_i64(&data_arr.level_2);
+    let level_3_qrt = stats::quartiles_i64(&data_arr.level_3);
+    let score_qrt = stats::quartiles_i64(&data_arr.score);
     let auto_scores_qrt = stats::quartiles_i64(&data_arr.auto_scores);
 
-    let intake_means = stats::means_i64(&data_arr.intake, 0.5);
-    let travel_means = stats::means_i64(&data_arr.travel, 0.5);
-    let outtake_means = stats::means_i64(&data_arr.outtake, 0.5);
-    let speaker_means = stats::means_i64(&data_arr.speaker, 0.5);
-    let amplifier_means = stats::means_i64(&data_arr.amplifier, 0.5);
-    let total_means = stats::means_i64(&data_arr.shots, 0.5);
-    let points_means = stats::means_i64(&data_arr.points, 0.5);
-    let auto_preload_means = stats::means_i64(&data_arr.auto_preload, 0.5);
-    let auto_wing_means = stats::means_i64(&data_arr.auto_wing, 0.5);
-    let auto_center_means = stats::means_i64(&data_arr.auto_center, 0.5);
+    let intake_time_means = stats::means_i64(&data_arr.intake_time, 0.5);
+    let travel_time_means = stats::means_i64(&data_arr.travel_time, 0.5);
+    let outtake_time_means = stats::means_i64(&data_arr.outtake_time, 0.5);
+    let algae_means = stats::means_i64(&data_arr.algae, 0.5);
+    let level_0_means = stats::means_i64(&data_arr.level_0, 0.5);
+    let level_1_means = stats::means_i64(&data_arr.level_1, 0.5);
+    let level_2_means = stats::means_i64(&data_arr.level_2, 0.5);
+    let level_3_means = stats::means_i64(&data_arr.level_3, 0.5);
+    let score_means = stats::means_i64(&data_arr.score, 0.5);
     let auto_scores_means = stats::means_i64(&data_arr.auto_scores, 0.5);
 
     Ok(Team {
         team: params[2].parse::<i64>().unwrap_or(0),
-        trap_note: data_arr.trap_note.iter().sum::<i64>() as f64 / data_arr.trap_note.len() as f64,
-        climb: data_arr.climb.iter().sum::<i64>() as f64 / data_arr.climb.len() as f64,
-        buddy_climb: data_arr.buddy_climb.iter().sum::<i64>() as f64 / data_arr.buddy_climb.len() as f64,
-        intake: DataStats {
-            first: intake_qrt[0],
-            median: intake_qrt[1],
-            third: intake_qrt[2],
-            mean: intake_means[0],
-            decaying: intake_means[1],
+        leave: data_arr.leave.iter().sum::<i64>() as f64 / data_arr.leave.len() as f64,
+        park: data_arr.park.iter().sum::<i64>() as f64 / data_arr.park.len() as f64,
+        shallow_cage: data_arr.shallow_cage.iter().sum::<i64>() as f64 / data_arr.shallow_cage.len() as f64,
+        deep_cage: data_arr.deep_cage.iter().sum::<i64>() as f64 / data_arr.deep_cage.len() as f64,
+        intake_time: DataStats {
+            first: intake_time_qrt[0],
+            median: intake_time_qrt[1],
+            third: intake_time_qrt[2],
+            mean: intake_time_means[0],
+            decaying: intake_time_means[1],
         },
-        travel: DataStats {
-            first: travel_qrt[0],
-            median: travel_qrt[1],
-            third: travel_qrt[2],
-            mean: travel_means[0],
-            decaying: travel_means[1],
+        travel_time: DataStats {
+            first: travel_time_qrt[0],
+            median: travel_time_qrt[1],
+            third: travel_time_qrt[2],
+            mean: travel_time_means[0],
+            decaying: travel_time_means[1],
         },
-        outtake: DataStats {
-            first: outtake_qrt[0],
-            median: outtake_qrt[1],
-            third: outtake_qrt[2],
-            mean: outtake_means[0],
-            decaying: outtake_means[1],
+        outtake_time: DataStats {
+            first: outtake_time_qrt[0],
+            median: outtake_time_qrt[1],
+            third: outtake_time_qrt[2],
+            mean: outtake_time_means[0],
+            decaying: outtake_time_means[1],
         },
-        speaker: DataStats {
-            first: speaker_qrt[0],
-            median: speaker_qrt[1],
-            third: speaker_qrt[2],
-            mean: speaker_means[0],
-            decaying: speaker_means[1],
+        algae: DataStats {
+            first: algae_qrt[0],
+            median: algae_qrt[1],
+            third: algae_qrt[2],
+            mean: algae_means[0],
+            decaying: algae_means[1],
         },
-        amplifier: DataStats {
-            first: amplifier_qrt[0],
-            median: amplifier_qrt[1],
-            third: amplifier_qrt[2],
-            mean: amplifier_means[0],
-            decaying: amplifier_means[1],
+        level_0: DataStats {
+            first: level_0_qrt[0],
+            median: level_0_qrt[1],
+            third: level_0_qrt[2],
+            mean: level_0_means[0],
+            decaying: level_0_means[1],
         },
-        total: DataStats {
-            first: total_qrt[0],
-            median: total_qrt[1],
-            third: total_qrt[2],
-            mean: total_means[0],
-            decaying: total_means[1],
+        level_1: DataStats {
+            first: level_1_qrt[0],
+            median: level_1_qrt[1],
+            third: level_1_qrt[2],
+            mean: level_1_means[0],
+            decaying: level_1_means[1],
         },
-        points: DataStats {
-            first: points_qrt[0],
-            median: points_qrt[1],
-            third: points_qrt[2],
-            mean: points_means[0],
-            decaying: points_means[1],
+        level_2: DataStats {
+            first: level_2_qrt[0],
+            median: level_2_qrt[1],
+            third: level_2_qrt[2],
+            mean: level_2_means[0],
+            decaying: level_2_means[1],
         },
-        auto_preload: DataStats {
-            first: auto_preload_qrt[0],
-            median: auto_preload_qrt[1],
-            third: auto_preload_qrt[2],
-            mean: auto_preload_means[0],
-            decaying: auto_preload_means[1],
+        level_3: DataStats {
+            first: level_3_qrt[0],
+            median: level_3_qrt[1],
+            third: level_3_qrt[2],
+            mean: level_3_means[0],
+            decaying: level_3_means[1],
         },
-        auto_wing: DataStats {
-            first: auto_wing_qrt[0],
-            median: auto_wing_qrt[1],
-            third: auto_wing_qrt[2],
-            mean: auto_wing_means[0],
-            decaying: auto_wing_means[1],
-        },
-        auto_center: DataStats {
-            first: auto_center_qrt[0],
-            median: auto_center_qrt[1],
-            third: auto_center_qrt[2],
-            mean: auto_center_means[0],
-            decaying: auto_center_means[1],
+        score: DataStats {
+            first: score_qrt[0],
+            median: score_qrt[1],
+            third: score_qrt[2],
+            mean: score_means[0],
+            decaying: score_means[1],
         },
         auto_scores: DataStats {
             first: auto_scores_qrt[0],

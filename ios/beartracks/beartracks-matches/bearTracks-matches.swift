@@ -24,9 +24,7 @@ struct beartracksApp: App {
                     .environmentObject(appState)
                     .preferredColorScheme(darkMode ? .dark : .light)
                     .onAppear {
-                        checkLoginState { isLoggedIn in
-                            appState.loginRequired = !isLoggedIn
-                        }
+                        appState.checkLoginState()
                         appState.fetchMatchJson()
                     }
             } else {
@@ -34,9 +32,7 @@ struct beartracksApp: App {
                     .environmentObject(appState)
                     .preferredColorScheme(darkMode ? .dark : .light)
                     .onAppear {
-                        checkLoginState { isLoggedIn in
-                            appState.loginRequired = !isLoggedIn
-                        }
+                        appState.checkLoginState()
                     }
             }
         }
