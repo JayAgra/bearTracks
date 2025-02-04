@@ -93,7 +93,7 @@ class ScoutingController: ObservableObject {
             encodedMatchTimes = ""
         }
         let matchData = ScoutingDataExport(
-            season: 2025, event: UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR",
+            season: 2025, event: UserDefaults.standard.string(forKey: "eventCode") ?? "TEST",
             match_num: matchNumber, level: "Qualification", team: Int(teamNumber) ?? 0,
             game: encodedMatchTimes, defend: defense, driving: driving, overall: overall + "\n\niOS v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "v6.0.x 2025 - error obtaining string")")
         do {
@@ -129,7 +129,7 @@ class ScoutingController: ObservableObject {
         guard
             let url = URL(
                 string:
-                    "https://beartracks.io/api/v1/events/matches/\(UserDefaults.standard.string(forKey: "season") ?? "2025")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR")/qualification/true"
+                    "https://beartracks.io/api/v1/events/matches/\(UserDefaults.standard.string(forKey: "season") ?? "2025")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST")/qualification/true"
             )
         else { return }
         var request = URLRequest(url: url)

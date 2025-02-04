@@ -18,7 +18,7 @@ struct StartView: View {
                     Form {
                         Section {
                             Text(
-                                "\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))"
+                                "\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))"
                             )
                         }
                         Section {

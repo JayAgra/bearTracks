@@ -20,7 +20,7 @@ class TeamStatController: ObservableObject {
         guard
             let url = URL(
                 string:
-                    "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(teamNumber)"
+                    "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST")/\(teamNumber)"
             )
         else { return }
         sharedSession.dataTask(with: url) { data, _, error in

@@ -24,7 +24,7 @@ struct ReviewView: View {
                         Text("Please fill in all three long form responses.")
                             .padding()
                     } else {
-                        Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))")
+                        Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))")
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         ScrollView {

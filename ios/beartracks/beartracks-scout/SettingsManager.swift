@@ -12,7 +12,7 @@ class SettingsManager {
     
     private init() {
         let defaults: [String: Any] = [
-            "eventCode": "CAFR",
+            "eventCode": "TEST",
             "season": "2025",
             "darkMode": true,
             "leftHand": false,

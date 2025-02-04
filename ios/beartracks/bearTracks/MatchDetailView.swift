@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MatchDetailView: View {
-    @State public var match: Int
+    @State public var match: Int = 0
     @EnvironmentObject var appState: AppState
     @State private var teams: [TeamStats] = []
     @State private var detailMaximums: (Int, Int, Int, Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1, 1, 1, 1)
@@ -46,7 +46,7 @@ struct MatchDetailView: View {
                                             }
                                         })
                                         HStack {
-                                            ProgressView(value: Double(team.score.mean) / Double(detailMaximums.5))
+                                            ProgressView(value: Double(team.score.mean) / Double(detailMaximums.8))
                                                 .padding([.leading, .trailing])
                                                 .tint(Color.red)
                                         }
@@ -223,6 +223,9 @@ struct MatchDetailView: View {
                             EventSelectButton
                         }
                     }
+                    .onAppear {
+                        loadData()
+                    }
                 }
             } else {
                 VStack {
@@ -261,26 +264,35 @@ struct MatchDetailView: View {
             loadSettingsJson { result in
                 self.settingsOptions = result
             }
-            if !settingsOptions.isEmpty && !settingsOptions[0].events.isEmpty {
-                let ci = (settingsOptions[0].events.firstIndex{$0 == UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR"} ?? 0)
+            moveEvent()
+        }, label: {
+            Label(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST", systemImage: "flag.checkered")
+                .labelStyle(.titleOnly)
+        })
+    }
+    
+    func moveEvent() {
+        if !settingsOptions.isEmpty && !settingsOptions[0].events.isEmpty {
+            if !settingsOptions[0].events.contains(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "XXXX") {
+                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[0], forKey: "eventCode")
+            } else {
+                let ci = (settingsOptions[0].events.firstIndex{$0 == UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST"} ?? 0)
                 if ci == settingsOptions[0].events.count - 1 {
                     UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[0], forKey: "eventCode")
                 } else {
                     UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[ci + 1], forKey: "eventCode")
                 }
-                match = 0
-                appState.fetchMatchJson()
-                self.loadData()
             }
-        }, label: {
-            Label(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR", systemImage: "flag.checkered")
-                .labelStyle(.titleOnly)
-        })
+            match = 1
+            appState.fetchMatchJson()
+            while appState.matchJsonStatus.0 == false {if appState.matchJsonStatus.1 == true {return}}
+            self.loadData()
+        }
     }
     
     func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
         guard
-            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "useAllCompData") ?? false ? "ALL" : UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(String(team))")
+            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "useAllCompData") ?? false ? "ALL" : UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST")/\(String(team))")
         else {
             return
         }
@@ -313,31 +325,33 @@ struct MatchDetailView: View {
     private func loadData() {
         var teamSet = TeamSet()
         var local: [TeamStats] = []
-        fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
-            teamSet.Red1 = Red1Data
-            fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in
-                teamSet.Red2 = Red2Data
-                fetchTeamStats(team: appState.matchJson[match - 1].teams[2].teamNumber) { Red3Data in
-                    teamSet.Red3 = Red3Data
-                    fetchTeamStats(team: appState.matchJson[match - 1].teams[3].teamNumber) { Blue1Data in
-                        teamSet.Blue1 = Blue1Data
-                        fetchTeamStats(team: appState.matchJson[match - 1].teams[4].teamNumber) { Blue2Data in
-                            teamSet.Blue2 = Blue2Data
-                            fetchTeamStats(team: appState.matchJson[match - 1].teams[5].teamNumber) { Blue3Data in
-                                teamSet.Blue3 = Blue3Data
-                                local = [teamSet.Red1 ?? emptyTeamStat, teamSet.Red2 ?? emptyTeamStat, teamSet.Red3 ?? emptyTeamStat, teamSet.Blue1 ?? emptyTeamStat, teamSet.Blue2 ?? emptyTeamStat, teamSet.Blue3 ?? emptyTeamStat]
-                                local.forEach { result in
-                                    if result.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.algae.mean }
-                                    if result.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.level_0.mean }
-                                    if result.level_1.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.level_1.mean }
-                                    if result.level_2.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.level_2.mean }
-                                    if result.level_3.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.level_3.mean }
-                                    if result.intake_time.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.intake_time.mean }
-                                    if result.travel_time.mean > self.detailMaximums.6 { self.detailMaximums.6 = result.travel_time.mean }
-                                    if result.outtake_time.mean > self.detailMaximums.7 { self.detailMaximums.7 = result.outtake_time.mean }
-                                    if result.score.mean > self.detailMaximums.8 { self.detailMaximums.8 = result.score.mean }
+        if !appState.matchJson.isEmpty && appState.matchJson.count > 0 {
+            fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
+                teamSet.Red1 = Red1Data
+                fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in
+                    teamSet.Red2 = Red2Data
+                    fetchTeamStats(team: appState.matchJson[match - 1].teams[2].teamNumber) { Red3Data in
+                        teamSet.Red3 = Red3Data
+                        fetchTeamStats(team: appState.matchJson[match - 1].teams[3].teamNumber) { Blue1Data in
+                            teamSet.Blue1 = Blue1Data
+                            fetchTeamStats(team: appState.matchJson[match - 1].teams[4].teamNumber) { Blue2Data in
+                                teamSet.Blue2 = Blue2Data
+                                fetchTeamStats(team: appState.matchJson[match - 1].teams[5].teamNumber) { Blue3Data in
+                                    teamSet.Blue3 = Blue3Data
+                                    local = [teamSet.Red1 ?? emptyTeamStat, teamSet.Red2 ?? emptyTeamStat, teamSet.Red3 ?? emptyTeamStat, teamSet.Blue1 ?? emptyTeamStat, teamSet.Blue2 ?? emptyTeamStat, teamSet.Blue3 ?? emptyTeamStat]
+                                    local.forEach { result in
+                                        if result.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.algae.mean }
+                                        if result.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.level_0.mean }
+                                        if result.level_1.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.level_1.mean }
+                                        if result.level_2.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.level_2.mean }
+                                        if result.level_3.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.level_3.mean }
+                                        if result.intake_time.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.intake_time.mean }
+                                        if result.travel_time.mean > self.detailMaximums.6 { self.detailMaximums.6 = result.travel_time.mean }
+                                        if result.outtake_time.mean > self.detailMaximums.7 { self.detailMaximums.7 = result.outtake_time.mean }
+                                        if result.score.mean > self.detailMaximums.8 { self.detailMaximums.8 = result.score.mean }
+                                    }
+                                    self.teams = local
                                 }
-                                self.teams = local
                             }
                         }
                     }
