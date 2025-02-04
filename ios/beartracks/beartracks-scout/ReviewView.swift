@@ -50,6 +50,7 @@ struct ReviewView: View {
                                                         Text("Level 2").tag(6)
                                                         Text("Level 3").tag(7)
                                                         Text("Level 4").tag(8)
+                                                        Text("Delete").tag(31)
                                                     }
                                                     .pickerStyle(.menu)
                                                     Spacer()
