@@ -93,15 +93,15 @@ struct DetailedView: View {
                                             case 9:
                                                 Text("Endgame Park").font(.title3)
                                                 Spacer()
-                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")").font(.title3)
+                                                booleanDisplay(value: Int(matchTime.intake))
                                             case 10:
                                                 Text("Climb").font(.title3)
                                                 Spacer()
-                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")").font(.title3)
+                                                booleanDisplay(value: Int(matchTime.intake))
                                             case 11:
                                                 Text("Deep Cage").font(.title3)
                                                 Spacer()
-                                                Text("\(matchTime.intake == 1 ? "✅" : "❌")").font(.title3)
+                                                booleanDisplay(value: Int(matchTime.intake))
                                             case 13:
                                                 Text("Auto Scores").font(.title3)
                                                 Spacer()
@@ -292,6 +292,12 @@ struct DetailedView: View {
         }
     }
     
+    func booleanDisplay(value: Int) -> some View {
+        return Label("Value", systemImage: value == 1 ? "checkmark.circle.fill" : "xmark.circle.fill")
+            .labelStyle(.iconOnly)
+            .foregroundStyle(value == 1 ? .green : .red)
+    }
+    
     func fetchDetailJson() {
         guard let url = URL(string: "https://beartracks.io/api/v1/data/detail/\(dataId)") else {
             return
@@ -321,14 +327,6 @@ struct DetailedView: View {
             }
         }
         .resume()
-    }
-    
-    func valueToEmoji(input: String) -> String {
-        if input == "true" {
-            return "✅"
-        } else {
-            return "❌"
-        }
     }
 }
 

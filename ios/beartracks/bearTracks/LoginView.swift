@@ -132,7 +132,7 @@ struct LoginView: View {
             .onAppear {
                 appState.checkLoginState()
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
     
     private func authAction(type: String, data: [String: String]) {
