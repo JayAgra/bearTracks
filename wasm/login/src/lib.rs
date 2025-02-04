@@ -31,7 +31,7 @@ impl App {
                 <body class="gruvbox centerText">
                     <div class="container">
                         <div class="dummy">
-                            <h1 class="w3">{ "bearTracks"}<br/><span class="gametitle">{ "CRESCENDO" }</span></h1>
+                            <h1 class="w3">{ "bearTracks"}<br/><span class="gametitle">{ "REEFSCAPE" }</span></h1>
                             <form class="login">
                                 <div id="currentUsername">
                                     <p class="unField">{ "" }</p>
