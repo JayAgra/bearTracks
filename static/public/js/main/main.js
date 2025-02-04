@@ -28,7 +28,7 @@ async function init() {
 }
 function load_matches(event = "CAFR") {
     document.getElementsByClassName("continue_button")[0].disabled = true;
-    _get(API_MATCHES[0] + "2024" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
+    _get(API_MATCHES[0] + "2025" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
         if (result.Schedule.length != 0) {
             match_schedule = result.Schedule;
             document.getElementById("match_num_input").innerHTML = "";
@@ -113,9 +113,11 @@ function end_cycle(type) {
     }
     console.log(cycle_data);
 }
-cycle_buttons[0].addEventListener("click", () => { end_cycle(0); });
-cycle_buttons[1].addEventListener("click", () => { end_cycle(1); });
-cycle_buttons[2].addEventListener("click", () => { end_cycle(9); });
+cycle_buttons[0].addEventListener("click", () => { end_cycle(4); }); // Algae
+cycle_buttons[1].addEventListener("click", () => { end_cycle(5); }); // L1
+cycle_buttons[2].addEventListener("click", () => { end_cycle(6); }); // L2
+cycle_buttons[3].addEventListener("click", () => { end_cycle(7); }); // L3
+cycle_buttons[4].addEventListener("click", () => { end_cycle(8); }); // L4
 document.querySelector("[name=defense]").onchange = check_responses;
 document.querySelector("[name=driving]").onchange = check_responses;
 document.querySelector("[name=overall]").onchange = check_responses;
@@ -145,15 +147,14 @@ function submit() {
     document.getElementById("submit_page").style.display = "block";
     var submit_text = document.getElementById("submit_text"), submit_progress = document.getElementById("submit_progress"), continue_button = document.getElementById("scout_again"), success_seal = document.getElementById("success_seal"), failure_seal = document.getElementById("failure_seal");
     submit_text.innerText = "Submitting...";
-    cycle_data.push({ score_type: 2, intake: Number(document.querySelector("[name=trap_note]").checked), travel: Number(document.querySelector("[name=trap_note]").checked), outtake: Number(document.querySelector("[name=trap_note]").checked) });
-    cycle_data.push({ score_type: 3, intake: Number(document.querySelector("[name=climb]").checked), travel: Number(document.querySelector("[name=climb]").checked), outtake: Number(document.querySelector("[name=climb]").checked) });
-    cycle_data.push({ score_type: 4, intake: Number(document.querySelector("[name=buddy_climb]").checked), travel: Number(document.querySelector("[name=buddy_climb]").checked), outtake: Number(document.querySelector("[name=buddy_climb]").checked) });
-    cycle_data.push({ score_type: 5, intake: Number(document.querySelector("[name=auto_neutral]").checked), travel: Number(document.querySelector("[name=auto_neutral]").checked), outtake: Number(document.querySelector("[name=auto_neutral]").checked) });
-    cycle_data.push({ score_type: 6, intake: Number(document.querySelector("[name=auto_wing]").checked), travel: Number(document.querySelector("[name=auto_wing]").checked), outtake: Number(document.querySelector("[name=auto_wing]").checked) });
-    cycle_data.push({ score_type: 7, intake: Number(document.querySelector("[name=auto_preload]").checked), travel: Number(document.querySelector("[name=auto_preload]").checked), outtake: Number(document.querySelector("[name=auto_preload]").checked) });
-    cycle_data.push({ score_type: 8, intake: Number(document.querySelector("[name=auto_scores]").checked), travel: Number(document.querySelector("[name=auto_scores]").checked), outtake: Number(document.querySelector("[name=auto_scores]").checked) });
+    cycle_data.push({ score_type: 9, intake: Number(document.querySelector("[name=park]").checked), travel: Number(document.querySelector("[name=park]").checked), outtake: Number(document.querySelector("[name=park]").checked) });
+    cycle_data.push({ score_type: 10, intake: Number(document.querySelector("[name=shallow_cage]").checked), travel: Number(document.querySelector("[name=shallow_cage]").checked), outtake: Number(document.querySelector("[name=shallow_cage]").checked) });
+    cycle_data.push({ score_type: 11, intake: Number(document.querySelector("[name=deep_cage]").checked), travel: Number(document.querySelector("[name=deep_cage]").checked), outtake: Number(document.querySelector("[name=deep_cage]").checked) });
+    cycle_data.push({ score_type: 14, intake: Number(document.querySelector("[name=auto_algae]").checked), travel: Number(document.querySelector("[name=auto_algae]").checked), outtake: Number(document.querySelector("[name=auto_algae]").checked) });
+    cycle_data.push({ score_type: 15, intake: Number(document.querySelector("[name=auto_coral]").checked), travel: Number(document.querySelector("[name=auto_coral]").checked), outtake: Number(document.querySelector("[name=auto_coral]").checked) });
+    cycle_data.push({ score_type: 13, intake: Number(document.querySelector("[name=auto_scores]").checked), travel: Number(document.querySelector("[name=auto_scores]").checked), outtake: Number(document.querySelector("[name=auto_scores]").checked) });
     const data = {
-        season: 2024,
+        season: 2025,
         event: getEventCookie(),
         match_num: Number(document.getElementById("match_num_input").value),
         level: "Qualification",
@@ -181,13 +182,16 @@ function reset() {
     timer_id = [0, 0, 0];
     timer_times = [0, 0, 0];
     cycle_data = [];
+    document.querySelector("[name=auto_algae]").value = "0";
+    document.querySelector("[name=auto_coral]").value = "0";
+    document.querySelector("[name=auto_scores]").value = "0";
     document.querySelector("[name=defense]").value = "";
     document.querySelector("[name=driving]").value = "";
     document.querySelector("[name=overall]").value = "";
     document.getElementById("team_number").value = "";
-    document.querySelector("[name=trap_note]").checked = false;
-    document.querySelector("[name=climb]").checked = false;
-    document.querySelector("[name=buddy_climb]").checked = false;
+    document.querySelector("[name=park]").checked = false;
+    document.querySelector("[name=shallow_cage]").checked = false;
+    document.querySelector("[name=deep_cage]").checked = false;
     document.getElementById("submit_page").style.display = "none";
     document.getElementById("form_content").style.display = "block";
     let pages = Array.from(document.getElementsByClassName("form_pages"));

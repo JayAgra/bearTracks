@@ -48,16 +48,13 @@
                             </select>
                         </fieldset><br>
                         <fieldset>
-                            <label>Preloaded notes handled</label><br><input type="tel" name="auto_preload" style="width: 60vw;">
+                            <label>Autonomous Algae Handled</label><br><input type="tel" name="auto_algae" style="width: 60vw;">
                         </fieldset>
                         <fieldset>
-                            <label>Wing notes handled</label><br><input type="tel" name="auto_wing" style="width: 60vw;">
+                            <label>Autonomous Coral Handled</label><br><input type="tel" name="auto_coral" style="width: 60vw;">
                         </fieldset>
                         <fieldset>
-                            <label>Neutral zone notes handled</label><br><input type="tel" name="auto_neutral" style="width: 60vw;">
-                        </fieldset>
-                        <fieldset>
-                            <label>Scores</label><br><input type="tel" name="auto_scores" style="width: 60vw;">
+                            <label>Autonomous Scores</label><br><input type="tel" name="auto_scores" style="width: 60vw;">
                         </fieldset>
                     </div>
                     <button type="button" class="continue_button" disabled><h2>continue</h2></button>
@@ -79,9 +76,11 @@
                             </div>
                         </div>
                         <div class="HStack">
-                            <button class="cycle_button" type="button"><h1>speaker</h1></button>
-                            <button class="cycle_button" type="button"><h1>amplifier</h1></button>
-                            <button class="cycle_button" type="button" style="min-width: 10vw; color: #fe8019; margin: none;"><h2>other</h2></button>
+                            <button class="cycle_button" type="button" style="min-width: 10vw;"><h2>Algae</h2></button>
+                            <button class="cycle_button" type="button" style="min-width: 10vw;"><h2>L1</h2></button>
+                            <button class="cycle_button" type="button" style="min-width: 10vw;"><h2>L2</h2></button>
+                            <button class="cycle_button" type="button" style="min-width: 10vw;"><h2>L3</h2></button>
+                            <button class="cycle_button" type="button" style="min-width: 10vw;"><h2>L4</h2></button>
                         </div>
                         <button type="button" class="continue_button"><h2>continue</h2></button>
                     </div>
@@ -89,19 +88,19 @@
                 <div class="VStack form_pages" style="align-items: center; display: none;">
                     <h1 class="w3">bearTracks<br><span class="gametitle">CRESCENDO</span></h1>
                     <div class="HStack">
-                        <p style="width: 9em; margin-top: 5px; text-align: left;">Trap note</p>
+                        <p style="width: 9em; margin-top: 5px; text-align: left;">Park</p>
                         <div style="width: calc(80vw - 9em - 46px);"></div>
-                        <label class="ios-switch"><input type="checkbox" name="trap_note"><i></i></label>
+                        <label class="ios-switch"><input type="checkbox" name="park"><i></i></label>
                     </div>
                     <div class="HStack">
-                        <p style="width: 9em; margin-top: 5px; text-align: left;">Climb</p>
+                        <p style="width: 9em; margin-top: 5px; text-align: left;">Shallow Cage</p>
                         <div style="width: calc(80vw - 9em - 46px);"></div>
-                        <label class="ios-switch"><input type="checkbox" name="climb"><i></i></label>
+                        <label class="ios-switch"><input type="checkbox" name="shallow_cage"><i></i></label>
                     </div>
                     <div class="HStack">
-                        <p style="width: 9em; margin-top: 5px; text-align: left;">Buddy climb</p>
+                        <p style="width: 9em; margin-top: 5px; text-align: left;">Deep Cage</p>
                         <div style="width: calc(80vw - 9em - 46px);"></div>
-                        <label class="ios-switch"><input type="checkbox" name="buddy_climb"><i></i></label>
+                        <label class="ios-switch"><input type="checkbox" name="deep_cage"><i></i></label>
                     </div>
                     <div class="VStack" style="align-items: baseline; margin: 1%; width: 80vw;">
                         <label style="text-align: left;">Did the robot play defense? If so, was it effective? Did it incur foul points?</label>

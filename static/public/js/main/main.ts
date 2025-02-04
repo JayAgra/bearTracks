@@ -37,7 +37,7 @@ async function init() {
 
 function load_matches(event: String = "CAFR") {
     (document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).disabled = true;
-    _get(API_MATCHES[0] + "2024" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
+    _get(API_MATCHES[0] + "2025" + API_MATCHES[1] + event + API_MATCHES[2], null).then((result) => {
         if (result.Schedule.length != 0) {
             match_schedule = result.Schedule;
             (document.getElementById("match_num_input") as HTMLSelectElement).innerHTML = ""
@@ -134,9 +134,11 @@ function end_cycle(type: number) {
     console.log(cycle_data)
 }
 
-cycle_buttons[0].addEventListener("click", () => { end_cycle(0) });
-cycle_buttons[1].addEventListener("click", () => { end_cycle(1) });
-cycle_buttons[2].addEventListener("click", () => { end_cycle(9) });
+cycle_buttons[0].addEventListener("click", () => { end_cycle(4) }); // Algae
+cycle_buttons[1].addEventListener("click", () => { end_cycle(5) }); // L1
+cycle_buttons[2].addEventListener("click", () => { end_cycle(6) }); // L2
+cycle_buttons[3].addEventListener("click", () => { end_cycle(7) }); // L3
+cycle_buttons[4].addEventListener("click", () => { end_cycle(8) }); // L4
 
 (document.querySelector("[name=defense]") as HTMLTextAreaElement).onchange = check_responses;
 (document.querySelector("[name=driving]") as HTMLTextAreaElement).onchange = check_responses;
@@ -178,16 +180,15 @@ function submit() {
     
     submit_text.innerText = "Submitting...";
 
-    cycle_data.push({ score_type: 2, intake: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=trap_note]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 3, intake: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=climb]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 4, intake: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 5, intake: Number((document.querySelector("[name=auto_neutral]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_neutral]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_neutral]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 6, intake: Number((document.querySelector("[name=auto_wing]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_wing]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_wing]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 7, intake: Number((document.querySelector("[name=auto_preload]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_preload]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_preload]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 8, intake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 9, intake: Number((document.querySelector("[name=park]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=park]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=park]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 10, intake: Number((document.querySelector("[name=shallow_cage]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=shallow_cage]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=shallow_cage]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 11, intake: Number((document.querySelector("[name=deep_cage]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=deep_cage]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=deep_cage]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 14, intake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 15, intake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 13, intake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked) });
 
     const data = {
-        season: 2024,
+        season: 2025,
         event: getEventCookie(),
         match_num: Number((document.getElementById("match_num_input") as HTMLSelectElement).value),
         level: "Qualification",
@@ -216,13 +217,16 @@ function reset() {
     timer_id = [0, 0, 0];
     timer_times = [0, 0, 0];
     cycle_data = [];
+    (document.querySelector("[name=auto_algae]") as HTMLInputElement).value = "0";
+    (document.querySelector("[name=auto_coral]") as HTMLInputElement).value = "0";
+    (document.querySelector("[name=auto_scores]") as HTMLInputElement).value = "0";
     (document.querySelector("[name=defense]") as HTMLTextAreaElement).value = "";
     (document.querySelector("[name=driving]") as HTMLTextAreaElement).value = "";
     (document.querySelector("[name=overall]") as HTMLTextAreaElement).value = "";
     (document.getElementById("team_number") as HTMLSelectElement).value = "";
-    (document.querySelector("[name=trap_note]") as HTMLInputElement).checked = false;
-    (document.querySelector("[name=climb]") as HTMLInputElement).checked = false;
-    (document.querySelector("[name=buddy_climb]") as HTMLInputElement).checked = false;
+    (document.querySelector("[name=park]") as HTMLInputElement).checked = false;
+    (document.querySelector("[name=shallow_cage]") as HTMLInputElement).checked = false;
+    (document.querySelector("[name=deep_cage]") as HTMLInputElement).checked = false;
     (document.getElementById("submit_page") as HTMLFormElement).style.display = "none";
     (document.getElementById("form_content") as HTMLFormElement).style.display = "block";
     let pages = Array.from(document.getElementsByClassName("form_pages")) as Array<HTMLDivElement>;
