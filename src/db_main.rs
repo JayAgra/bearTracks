@@ -336,7 +336,7 @@ fn insert_main_data(
         2023 => analyze::analyze_data(data, analyze::Season::S2023),
         2024 => analyze::analyze_data(data, analyze::Season::S2024),
         2025 => analyze::analyze_data(data, analyze::Season::S2025),
-        _ => analyze::analyze_data(data, analyze::Season::S2024),
+        _ => analyze::analyze_data(data, analyze::Season::S2025),
     };
 
     // create mutable response object

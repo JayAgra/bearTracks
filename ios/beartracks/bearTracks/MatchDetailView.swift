@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct MatchDetailView: View {
-    @State public var match: Int
+    @State public var match: Int = 0
     @EnvironmentObject var appState: AppState
     @State private var teams: [TeamStats] = []
-    @State private var detailMaximums: (Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1)
+    @State private var detailMaximums: (Int, Int, Int, Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1, 1, 1, 1)
     @State private var loadStarted: Bool = false
     @State private var eventCodeInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
     @State private var settingsOptions: [DataMetadata] = []
+    // dont even talk to me about this one
+    let emptyTeamStat = TeamStats(team: 0, leave: 0.0, park: 0.0, shallow_cage: 0.0, deep_cage: 0.0, intake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), travel_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), outtake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), algae: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_0: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_1: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_2: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_3: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), score: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_scores: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0))
+
     
     var body: some View {
 #if !os(tvOS)
@@ -43,7 +46,7 @@ struct MatchDetailView: View {
                                             }
                                         })
                                         HStack {
-                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                            ProgressView(value: Double(team.score.mean) / Double(detailMaximums.8))
                                                 .padding([.leading, .trailing])
                                                 .tint(Color.red)
                                         }
@@ -66,7 +69,7 @@ struct MatchDetailView: View {
                                             }
                                         })
                                         HStack {
-                                            ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                            ProgressView(value: Double(team.score.mean) / Double(detailMaximums.8))
                                                 .padding([.leading, .trailing])
                                                 .tint(Color.blue)
                                         }
@@ -76,19 +79,25 @@ struct MatchDetailView: View {
                             }
                         }
                         Divider()
-                        NumericalCompareView(teams: teams, title: "Speaker")
-                        NumericalCompareView(teams: teams, title: "Amplifier")
+                        NumericalCompareView(teams: teams, title: "Algae")
+                        NumericalCompareView(teams: teams, title: "Level 1")
+                        NumericalCompareView(teams: teams, title: "Level 2")
+                        NumericalCompareView(teams: teams, title: "Level 3")
+                        NumericalCompareView(teams: teams, title: "Level 4")
                         NumericalCompareView(teams: teams, title: "Intake")
                         NumericalCompareView(teams: teams, title: "Travel")
                         NumericalCompareView(teams: teams, title: "Outtake")
                         NumericalCompareView(teams: teams, title: "Performance Score")
                         Divider()
-                        BarThingyView(teams: teams, barMax: detailMaximums.0, title: "Speaker")
-                        BarThingyView(teams: teams, barMax: detailMaximums.1, title: "Amplifier")
-                        BarThingyView(teams: teams, barMax: detailMaximums.2, title: "Intake")
-                        BarThingyView(teams: teams, barMax: detailMaximums.3, title: "Travel")
-                        BarThingyView(teams: teams, barMax: detailMaximums.4, title: "Outtake")
-                        BarThingyView(teams: teams, barMax: detailMaximums.5, title: "Performance Score")
+                        BarThingyView(teams: teams, barMax: detailMaximums.0, title: "Algae")
+                        BarThingyView(teams: teams, barMax: detailMaximums.1, title: "Level 1")
+                        BarThingyView(teams: teams, barMax: detailMaximums.2, title: "Level 2")
+                        BarThingyView(teams: teams, barMax: detailMaximums.3, title: "Level 3")
+                        BarThingyView(teams: teams, barMax: detailMaximums.4, title: "Level 4")
+                        BarThingyView(teams: teams, barMax: detailMaximums.5, title: "Intake")
+                        BarThingyView(teams: teams, barMax: detailMaximums.6, title: "Travel")
+                        BarThingyView(teams: teams, barMax: detailMaximums.7, title: "Outtake")
+                        BarThingyView(teams: teams, barMax: detailMaximums.8, title: "Performance Score")
                     }
                 } else {
                     VStack {
@@ -139,7 +148,7 @@ struct MatchDetailView: View {
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                             }
                                             HStack {
-                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                ProgressView(value: Double(team.score.mean) / Double(detailMaximums.8))
                                                     .padding([.leading, .trailing])
                                                     .tint(Color.red)
                                             }
@@ -157,7 +166,7 @@ struct MatchDetailView: View {
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                             }
                                             HStack {
-                                                ProgressView(value: Double(team.points.mean) / Double(detailMaximums.5))
+                                                ProgressView(value: Double(team.score.mean) / Double(detailMaximums.8))
                                                     .padding([.leading, .trailing])
                                                     .tint(Color.blue)
                                             }
@@ -214,6 +223,9 @@ struct MatchDetailView: View {
                             EventSelectButton
                         }
                     }
+                    .onAppear {
+                        loadData()
+                    }
                 }
             } else {
                 VStack {
@@ -252,26 +264,35 @@ struct MatchDetailView: View {
             loadSettingsJson { result in
                 self.settingsOptions = result
             }
-            if !settingsOptions.isEmpty && !settingsOptions[0].events.isEmpty {
-                let ci = (settingsOptions[0].events.firstIndex{$0 == UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR"} ?? 0)
+            moveEvent()
+        }, label: {
+            Label(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST", systemImage: "flag.checkered")
+                .labelStyle(.titleOnly)
+        })
+    }
+    
+    func moveEvent() {
+        if !settingsOptions.isEmpty && !settingsOptions[0].events.isEmpty {
+            if !settingsOptions[0].events.contains(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "XXXX") {
+                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[0], forKey: "eventCode")
+            } else {
+                let ci = (settingsOptions[0].events.firstIndex{$0 == UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST"} ?? 0)
                 if ci == settingsOptions[0].events.count - 1 {
                     UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[0], forKey: "eventCode")
                 } else {
                     UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(settingsOptions[0].events[ci + 1], forKey: "eventCode")
                 }
-                match = 0
-                appState.fetchMatchJson()
-                self.loadData()
             }
-        }, label: {
-            Label(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR", systemImage: "flag.checkered")
-                .labelStyle(.titleOnly)
-        })
+            match = 1
+            appState.fetchMatchJson()
+            while appState.matchJsonStatus.0 == false {if appState.matchJsonStatus.1 == true {return}}
+            self.loadData()
+        }
     }
     
     func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
         guard
-            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "useAllCompData") ?? false ? "ALL" : UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(String(team))")
+            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "useAllCompData") ?? false ? "ALL" : UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST")/\(String(team))")
         else {
             return
         }
@@ -300,32 +321,37 @@ struct MatchDetailView: View {
         }
         requestTask.resume()
     }
-    
+        
     private func loadData() {
         var teamSet = TeamSet()
         var local: [TeamStats] = []
-        fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
-            teamSet.Red1 = Red1Data
-            fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in
-                teamSet.Red2 = Red2Data
-                fetchTeamStats(team: appState.matchJson[match - 1].teams[2].teamNumber) { Red3Data in
-                    teamSet.Red3 = Red3Data
-                    fetchTeamStats(team: appState.matchJson[match - 1].teams[3].teamNumber) { Blue1Data in
-                        teamSet.Blue1 = Blue1Data
-                        fetchTeamStats(team: appState.matchJson[match - 1].teams[4].teamNumber) { Blue2Data in
-                            teamSet.Blue2 = Blue2Data
-                            fetchTeamStats(team: appState.matchJson[match - 1].teams[5].teamNumber) { Blue3Data in
-                                teamSet.Blue3 = Blue3Data
-                                local = [teamSet.Red1!, teamSet.Red2!, teamSet.Red3!, teamSet.Blue1!, teamSet.Blue2!, teamSet.Blue3!]
-                                local.forEach { result in
-                                    if result.speaker.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.speaker.mean }
-                                    if result.amplifier.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.amplifier.mean }
-                                    if result.intake.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.intake.mean }
-                                    if result.travel.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.travel.mean }
-                                    if result.outtake.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.outtake.mean }
-                                    if result.points.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.points.mean }
+        if !appState.matchJson.isEmpty && appState.matchJson.count > 0 {
+            fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
+                teamSet.Red1 = Red1Data
+                fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in
+                    teamSet.Red2 = Red2Data
+                    fetchTeamStats(team: appState.matchJson[match - 1].teams[2].teamNumber) { Red3Data in
+                        teamSet.Red3 = Red3Data
+                        fetchTeamStats(team: appState.matchJson[match - 1].teams[3].teamNumber) { Blue1Data in
+                            teamSet.Blue1 = Blue1Data
+                            fetchTeamStats(team: appState.matchJson[match - 1].teams[4].teamNumber) { Blue2Data in
+                                teamSet.Blue2 = Blue2Data
+                                fetchTeamStats(team: appState.matchJson[match - 1].teams[5].teamNumber) { Blue3Data in
+                                    teamSet.Blue3 = Blue3Data
+                                    local = [teamSet.Red1 ?? emptyTeamStat, teamSet.Red2 ?? emptyTeamStat, teamSet.Red3 ?? emptyTeamStat, teamSet.Blue1 ?? emptyTeamStat, teamSet.Blue2 ?? emptyTeamStat, teamSet.Blue3 ?? emptyTeamStat]
+                                    local.forEach { result in
+                                        if result.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.algae.mean }
+                                        if result.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.level_0.mean }
+                                        if result.level_1.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.level_1.mean }
+                                        if result.level_2.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.level_2.mean }
+                                        if result.level_3.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.level_3.mean }
+                                        if result.intake_time.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.intake_time.mean }
+                                        if result.travel_time.mean > self.detailMaximums.6 { self.detailMaximums.6 = result.travel_time.mean }
+                                        if result.outtake_time.mean > self.detailMaximums.7 { self.detailMaximums.7 = result.outtake_time.mean }
+                                        if result.score.mean > self.detailMaximums.8 { self.detailMaximums.8 = result.score.mean }
+                                    }
+                                    self.teams = local
                                 }
-                                self.teams = local
                             }
                         }
                     }
@@ -335,8 +361,8 @@ struct MatchDetailView: View {
     }
     
     private func calculateWinner() -> (Int, Bool) {
-        let redScore: Int = teams[0].points.mean + teams[1].points.mean + teams[2].points.mean;
-        let blueScore: Int = teams[3].points.mean + teams[4].points.mean + teams[5].points.mean;
+        let redScore: Int = teams[0].score.mean + teams[1].score.mean + teams[2].score.mean;
+        let blueScore: Int = teams[3].score.mean + teams[4].score.mean + teams[5].score.mean;
         var pcnt: Double = Double(max(redScore, blueScore)) / Double(min(max(redScore, 1), max(blueScore, 1)));
         pcnt = (pcnt - 1) * 50;
         if pcnt > 100 {

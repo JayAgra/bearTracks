@@ -20,7 +20,7 @@ class TeamStatController: ObservableObject {
         guard
             let url = URL(
                 string:
-                    "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "CAFR")/\(teamNumber)"
+                    "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST")/\(teamNumber)"
             )
         else { return }
         sharedSession.dataTask(with: url) { data, _, error in
@@ -44,20 +44,22 @@ class TeamStatController: ObservableObject {
 
 struct TeamStats: Codable {
     let team: Int
-    let trap_note, climb, buddy_climb: Double?
-    let intake, travel, outtake, speaker, amplifier, total, points, auto_preload, auto_wing,
-        auto_center, auto_scores: DataStats
+    let leave, park, shallow_cage, deep_cage: Double?
+    let intake_time, travel_time, outtake_time, algae, level_0, level_1, level_2, level_3, score, auto_scores: DataStats
     
     subscript(key: String) -> DataStats {
         get {
             switch key {
-            case "Speaker": return self.speaker
-            case "Amplifier": return self.amplifier
-            case "Intake": return self.intake
-            case "Travel": return self.travel
-            case "Outtake": return self.outtake
-            case "Performance Score": return self.points
-            default: return self.points
+            case "Algae": return self.algae
+            case "Level 1": return self.level_0
+            case "Level 2": return self.level_1
+            case "Level 3": return self.level_2
+            case "Level 4": return self.level_3
+            case "Intake": return self.intake_time
+            case "Travel": return self.travel_time
+            case "Outtake": return self.outtake_time
+            case "Performance Score": return self.score
+            default: return self.score
             }
         }
     }

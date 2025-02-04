@@ -19,7 +19,7 @@ struct beartracks_scoutApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if !scoutFormController.loginRequired {
+            if scoutFormController.loginRequired == 1 {
                 TabView(selection: $scoutFormController.currentTab) {
                     StartView()
                         .environmentObject(scoutFormController)
@@ -44,18 +44,23 @@ struct beartracks_scoutApp: App {
                 }
                 .preferredColorScheme(darkMode ? .dark : .light)
                 .onAppear {
-                    checkLoginState { isLoggedIn in
-                        scoutFormController.loginRequired = !isLoggedIn
-                    }
+                    scoutFormController.checkLoginState()
                     scoutFormController.getMatches { result in
                         scoutFormController.matchList = result
                     }
                 }
                 .environmentObject(scoutFormController)
-            } else {
+            } else if scoutFormController.loginRequired == 2 {
                 LoginView()
                     .preferredColorScheme(darkMode ? .dark : .light)
                     .environmentObject(scoutFormController)
+            } else {
+                VStack {
+                    ProgressView()
+                }
+                .onAppear {
+                    scoutFormController.checkLoginState()
+                }
             }
         }
     }

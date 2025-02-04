@@ -76,16 +76,25 @@ struct SettingsView: View {
                             UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
                                 seasonInput, forKey: "season")
                         }
+                    }
+                    Section {
+#if !os(watchOS)
                         Toggle("Use all data for match predictions. This setting can be useful for the early matches of a competition, but is **not reccomended beyond the halfway point** unless prediction data is extremely inaccurate.", isOn: $allData)
                             .onChange(of: allData) { value in
                                 UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(allData, forKey: "useAllCompData")
                             }
+#endif
                         Toggle("Dark Mode", isOn: $darkMode)
                             .onChange(of: darkMode) { value in
                                 UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(darkMode, forKey: "darkMode")
                                 showAlert = true
                             }
                     }
+#if !os(watchOS)
+                    Section {
+                        NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
+                    }
+#endif
                     Section {
                         Button("Clear Cache") {
                             URLCache.shared.removeAllCachedResponses()
@@ -143,17 +152,15 @@ struct SettingsView: View {
                         })
                 },
                 message: {
-                    Text("This action is irreversable.")
+                    Text("This action is irreversible.")
                 })
-        }
-        .onAppear {
-            loadSettingsJson { result in
-                self.settingsOptions = result
+            .onAppear {
+                loadSettingsJson { result in
+                    self.settingsOptions = result
+                }
             }
-        }
-#if os(watchOS)
-        .ignoresSafeArea(edges: .bottom)
-#endif
+            .ignoresSafeArea(edges: .bottom)
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
     
     func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) {

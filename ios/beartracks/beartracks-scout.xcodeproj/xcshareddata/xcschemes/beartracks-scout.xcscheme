@@ -4,7 +4,8 @@
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F54E76BD2B527D96003C65A2"
-               BuildableName = "bearTracks.app"
-               BlueprintName = "bearTracks"
-               ReferencedContainer = "container:bearTracks.xcodeproj">
+               BlueprintIdentifier = "F56584042B54D52900F587C0"
+               BuildableName = "beartracks-scout.app"
+               BlueprintName = "beartracks-scout"
+               ReferencedContainer = "container:beartracks-scout.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -43,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F54E76BD2B527D96003C65A2"
-            BuildableName = "bearTracks.app"
-            BlueprintName = "bearTracks"
-            ReferencedContainer = "container:bearTracks.xcodeproj">
+            BlueprintIdentifier = "F56584042B54D52900F587C0"
+            BuildableName = "beartracks-scout.app"
+            BlueprintName = "beartracks-scout"
+            ReferencedContainer = "container:beartracks-scout.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -60,10 +61,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F54E76BD2B527D96003C65A2"
-            BuildableName = "bearTracks.app"
-            BlueprintName = "bearTracks"
-            ReferencedContainer = "container:bearTracks.xcodeproj">
+            BlueprintIdentifier = "F56584042B54D52900F587C0"
+            BuildableName = "beartracks-scout.app"
+            BlueprintName = "beartracks-scout"
+            ReferencedContainer = "container:beartracks-scout.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

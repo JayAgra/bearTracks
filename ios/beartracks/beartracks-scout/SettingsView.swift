@@ -61,10 +61,23 @@ struct SettingsView: View {
                                 UserDefaults.standard.set(darkMode, forKey: "darkMode")
                                 showAlert = true
                             }
-                        Toggle("Left-Handed Labels", isOn: $leftHand)
-                            .onChange(of: leftHand) { _ in
-                                UserDefaults.standard.set(leftHand, forKey: "leftHand")
-                            }
+//                        Toggle("Left-Handed Labels", isOn: $leftHand)
+//                            .onChange(of: leftHand) { _ in
+//                                UserDefaults.standard.set(leftHand, forKey: "leftHand")
+//                            }
+                    }
+                    Section {
+                        Picker("Game Interface", selection: $controller.selectedGameInterface) {
+                            Text("Slider").tag(0)
+                            Text("Buttons").tag(1)
+                        }
+                        .pickerStyle(.menu)
+                        .onChange(of: controller.selectedGameInterface) { _ in
+                            UserDefaults.standard.set(controller.selectedGameInterface, forKey: "gameInterface2025")
+                        }
+                    }
+                    Section {
+                        NavigationLink(destination: RegionalPoints().navigationTitle("Regional Points"), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
                     }
                     Section {
                         Button("Clear Network Cache") {
@@ -80,7 +93,7 @@ struct SettingsView: View {
                                 for cookie in cookies {
                                     sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
                                 }
-                                controller.loginRequired = true
+                                controller.loginRequired = 2
                             }
                         }
                         .foregroundStyle(Color.pink)
@@ -124,12 +137,12 @@ struct SettingsView: View {
                         "Delete", role: .destructive,
                         action: {
                             deleteAccount(data: ["username": deletionData.0, "password": deletionData.1])
-                            controller.loginRequired = true
+                            controller.loginRequired = 2
                             showConfirm = false
                         })
                 },
                 message: {
-                    Text("**This action is irreversable.**")
+                    Text("**This action is irreversible.**")
                 })
         }
         .onAppear {
@@ -137,6 +150,7 @@ struct SettingsView: View {
                 self.settingsOptions = result
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     func saveSeason() {

@@ -23,8 +23,13 @@ struct ReviewView: View {
                     } else if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == "" || controller.getOverallResponse() == "" {
                         Text("Please fill in all three long form responses.")
                             .padding()
+                            .onAppear {
+                                if controller.getDefenseResponse() == "" {
+                                    controller.defense = "No"
+                                }
+                            }
                     } else {
-                        Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))")
+                        Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))")
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         ScrollView {
@@ -36,16 +41,15 @@ struct ReviewView: View {
                                 VStack {
                                     Divider()
                                     ForEach($controller.matchTimes) { $matchTime in
-                                        if matchTime.score_type == 0 || matchTime.score_type == 1 || matchTime.score_type == 9 {
+                                        if matchTime.score_type >= 4 && matchTime.score_type <= 8 {
                                             VStack {
                                                 HStack {
                                                     Picker("Type", selection: $matchTime.score_type) {
-                                                        Text("Speaker")
-                                                            .tag(0)
-                                                        Text("Amplifier")
-                                                            .tag(1)
-                                                        Text("Shuttle/Other")
-                                                            .tag(9)
+                                                        Text("Algae").tag(4)
+                                                        Text("Level 1").tag(5)
+                                                        Text("Level 2").tag(6)
+                                                        Text("Level 3").tag(7)
+                                                        Text("Level 4").tag(8)
                                                     }
                                                     .pickerStyle(.menu)
                                                     Spacer()
@@ -87,6 +91,11 @@ struct ReviewView: View {
                                         .padding()
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding([.leading, .trailing])
+                                        .onAppear {
+                                            if controller.getDefenseResponse() == "" {
+                                                controller.defense = "No"
+                                            }
+                                        }
                                 }
                                 .padding()
                                 VStack {
@@ -185,6 +194,7 @@ struct ReviewView: View {
                 }
                 .navigationTitle("Match Scouting")
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }

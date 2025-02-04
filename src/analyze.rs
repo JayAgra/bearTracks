@@ -117,7 +117,7 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                 }
                 _other => {}
             }
-        } else if score_index <= 17 && item != "0" {
+        } else if score_index <= 17 && item != "0" {// #6T5ytSzWDn!L!U
             mid += 1.0;
             match item {
                 "1" => {
@@ -356,12 +356,11 @@ fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
     let mut travel_time: f64 = 0.0;         // 1 (reserved)
     let mut outtake_time: f64 = 0.0;        // 2 (reserved)
 
-    let mut level_4: i64 = 0;               // 8
-    let mut level_3: i64 = 0;               // 7
-    let mut level_2: i64 = 0;               // 6
-    let mut level_1: i64 = 0;               // 5
-    let mut processor: i64 = 0;             // 4
-    let mut net: i64 = 0;                   // 3
+    let mut level_3: i64 = 0;               // 8
+    let mut level_2: i64 = 0;               // 7
+    let mut level_1: i64 = 0;               // 6
+    let mut level_0: i64 = 0;               // 5
+    let mut algae: i64 = 0;                 // 4
 
     let mut park: bool = false;             // 9
     let mut shallow_cage: bool = false;     // 10
@@ -375,12 +374,12 @@ fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
             0 => {} //
             1 => {} //   RESERVED
             2 => {} //
-            3 => net += 1,
-            4 => processor += 1,
-            5 => level_1 += 1,
-            6 => level_2 += 1,
-            7 => level_3 += 1,
-            8 => level_4 += 1,
+            3 => {} //
+            4 => algae += 1,
+            5 => level_0 += 1,
+            6 => level_1 += 1,
+            7 => level_2 += 1,  
+            8 => level_3 += 1,
             9 => {
                 if time.intake == 1.0 {
                     park = true
@@ -402,6 +401,8 @@ fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                 }
             }
             13 => auto_score += 1,
+            // 14 = auto algae
+            // 15 = auto not algae (coral?)
             _ => {}
         }
         if time.score_type == 0 || time.score_type == 1 || time.score_type == 9 {
@@ -409,15 +410,14 @@ fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
             travel_time += time.travel;
             outtake_time += time.outtake;
         }
-    }
+    } 
 
     score += auto_score as f64 * 9.0;       // place high value on this
-    score += net as f64 * 4.0;
-    score += processor as f64 * 5.0;        // place low value on this
-    score += level_1 as f64 * 2.0;
-    score += level_2 as f64 * 3.0;
-    score += level_3 as f64 * 4.0;
-    score += level_4 as f64 * 5.0;
+    score += algae as f64 * 4.0;
+    score += level_0 as f64 * 2.0;
+    score += level_1 as f64 * 3.0;
+    score += level_2 as f64 * 4.0;
+    score += level_3 as f64 * 5.0;
 
     score += real_bool_to_num(leave) * 3.0;
     score += real_bool_to_num(park) * 2.0;
@@ -458,12 +458,11 @@ fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
         intake_time as i64,
         travel_time as i64,
         outtake_time as i64,
-        net,
-        processor,
+        algae,
+        level_0,
         level_1,
         level_2,
         level_3,
-        level_4,
         score as i64,
         auto_score
     ];

@@ -13,7 +13,7 @@ class SettingsManager {
     private init() {
         let defaults: [String: Any] = [
             "teamNumber": "766",
-            "eventCode": "CAFR",
+            "eventCode": "TEST",
             "season": "2025",
             "darkMode": true,
             "useAllCompData": false,

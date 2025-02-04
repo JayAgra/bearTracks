@@ -29,13 +29,12 @@ mod db_auth;
 mod db_main;
 mod db_transact;
 mod forward;
+mod game_api;
 mod passkey;
 mod server_health;
 mod session;
 mod static_files;
 mod stats;
-
-// mod game_api;
 
 // hashmap containing user session IDs
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -533,7 +532,7 @@ async fn misc_get_whoami(user: db_auth::User) -> Result<HttpResponse, AWError> {
 }
 
 // if you aren't D6MFYYVHA8 you may want to change this
-const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\",\"D6MFYYVHA8.com.jayagra.lydiasmvp\"]}}";
+const APPLE_APP_SITE_ASSOC: &str = "{\"webcredentials\":{\"apps\":[\"D6MFYYVHA8.com.jayagra.beartracks\",\"D6MFYYVHA8.com.jayagra.beartracks-scout\",\"D6MFYYVHA8.com.jayagra.beartracks-manage\",\"D6MFYYVHA8.com.jayagra.beartracks.watchkitapp\"]}}";
 async fn misc_apple_app_site_association() -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok().content_type(ContentType::json()).body(APPLE_APP_SITE_ASSOC))
 }
@@ -567,50 +566,49 @@ async fn debug_health(session: web::Data<RwLock<Sessions>>) -> Result<HttpRespon
 // *** code retained if game-like features are relevant in future *** //
 
 // get all user's owned cards
-async fn game_get_cards(/*db: web::Data<Databases>, user: db_auth::User*/) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::NotImplemented().body("game discontinued"))
-    // Ok(HttpResponse::Ok()
-    //     .insert_header(("Cache-Control", "no-cache"))
-    //     .json(game_api::get_owned_cards(&db.auth, user).await?))
+async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(game_api::get_owned_cards(&db.auth, user).await?))
 }
 
 // get all user's owned cards (by a username)
 // ** NO AUTH **
-async fn game_get_cards_by_username(/*db: web::Data<Databases>, req: HttpRequest*/) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::NotImplemented().body("game discontinued"))
-    // Ok(HttpResponse::Ok()
-    //     .insert_header(("Cache-Control", "no-cache"))
-    //     .json(game_api::get_owned_cards_by_user(&db.auth, req.match_info().get("user").unwrap().parse().unwrap()).await?))
+async fn game_get_cards_by_username(db: web::Data<Databases>, req: HttpRequest) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(game_api::get_owned_cards_by_user(&db.auth, req.match_info().get("user").unwrap().parse().unwrap()).await?))
 }
 
 // get random team from scouted teams
-async fn game_open_lootbox(/*req: HttpRequest, db: web::Data<Databases>, user: db_auth::User*/) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::NotImplemented().body("game discontinued"))
-    // Ok(HttpResponse::Ok()
-    //     .insert_header(("Cache-Control", "no-cache"))
-    //     .json(game_api::open_loot_box(&db.auth, &db.main, user, req.match_info().get("event").unwrap().parse().unwrap()).await?))
+async fn game_open_lootbox(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(game_api::open_loot_box(&db.auth, &db.main, user, req.match_info().get("event").unwrap().parse().unwrap()).await?))
 }
 
 // set player's hand
-async fn game_set_hand(/*db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User*/) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::NotImplemented().body("game discontinued"))
-    // Ok(HttpResponse::Ok()
-    //     .insert_header(("Cache-Control", "no-cache"))
-    //     .json(game_api::set_held_cards(&db.auth, user, &data).await?))
+async fn game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(game_api::set_held_cards(&db.auth, user, &data).await?))
 }
 
 // ** NO AUTH **
-async fn game_get_team(/*req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User*/) -> Result<HttpResponse, AWError> {
-    Ok(HttpResponse::NotImplemented().body("game discontinued"))
-    // Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).json(
-    //     game_api::execute(
-    //         &db.main,
-    //         req.match_info().get("season").unwrap().parse().unwrap(),
-    //         req.match_info().get("event").unwrap().parse().unwrap(),
-    //         req.match_info().get("team").unwrap().parse().unwrap(),
-    //     )
-    //     .await?,
-    // ))
+async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok().insert_header(("Cache-Control", "no-cache")).json(
+        game_api::execute(
+            &db.main,
+            req.match_info().get("season").unwrap().parse().unwrap(),
+            req.match_info().get("event").unwrap().parse().unwrap(),
+            req.match_info().get("team").unwrap().parse().unwrap(),
+        )
+        .await?,
+    ))
+}
+
+async fn return_discontinued_gone(req: HttpRequest) -> Result<HttpResponse, AWError> {
+    Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
 }
 
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
@@ -737,10 +735,10 @@ async fn main() -> io::Result<()> {
     let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
     builder.set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
     builder.set_certificate_chain_file("./ssl/cert.pem").unwrap();
-    let intermediate_cert_url = "https://letsencrypt.org/certs/lets-encrypt-r3.der";
-    let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url).unwrap().bytes().unwrap();
-    let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
-    builder.add_extra_chain_cert(intermediate_cert).unwrap();
+    // let intermediate_cert_url = "https://letsencrypt.org/certs/lets-encrypt-r3.der";
+    // let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url).unwrap().bytes().unwrap();
+    // let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
+    // builder.add_extra_chain_cert(intermediate_cert).unwrap();
 
     // config done. now, create the new HttpServer
     log::info!("[OK] starting bearTracks on port 443 and 80");
@@ -998,6 +996,10 @@ async fn main() -> io::Result<()> {
                 web::resource("/apple-app-site-association")
                     .route(web::get().to(misc_apple_app_site_association)),
             )
+            .service(
+                web::resource("/.well-known/apple-app-site-association")
+                    .route(web::get().to(misc_apple_app_site_association)),
+            )
             /* debug endpoints */
             // GET
             .service(
@@ -1012,19 +1014,22 @@ async fn main() -> io::Result<()> {
                 web::resource("/api/v1/debug/ok")
                     .route(web::get().to(debug_ok)),
             )
-            /* robot game endpoints (killed)
+            // robot game endpoints (killed) (ish)
             // GET
             .service(
                 web::resource("/api/v1/game/all_owned_cards")
-                    .route(web::get().to(game_get_cards)),
+                    // .route(web::get().to(game_get_cards)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             .service(
                 web::resource("/api/v1/game/owned_cards/{user}")
-                    .route(web::get().to(game_get_cards_by_username)),
+                    // .route(web::get().to(game_get_cards_by_username)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             .service(
                 web::resource("/api/v1/game/my_owned_cards")
-                    .route(web::get().to(game_get_cards)),
+                    // .route(web::get().to(game_get_cards)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             .service(
                 web::resource("/api/v1/game/team_data/{season}/{event}/{team}")
@@ -1032,14 +1037,15 @@ async fn main() -> io::Result<()> {
             )
             .service(
                 web::resource("/api/v1/game/open_lootbox/{event}")
-                    .route(web::get().to(game_open_lootbox)),
+                    // .route(web::get().to(game_open_lootbox)),
+                    .route(web::get().to(return_discontinued_gone))
             )
             // POST
             .service(
                 web::resource("/api/v1/game/set_hand")
-                    .route(web::post().to(game_set_hand))
+                    // .route(web::post().to(game_set_hand))
+                    .route(web::post().to(return_discontinued_gone))
             )
-            */
     })
     .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
     .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?

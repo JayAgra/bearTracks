@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:RegionalPoints.swift">
+   </FileRef>
+   <FileRef
       location = "group:bearTracks/bearTracks.xcodeproj">
    </FileRef>
    <FileRef

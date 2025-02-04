@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct LoginView: View {
     @State private var showAlert = false
@@ -25,24 +26,26 @@ struct LoginView: View {
                     Text("Log In")
                         .font(.title3)
                         .padding(.top)
-                    TextField("Username", text: $authData[0])
-                        .padding([.leading, .trailing, .bottom])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.username)
-                    SecureField("Password", text: $authData[1])
-                        .padding()
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.password)
+                    HStack {
+                        TextField("Username", text: $authData[0])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
+                            .textContentType(.username)
+                    }
+                    .padding(.horizontal)
+                    HStack {
+                        SecureField("Password", text: $authData[1])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
+                            .textContentType(.password)
+                    }.padding()
                     Button("Log In") {
                         authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
                     }
-                    .padding()
-                    .font(.title3)
                     .buttonStyle(.bordered)
+                    .padding()
                     Button("Create Account") {
                         self.create = true
                     }
@@ -82,7 +85,6 @@ struct LoginView: View {
                             ])
                     }
                     .padding()
-                    .font(.title3)
                     .buttonStyle(.bordered)
                     Button("Log In") {
                         self.create = false
@@ -123,7 +125,7 @@ struct LoginView: View {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
                             if type == "login" {
-                                controller.loginRequired = false
+                                controller.loginRequired = 1
                             } else {
                                 create = false
                             }

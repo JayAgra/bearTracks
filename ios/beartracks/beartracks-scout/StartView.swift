@@ -18,7 +18,7 @@ struct StartView: View {
                     Form {
                         Section {
                             Text(
-                                "\(UserDefaults.standard.string(forKey: "eventCode") ?? "CAFR") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))"
+                                "\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))"
                             )
                         }
                         Section {
@@ -29,7 +29,7 @@ struct StartView: View {
                                     Text("\(controller.matchNumber)")
                                 }
                             } onIncrement: {
-                                if controller.matchNumber < controller.matchList[0].Schedule.count {
+                                if controller.matchList.count > 0 && controller.matchNumber < controller.matchList[0].Schedule.count {
                                     controller.teamNumber = "--"
                                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     controller.matchNumber += 1
@@ -118,6 +118,7 @@ struct StartView: View {
                 }
                 .navigationTitle("Match Scouting")
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
     

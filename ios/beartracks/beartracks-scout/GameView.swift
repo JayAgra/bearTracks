@@ -8,21 +8,16 @@
 import AudioToolbox
 import SwiftUI
 
+public enum ActionState {
+    case neutral, intake, travel, outtake
+}
+
+public enum ReleaseState {
+    case neutral, l0, l1, l2, l3, net
+}
+
 struct GameView: View {
     @EnvironmentObject var controller: ScoutingController
-    @State private var holdLengths: (TimeInterval, TimeInterval, TimeInterval) = (0.0, 0.0, 0.0)
-    @State private var timer: Timer?
-    @State private var actionState: ActionState = .neutral
-    @State private var releaseState: ReleaseState = .neutral
-    @State private var ballOffset: CGSize = .zero
-    
-    enum ActionState {
-        case neutral, intake, travel, outtake
-    }
-    
-    enum ReleaseState {
-        case neutral, speaker, amplifier, other
-    }
     
     var body: some View {
         NavigationView {
@@ -30,163 +25,9 @@ struct GameView: View {
                 VStack {
                     GeometryReader { geometry in
                         VStack {
-                            ZStack {
-                                HStack {
-                                    Spacer()
-                                    VStack {
-                                        Text("Intake")
-                                            .foregroundStyle(Color.gray)
-                                        Text(String(format: "%.1f", holdLengths.0))
-                                            .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
-                                    }
-                                    Spacer()
-                                    VStack {
-                                        Text("Travel")
-                                            .foregroundStyle(Color.gray)
-                                        Text(String(format: "%.1f", holdLengths.1))
-                                            .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
-                                    }
-                                    Spacer()
-                                    VStack {
-                                        Text("Outtake")
-                                            .foregroundStyle(Color.gray)
-                                        Text(String(format: "%.1f", holdLengths.2))
-                                            .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
-                                    }
-                                    Spacer()
-                                }
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .padding(.top)
-                                VStack {
-                                    HStack {
-                                        if releaseState == .other {
-                                            Text("Other")
-                                                .foregroundStyle(Color.init(red: 254 / 255, green: 128 / 255, blue: 25 / 255))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        } else {
-                                            Text("—")
-                                                .foregroundStyle(getLabelColor(state: true, type: nil))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        }
-                                    }
-                                }
-                            }
-                            Spacer()
-                            ZStack {
-                                HStack {
-                                    Spacer()
-                                    Capsule()
-                                        .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
-                                        .frame(width: geometry.size.width * 0.8, height: 60)
-                                    Spacer()
-                                }
-                                Circle()
-                                    .fill(getBallColor(position: actionState, height: geometry.size.height))
-                                    .overlay(
-                                        getUIImage(position: actionState, height: geometry.size.height)
-                                            .colorMultiply(Color.init(red: 0.1, green: 0.1, blue: 0.1))
-                                            .font(Font.body.bold())
-                                    )
-                                    .frame(width: 50, height: 50)
-                                    .offset(x: ballOffset.width, y: 0)
-                                    .gesture(
-                                        DragGesture()
-                                            .onChanged { value in
-                                                self.updateBallOffset(
-                                                    dragValue: value, totalWidth: geometry.size.width * 0.8,
-                                                    totalHeight: geometry.size.height)
-                                                self.updateTogglePosition(
-                                                    totalWidth: geometry.size.width * 0.8, height: geometry.size.height)
-                                            }
-                                            .onEnded { _ in
-                                                withAnimation {
-                                                    if abs(self.ballOffset.height) >= geometry.size.height * 0.2 {
-                                                        UINotificationFeedbackGenerator().notificationOccurred(.success)
-                                                    }
-                                                    self.ballOffset = .zero
-                                                    self.actionState = .neutral
-                                                }
-                                            }
-                                    )
-                                    .modifier(
-                                        PressModifier(
-                                            onPress: { self.actionState = .travel },
-                                            onRelease: {
-                                                if self.ballOffset.height >= geometry.size.height * 0.2 {
-                                                    UINotificationFeedbackGenerator().notificationOccurred(.success)
-                                                    controller.clearSpeaker()
-                                                    self.holdLengths = (0, 0, 0)
-                                                } else if self.ballOffset.height <= geometry.size.height * -0.2 {
-                                                    if abs(self.ballOffset.height) >= geometry.size.height * 0.475 {
-                                                        UINotificationFeedbackGenerator().notificationOccurred(.error)
-                                                        controller.clearShuttle()
-                                                    } else {
-                                                        UINotificationFeedbackGenerator().notificationOccurred(.warning)
-                                                        controller.clearAmplifier()
-                                                    }
-                                                    self.holdLengths = (0, 0, 0)
-                                                }
-                                                self.actionState = .neutral
-                                                self.releaseState = .neutral
-                                            }))
-                                VStack {
-                                    Spacer()
-                                    HStack {
-                                        if releaseState == .amplifier {
-                                            Text("Amplifier")
-                                                .foregroundStyle(Color.init(red: 250 / 255, green: 189 / 255, blue: 47 / 255))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        } else {
-                                            Text("—")
-                                                .foregroundStyle(getLabelColor(state: true, type: nil))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        }
-                                    }
-                                    Spacer(); Spacer()
-                                    HStack {
-                                        Spacer()
-                                        
-                                        Text("Intake")
-                                            .foregroundStyle(getLabelColor(state: false, type: .intake))
-                                        Spacer()
-                                        Text("Travel")
-                                            .foregroundStyle(getLabelColor(state: false, type: .travel))
-                                        Spacer()
-                                        Text("Outtake")
-                                            .foregroundStyle(getLabelColor(state: false, type: .outtake))
-                                        Spacer()
-                                    }
-                                    Spacer(); Spacer(); Spacer(); Spacer(); Spacer()
-                                    HStack {
-                                        if releaseState == .speaker {
-                                            Text("speaker")
-                                                .foregroundStyle(Color.init(red: 184 / 255, green: 187 / 255, blue: 38 / 255))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        } else {
-                                            Text("—")
-                                                .foregroundStyle(getLabelColor(state: true, type: nil))
-                                                .frame(maxWidth: .infinity, alignment: getLabelAlignment())
-                                        }
-                                    }
-                                    Spacer()
-                                }
-                            }
-                            .padding(.bottom)
-                            .onChange(of: actionState) { value in
-                                self.timer?.invalidate()
-                                self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-                                    if value == .intake {
-                                        self.holdLengths.0 += 0.1
-                                        controller.times[0] = self.holdLengths.0
-                                    } else if value == .travel {
-                                        self.holdLengths.1 += 0.1
-                                        controller.times[1] = self.holdLengths.1
-                                    } else if value == .outtake {
-                                        self.holdLengths.2 += 0.1
-                                        controller.times[2] = self.holdLengths.2
-                                    }
-                                }
-                                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+                            switch controller.selectedGameInterface {
+                            case 1: GameViewButtonTimer(geometry: geometry, controller: controller)
+                            case _: GameViewShifterTimer(geometry: geometry, controller: controller) // 0
                             }
                             Spacer()
                             Button("Start Endgame") {
@@ -203,13 +44,466 @@ struct GameView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .navigationTitle("Match Scouting")
-                .onAppear {
-                    holdLengths = (0.0, 0.0, 0.0)
-                }
             } else {
                 Text("Please select a match and team number on the start tab.")
                     .padding()
                     .navigationTitle("Match Scouting")
+            }
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
+    }
+}
+
+struct GameViewButtonTimer: View {
+    var geometry: GeometryProxy
+    var controller: ScoutingController
+    @State var holdLengths: (TimeInterval, TimeInterval, TimeInterval) = (0.0, 0.0, 0.0)
+    @State var timer: Timer?
+    @State var actionState: ActionState = .neutral
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                VStack {
+                    Text("Intake")
+                        .foregroundStyle(Color.gray)
+                    Text(String(format: "%.1f", holdLengths.0))
+                        .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
+                }
+                Spacer()
+                VStack {
+                    Text("Travel")
+                        .foregroundStyle(Color.gray)
+                    Text(String(format: "%.1f", holdLengths.1))
+                        .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
+                }
+                Spacer()
+                VStack {
+                    Text("Outtake")
+                        .foregroundStyle(Color.gray)
+                    Text(String(format: "%.1f", holdLengths.2))
+                        .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
+                }
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.top)
+            HStack {
+                Spacer()
+                Button(action: {
+                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+                }, label: {
+                    Label("Intake", systemImage: "tray.and.arrow.down.fill")
+                        .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
+                        .labelStyle(.iconOnly)
+                        .font(.custom("button", size: geometry.size.width * 0.125))
+                        .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.25)
+                })
+                .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged({ _ in actionState = .intake}).onEnded({ _ in actionState = .neutral}))
+                .buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                Spacer()
+                Button(action: {
+                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+                }, label: {
+                    Label("Travel", systemImage: "arrow.up.and.down.and.arrow.left.and.right")
+                        .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
+                        .labelStyle(.iconOnly)
+                        .font(.custom("button", size: geometry.size.width * 0.125))
+                        .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.25)
+                })
+                .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged({ _ in actionState = .travel}).onEnded({ _ in actionState = .neutral}))
+                .buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                Spacer()
+                Button(action: {
+                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+                }, label: {
+                    Label("Outtake", systemImage: "paperplane.fill")
+                        .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
+                        .labelStyle(.iconOnly)
+                        .font(.custom("button", size: geometry.size.width * 0.125))
+                        .frame(width: geometry.size.width * 0.2, height: geometry.size.height * 0.25)
+                })
+                .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged({ _ in actionState = .outtake}).onEnded({ _ in actionState = .neutral}))
+                .buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                Spacer()
+            }
+            .onChange(of: actionState) { value in
+                self.timer?.invalidate()
+                self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+                    if value == .intake {
+                        self.holdLengths.0 += 0.1
+                        controller.times[0] = self.holdLengths.0
+                    } else if value == .travel {
+                        self.holdLengths.1 += 0.1
+                        controller.times[1] = self.holdLengths.1
+                    } else if value == .outtake {
+                        self.holdLengths.2 += 0.1
+                        controller.times[2] = self.holdLengths.2
+                    }
+                }
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            }
+            .padding(.vertical)
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    controller.clearScore(scoreType: 4); self.holdLengths = (0, 0, 0)
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                }, label: {
+                    Label("Algae", systemImage: "leaf.fill")
+                        .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
+                        .labelStyle(.iconOnly)
+                        .font(.custom("button", size: geometry.size.width * 0.125))
+                        .frame(width: geometry.size.width * 0.35, height: geometry.size.width * 0.4)
+                }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                Spacer()
+                VStack {
+                    Button(action: {
+                        controller.clearScore(scoreType: 5); self.holdLengths = (0, 0, 0)
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    }, label: {
+                        Label("Level 1", systemImage: "1.circle.fill")
+                            .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
+                            .labelStyle(.iconOnly)
+                            .font(.custom("button", size: geometry.size.width * 0.1))
+                            .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
+                    }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                    Button(action: {
+                        controller.clearScore(scoreType: 7); self.holdLengths = (0, 0, 0)
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    }, label: {
+                        Label("Level 3", systemImage: "3.circle.fill")
+                            .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
+                            .labelStyle(.iconOnly)
+                            .font(.custom("button", size: geometry.size.width * 0.1))
+                            .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
+                    }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                }
+                VStack {
+                    Button(action: {
+                        controller.clearScore(scoreType: 6); self.holdLengths = (0, 0, 0)
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    }, label: {
+                        Label("Level 2", systemImage: "2.circle.fill")
+                            .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
+                            .labelStyle(.iconOnly)
+                            .font(.custom("button", size: geometry.size.width * 0.1))
+                            .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
+                    }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                    Button(action: {
+                        controller.clearScore(scoreType: 8); self.holdLengths = (0, 0, 0)
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    }, label: {
+                        Label("Level 4", systemImage: "4.circle.fill")
+                            .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
+                            .labelStyle(.iconOnly)
+                            .font(.custom("button", size: geometry.size.width * 0.1))
+                            .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
+                    }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
+                }
+                Spacer()
+            }
+            Spacer()
+        }
+    }
+}
+
+struct GameViewShifterTimer: View {
+    var geometry: GeometryProxy
+    var controller: ScoutingController
+    @State var ballOffset: CGSize = .zero
+    @State var holdLengths: (TimeInterval, TimeInterval, TimeInterval) = (0.0, 0.0, 0.0)
+    @State var timer: Timer?
+    @State var actionState: ActionState = .neutral
+    @State var releaseState: ReleaseState = .neutral
+    
+    var body: some View {
+        ZStack {
+            HStack {
+                Spacer()
+                VStack {
+                    Text("Intake")
+                        .foregroundStyle(Color.gray)
+                    Text(String(format: "%.1f", holdLengths.0))
+                        .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
+                }
+                Spacer()
+                VStack {
+                    Text("Travel")
+                        .foregroundStyle(Color.gray)
+                    Text(String(format: "%.1f", holdLengths.1))
+                        .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
+                }
+                Spacer()
+                VStack {
+                    Text("Outtake")
+                        .foregroundStyle(Color.gray)
+                    Text(String(format: "%.1f", holdLengths.2))
+                        .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
+                }
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.top)
+        }
+        Spacer()
+        ZStack {
+            HStack {
+                Spacer()
+                Capsule()
+                    .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                    .frame(width: geometry.size.width * 0.7, height: geometry.size.width * 0.15)
+                Spacer()
+            }
+            VStack {
+                Capsule()
+                    .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                    .frame(width: geometry.size.width * 0.9, height: geometry.size.width * 0.15)
+                    .rotationEffect(Angle(radians: Double.pi * 0.5))
+                    .offset(x: geometry.size.width * 0.275)
+            }
+            VStack {
+                Capsule()
+                    .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                    .frame(width: geometry.size.width * 0.25, height: geometry.size.width * 0.15)
+                    .rotationEffect(Angle(radians: Double.pi * -0.25))
+                    .offset(x: geometry.size.width * 0.215, y: -27.5)
+            }
+            VStack {
+                Capsule()
+                    .fill(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                    .frame(width: geometry.size.width * 0.25, height: geometry.size.width * 0.15)
+                    .rotationEffect(Angle(radians: Double.pi * 0.25))
+                    .offset(x: geometry.size.width * 0.215, y: 27.5)
+            }
+            VStack { // REFACTOR LATER
+                Spacer(); Spacer()
+                Text("Algae")
+                    .foregroundStyle(releaseState == .net ? Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255) : Color.gray)
+                Spacer()
+                Text("L4")
+                    .foregroundStyle(releaseState == .l3 ? Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255) : Color.gray)
+                Spacer()
+                Text("L3")
+                    .foregroundStyle(releaseState == .l2 ? Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255) : Color.gray)
+                Spacer()
+                Text("L2")
+                    .foregroundStyle(releaseState == .l1 ? Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255) : Color.gray)
+                Spacer()
+                Text("L1")
+                    .foregroundStyle(releaseState == .l0 ? Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255) : Color.gray)
+                Spacer(); Spacer()
+            }
+            .offset(x: geometry.size.width * 0.425)
+            Circle()
+                .fill(getBallColor(position: actionState, releasePosition: releaseState))
+                .overlay(
+                    
+                    getUIImage(position: actionState, releasePosition: releaseState)
+                        .colorMultiply(Color.init(red: 0.1, green: 0.1, blue: 0.1))
+                        .font(Font.body.bold())
+                )
+                .frame(width: geometry.size.width * 0.125, height: geometry.size.width * 0.125)
+                .offset(x: ballOffset.width, y: ballOffset.height * -1)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            self.updateBallOffset(
+                                dragValue: value, totalWidth: geometry.size.width * 0.7,
+                                totalHeight: geometry.size.width * 0.7)
+                            self.updateTogglePosition(totalWidth: geometry.size.width * 0.7, height: geometry.size.height)
+                        }
+                        .onEnded { _ in
+                            withAnimation(.linear(duration: 0.2)) {
+                                if abs(self.ballOffset.height) >= geometry.size.height * 0.2 {
+                                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                }
+                                self.ballOffset.height = 0
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.125) {
+                                withAnimation {
+                                    self.ballOffset.width = 0
+                                    self.actionState = .neutral
+                                }
+                            }
+                        }
+                )
+                .modifier(
+                    PressModifier(
+                        onPress: { self.actionState = .travel },
+                        onRelease: {
+                            switch releaseState {
+                            case .neutral:
+                                return;
+                            case .l0:
+                                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                controller.clearScore(scoreType: 5); self.holdLengths = (0, 0, 0)
+                            case .l1:
+                                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                                controller.clearScore(scoreType: 6); self.holdLengths = (0, 0, 0)
+                            case .l2:
+                                UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                                controller.clearScore(scoreType: 7); self.holdLengths = (0, 0, 0)
+                            case .l3:
+                                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                                controller.clearScore(scoreType: 8); self.holdLengths = (0, 0, 0)
+                            case .net:
+                                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                controller.clearScore(scoreType: 4); self.holdLengths = (0, 0, 0)
+                            }
+                            self.actionState = .neutral
+                            self.releaseState = .neutral
+                        }
+                    )
+                )
+        }
+        .padding(.bottom)
+        .onChange(of: actionState) { value in
+            self.timer?.invalidate()
+            self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+                if value == .intake {
+                    self.holdLengths.0 += 0.1
+                    controller.times[0] = self.holdLengths.0
+                } else if value == .travel {
+                    self.holdLengths.1 += 0.1
+                    controller.times[1] = self.holdLengths.1
+                } else if value == .outtake {
+                    self.holdLengths.2 += 0.1
+                    controller.times[2] = self.holdLengths.2
+                }
+            }
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+        }
+        .onAppear {
+            holdLengths = (0.0, 0.0, 0.0)
+        }
+    }
+    
+    private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat) {
+        if self.ballOffset.width >= totalWidth * 0.390625 {
+            if abs(self.ballOffset.height) < totalHeight * 0.1875 && abs(dragValue.translation.height) >= totalHeight * 0.1875 {
+                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            } else if abs(self.ballOffset.height) < totalHeight * 0.375 && abs(dragValue.translation.height) >= totalHeight * 0.375 {
+                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            }
+            if abs(self.ballOffset.height) > totalHeight * 0.1875 && abs(dragValue.translation.height) < totalHeight * 0.1875 {
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            } else if abs(self.ballOffset.height) > totalHeight * 0.375 && abs(dragValue.translation.height) < totalHeight * 0.375 {
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            }
+        }
+        
+        var newOffset: CGSize;
+        let newWidth = min(max(dragValue.translation.width, (totalWidth * -0.3875)), (totalWidth * 0.3875))
+        let newHeight = min(max(dragValue.translation.height * -1, (totalWidth * -0.54)), (totalWidth * 0.54))
+        if newWidth >= totalWidth * 0.3375 {
+            newOffset = CGSize(
+                width: totalWidth * 0.3925,
+                height: newHeight
+            )
+        } else if newWidth >= totalWidth * (0.215 + (0.125 / sqrt(2))) {
+            if abs(newHeight) <= totalWidth * 0.225 {
+                newOffset = CGSize(
+                    width: newWidth,
+                    height: (newWidth - (totalWidth * (0.215 + (0.125 / sqrt(2)))))
+                )
+            } else {
+                newOffset = CGSize(
+                    width: totalWidth * 0.3925,
+                    height: newHeight
+                )
+            }
+        } else {
+            newOffset = CGSize(
+                width: newWidth,
+                height: 0
+            )
+        }
+
+        self.ballOffset = newOffset
+                      
+        if self.ballOffset.width >= totalWidth * 0.325 {
+            if abs(self.ballOffset.height) > totalWidth * 0.1875 {
+                if self.ballOffset.height > 0 {
+                    if self.ballOffset.height < totalWidth * 0.375 {
+                        releaseState = .l3
+                    } else {
+                        releaseState = .net
+                    }
+                } else {
+                    if self.ballOffset.height > totalWidth * -0.375 {
+                        releaseState = .l1
+                    } else {
+                        releaseState = .l0
+                    }
+                }
+            } else {
+                self.releaseState = .l2
+            }
+            
+        } else {
+            self.releaseState = .neutral
+        }
+    }
+    
+    private func getUIImage(position: ActionState, releasePosition: ReleaseState) -> Image {
+        if releasePosition != .neutral {
+            switch releasePosition {
+            case .l0:
+                return Image(systemName: "1.circle.fill")
+            case .l1:
+                return Image(systemName: "2.circle.fill")
+            case .l2:
+                return Image(systemName: "3.circle.fill")
+            case .l3:
+                return Image(systemName: "4.circle.fill")
+            case .net:
+                return Image(systemName: "leaf.fill")
+            case .neutral:
+                return Image(systemName: "minus")
+            }
+        } else {
+            switch position {
+            case .neutral:
+                return Image(systemName: "arrow.left.and.right")
+            case .intake:
+                return Image(systemName: "tray.and.arrow.down.fill")
+            case .travel:
+                return Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
+            case .outtake:
+                return Image(systemName: "paperplane.fill")
+            }
+        }
+    }
+    
+    private func getBallColor(position: ActionState, releasePosition: ReleaseState) -> Color {
+        if releasePosition != .neutral {
+            switch releasePosition {
+            case .l0:
+                return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
+            case .l1:
+                return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
+            case .l2:
+                return Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255) // middle
+            case .l3:
+                return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
+            case .net:
+                return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
+            case .neutral:
+                return Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255)
+            }
+        } else {
+            switch position {
+            case .neutral:
+                return Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255)
+            case .intake:
+                return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
+            case .travel:
+                return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
+            case .outtake:
+                return Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255)
             }
         }
     }
@@ -229,113 +523,6 @@ struct GameView: View {
             self.actionState = .travel
         default:
             self.actionState = .outtake
-        }
-    }
-    
-    private func updateBallOffset(dragValue: DragGesture.Value, totalWidth: CGFloat, totalHeight: CGFloat) {
-        if abs(self.ballOffset.height) > totalHeight * 0.2 && abs(dragValue.translation.height) <= totalHeight * 0.2 {
-            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-        } else if abs(self.ballOffset.height) <= totalHeight * 0.2 && abs(dragValue.translation.height) > totalHeight * 0.2 {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        }
-        
-        let newOffset = CGSize(
-            width: min(max(dragValue.translation.width, (totalWidth * -0.5) + 30), (totalWidth * 0.5) - 30),
-            height: dragValue.translation.height
-        )
-        self.ballOffset = newOffset
-        
-        if abs(self.ballOffset.height) >= totalHeight * 0.2 {
-            if self.ballOffset.height < 0 {
-                if abs(self.ballOffset.height) >= totalHeight * 0.475 {
-                    releaseState = .other
-                } else {
-                    releaseState = .amplifier
-                }
-            } else {
-                releaseState = .speaker
-            }
-        } else {
-            self.releaseState = .neutral
-        }
-    }
-    
-    private func getUIImage(position: ActionState, height: CGFloat) -> Image {
-        if abs(self.ballOffset.height) >= height * 0.2 {
-            if self.ballOffset.height < 0 {
-                if abs(self.ballOffset.height) >= height * 0.475 {
-                    return Image(systemName: "airplane")
-                } else {
-                    return Image(systemName: "speaker.plus")
-                }
-            } else {
-                return Image(systemName: "speaker.wave.2")
-            }
-        } else {
-            switch position {
-            case .neutral:
-                return Image(systemName: "arrow.left.and.right")
-            case .intake:
-                return Image(systemName: "tray.and.arrow.down.fill")
-            case .travel:
-                return Image(systemName: "arrow.up.and.down.and.arrow.left.and.right")
-            case .outtake:
-                return Image(systemName: "paperplane.fill")
-            }
-        }
-    }
-    
-    private func getBallColor(position: ActionState, height: CGFloat) -> Color {
-        if abs(self.ballOffset.height) >= height * 0.2 {
-            if self.ballOffset.height < 0 {
-                if abs(self.ballOffset.height) >= height * 0.475 {
-                    return Color.init(red: 254 / 255, green: 128 / 255, blue: 25 / 255)
-                } else {
-                    return Color.init(red: 250 / 255, green: 189 / 255, blue: 47 / 255)
-                }
-            } else {
-                return Color.init(red: 184 / 255, green: 187 / 255, blue: 38 / 255)
-            }
-        } else {
-            switch position {
-            case .neutral:
-                return Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255)
-            case .intake:
-                return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
-            case .travel:
-                return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
-            case .outtake:
-                return Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255)
-            }
-        }
-    }
-    
-    private func getLabelColor(state: Bool, type: ActionState?) -> Color {
-        if controller.matchTimes.isEmpty  && state {
-            return Color.primary
-        } else {
-            if state || actionState != type {
-                return Color.gray
-            } else {
-                switch actionState {
-                case .neutral:
-                    return Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255)
-                case .intake:
-                    return Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255)
-                case .travel:
-                    return Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255)
-                case .outtake:
-                    return Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255)
-                }
-            }
-        }
-    }
-    
-    private func getLabelAlignment() -> Alignment {
-        if UserDefaults.standard.bool(forKey: "leftHand") {
-            return .trailing
-        } else {
-            return .leading
         }
     }
 }

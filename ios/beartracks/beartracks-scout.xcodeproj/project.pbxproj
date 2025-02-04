@@ -13,7 +13,6 @@
 		F509F6BD2B54D810006FD9D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6BC2B54D810006FD9D5 /* SettingsView.swift */; };
 		F509F6BF2B54D8F2006FD9D5 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6BE2B54D8F2006FD9D5 /* SettingsManager.swift */; };
 		F509F6C12B54D9C0006FD9D5 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C02B54D9C0006FD9D5 /* URLSessionConfiguration.swift */; };
-		F509F6C32B54D9DA006FD9D5 /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C22B54D9DA006FD9D5 /* LoginStateValidator.swift */; };
 		F509F6C52B54D9F4006FD9D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C42B54D9F4006FD9D5 /* LoginView.swift */; };
 		F509F6C72B54DAF2006FD9D5 /* ScoutingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */; };
 		F509F6C92B54E554006FD9D5 /* PressModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C82B54E554006FD9D5 /* PressModifier.swift */; };
@@ -22,6 +21,7 @@
 		F565840D2B54D52A00F587C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565840C2B54D52A00F587C0 /* Assets.xcassets */; };
 		F56584102B54D52A00F587C0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565840F2B54D52A00F587C0 /* Preview Assets.xcassets */; };
 		F5AD47CC2B54FF0500345122 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AD47CB2B54FF0500345122 /* ReviewView.swift */; };
+		F5BCB50B2D4C2E91008698A6 /* RegionalPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BCB50A2D4C2E91008698A6 /* RegionalPoints.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +31,6 @@
 		F509F6BC2B54D810006FD9D5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F509F6BE2B54D8F2006FD9D5 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		F509F6C02B54D9C0006FD9D5 /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
-		F509F6C22B54D9DA006FD9D5 /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F509F6C42B54D9F4006FD9D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ScoutingController.swift; sourceTree = "<group>"; tabWidth = 4; };
 		F509F6C82B54E554006FD9D5 /* PressModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressModifier.swift; sourceTree = "<group>"; };
@@ -43,6 +42,7 @@
 		F58565C32B7572B400C1606E /* beartracks-scout.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-scout.entitlements"; sourceTree = "<group>"; };
 		F5AD47CB2B54FF0500345122 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
 		F5B57DEE2BA2989E00C9D95F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F5BCB50A2D4C2E91008698A6 /* RegionalPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionalPoints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,13 +81,13 @@
 				F509F6B82B54D802006FD9D5 /* GameView.swift */,
 				F509F6BA2B54D809006FD9D5 /* EndView.swift */,
 				F5AD47CB2B54FF0500345122 /* ReviewView.swift */,
-				F509F6C22B54D9DA006FD9D5 /* LoginStateValidator.swift */,
 				F509F6C42B54D9F4006FD9D5 /* LoginView.swift */,
 				F509F6C82B54E554006FD9D5 /* PressModifier.swift */,
 				F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */,
 				F509F6BE2B54D8F2006FD9D5 /* SettingsManager.swift */,
 				F509F6BC2B54D810006FD9D5 /* SettingsView.swift */,
 				F509F6C02B54D9C0006FD9D5 /* URLSessionConfiguration.swift */,
+				F5BCB50A2D4C2E91008698A6 /* RegionalPoints.swift */,
 				F565840C2B54D52A00F587C0 /* Assets.xcassets */,
 				F55ABD6C2B9C40C4006E7FAF /* Localizable.xcstrings */,
 				F565840E2B54D52A00F587C0 /* Preview Content */,
@@ -132,7 +132,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					F56584042B54D52900F587C0 = {
 						CreatedOnToolsVersion = 15.2;
@@ -182,7 +182,7 @@
 				F509F6C92B54E554006FD9D5 /* PressModifier.swift in Sources */,
 				F5AD47CC2B54FF0500345122 /* ReviewView.swift in Sources */,
 				F509F6BF2B54D8F2006FD9D5 /* SettingsManager.swift in Sources */,
-				F509F6C32B54D9DA006FD9D5 /* LoginStateValidator.swift in Sources */,
+				F5BCB50B2D4C2E91008698A6 /* RegionalPoints.swift in Sources */,
 				F509F6C72B54DAF2006FD9D5 /* ScoutingController.swift in Sources */,
 				F56584092B54D52900F587C0 /* beartracks_scoutApp.swift in Sources */,
 				F509F6C52B54D9F4006FD9D5 /* LoginView.swift in Sources */,
@@ -199,6 +199,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -262,6 +263,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -319,8 +321,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 108;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -341,6 +344,7 @@
 				MARKETING_VERSION = 6.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-scout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -354,7 +358,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 108;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
