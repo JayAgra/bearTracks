@@ -129,6 +129,9 @@ struct LoginView: View {
                         dismissButton: .default(Text("OK"))
                     )
                 })
+            .onAppear {
+                appState.checkLoginState()
+            }
         }
     }
     

@@ -20,140 +20,138 @@ struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        NavigationView {
-            VStack {
-                Form {
-                    Section {
-                        Picker("Team Number", selection: $teamNumberInput) {
-                            if !settingsOptions.isEmpty {
-                                ForEach(settingsOptions[0].teams, id: \.self) { team in
-                                    Text(team)
-                                        .tag(team)
-                                }
-                            } else {
-                                Text(teamNumberInput)
-                                    .tag(teamNumberInput)
+        VStack {
+            Form {
+                Section {
+                    Picker("Team Number", selection: $teamNumberInput) {
+                        if !settingsOptions.isEmpty {
+                            ForEach(settingsOptions[0].teams, id: \.self) { team in
+                                Text(team)
+                                    .tag(team)
                             }
+                        } else {
+                            Text(teamNumberInput)
+                                .tag(teamNumberInput)
                         }
-#if !os(watchOS)
-                        .pickerStyle(.menu)
-#endif
-                        .onChange(of: teamNumberInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(teamNumberInput, forKey: "teamNumber")
-                        }
-                        Picker("Event Code", selection: $eventCodeInput) {
-                            if !settingsOptions.isEmpty {
-                                ForEach(settingsOptions[0].events, id: \.self) { event_code in
-                                    Text(event_code)
-                                        .tag(event_code)
-                                }
-                            } else {
-                                Text(eventCodeInput)
-                                    .tag(eventCodeInput)
-                            }
-                        }
-#if !os(watchOS)
-                        .pickerStyle(.menu)
-#endif
-                        .onChange(of: eventCodeInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(eventCodeInput, forKey: "eventCode")
-                        }
-                        Picker("Season", selection: $seasonInput) {
-                            if !settingsOptions.isEmpty {
-                                ForEach(settingsOptions[0].seasons, id: \.self) { season in
-                                    Text(season)
-                                        .tag(season)
-                                }
-                            } else {
-                                Text(seasonInput)
-                                    .tag(seasonInput)
-                            }
-                        }
-#if !os(watchOS)
-                        .pickerStyle(.menu)
-#endif
-                        .onChange(of: seasonInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
-                                seasonInput, forKey: "season")
-                        }
-                        Toggle("Use all data for match predictions. This setting can be useful for the early matches of a competition, but is **not reccomended beyond the halfway point** unless prediction data is extremely inaccurate.", isOn: $allData)
-                            .onChange(of: allData) { value in
-                                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(allData, forKey: "useAllCompData")
-                            }
-                        Toggle("Dark Mode", isOn: $darkMode)
-                            .onChange(of: darkMode) { value in
-                                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(darkMode, forKey: "darkMode")
-                                showAlert = true
-                            }
                     }
-                    Section {
-                        Button("Clear Cache") {
-                            URLCache.shared.removeAllCachedResponses()
-                        }
-                        Button("Log Out") {
-                            if let cookies = HTTPCookieStorage.shared.cookies(
-                                for: sharedSession.configuration.urlCache?.cachedResponse(
-                                    for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(
-                                        string: "https://beartracks.io")!)
-                            {
-                                for cookie in cookies {
-                                    sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
-                                }
-                                appState.loginRequired = true
+#if !os(watchOS)
+                    .pickerStyle(.menu)
+#endif
+                    .onChange(of: teamNumberInput) { value in
+                        UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(teamNumberInput, forKey: "teamNumber")
+                    }
+                    Picker("Event Code", selection: $eventCodeInput) {
+                        if !settingsOptions.isEmpty {
+                            ForEach(settingsOptions[0].events, id: \.self) { event_code in
+                                Text(event_code)
+                                    .tag(event_code)
                             }
+                        } else {
+                            Text(eventCodeInput)
+                                .tag(eventCodeInput)
                         }
-                        .foregroundColor(Color.pink)
                     }
-                    Section {
-                        Button("Delete Account") {
-                            showConfirm = true
+#if !os(watchOS)
+                    .pickerStyle(.menu)
+#endif
+                    .onChange(of: eventCodeInput) { value in
+                        UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(eventCodeInput, forKey: "eventCode")
+                    }
+                    Picker("Season", selection: $seasonInput) {
+                        if !settingsOptions.isEmpty {
+                            ForEach(settingsOptions[0].seasons, id: \.self) { season in
+                                Text(season)
+                                    .tag(season)
+                            }
+                        } else {
+                            Text(seasonInput)
+                                .tag(seasonInput)
                         }
-                        .foregroundStyle(Color.pink)
                     }
+#if !os(watchOS)
+                    .pickerStyle(.menu)
+#endif
+                    .onChange(of: seasonInput) { value in
+                        UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
+                            seasonInput, forKey: "season")
+                    }
+#if !os(watchOS)
+                    Toggle("Use all data for match predictions. This setting can be useful for the early matches of a competition, but is **not reccomended beyond the halfway point** unless prediction data is extremely inaccurate.", isOn: $allData)
+                        .onChange(of: allData) { value in
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(allData, forKey: "useAllCompData")
+                        }
+#endif
+                    Toggle("Dark Mode", isOn: $darkMode)
+                        .onChange(of: darkMode) { value in
+                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(darkMode, forKey: "darkMode")
+                            showAlert = true
+                        }
                 }
-                Spacer()
-            }
-            .navigationTitle("Settings")
-            .alert(
-                isPresented: $showAlert,
-                content: {
-                    Alert(
-                        title: Text("Theme Change"),
-                        message: Text("An app restart is required for the theme change to take effect."),
-                        dismissButton: .default(Text("ok"))
-                    )
-                }
-            )
-            .alert(
-                "Confirm Deletion", isPresented: $showConfirm,
-                actions: {
-                    TextField("Username", text: $deletionData.0)
-                    SecureField("Password", text: $deletionData.1)
-                    Button(
-                        "Cancel", role: .cancel,
-                        action: {
-                            showConfirm = false
-                        })
-                    Button(
-                        "Delete", role: .destructive,
-                        action: {
-                            deleteAccount(data: ["username": deletionData.0, "password": deletionData.1])
+                Section {
+                    Button("Clear Cache") {
+                        URLCache.shared.removeAllCachedResponses()
+                    }
+                    Button("Log Out") {
+                        if let cookies = HTTPCookieStorage.shared.cookies(
+                            for: sharedSession.configuration.urlCache?.cachedResponse(
+                                for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(
+                                    string: "https://beartracks.io")!)
+                        {
+                            for cookie in cookies {
+                                sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
+                            }
                             appState.loginRequired = true
-                            showConfirm = false
-                        })
-                },
-                message: {
-                    Text("This action is irreversible.")
-                })
+                        }
+                    }
+                    .foregroundColor(Color.pink)
+                }
+                Section {
+                    Button("Delete Account") {
+                        showConfirm = true
+                    }
+                    .foregroundStyle(Color.pink)
+                }
+            }
+            Spacer()
         }
+        .navigationTitle("Settings")
+        .alert(
+            isPresented: $showAlert,
+            content: {
+                Alert(
+                    title: Text("Theme Change"),
+                    message: Text("An app restart is required for the theme change to take effect."),
+                    dismissButton: .default(Text("ok"))
+                )
+            }
+        )
+        .alert(
+            "Confirm Deletion", isPresented: $showConfirm,
+            actions: {
+                TextField("Username", text: $deletionData.0)
+                SecureField("Password", text: $deletionData.1)
+                Button(
+                    "Cancel", role: .cancel,
+                    action: {
+                        showConfirm = false
+                    })
+                Button(
+                    "Delete", role: .destructive,
+                    action: {
+                        deleteAccount(data: ["username": deletionData.0, "password": deletionData.1])
+                        appState.loginRequired = true
+                        showConfirm = false
+                    })
+            },
+            message: {
+                Text("This action is irreversible.")
+            })
         .onAppear {
             loadSettingsJson { result in
                 self.settingsOptions = result
             }
         }
-#if os(watchOS)
         .ignoresSafeArea(edges: .bottom)
-#endif
     }
     
     func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) {

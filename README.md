@@ -24,21 +24,7 @@ SEASONS
 + **EVENTS** is a comma separated list of all events the app should use<br>
 + **SEASONS** is a comma separated list of all seasons this app has been used
 ### ssl
-A ssl certificate is *required*, and must be placed in the ssl directory, with filenames `key.pem` and `cert.pem`. For local testing, one can be self-signed using the following command (run from the bearTracks directory created by setup.sh)
-```sh
-openssl req -x509 -newkey rsa:4096 -nodes -keyout ./ssl/key.pem -out ./ssl/cert.pem -days 365 -subj '/CN=localhost'
-```
-For use on production, replace `<DOMAIN>` with your domain, and run this with port 80 free.
-```sh
-# new certificate. run commands from ~/bearTracks
-certbot certonly --standalone --keep-until-expiring --agree-tos -d "<DOMAIN>"
-cp /etc/letsencrypt/live/<DOMAIN>/cert.pem ssl/cert.pem
-cp /etc/letsencrypt/live/<DOMAIN>/privkey.pem ssl/key.pem
-# renew certificate. run from ~/bearTracks
-certbot renew
-cp /etc/letsencrypt/live/<DOMAIN>/cert.pem ssl/cert.pem
-cp /etc/letsencrypt/live/<DOMAIN>/privkey.pem ssl/key.pem
-```
+Encryption is done through cloudflare. Use Full (Strict) mode and place your certificate and key in `ssl/cert.pem` and `ssl/key.pem`.
 ### running server
 To start the server from a ssh session, run the following command from the ~/bearTracks directory.
 ```sh
