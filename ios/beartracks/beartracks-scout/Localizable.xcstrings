@@ -364,6 +364,7 @@
       }
     },
     "Climb" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -475,7 +476,11 @@
         }
       }
     },
+    "Deep Cage" : {
+
+    },
     "Deep Climb" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1320,6 +1325,9 @@
           }
         }
       }
+    },
+    "Shallow Cage" : {
+
     },
     "Slider" : {
 

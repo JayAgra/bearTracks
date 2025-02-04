@@ -27,14 +27,8 @@ struct EndView: View {
                         VStack {
                             VStack {
                                 Toggle("Park", isOn: $controller.switches.0)
-                                Toggle("Climb", isOn: $controller.switches.1)
-                                    .onChange(of: controller.switches.1) { _ in
-                                        if !controller.switches.1 {
-                                            controller.switches.2 = false
-                                        }
-                                    }
-                                Toggle("Deep Climb", isOn: $controller.switches.2)
-                                    .disabled(!controller.switches.1)
+                                Toggle("Shallow Cage", isOn: $controller.switches.1)
+                                Toggle("Deep Cage", isOn: $controller.switches.2)
                             }
                             .padding()
                             VStack {
@@ -62,6 +56,11 @@ struct EndView: View {
                                         .onTapGesture { activeBox = .defense }
                                         .disabled(!defense)
                                         .foregroundStyle(defense ? Color.primary : Color.gray)
+                                        .onAppear {
+                                            if controller.defense.isEmpty && !defense {
+                                                controller.defense = "No"
+                                            }
+                                        }
                             }
                             VStack {
                                 Text("How was the driving? Did the driver seem confident?")

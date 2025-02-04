@@ -23,6 +23,11 @@ struct ReviewView: View {
                     } else if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == "" || controller.getOverallResponse() == "" {
                         Text("Please fill in all three long form responses.")
                             .padding()
+                            .onAppear {
+                                if controller.getDefenseResponse() == "" {
+                                    controller.defense = "No"
+                                }
+                            }
                     } else {
                         Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))")
                         .padding(.leading)
@@ -86,6 +91,11 @@ struct ReviewView: View {
                                         .padding()
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding([.leading, .trailing])
+                                        .onAppear {
+                                            if controller.getDefenseResponse() == "" {
+                                                controller.defense = "No"
+                                            }
+                                        }
                                 }
                                 .padding()
                                 VStack {
