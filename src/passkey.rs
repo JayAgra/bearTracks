@@ -8,7 +8,7 @@ use webauthn_rs::prelude::*;
 use crate::db_auth;
 
 pub fn setup_passkeys() -> web::Data<webauthn_rs::Webauthn> {
-    let rp_id = env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string());
+    let rp_id = env::var("PASSKEY_RP_ID").unwrap_or_else(|_| "localhost".to_string());
     let rp_origin = Url::parse(format!("https://{}", &rp_id).as_str()).expect("[PASSKEY] bad url");
     let builder = WebauthnBuilder::new(&rp_id.as_str(), &rp_origin).expect("[PASSKEY] bad config");
     let builder = builder.rp_name("bearTracks");
