@@ -225,6 +225,9 @@ struct PitDataInput: View {
                                 .frame(maxWidth: .infinity).padding()
                         })
                         .buttonStyle(.borderedProminent).padding([.top, .horizontal])
+                        .onTapGesture {
+                            controller.state = .images
+                        }
                     }
                     Button(action: {
                         controller.state = .teamSelection
@@ -329,7 +332,6 @@ struct PitImages: View {
                         .labelStyle(.titleOnly).frame(maxWidth: .infinity)
                 })
                 .buttonStyle(.bordered)
-                .foregroundStyle(Color.accentColor.opacity(0.5))
                 .padding()
             }
         }

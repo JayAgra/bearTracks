@@ -62,6 +62,11 @@ struct TeamView: View {
                         }
                     }
                     Section {
+                        NavigationLink(destination: PitDataView(teamNumber: Int(dataItems.targetTeam) ?? 0)) {
+                            HStack {
+                                Text("Pit Scouting Data")
+                            }
+                        }
                         NavigationLink(destination: TeamViewStats(teamNum: dataItems.targetTeam).environmentObject(appState).navigationBarTitleDisplayMode(.automatic)) {
                             HStack {
                                 Text("Additional Details")
