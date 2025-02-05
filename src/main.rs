@@ -759,9 +759,9 @@ async fn main() -> io::Result<()> {
     drop(trans_db_connection);
 
     // pit database connection
-    let pit_db_manager = SqliteConnectionManager::file("data_transact.db");
+    let pit_db_manager = SqliteConnectionManager::file("data_pit.db");
     let pit_db_pool = db_pit::Pool::new(pit_db_manager).unwrap();
-    let pit_db_connection = pit_db_pool.get().expect("trans db: connection failed");
+    let pit_db_connection = pit_db_pool.get().expect("pit db: connection failed");
     pit_db_connection
         .execute_batch("PRAGMA journal_mode=WAL;")
         .expect("pit db: WAL failed");
