@@ -161,7 +161,7 @@ pub async fn get_pit_scouted_team_numbers_by_event(pool: &Pool, season: String, 
 }
 
 // pit scouting data for one team at one or all event(s)
-pub async fn get_pit_data(pool: &Pool, season: String, event: String, team: String) -> Result<Vec<PitData>, Error> {
+pub async fn get_pit_data(pool: &Pool, season: String, event: String, team: String, user: db_auth::User) -> Result<Vec<PitData>, Error> {
     let pool = pool.clone();
     let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
     web::block(move || {
@@ -169,7 +169,11 @@ pub async fn get_pit_data(pool: &Pool, season: String, event: String, team: Stri
         if event == "ALL" {
             stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event!=?2 AND team=?3 ORDER BY id DESC;")?;
         } else {
-            stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
+            if team == "ALL" && user.admin == "true" {
+                stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event=?2 AND team!=?3 ORDER BY id DESC;")?;
+            } else {
+                stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event=?2 AND team=?3 ORDER BY id DESC;")?;
+            }
         }
         stmt
         .query_map([season, event, team], |row| {

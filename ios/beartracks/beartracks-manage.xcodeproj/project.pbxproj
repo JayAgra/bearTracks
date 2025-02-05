@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		F520BC412B5774300073A20F /* UsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F520BC402B5774300073A20F /* UsersView.swift */; };
 		F520BC432B5774660073A20F /* UsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F520BC422B5774660073A20F /* UsersViewModel.swift */; };
+		F5345F1B2D52F04200BEC893 /* PitDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5345F1A2D52F04200BEC893 /* PitDataView.swift */; };
+		F5345F1D2D52F08700BEC893 /* PitDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5345F1C2D52F08200BEC893 /* PitDataViewModel.swift */; };
 		F54A8D202B55A42F005975A2 /* LoginStateValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D1F2B55A42F005975A2 /* LoginStateValidator.swift */; };
 		F54A8D222B55A44C005975A2 /* URLSessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D212B55A44C005975A2 /* URLSessionConfiguration.swift */; };
 		F54A8D242B55A463005975A2 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A8D232B55A463005975A2 /* LoginView.swift */; };
@@ -59,6 +61,8 @@
 /* Begin PBXFileReference section */
 		F520BC402B5774300073A20F /* UsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersView.swift; sourceTree = "<group>"; };
 		F520BC422B5774660073A20F /* UsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersViewModel.swift; sourceTree = "<group>"; };
+		F5345F1A2D52F04200BEC893 /* PitDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitDataView.swift; sourceTree = "<group>"; };
+		F5345F1C2D52F08200BEC893 /* PitDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitDataViewModel.swift; sourceTree = "<group>"; };
 		F54A8D1F2B55A42F005975A2 /* LoginStateValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStateValidator.swift; sourceTree = "<group>"; };
 		F54A8D212B55A44C005975A2 /* URLSessionConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionConfiguration.swift; sourceTree = "<group>"; };
 		F54A8D232B55A463005975A2 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -154,6 +158,8 @@
 				F58BA8AC2B57878100807838 /* CreateKeyView.swift */,
 				F54A8D272B55AA3C005975A2 /* DataView.swift */,
 				F54A8D292B55AA4E005975A2 /* DataViewModel.swift */,
+				F5345F1A2D52F04200BEC893 /* PitDataView.swift */,
+				F5345F1C2D52F08200BEC893 /* PitDataViewModel.swift */,
 				F54A8D2B2B55AA65005975A2 /* DetailedView.swift */,
 				F54A8D1F2B55A42F005975A2 /* LoginStateValidator.swift */,
 				F54A8D232B55A463005975A2 /* LoginView.swift */,
@@ -301,7 +307,9 @@
 				F54A8D262B55A4ED005975A2 /* TabBarView.swift in Sources */,
 				F56550482B8EB9A100369927 /* SystemStatusLiveActivity.swift in Sources */,
 				F58BA8AD2B57878100807838 /* CreateKeyView.swift in Sources */,
+				F5345F1B2D52F04200BEC893 /* PitDataView.swift in Sources */,
 				F54A8D222B55A44C005975A2 /* URLSessionConfiguration.swift in Sources */,
+				F5345F1D2D52F08700BEC893 /* PitDataViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,7 +330,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SystemStatus/Info.plist;
@@ -334,7 +342,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.0.0;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage.SystemStatus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -350,7 +358,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SystemStatus/Info.plist;
@@ -362,7 +370,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.0.0;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage.SystemStatus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

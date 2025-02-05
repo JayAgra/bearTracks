@@ -279,7 +279,7 @@ async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databas
 async fn data_get_pit_data(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
-            .json(db_pit::get_pit_data(&db.pit, req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap()).await?))
+            .json(db_pit::get_pit_data(&db.pit, req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap(), user).await?))
     } else {
         Ok(access_denied_team())
     }
@@ -648,7 +648,7 @@ async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_aut
     ))
 }
 
-async fn return_discontinued_gone(req: HttpRequest) -> Result<HttpResponse, AWError> {
+async fn return_discontinued_gone(_req: HttpRequest) -> Result<HttpResponse, AWError> {
     Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
 }
 
@@ -681,7 +681,6 @@ async fn main() -> io::Result<()> {
 
     for i in 0..seasons.len() {
         fs::create_dir_all(format!("cache/images/{}", seasons[i]))?;
-        /*
         for j in 0..events.len() {
             // cache team list
             let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
@@ -731,7 +730,6 @@ async fn main() -> io::Result<()> {
                 }
             }
         }
-        */
     }
 
     // hashmap w: web::Data<RwLock<Sessions>>ith user sessions in it
