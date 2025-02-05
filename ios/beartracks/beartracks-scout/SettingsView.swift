@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false
     @State private var deletionData: (String, String) = ("", "")
+    @State private var showPitScoutingCover: Bool = false
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
@@ -75,6 +76,16 @@ struct SettingsView: View {
                         .onChange(of: controller.selectedGameInterface) { _ in
                             UserDefaults.standard.set(controller.selectedGameInterface, forKey: "gameInterface2025")
                         }
+                    }
+                    Section {
+                        Button(action: {
+                            showPitScoutingCover.toggle()
+                        }, label: {
+                            Label("Pit Scouting", systemImage: "wrench.adjustable").labelStyle(.titleOnly)
+                        })
+                    }
+                    .fullScreenCover(isPresented: $showPitScoutingCover) {
+                        PitScouting()
                     }
                     Section {
                         NavigationLink(destination: RegionalPoints().navigationTitle("Regional Points"), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })

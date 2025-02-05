@@ -167,7 +167,11 @@ pub async fn get_pit_data(pool: &Pool, season: String, event: String, team: Stri
     web::block(move || {
         let mut stmt: Statement<'_>;
         if event == "ALL" {
-            stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event!=?2 AND team=?3 ORDER BY id DESC;")?;
+            if team == "ALL" && user.admin == "true" {
+                stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event!=?2 AND team!=?3 ORDER BY id DESC;")?;
+            } else {
+                stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event!=?2 AND team=?3 ORDER BY id DESC;")?;
+            }
         } else {
             if team == "ALL" && user.admin == "true" {
                 stmt = conn.prepare("SELECT * FROM pit WHERE season=?1 AND event=?2 AND team!=?3 ORDER BY id DESC;")?;
@@ -179,8 +183,8 @@ pub async fn get_pit_data(pool: &Pool, season: String, event: String, team: Stri
         .query_map([season, event, team], |row| {
             Ok(PitData {
                 id: row.get(0)?,
-                event: row.get(1)?,
-                season: row.get(2)?,
+                season: row.get(1)?,
+                event: row.get(2)?,
                 team: row.get(3)?,
                 boolean_values: row.get(4)?,
                 numerical_values: row.get(5)?,
