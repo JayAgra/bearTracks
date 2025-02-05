@@ -27,14 +27,7 @@ class PitDataViewModel: ObservableObject {
     }
     
     func fetchDataJson(completionBlock: @escaping ([PitData]) -> Void) {
-        guard
-            let url = URL(
-                string:
-                    "https://beartracks.io/api/v1/data/pit/2025/ALL/ALL"
-            )
-        else {
-            return
-        }
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/pit/2025/TEST/ALL") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -109,14 +102,14 @@ class PitDataViewModel: ObservableObject {
 
 struct PitData: Codable {
     let id: Int
-    let event: String
     let season: Int
+    let event: String
     let team: Int
     let boolean_values: String
     let numerical_values: String
     let image_ids: String
     let description: String
     let user_id: Int
-    let from_team: Int
     let name: String
+    let from_team: Int
 }

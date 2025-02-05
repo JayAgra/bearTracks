@@ -197,7 +197,7 @@ async fn data_get_meta() -> Result<HttpResponse, AWError> {
 
 // access denied template
 fn access_denied_team() -> HttpResponse {
-    HttpResponse::Unauthorized().body("you must be affiliated with a valid team to access data")
+    HttpResponse::Unauthorized().insert_header(("Cache-Control", "no-cache")).body("you must be affiliated with a valid team to access data")
 }
 
 // get detailed data by submission id. used in /detail
@@ -279,6 +279,7 @@ async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databas
 async fn data_get_pit_data(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.team != 0 {
         Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
             .json(db_pit::get_pit_data(&db.pit, req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap(), user).await?))
     } else {
         Ok(access_denied_team())

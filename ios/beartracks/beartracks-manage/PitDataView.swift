@@ -59,10 +59,22 @@ struct PitDataView: View {
                             secondaryButton: .cancel()
                         )
                     }
+                    .refreshable {
+                        dataItems.reload()
+                    }
+                    .onAppear {
+                        dataItems.reload()
+                    }
                 } else {
                     VStack {
                         Text("no data")
                             .padding(.bottom)
+                        Button(action: {
+                            dataItems.reload()
+                        }, label: {
+                            Label("Reload", systemImage: "xmark")
+                                .labelStyle(.titleOnly)
+                        })
                     }
                     .navigationTitle("Data")
                 }
