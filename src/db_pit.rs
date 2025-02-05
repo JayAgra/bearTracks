@@ -191,8 +191,8 @@ pub async fn get_pit_data(pool: &Pool, season: String, event: String, team: Stri
                 image_ids: row.get(6)?,
                 description: row.get(7)?,
                 user_id: row.get(8)?,
-                from_team: row.get(9)?,
-                name: row.get(10)?,
+                name: row.get(9)?,
+                from_team: row.get(10)?,
             })
         })
         .and_then(Iterator::collect)
