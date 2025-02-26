@@ -11,6 +11,7 @@ cd ../                                                                  # ~/bear
 cp bearTracks/data.db data.db                                           # # #
 cp bearTracks/data_auth.db data_auth.db                                 # copy necessary files from git repo
 cp bearTracks/data_transact.db data_transact.db                         # to this root folder
+cp bearTracks/data_pid.db data_pit.db                                   # 
 cp bearTracks/.example.env .env                                         # # #
 cp bearTracks/update.sh update.sh                                       # copy update script
 chmod +x update.sh                                                      # make it executatble

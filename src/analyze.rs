@@ -1,5 +1,5 @@
 use actix_web::{web, Error};
-use serde::{Deserialize, Serialize, de};
+use serde::{Serialize, Deserialize};
 use vader_sentiment;
 
 use super::db_main;

@@ -104,15 +104,6 @@ struct Card {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-struct ClientMessage {
-    pub message_type: MessageType,
-}
-
-impl Message for ClientMessage {
-    type Result = ();
-}
-
-#[derive(Debug, Clone, PartialEq)]
 pub enum MessageType {
     Hit = 0x30,
     Stand = 0x31,

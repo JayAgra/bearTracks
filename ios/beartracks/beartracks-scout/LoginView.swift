@@ -14,13 +14,14 @@ struct LoginView: View {
     @State private var alertMessage = ""
     @State private var loading = false
     @State private var create = false
+    @FocusState private var focusedField: Int?
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
         VStack {
             Text("bearTracks")
                 .font(.title)
-            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5") • 2025")
+            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "6") • 2025")
             if !loading {
                 if !create {
                     Text("Log In")
@@ -125,43 +126,55 @@ struct LoginView: View {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
                             if type == "login" {
-                                controller.loginRequired = 1
-                            } else {
-                                create = false
-                            }
-                            loading = false
-                        } else {
-                            loading = false
-                            showAlert = true
-                            if type == "login" {
-                                alertMessage = "Bad Credentials"
-                            } else {
-                                if httpResponse.statusCode == 400 {
-                                    alertMessage =
-                                    "You supplied some data the server did not like. Your account was **not** created. Please try agian following these conditions- your Username, Full name, and Password must contain only the following characters: a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \\ _ { } | ? . ,"
-                                } else if httpResponse.statusCode == 409 {
-                                    alertMessage = "Username taken. Your account was **not** created. Please try again with a new username."
-                                } else if httpResponse.statusCode == 403 {
-                                    alertMessage = "Invalid access key. Ask your team lead or the application developers for another one. If your team failed to provide any data at a competition, your team's access key may have been indefinitely revoked. Your account was **not** created."
-                                } else if httpResponse.statusCode == 413 {
-                                    alertMessage =
-                                    "Field lengths- your Username, Full name, and Password must be between 3 and 64 characters (8 min for password). Your account was **not** created. Please try agian, abiding by these requirements."
-                                } else {
-                                    alertMessage = "Account creation failed. Your account was **not** created. Please try again (unexpected error)."
+                                DispatchQueue.main.sync {
+                                    controller.loginRequired = 1
                                 }
+                            } else {
+                                DispatchQueue.main.sync {
+                                    create = false
+                                }
+                            }
+                            DispatchQueue.main.sync {
+                                loading = false
+                            }
+                        } else {
+                            DispatchQueue.main.sync {
+                                if type == "login" {
+                                    alertMessage = "Bad Credentials"
+                                } else {
+                                    if httpResponse.statusCode == 400 {
+                                        alertMessage =
+                                        "You supplied some data the server did not like. Your account was **not** created. Please try agian following these conditions- your Username, Full name, and Password must contain only the following characters: a-z 0-9 A-Z - ~ ! @ # $ % ^ & * ( ) = + / \\ _ { } | ? . ,"
+                                    } else if httpResponse.statusCode == 409 {
+                                        alertMessage = "Username taken. Your account was **not** created. Please try again with a new username."
+                                    } else if httpResponse.statusCode == 403 {
+                                        alertMessage = "Invalid access key. Ask your team lead or the application developers for another one. If your team failed to provide any data at a competition, your team's access key may have been indefinitely revoked. Your account was **not** created."
+                                    } else if httpResponse.statusCode == 413 {
+                                        alertMessage =
+                                        "Field lengths- your Username, Full name, and Password must be between 3 and 64 characters (8 min for password). Your account was **not** created. Please try agian, abiding by these requirements."
+                                    } else {
+                                        alertMessage = "Account creation failed. Your account was **not** created. Please try again (unexpected error)."
+                                    }
+                                }
+                                loading = false
+                                showAlert = true
                             }
                         }
                     }
                 } else {
-                    loading = false
-                    showAlert = true
-                    alertMessage = "Network error. Please ensure you are connected to the internet and try again."
+                    DispatchQueue.main.sync {
+                        loading = false
+                        showAlert = true
+                        alertMessage = "Network error. Please ensure you are connected to the internet and try again."
+                    }
                 }
             }.resume()
         } catch {
-            loading = false
-            showAlert = true
-            alertMessage = "Client error- failed to serialize authentication object. Please try agian."
+            DispatchQueue.main.sync {
+                loading = false
+                showAlert = true
+                alertMessage = "Client error- failed to serialize authentication object. Please try agian."
+            }
         }
     }
 }

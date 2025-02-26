@@ -95,7 +95,7 @@ struct DetailedView: View {
                                                 Spacer()
                                                 booleanDisplay(value: Int(matchTime.intake))
                                             case 10:
-                                                Text("Climb").font(.title3)
+                                                Text("Shallow Cage").font(.title3)
                                                 Spacer()
                                                 booleanDisplay(value: Int(matchTime.intake))
                                             case 11:

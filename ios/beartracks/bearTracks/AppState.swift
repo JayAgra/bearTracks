@@ -44,12 +44,18 @@ class AppState: ObservableObject {
         let task = sharedSession.dataTask(with: request) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    self.loginRequired = false
+                    DispatchQueue.main.sync {
+                        self.loginRequired = false
+                    }
                 } else {
-                    self.loginRequired = true
+                    DispatchQueue.main.sync {
+                        self.loginRequired = true
+                    }
                 }
             } else {
-                self.loginRequired = true
+                DispatchQueue.main.sync {
+                    self.loginRequired = true
+                }
             }
         }
         task.resume()
@@ -65,16 +71,22 @@ class AppState: ObservableObject {
                     let decoder = JSONDecoder()
                     let result = try decoder.decode(MatchData.self, from: data)
                     DispatchQueue.main.sync {
-                        self.matchJson = result.Schedule
-                        self.matchJsonStatus = (true, false)
+                        DispatchQueue.main.async {
+                            self.matchJson = result.Schedule
+                            self.matchJsonStatus = (true, false)
+                        }
                     }
                 } catch {
                     print("parse error")
-                    self.matchJsonStatus = (false, true)
+                    DispatchQueue.main.async {
+                        self.matchJsonStatus = (false, true)
+                    }
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
-                self.matchJsonStatus = (false, true)
+                DispatchQueue.main.async {
+                    self.matchJsonStatus = (false, true)
+                }
             }
         }
         .resume()
@@ -93,17 +105,23 @@ class AppState: ObservableObject {
                     let decoder = JSONDecoder()
                     let result = try decoder.decode([DataEntry].self, from: data)
                     DispatchQueue.main.async {
-                        self.dataJsonStatus = (true, false)
+                        DispatchQueue.main.async {
+                            self.dataJsonStatus = (true, false)
+                        }
                         completionBlock(result)
                     }
                 } catch {
                     print("parse error")
-                    self.dataJsonStatus = (false, true)
+                    DispatchQueue.main.async {
+                        self.dataJsonStatus = (false, true)
+                    }
                     completionBlock([])
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
-                self.dataJsonStatus = (false, true)
+                DispatchQueue.main.async {
+                    self.dataJsonStatus = (false, true)
+                }
                 completionBlock([])
             }
         }
@@ -137,11 +155,15 @@ class AppState: ObservableObject {
                     }
                 } catch {
                     print("parse error \(error)")
-                    self.teamsLoadStatus.1 = true
+                    DispatchQueue.main.async {
+                        self.teamsLoadStatus.1 = true
+                    }
                 }
             } else if let error = error {
                 print("fetch error: \(error)")
-                self.teamsLoadStatus.1 = true
+                DispatchQueue.main.async {
+                    self.teamsLoadStatus.1 = true
+                }
             }
         }.resume()
     }

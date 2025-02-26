@@ -216,6 +216,12 @@
         }
       }
     },
+    "Algae Net" : {
+
+    },
+    "Algae Processor" : {
+
+    },
     "Alliance Capt, 0 for N/A (%lld)" : {
       "localizations" : {
         "en" : {
@@ -264,6 +270,9 @@
         }
       }
     },
+    "AndyMark" : {
+
+    },
     "Authentication Error" : {
       "localizations" : {
         "en" : {
@@ -279,6 +288,12 @@
           }
         }
       }
+    },
+    "Auto algae (%lld)" : {
+
+    },
+    "Auto coral (%lld)" : {
+
     },
     "Autonomous Period" : {
       "localizations" : {
@@ -312,6 +327,9 @@
         }
       }
     },
+    "Back" : {
+
+    },
     "bearTracks" : {
       "localizations" : {
         "en" : {
@@ -331,6 +349,9 @@
     "Buttons" : {
 
     },
+    "Cage" : {
+
+    },
     "Cancel" : {
       "localizations" : {
         "en" : {
@@ -347,6 +368,9 @@
         }
       }
     },
+    "Capabilities" : {
+
+    },
     "Clear Network Cache" : {
       "localizations" : {
         "en" : {
@@ -362,6 +386,9 @@
           }
         }
       }
+    },
+    "Clear Photo" : {
+
     },
     "Climb" : {
       "extractionState" : "stale",
@@ -380,6 +407,12 @@
         }
       }
     },
+    "Close" : {
+
+    },
+    "Complete" : {
+
+    },
     "Confirm Deletion" : {
       "localizations" : {
         "en" : {
@@ -395,6 +428,9 @@
           }
         }
       }
+    },
+    "Continue to Images" : {
+
     },
     "Continue to Review" : {
       "localizations" : {
@@ -412,6 +448,9 @@
         }
       }
     },
+    "Coral" : {
+
+    },
     "Coral handled (%lld)" : {
       "localizations" : {
         "en" : {
@@ -427,6 +466,21 @@
           }
         }
       }
+    },
+    "Coral Level 1" : {
+
+    },
+    "Coral Level 2" : {
+
+    },
+    "Coral Level 3" : {
+
+    },
+    "Coral Level 4" : {
+
+    },
+    "Coral Location" : {
+
     },
     "Create Account" : {
       "localizations" : {
@@ -460,6 +514,9 @@
         }
       }
     },
+    "Cycles per game (%lld)" : {
+
+    },
     "Dark Mode" : {
       "localizations" : {
         "en" : {
@@ -475,6 +532,9 @@
           }
         }
       }
+    },
+    "Deep" : {
+
     },
     "Deep Cage" : {
 
@@ -608,6 +668,12 @@
         }
       }
     },
+    "Drive Type" : {
+
+    },
+    "Drivetrain" : {
+
+    },
     "Driving" : {
       "localizations" : {
         "en" : {
@@ -672,6 +738,9 @@
         }
       }
     },
+    "Failed to load teams" : {
+
+    },
     "Fatal Error. Retry at will." : {
       "localizations" : {
         "en" : {
@@ -687,6 +756,9 @@
           }
         }
       }
+    },
+    "Favorite..." : {
+
     },
     "Full name" : {
       "localizations" : {
@@ -723,6 +795,9 @@
     "Game Interface" : {
 
     },
+    "Game Piece" : {
+
+    },
     "How was the driving? Did the driver seem confident?" : {
       "localizations" : {
         "en" : {
@@ -739,6 +814,9 @@
         }
       }
     },
+    "Images" : {
+
+    },
     "Impact" : {
       "localizations" : {
         "en" : {
@@ -754,6 +832,9 @@
           }
         }
       }
+    },
+    "Incomplete" : {
+
     },
     "Intake" : {
       "localizations" : {
@@ -1003,6 +1084,15 @@
         }
       }
     },
+    "Mecanum" : {
+
+    },
+    "N/A" : {
+
+    },
+    "N/A (no swerve)" : {
+
+    },
     "None" : {
       "localizations" : {
         "en" : {
@@ -1018,6 +1108,9 @@
           }
         }
       }
+    },
+    "Notes" : {
+
     },
     "ok" : {
       "localizations" : {
@@ -1050,6 +1143,15 @@
           }
         }
       }
+    },
+    "Omni" : {
+
+    },
+    "Other (explain in notes" : {
+
+    },
+    "Other (explain in notes)" : {
+
     },
     "Other Awards" : {
       "localizations" : {
@@ -1118,6 +1220,12 @@
         }
       }
     },
+    "Pit Scouting" : {
+
+    },
+    "Pit Scouting • Team %lld" : {
+
+    },
     "Place" : {
       "localizations" : {
         "en" : {
@@ -1133,6 +1241,9 @@
           }
         }
       }
+    },
+    "Please complete the entire form, including notes, before continuing." : {
+
     },
     "Please fill in all three long form responses." : {
       "localizations" : {
@@ -1150,6 +1261,9 @@
         }
       }
     },
+    "Please keep in mind that the images you upload are public and associated with your account." : {
+
+    },
     "Please select a match and team number on the start tab." : {
       "localizations" : {
         "en" : {
@@ -1165,6 +1279,9 @@
           }
         }
       }
+    },
+    "Please take at least one photo before submitting." : {
+
     },
     "Provide an overall description of the team's performance in this match" : {
       "localizations" : {
@@ -1213,6 +1330,15 @@
           }
         }
       }
+    },
+    "Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account." : {
+
+    },
+    "Return" : {
+
+    },
+    "REV" : {
+
     },
     "Review" : {
       "localizations" : {
@@ -1278,6 +1404,12 @@
         }
       }
     },
+    "Scouting Tutorial Video" : {
+
+    },
+    "SDS" : {
+
+    },
     "Season" : {
       "localizations" : {
         "en" : {
@@ -1325,6 +1457,9 @@
           }
         }
       }
+    },
+    "Shallow" : {
+
     },
     "Shallow Cage" : {
 
@@ -1412,6 +1547,15 @@
         }
       }
     },
+    "Swerve" : {
+
+    },
+    "Swerve Modules" : {
+
+    },
+    "Take Photo" : {
+
+    },
     "Team code" : {
       "localizations" : {
         "en" : {
@@ -1459,6 +1603,9 @@
           }
         }
       }
+    },
+    "Team's Estimations" : {
+
     },
     "Theme Change" : {
       "localizations" : {
@@ -1571,6 +1718,12 @@
           }
         }
       }
+    },
+    "West Coast" : {
+
+    },
+    "Westcoast (X)" : {
+
     },
     "Winning Matches Played (%lld)" : {
       "localizations" : {

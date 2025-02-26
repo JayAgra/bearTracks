@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false
     @State private var deletionData: (String, String) = ("", "")
+    @State private var showPitScoutingCover: Bool = false
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
@@ -77,9 +78,20 @@ struct SettingsView: View {
                         }
                     }
                     Section {
+                        Button(action: {
+                            showPitScoutingCover.toggle()
+                        }, label: {
+                            Label("Pit Scouting", systemImage: "wrench.adjustable").labelStyle(.titleOnly)
+                        })
+                    }
+                    .fullScreenCover(isPresented: $showPitScoutingCover) {
+                        PitScouting()
+                    }
+                    Section {
                         NavigationLink(destination: RegionalPoints().navigationTitle("Regional Points"), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
                     }
                     Section {
+                        Link("Scouting Tutorial Video", destination: URL(string: "https://jayagra.com/scouting_")!)
                         Button("Clear Network Cache") {
                             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                             URLCache.shared.removeAllCachedResponses()

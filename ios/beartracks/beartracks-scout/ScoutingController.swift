@@ -116,7 +116,7 @@ class ScoutingController: ObservableObject {
                         completionBlock((.error, "Client response handling error"))
                     }
                 } else {
-                    completionBlock((.error, "server response do be nil 😳"))
+                    completionBlock((.error, "server response is nil 😳\ncheck your network connection"))
                 }
             }
             requestTask.resume()
@@ -176,12 +176,18 @@ class ScoutingController: ObservableObject {
         let task = sharedSession.dataTask(with: request) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 200 {
-                    self.loginRequired = 1
+                    DispatchQueue.main.sync {
+                        self.loginRequired = 1
+                    }
                 } else {
-                    self.loginRequired = 2
+                    DispatchQueue.main.sync {
+                        self.loginRequired = 2
+                    }
                 }
             } else {
-                self.loginRequired = 2
+                DispatchQueue.main.sync {
+                    self.loginRequired = 2
+                }
             }
         }
         

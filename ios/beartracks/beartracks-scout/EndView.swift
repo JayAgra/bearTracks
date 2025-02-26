@@ -31,6 +31,7 @@ struct EndView: View {
                                 Toggle("Deep Cage", isOn: $controller.switches.2)
                             }
                             .padding()
+                            Text("Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account.").padding().foregroundStyle(Color.yellow)
                             VStack {
                                 Toggle("Defense", isOn: $defense)
                                     .padding()
@@ -42,7 +43,7 @@ struct EndView: View {
                                         }
                                     }
                                     Text("Did the robot play defense? If so, was it effective? Did it incur foul points?")
-                                        .padding(.leading)
+                                    .padding([.leading, .top])
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .foregroundStyle(defense ? Color.primary : Color.gray)
                                     TextEditor(text: $controller.defense)

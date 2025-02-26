@@ -1,3 +1,4 @@
+use actix_files::NamedFile;
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
 use actix_identity::{CookieIdentityPolicy, Identity, IdentityService};
@@ -12,10 +13,7 @@ use actix_web::{
 };
 use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
-use openssl::{
-    ssl::{SslAcceptor, SslFiletype, SslMethod},
-    x509::X509,
-};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -27,6 +25,7 @@ mod auth;
 mod casino;
 mod db_auth;
 mod db_main;
+mod db_pit;
 mod db_transact;
 mod forward;
 mod game_api;
@@ -70,6 +69,7 @@ struct Databases {
     main: db_main::Pool,
     auth: db_auth::Pool,
     transact: db_transact::Pool,
+    pit: db_pit::Pool,
 }
 
 // create secret key. probably could/should be an environment variable
@@ -197,7 +197,7 @@ async fn data_get_meta() -> Result<HttpResponse, AWError> {
 
 // access denied template
 fn access_denied_team() -> HttpResponse {
-    HttpResponse::Unauthorized().body("you must be affiliated with a valid team to access data")
+    HttpResponse::Unauthorized().insert_header(("Cache-Control", "no-cache")).body("you must be affiliated with a valid team to access data")
 }
 
 // get detailed data by submission id. used in /detail
@@ -276,6 +276,16 @@ async fn data_get_main_brief_user(path: web::Path<String>, db: web::Data<Databas
     }
 }
 
+async fn data_get_pit_data(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.team != 0 {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(db_pit::get_pit_data(&db.pit, req.match_info().get("season").unwrap().parse().unwrap(), req.match_info().get("event").unwrap().parse().unwrap(), req.match_info().get("team").unwrap().parse().unwrap(), user).await?))
+    } else {
+        Ok(access_denied_team())
+    }
+}
+
 // get basic data about all teams at an event, in a season. used for event rankings. ** NO AUTH **
 async fn data_get_main_teams(path: web::Path<String>, db: web::Data<Databases>) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
@@ -289,11 +299,33 @@ async fn data_get_scouted_teams(req: HttpRequest, db: web::Data<Databases>) -> R
         .json(db_main::get_team_numbers(&db.main, req.match_info().get("season").unwrap().parse().unwrap()).await?))
 }
 
+async fn data_get_pit_scouted_teams(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_pit::get_pit_scouted_team_numbers_by_event(&db.pit, req.match_info().get("season").unwrap().parse::<String>().unwrap(), req.match_info().get("event").unwrap().parse::<String>().unwrap()).await?))
+}
+
+async fn data_get_pit_image(req: HttpRequest) -> impl Responder {
+    NamedFile::open_async(format!("cache/images/2025/{}", req.match_info().get("id").unwrap().parse::<String>().unwrap())).await
+}
+
 // get POSTed data from form
 async fn data_post_submit(data: web::Json<db_main::MainInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(db_main::execute_insert(&db.main, &db.transact, &db.auth, data, user).await?))
+}
+
+async fn data_post_submit_pit(data: web::Json<db_pit::PitInsert>, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_pit::execute_insert(&db.pit, &db.transact, &db.auth, data, user).await?))
+}
+
+async fn data_post_pit_image(data: web::Json::<db_pit::IncomingImage>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_pit::save_incoming_image(&data, user).await?))
 }
 
 // forward frc api data for teams [deprecated]
@@ -371,6 +403,16 @@ async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User,
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
             .body(db_main::delete_by_id(&db.main, &db.transact, &db.auth, path).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
+async fn manage_delete_pit_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body(db_pit::delete_by_id(&db.pit, &db.transact, &db.auth, path).await?))
     } else {
         Ok(unauthorized_response())
     }
@@ -566,7 +608,7 @@ async fn debug_health(session: web::Data<RwLock<Sessions>>) -> Result<HttpRespon
 // *** code retained if game-like features are relevant in future *** //
 
 // get all user's owned cards
-async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn _game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::get_owned_cards(&db.auth, user).await?))
@@ -574,21 +616,21 @@ async fn game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result
 
 // get all user's owned cards (by a username)
 // ** NO AUTH **
-async fn game_get_cards_by_username(db: web::Data<Databases>, req: HttpRequest) -> Result<HttpResponse, AWError> {
+async fn _game_get_cards_by_username(db: web::Data<Databases>, req: HttpRequest) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::get_owned_cards_by_user(&db.auth, req.match_info().get("user").unwrap().parse().unwrap()).await?))
 }
 
 // get random team from scouted teams
-async fn game_open_lootbox(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn _game_open_lootbox(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::open_loot_box(&db.auth, &db.main, user, req.match_info().get("event").unwrap().parse().unwrap()).await?))
 }
 
 // set player's hand
-async fn game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn _game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::set_held_cards(&db.auth, user, &data).await?))
@@ -607,7 +649,7 @@ async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_aut
     ))
 }
 
-async fn return_discontinued_gone(req: HttpRequest) -> Result<HttpResponse, AWError> {
+async fn return_discontinued_gone(_req: HttpRequest) -> Result<HttpResponse, AWError> {
     Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
 }
 
@@ -639,6 +681,7 @@ async fn main() -> io::Result<()> {
         .collect::<Vec<String>>();
 
     for i in 0..seasons.len() {
+        fs::create_dir_all(format!("cache/images/{}", seasons[i]))?;
         for j in 0..events.len() {
             // cache team list
             let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
@@ -716,6 +759,15 @@ async fn main() -> io::Result<()> {
         .expect("trans db: WAL failed");
     drop(trans_db_connection);
 
+    // pit database connection
+    let pit_db_manager = SqliteConnectionManager::file("data_pit.db");
+    let pit_db_pool = db_pit::Pool::new(pit_db_manager).unwrap();
+    let pit_db_connection = pit_db_pool.get().expect("pit db: connection failed");
+    pit_db_connection
+        .execute_batch("PRAGMA journal_mode=WAL;")
+        .expect("pit db: WAL failed");
+    drop(pit_db_connection);
+
     // create secret key for uh cookies i think
     let secret_key = get_secret_key();
 
@@ -752,6 +804,7 @@ async fn main() -> io::Result<()> {
                 main: main_db_pool.clone(),
                 auth: auth_db_pool.clone(),
                 transact: trans_db_pool.clone(),
+                pit: pit_db_pool.clone()
             }))
             // add sessions to app data
             .app_data(sessions.clone())
@@ -884,9 +937,17 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(data_get_main_teams)),
             )
             .service(
+                web::resource("/api/v1/data/pit/{season}/{event}/{team}")
+                    .route(web::get().to(data_get_pit_data))
+            )
+            .service(
                 web::resource("/api/v1/data/scouted_teams/{season}")
                     .route(web::get().to(data_get_scouted_teams)),
             ) // season/event
+            .service(
+                web::resource("/api/v1/data/pit_scouted/{season}/{event}")
+                    .route(web::get().to(data_get_pit_scouted_teams))
+            )
             .service(
                 web::resource("/api/v1/events/teams/{season}/{event}")
                     .route(web::get().to(event_get_frc_api)),
@@ -895,10 +956,22 @@ async fn main() -> io::Result<()> {
                 web::resource("/api/v1/events/matches/{season}/{event}/{level}/{all}")
                     .route(web::get().to(event_get_frc_api_matches)),
             )
+            .service(
+                web::resource("/api/v1/pit/image/{id}")
+                    .route(web::get().to(data_get_pit_image))
+            )
             // POST (✅)
             .service(
                 web::resource("/api/v1/data/submit")
                     .route(web::post().to(data_post_submit)),
+            )
+            .service(
+                web::resource("/api/v1/data/submit_pit")
+                    .route(web::post().to(data_post_submit_pit)),
+            )
+            .service(
+                web::resource("/api/v1/data/upload_image")
+                    .route(web::post().to(data_post_pit_image))
             )
             /* manage endpoints */
             // GET
@@ -926,6 +999,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/manage/delete/{id}")
                     .route(web::delete().to(manage_delete_submission)),
+            )
+            .service(
+                web::resource("/api/v1/manage/delete_pit/{id}")
+                    .route(web::delete().to(manage_delete_pit_submission)),
             )
             .service(
                 web::resource("/api/v1/manage/user/delete/{user_id}")

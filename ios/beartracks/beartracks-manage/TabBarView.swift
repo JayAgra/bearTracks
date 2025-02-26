@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TabBarView: View {
     enum Tab {
-        case data, scouts, teams, settings
+        case data, pit, scouts, teams, settings
     }
     @State private var loginRequired: Bool = false
     @State private var selectedTab: Tab = .settings
@@ -21,6 +21,11 @@ struct TabBarView: View {
                     Label("data", systemImage: "list.dash")
                 }
                 .tag(Tab.data)
+            PitDataView()
+                .tabItem {
+                    Label("pit", systemImage: "wrench.adjustable")
+                }
+                .tag(Tab.pit)
             UsersView()
                 .tabItem {
                     Label("users", systemImage: "person")

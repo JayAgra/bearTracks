@@ -16,6 +16,8 @@
 		F509F6C52B54D9F4006FD9D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C42B54D9F4006FD9D5 /* LoginView.swift */; };
 		F509F6C72B54DAF2006FD9D5 /* ScoutingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */; };
 		F509F6C92B54E554006FD9D5 /* PressModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F509F6C82B54E554006FD9D5 /* PressModifier.swift */; };
+		F5345F1F2D52F81000BEC893 /* PitScouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5345F1E2D52F81000BEC893 /* PitScouting.swift */; };
+		F5345F212D52F8AA00BEC893 /* PitScoutingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5345F202D52F8AA00BEC893 /* PitScoutingController.swift */; };
 		F55ABD6D2B9C40C4006E7FAF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F55ABD6C2B9C40C4006E7FAF /* Localizable.xcstrings */; };
 		F56584092B54D52900F587C0 /* beartracks_scoutApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56584082B54D52900F587C0 /* beartracks_scoutApp.swift */; };
 		F565840D2B54D52A00F587C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F565840C2B54D52A00F587C0 /* Assets.xcassets */; };
@@ -34,6 +36,9 @@
 		F509F6C42B54D9F4006FD9D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ScoutingController.swift; sourceTree = "<group>"; tabWidth = 4; };
 		F509F6C82B54E554006FD9D5 /* PressModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressModifier.swift; sourceTree = "<group>"; };
+		F5345F1E2D52F81000BEC893 /* PitScouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitScouting.swift; sourceTree = "<group>"; };
+		F5345F202D52F8AA00BEC893 /* PitScoutingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitScoutingController.swift; sourceTree = "<group>"; };
+		F5345F222D5311FD00BEC893 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F55ABD6C2B9C40C4006E7FAF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		F56584052B54D52900F587C0 /* beartracks-scout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "beartracks-scout.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F56584082B54D52900F587C0 /* beartracks_scoutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beartracks_scoutApp.swift; sourceTree = "<group>"; };
@@ -75,6 +80,7 @@
 		F56584072B54D52900F587C0 /* beartracks-scout */ = {
 			isa = PBXGroup;
 			children = (
+				F5345F222D5311FD00BEC893 /* Info.plist */,
 				F58565C32B7572B400C1606E /* beartracks-scout.entitlements */,
 				F56584082B54D52900F587C0 /* beartracks_scoutApp.swift */,
 				F509F6B62B54D7EA006FD9D5 /* StartView.swift */,
@@ -86,6 +92,8 @@
 				F509F6C62B54DAF2006FD9D5 /* ScoutingController.swift */,
 				F509F6BE2B54D8F2006FD9D5 /* SettingsManager.swift */,
 				F509F6BC2B54D810006FD9D5 /* SettingsView.swift */,
+				F5345F1E2D52F81000BEC893 /* PitScouting.swift */,
+				F5345F202D52F8AA00BEC893 /* PitScoutingController.swift */,
 				F509F6C02B54D9C0006FD9D5 /* URLSessionConfiguration.swift */,
 				F5BCB50A2D4C2E91008698A6 /* RegionalPoints.swift */,
 				F565840C2B54D52A00F587C0 /* Assets.xcassets */,
@@ -177,7 +185,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F509F6BD2B54D810006FD9D5 /* SettingsView.swift in Sources */,
+				F5345F1F2D52F81000BEC893 /* PitScouting.swift in Sources */,
 				F509F6C12B54D9C0006FD9D5 /* URLSessionConfiguration.swift in Sources */,
+				F5345F212D52F8AA00BEC893 /* PitScoutingController.swift in Sources */,
 				F509F6BB2B54D809006FD9D5 /* EndView.swift in Sources */,
 				F509F6C92B54E554006FD9D5 /* PressModifier.swift in Sources */,
 				F5AD47CC2B54FF0500345122 /* ReviewView.swift in Sources */,
@@ -323,13 +333,15 @@
 				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 108;
+				CURRENT_PROJECT_VERSION = 115;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "beartracks-scout/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Scout;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to submit photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -341,7 +353,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.0;
+				MARKETING_VERSION = 6.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-scout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -358,13 +370,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-scout/beartracks-scout.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 108;
+				CURRENT_PROJECT_VERSION = 115;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-scout/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "beartracks-scout/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Scout;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow camera access to submit photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -376,7 +390,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.0;
+				MARKETING_VERSION = 6.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-scout";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
