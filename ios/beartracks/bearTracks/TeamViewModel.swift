@@ -40,7 +40,9 @@ class TeamViewModel: ObservableObject {
         
         let requestTask = sharedSession.dataTask(with: request) {
             (data: Data?, response: URLResponse?, error: Error?) in
-            self.loadComplete.0 = true
+            DispatchQueue.main.async {
+                self.loadComplete.0 = true
+            }
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
@@ -84,7 +86,9 @@ class TeamViewModel: ObservableObject {
         
         let requestTask = sharedSession.dataTask(with: request) {
             (data: Data?, response: URLResponse?, error: Error?) in
-            self.loadComplete.1 = true
+            DispatchQueue.main.async {
+                self.loadComplete.1 = true
+            }
             if let data = data {
                 do {
                     let decoder = JSONDecoder()

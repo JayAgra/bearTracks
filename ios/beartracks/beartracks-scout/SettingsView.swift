@@ -91,6 +91,7 @@ struct SettingsView: View {
                         NavigationLink(destination: RegionalPoints().navigationTitle("Regional Points"), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
                     }
                     Section {
+                        Link("Scouting Tutorial Video", destination: URL(string: "https://jayagra.com/scouting_")!)
                         Button("Clear Network Cache") {
                             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                             URLCache.shared.removeAllCachedResponses()

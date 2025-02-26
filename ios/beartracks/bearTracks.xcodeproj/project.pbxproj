@@ -25,15 +25,15 @@
 		F540A13D2B549D2500611384 /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13C2B549D2500611384 /* TeamView.swift */; };
 		F540A13F2B549D2E00611384 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F540A13E2B549D2E00611384 /* TeamViewModel.swift */; };
 		F542E34C2B9C028F002F6E05 /* MatchDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F542E34B2B9C028F002F6E05 /* MatchDetailView.swift */; };
-		F5475D8D2D53CC0D00E81F49 /* PitDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5475D8C2D53CC0D00E81F49 /* PitDataView.swift */; };
 		F5475D8E2D53CC0D00E81F49 /* PitDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5475D8C2D53CC0D00E81F49 /* PitDataView.swift */; };
-		F5475D8F2D53CC0D00E81F49 /* PitDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5475D8C2D53CC0D00E81F49 /* PitDataView.swift */; };
 		F5475D912D53CCCE00E81F49 /* PitDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5475D902D53CCCE00E81F49 /* PitDataController.swift */; };
 		F5475D922D53CCCE00E81F49 /* PitDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5475D902D53CCCE00E81F49 /* PitDataController.swift */; };
 		F5475D932D53CCCE00E81F49 /* PitDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5475D902D53CCCE00E81F49 /* PitDataController.swift */; };
 		F54E76C22B527D96003C65A2 /* bearTracksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54E76C12B527D96003C65A2 /* bearTracksApp.swift */; };
 		F54E76C62B527D97003C65A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C52B527D97003C65A2 /* Assets.xcassets */; };
 		F54E76C92B527D97003C65A2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */; };
+		F597AFFE2D6E74E0006CF1A5 /* CarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F597AFFD2D6E74CF006CF1A5 /* CarouselView.swift */; };
+		F597B0002D6E778D006CF1A5 /* CarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F597AFFD2D6E74CF006CF1A5 /* CarouselView.swift */; };
 		F59F8F7B2B7D292700D35A56 /* TeamViewStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */; };
 		F59F8F7D2B7D2AD600D35A56 /* TeamStatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */; };
 		F5AE2E462B527E050033DB0D /* MatchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E3F2B527E050033DB0D /* MatchList.swift */; };
@@ -135,6 +135,7 @@
 		F54E76C12B527D96003C65A2 /* bearTracksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bearTracksApp.swift; sourceTree = "<group>"; };
 		F54E76C52B527D97003C65A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F54E76C82B527D97003C65A2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F597AFFD2D6E74CF006CF1A5 /* CarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselView.swift; sourceTree = "<group>"; };
 		F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TeamViewStats.swift; path = ../../TeamViewStats.swift; sourceTree = "<group>"; };
 		F59F8F7C2B7D2AD600D35A56 /* TeamStatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamStatController.swift; sourceTree = "<group>"; };
 		F5AE2E3F2B527E050033DB0D /* MatchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MatchList.swift; path = bearTracks/MatchList.swift; sourceTree = SOURCE_ROOT; };
@@ -249,6 +250,7 @@
 				F540A13E2B549D2E00611384 /* TeamViewModel.swift */,
 				F5475D8C2D53CC0D00E81F49 /* PitDataView.swift */,
 				F5475D902D53CCCE00E81F49 /* PitDataController.swift */,
+				F597AFFD2D6E74CF006CF1A5 /* CarouselView.swift */,
 				F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */,
 				F532B0322D4BE6D900B7C127 /* RegionalPoints.swift */,
 				F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */,
@@ -374,6 +376,7 @@
 				TargetAttributes = {
 					F51BC0B72BB71AF5009587C1 = {
 						CreatedOnToolsVersion = 15.2;
+						LastSwiftMigration = 1610;
 					};
 					F53F363A2BB74B09008F196B = {
 						CreatedOnToolsVersion = 15.2;
@@ -395,6 +398,8 @@
 				Base,
 			);
 			mainGroup = F54E76B52B527D96003C65A2;
+			packageReferences = (
+			);
 			productRefGroup = F54E76BF2B527D96003C65A2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -454,7 +459,7 @@
 			files = (
 				F53F36492BB74BE1008F196B /* LoginView.swift in Sources */,
 				F53F36522BB74C20008F196B /* TeamViewModel.swift in Sources */,
-				F5475D8D2D53CC0D00E81F49 /* PitDataView.swift in Sources */,
+				F597B0002D6E778D006CF1A5 /* CarouselView.swift in Sources */,
 				F53F364E2BB74BF3008F196B /* SettingsManager.swift in Sources */,
 				F53F36502BB74BFA008F196B /* URLSessionConfiguration.swift in Sources */,
 				F53F364A2BB74BE4008F196B /* AppState.swift in Sources */,
@@ -482,6 +487,7 @@
 				F5AE2E542B527E170033DB0D /* SettingsManager.swift in Sources */,
 				F5475D912D53CCCE00E81F49 /* PitDataController.swift in Sources */,
 				F59F8F7D2B7D2AD600D35A56 /* TeamStatController.swift in Sources */,
+				F597AFFE2D6E74E0006CF1A5 /* CarouselView.swift in Sources */,
 				F5081BA22B741D15001497DB /* AppState.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
 				F5AE2E4C2B527E050033DB0D /* DataView.swift in Sources */,
@@ -496,7 +502,6 @@
 			files = (
 				F5B8D1C02B96719F00D3F230 /* Teams.swift in Sources */,
 				F5B8D1C32B96727A00D3F230 /* DetailedView.swift in Sources */,
-				F5475D8F2D53CC0D00E81F49 /* PitDataView.swift in Sources */,
 				F5B8D1C62B96729200D3F230 /* TeamStatController.swift in Sources */,
 				F5B8D1C22B96727400D3F230 /* TeamView.swift in Sources */,
 				F5B8D1C42B96728500D3F230 /* TeamViewModel.swift in Sources */,
@@ -542,6 +547,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 101;
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
@@ -555,6 +561,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -563,6 +571,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 101;
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
@@ -576,6 +585,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

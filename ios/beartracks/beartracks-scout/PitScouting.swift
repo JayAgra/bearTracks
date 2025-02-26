@@ -201,6 +201,7 @@ struct PitDataInput: View {
                         }
                     }
                 }
+                Text("Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account.").foregroundStyle(Color.yellow)
                 Section {
                     Text("Notes")
                     TextEditor(text: $controller.notes)
@@ -274,6 +275,8 @@ struct PitImages: View {
                     .padding()
                 Spacer()
             }
+            Text("Please keep in mind that the images you upload are public and associated with your account.").foregroundStyle(Color.yellow).padding()
+
             Spacer()
             Button(action: {
                 if controller.selectedImage.0 == nil { cameraPresentation.0.toggle() } else { controller.selectedImage.0 = nil }

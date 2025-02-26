@@ -16,123 +16,110 @@ struct LoginView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        NavigationView {
-            VStack {
+        VStack {
 #if !os(watchOS)
-                Text("bearTracks")
-                    .font(.title)
-                Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "5") • 2025")
+            Text("bearTracks")
+                .font(.title)
+            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "6") • 2025")
 #endif
-                if !loading {
-                    if !create {
+            if !loading {
+                if !create {
 #if !os(watchOS)
-                        Text("Log In")
-                            .font(.title3)
-                            .padding(.top)
-#endif
-                        TextField("Username", text: $authData[0])
-#if !os(watchOS) && !os(tvOS)
-                            .padding([.leading, .trailing, .bottom])
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-#endif
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .textContentType(.username)
-                        SecureField("Password", text: $authData[1])
-#if !os(watchOS) && !os(tvOS)
-                            .padding()
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-#endif
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .textContentType(.password)
-                        Button("Log In") {
-                            authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
-                        }
-#if !os(watchOS)
-                        .padding()
-#endif
+                    Text("Log In")
                         .font(.title3)
-                        .buttonStyle(.bordered)
-#if !os(watchOS)
-                        Button("Create") {
-                            self.create = true
-                        }.padding()
+                        .padding(.top)
 #endif
-#if os(iOS)
-                        NavigationLink(destination: RegionalPoints(), label: { Label("Skip to Calculator", systemImage: "arrow.forward") }).padding()
-#endif
-                    } else {
+                    TextField("Username", text: $authData[0])
 #if !os(watchOS) && !os(tvOS)
-                        Text("Create Account")
-                            .font(.title3)
-                            .padding(.top)
-                        TextField("Team code", text: $authData[3])
-                            .padding([.leading, .trailing])
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .keyboardType(.numberPad)
-                            .onChange(of: authData[3]) { _ in
-                                authData[3] = String(authData[3].prefix(5))
-                            }
-                        TextField("Full name", text: $authData[2])
-                            .padding([.leading, .trailing])
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .textContentType(.name)
-                        TextField("Username", text: $authData[0])
-                            .padding([.leading, .trailing])
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .textContentType(.username)
-                        SecureField("Password", text: $authData[1])
-                            .padding([.leading, .trailing])
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .textContentType(.newPassword)
-                        Button("Create") {
-                            authAction(
-                                type: "create",
-                                data: [
-                                    "access": authData[3], "full_name": authData[2], "username": authData[0],
-                                    "password": authData[1],
-                                ])
-                        }
+                        .padding([.leading, .trailing, .bottom])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+#endif
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.username)
+                    SecureField("Password", text: $authData[1])
+#if !os(watchOS) && !os(tvOS)
                         .padding()
-                        .font(.title3)
-                        .buttonStyle(.bordered)
-                        Button("Log In") {
-                            self.create = false
-                        }
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
 #endif
-#if os(iOS)
-                        NavigationLink(destination: RegionalPoints(), label: { Label("Skip to Calculator", systemImage: "arrow.forward") }).padding()
-#endif
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.password)
+                    Button("Log In") {
+                        authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
                     }
-                } else {
-                    Spacer()
-                    ProgressView()
-#if !os(tvOS)
-                        .controlSize(.large)
+#if !os(watchOS)
+                    .padding()
 #endif
-                        .padding()
-                    Spacer()
+                    .font(.title3)
+                    .buttonStyle(.bordered)
+#if !os(watchOS)
+                    Button("Create") {
+                        self.create = true
+                    }.padding()
+#endif
+                } else {
+#if !os(watchOS) && !os(tvOS)
+                    Text("Create Account")
+                        .font(.title3)
+                        .padding(.top)
+                    TextField("Team code", text: $authData[3])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
+                        .onChange(of: authData[3]) { _ in
+                            authData[3] = String(authData[3].prefix(5))
+                        }
+                    TextField("Full name", text: $authData[2])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .textContentType(.name)
+                    TextField("Username", text: $authData[0])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.username)
+                    SecureField("Password", text: $authData[1])
+                        .padding([.leading, .trailing])
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocorrectionDisabled(true)
+                        .textInputAutocapitalization(.never)
+                        .textContentType(.newPassword)
+                    Button("Create") {
+                        authAction(type: "create", data: ["access": authData[3], "full_name": authData[2], "username": authData[0],"password": authData[1]])
+                    }
+                    .padding()
+                    .font(.title3)
+                    .buttonStyle(.bordered)
+                    Button("Log In") {
+                        self.create = false
+                    }
+#endif
                 }
+            } else {
+                Spacer()
+                ProgressView()
+#if !os(tvOS)
+                    .controlSize(.large)
+#endif
+                    .padding()
+                Spacer()
             }
-            .padding()
-            .alert(
-                isPresented: $showAlert,
-                content: {
-                    Alert(
-                        title: Text("Authentication Error"),
-                        message: Text(alertMessage),
-                        dismissButton: .default(Text("OK"))
-                    )
-                })
-            .onAppear {
-                appState.checkLoginState()
-            }
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }
+        .padding()
+        .alert(
+            isPresented: $showAlert,
+            content: {
+                Alert(
+                    title: Text("Authentication Error"),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("OK"))
+                )
+            })
+        .onAppear {
+            appState.checkLoginState()
+        }
     }
     
     private func authAction(type: String, data: [String: String]) {
@@ -149,11 +136,11 @@ struct LoginView: View {
                 if data != nil {
                     if let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 200 {
-                            appState.loginRequired = false
-                            loading = false
+                            DispatchQueue.main.async {
+                                loading = false
+                                appState.loginRequired = false
+                            }
                         } else {
-                            loading = false
-                            showAlert = true
                             if type == "login" {
                                 alertMessage = "Bad Credentials"
                             } else {
@@ -171,18 +158,26 @@ struct LoginView: View {
                                     alertMessage = "Account creation failed. Your account was **not** created. Please try again (unexpected error)."
                                 }
                             }
+                            DispatchQueue.main.async {
+                                showAlert = true
+                                loading = false
+                            }
                         }
                     }
                 } else {
-                    loading = false
-                    showAlert = true
-                    alertMessage = "Network Error"
+                    DispatchQueue.main.async {
+                        alertMessage = "Network Error"
+                        showAlert = true
+                        loading = false
+                    }
                 }
             }.resume()
         } catch {
-            loading = false
-            showAlert = true
-            alertMessage = "Fatal Client Error: Failed to serialize authentication object"
+            DispatchQueue.main.async {
+                loading = false
+                showAlert = true
+                alertMessage = "Fatal Client Error: Failed to serialize authentication object"
+            }
         }
     }
 }

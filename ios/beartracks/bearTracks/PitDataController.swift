@@ -78,6 +78,12 @@ class PitDataController: ObservableObject {
 
             let imageIds = pitData.image_ids.split(separator: ",").map { String($0) }
             mergedData.image_ids.append(contentsOf: imageIds)
+            
+            mergedData.id.append(pitData.id)
+            mergedData.notes.append(pitData.description)
+            mergedData.user_id.append(pitData.user_id)
+            mergedData.name.append(pitData.name)
+            mergedData.from_team.append(pitData.from_team)
         }
 
         return mergedData

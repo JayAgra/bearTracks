@@ -1261,6 +1261,9 @@
         }
       }
     },
+    "Please keep in mind that the images you upload are public and associated with your account." : {
+
+    },
     "Please select a match and team number on the start tab." : {
       "localizations" : {
         "en" : {
@@ -1327,6 +1330,9 @@
           }
         }
       }
+    },
+    "Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account." : {
+
     },
     "Return" : {
 
@@ -1397,6 +1403,9 @@
           }
         }
       }
+    },
+    "Scouting Tutorial Video" : {
+
     },
     "SDS" : {
 

@@ -126,22 +126,30 @@ class PitScoutingController: ObservableObject {
                                 self.submissionStatus = 6
                             }
                         } else {
-                            self.submissionStatus = 7
-                            self.submissionError = "Response code \(httpResponse.statusCode)"
+                            DispatchQueue.main.sync {
+                                self.submissionStatus = 7
+                                self.submissionError = "Response code \(httpResponse.statusCode)"
+                            }
                         }
                     } else {
-                        self.submissionStatus = 7
-                        self.submissionError = "Client response handling error"
+                        DispatchQueue.main.sync {
+                            self.submissionStatus = 7
+                            self.submissionError = "Client response handling error"
+                        }
                     }
                 } else {
-                    self.submissionStatus = 7
-                    self.submissionError = "Nil server response.\nCheck your network."
+                    DispatchQueue.main.sync {
+                        self.submissionStatus = 7
+                        self.submissionError = "Nil server response.\nCheck your network."
+                    }
                 }
             }
             requestTask.resume()
         } catch {
-            self.submissionStatus = 7
-            self.submissionError = "Client data encoding failure"
+            DispatchQueue.main.sync {
+                self.submissionStatus = 7
+                self.submissionError = "Client data encoding failure"
+            }
         }
     }
 
@@ -205,10 +213,14 @@ class PitScoutingController: ObservableObject {
                         self.scoutedTeams = (1, result)
                     }
                 } catch {
-                    self.scoutedTeams = (2, [])
+                    DispatchQueue.main.sync {
+                        self.scoutedTeams = (2, [])
+                    }
                 }
             } else {
-                self.scoutedTeams = (2, [])
+                DispatchQueue.main.sync {
+                    self.scoutedTeams = (2, [])
+                }
             }
         }
         requestTask.resume()
@@ -232,10 +244,14 @@ class PitScoutingController: ObservableObject {
                         self.allTeams = PitScoutingAllTeams(status: 1, teams: result.teams.map{ PitScoutingBasicTeam(number: $0.teamNumber, nameShort: $0.nameShort) })
                     }
                 } catch {
-                    self.allTeams = PitScoutingAllTeams(status: 2, teams: [])
+                    DispatchQueue.main.sync {
+                        self.allTeams = PitScoutingAllTeams(status: 2, teams: [])
+                    }
                 }
             } else {
-                self.allTeams = PitScoutingAllTeams(status: 2, teams: [])
+                DispatchQueue.main.sync {
+                    self.allTeams = PitScoutingAllTeams(status: 2, teams: [])
+                }
             }
         }
         requestTask.resume()

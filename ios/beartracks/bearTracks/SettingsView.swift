@@ -122,7 +122,9 @@ struct SettingsView: View {
                 }
                 Spacer()
             }
+#if !os(watchOS)
             .navigationTitle("Settings")
+#endif
             .alert(
                 isPresented: $showAlert,
                 content: {
