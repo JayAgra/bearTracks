@@ -9,9 +9,7 @@
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
 	<key>com.apple.security.application-groups</key>
-	<array>
-		<string>group.com.jayagra.beartracks</string>
-	</array>
+	<string>D6MFYYVHA8.com.jayagra.beartracks</string>
 	<key>com.apple.security.network.client</key>
 	<true/>
 </dict>
