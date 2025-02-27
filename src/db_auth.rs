@@ -453,22 +453,24 @@ fn set_passkey_data(conn: Connection, passkey: Passkey, user_id: i64) -> Result<
     Ok(conn.last_insert_rowid())
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct ApnTokenInsertRequest {
-    pub token: String
+    pub token: String,
+    pub app_bundle: String
 }
 
 #[derive(Serialize)]
 pub struct ApnTokens {
     pub id: i64,
     pub token: String,
+    pub app_bundle: String,
     pub user_id: i64,
     pub user_team: i64,
     pub user_username: String,
     pub user_name: String,
 }
 
-pub async fn insert_apn_token(pool: &Pool, token: String, user: User) -> Result<String, Error> {
+pub async fn insert_apn_token(pool: &Pool, token: ApnTokenInsertRequest, user: User) -> Result<String, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
@@ -478,9 +480,9 @@ pub async fn insert_apn_token(pool: &Pool, token: String, user: User) -> Result<
         .map_err(error::ErrorInternalServerError)
 }
 
-fn insert_apn_token_sql(conn: Connection, token: String, user: User) -> Result<String, rusqlite::Error> {
-    let mut stmt = conn.prepare("INSERT INTO apnTokens (token, user_id, user_team, user_username, user_name) VALUES (?, ?, ?, ?, ?);")?;
-    stmt.execute(params![token, user.id, user.team, user.username, user.full_name])?;
+fn insert_apn_token_sql(conn: Connection, token: ApnTokenInsertRequest, user: User) -> Result<String, rusqlite::Error> {
+    let mut stmt = conn.prepare("INSERT INTO apnTokens (token, app_bundle, user_id, user_team, user_username, user_name) VALUES (?, ?, ?, ?, ?, ?);")?;
+    stmt.execute(params![token.token, token.app_bundle, user.id, user.team, user.username, user.full_name])?;
     Ok("success".to_string())
 }
 
@@ -500,10 +502,11 @@ fn get_all_apn_tokens_entry(conn: Connection) -> Result<Vec<ApnTokens>, rusqlite
         Ok(ApnTokens {
             id: row.get(0)?,
             token: row.get(1)?,
-            user_id: row.get(2)?,
-            user_team: row.get(3)?,
-            user_username: row.get(4)?,
-            user_name: row.get(5)?
+            app_bundle: row.get(2)?,
+            user_id: row.get(3)?,
+            user_team: row.get(4)?,
+            user_username: row.get(5)?,
+            user_name: row.get(6)?
         })
     }).and_then(Iterator::collect)
 }

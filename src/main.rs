@@ -125,7 +125,7 @@ async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginF
 async fn auth_post_insert_token(db: web::Data<Databases>, data: web::Json<db_auth::ApnTokenInsertRequest>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
-        .json(db_auth::insert_apn_token(&db.auth, data.token.clone(), user).await?)
+        .json(db_auth::insert_apn_token(&db.auth, data.clone(), user).await?)
     )
 }
 

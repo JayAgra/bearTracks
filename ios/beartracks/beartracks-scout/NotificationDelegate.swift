@@ -1,6 +1,6 @@
 //
 //  NotificationDelegate.swift
-//  bearTracks
+//  bearTracks-scout
 //
 //  Created by Jayen Agrawal on 2/27/25.
 //
@@ -14,7 +14,7 @@ struct TokenUpload: Codable {
 }
 
 class NotificationDelegate: NSObject, UIApplicationDelegate, ObservableObject {
-    var app: beartracksApp?
+    var app: beartracks_scoutApp?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         application.registerForRemoteNotifications()
@@ -26,7 +26,7 @@ class NotificationDelegate: NSObject, UIApplicationDelegate, ObservableObject {
         let stringifiedToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         print("stringifiedToken: ", stringifiedToken)
         
-        let token = TokenUpload(token: stringifiedToken, app_bundle: "com.jayagra.beartracks")
+        let token = TokenUpload(token: stringifiedToken, app_bundle: "com.jayagra.beartracks-scout")
         guard let url = URL(string: "https://beartracks.io/api/v1/auth/apn/insert_token") else { return }
         
         do {
