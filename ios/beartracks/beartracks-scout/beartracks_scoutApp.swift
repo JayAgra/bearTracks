@@ -18,6 +18,7 @@ struct beartracks_scoutApp: App {
     var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @StateObject var scoutFormController: ScoutingController = ScoutingController()
     let notificationCenter = UNUserNotificationCenter.current()
+    @UIApplicationDelegateAdaptor private var appDelegate: NotificationDelegate
     
     var body: some Scene {
         WindowGroup {
@@ -57,6 +58,7 @@ struct beartracks_scoutApp: App {
                             print("failed to request notification auth")
                         }
                     }
+                    appDelegate.app = self
                 }
                 .environmentObject(scoutFormController)
             } else if scoutFormController.loginRequired == 2 {
