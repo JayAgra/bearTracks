@@ -19,126 +19,124 @@ struct RegionalPoints: View {
     @State private var teamAge: Int = 0 // 0 no bonus, 1 2024, 2 2025
     
     var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    Stepper {
-                        Text("Total Teams (\(totalTeams))")
-                    } onIncrement: {
-                        totalTeams += 1
-                    } onDecrement: {
-                        if totalTeams > 1 {
-                            totalTeams -= 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
-                    }
-                    Stepper {
-                        Text("Team Rank (\(teamRank))")
-                    } onIncrement: {
-                        if teamRank < totalTeams {
-                            teamRank += 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
-                    } onDecrement: {
-                        if teamRank > 1 {
-                            teamRank -= 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+        Form {
+            Section {
+                Stepper {
+                    Text("Total Teams (\(totalTeams))")
+                } onIncrement: {
+                    totalTeams += 1
+                } onDecrement: {
+                    if totalTeams > 1 {
+                        totalTeams -= 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
                 }
-                Section {
-                    Stepper {
-                        Text("Alliance Capt, 0 for N/A (\(allianceCaptain))")
-                    } onIncrement: {
-                        if allianceCaptain < 8 {
-                            allianceCaptain += 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
-                    } onDecrement: {
-                        if allianceCaptain > 0 {
-                            allianceCaptain -= 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+                Stepper {
+                    Text("Team Rank (\(teamRank))")
+                } onIncrement: {
+                    if teamRank < totalTeams {
+                        teamRank += 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
-                    Stepper {
-                        Text("Draft Order, 0 for N/A (\(draftOrderAcceptance))")
-                    } onIncrement: {
-                        if draftOrderAcceptance < 17 {
-                            draftOrderAcceptance += 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
-                    } onDecrement: {
-                        if draftOrderAcceptance > 0 {
-                            draftOrderAcceptance -= 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+                } onDecrement: {
+                    if teamRank > 1 {
+                        teamRank -= 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
                 }
-                Section {
-                    Picker("Place", selection: $allianceFinish) {
-                        Text("5th or below").tag(0)
-                        Text("4th").tag(7)
-                        Text("3rd").tag(13)
-                        Text("2nd").tag(20)
-                        Text("1st").tag(21)
+            }
+            Section {
+                Stepper {
+                    Text("Alliance Capt, 0 for N/A (\(allianceCaptain))")
+                } onIncrement: {
+                    if allianceCaptain < 8 {
+                        allianceCaptain += 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
-                    .pickerStyle(.menu)
-                    Stepper {
-                        Text("Alliance Matches Won (\(allianceMatchesWon))")
-                    } onIncrement: {
-                        allianceMatchesWon += 1
-                    } onDecrement: {
-                        if allianceMatchesWon > 0 {
-                            allianceMatchesWon -= 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
-                    }
-                    Stepper {
-                        Text("Winning Matches Played (\(allianceWinningMatchesPlayed))")
-                    } onIncrement: {
-                        if allianceWinningMatchesPlayed < allianceMatchesWon {
-                            allianceWinningMatchesPlayed += 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
-                    } onDecrement: {
-                        if allianceWinningMatchesPlayed > 0 {
-                            allianceWinningMatchesPlayed -= 1
-                        } else {
-                            // UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        }
+                } onDecrement: {
+                    if allianceCaptain > 0 {
+                        allianceCaptain -= 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
                 }
-                Section {
-                    Picker("Awards", selection: $awardsWon) {
-                        Text("None").tag(0)
-                        Text("Other Awards").tag(1)
-                        Text("Rookie All-Star").tag(2)
-                        Text("Engineering Inspiration").tag(3)
-                        Text("Impact").tag(4)
+                Stepper {
+                    Text("Draft Order, 0 for N/A (\(draftOrderAcceptance))")
+                } onIncrement: {
+                    if draftOrderAcceptance < 17 {
+                        draftOrderAcceptance += 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
-                    .pickerStyle(.menu)
-                    Picker("Rookie Bonus", selection: $teamAge) {
-                        Text("2023 or earlier").tag(0)
-                        Text("2024").tag(1)
-                        Text("2025").tag(2)
+                } onDecrement: {
+                    if draftOrderAcceptance > 0 {
+                        draftOrderAcceptance -= 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
                     }
-                    .pickerStyle(.menu)
                 }
-                Section {
-                    Text(String(calculateRegionalPoints(totalTeams: totalTeams, teamRank: teamRank, allianceCaptain: allianceCaptain, draftOrderAcceptance: draftOrderAcceptance, allianceFinish: allianceFinish, allianceMatchesWon: allianceMatchesWon, allianceWinningMatchesPlayed: allianceWinningMatchesPlayed, awardsWon: awardsWon, teamAge: teamAge)))
+            }
+            Section {
+                Picker("Place", selection: $allianceFinish) {
+                    Text("5th or below").tag(0)
+                    Text("4th").tag(7)
+                    Text("3rd").tag(13)
+                    Text("2nd").tag(20)
+                    Text("1st").tag(21)
                 }
-            }.navigationTitle("Regional Points")
+                .pickerStyle(.menu)
+                Stepper {
+                    Text("Alliance Matches Won (\(allianceMatchesWon))")
+                } onIncrement: {
+                    allianceMatchesWon += 1
+                } onDecrement: {
+                    if allianceMatchesWon > 0 {
+                        allianceMatchesWon -= 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    }
+                }
+                Stepper {
+                    Text("Winning Matches Played (\(allianceWinningMatchesPlayed))")
+                } onIncrement: {
+                    if allianceWinningMatchesPlayed < allianceMatchesWon {
+                        allianceWinningMatchesPlayed += 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    }
+                } onDecrement: {
+                    if allianceWinningMatchesPlayed > 0 {
+                        allianceWinningMatchesPlayed -= 1
+                    } else {
+                        // UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    }
+                }
+            }
+            Section {
+                Picker("Awards", selection: $awardsWon) {
+                    Text("None").tag(0)
+                    Text("Other Awards").tag(1)
+                    Text("Rookie All-Star").tag(2)
+                    Text("Engineering Inspiration").tag(3)
+                    Text("Impact").tag(4)
+                }
+                .pickerStyle(.menu)
+                Picker("Rookie Bonus", selection: $teamAge) {
+                    Text("2023 or earlier").tag(0)
+                    Text("2024").tag(1)
+                    Text("2025").tag(2)
+                }
+                .pickerStyle(.menu)
+            }
+            Section {
+                Text(String(calculateRegionalPoints(totalTeams: totalTeams, teamRank: teamRank, allianceCaptain: allianceCaptain, draftOrderAcceptance: draftOrderAcceptance, allianceFinish: allianceFinish, allianceMatchesWon: allianceMatchesWon, allianceWinningMatchesPlayed: allianceWinningMatchesPlayed, awardsWon: awardsWon, teamAge: teamAge)))
+            }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationTitle("Regional Points")
     }
 }
 

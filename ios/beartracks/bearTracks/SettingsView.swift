@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var teamNumberInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? ""
-    @State private var eventCodeInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? ""
-    @State private var seasonInput: String = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? ""
-    @State private var darkMode: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
-    @State private var allData: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "useAllCompData") ?? false
+    @State private var teamNumberInput: String = UserDefaults().string(forKey: "teamNumber") ?? ""
+    @State private var eventCodeInput: String = UserDefaults().string(forKey: "eventCode") ?? ""
+    @State private var seasonInput: String = UserDefaults().string(forKey: "season") ?? ""
+    @State private var darkMode: Bool = UserDefaults().bool(forKey: "darkMode") ?? true
+    @State private var allData: Bool = UserDefaults().bool(forKey: "useAllCompData") ?? false
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false
@@ -21,106 +21,103 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                Form {
-                    Section {
-                        Picker("Team Number", selection: $teamNumberInput) {
-                            if !settingsOptions.isEmpty {
-                                ForEach(settingsOptions[0].teams, id: \.self) { team in
-                                    Text(team)
-                                        .tag(team)
-                                }
-                            } else {
-                                Text(teamNumberInput)
-                                    .tag(teamNumberInput)
+            Form {
+                Section {
+                    Picker("Team Number", selection: $teamNumberInput) {
+                        if !settingsOptions.isEmpty {
+                            ForEach(settingsOptions[0].teams, id: \.self) { team in
+                                Text(team)
+                                    .tag(team)
                             }
-                        }
-#if !os(watchOS)
-                        .pickerStyle(.menu)
-#endif
-                        .onChange(of: teamNumberInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(teamNumberInput, forKey: "teamNumber")
-                        }
-                        Picker("Event Code", selection: $eventCodeInput) {
-                            if !settingsOptions.isEmpty {
-                                ForEach(settingsOptions[0].events, id: \.self) { event_code in
-                                    Text(event_code)
-                                        .tag(event_code)
-                                }
-                            } else {
-                                Text(eventCodeInput)
-                                    .tag(eventCodeInput)
-                            }
-                        }
-#if !os(watchOS)
-                        .pickerStyle(.menu)
-#endif
-                        .onChange(of: eventCodeInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(eventCodeInput, forKey: "eventCode")
-                        }
-                        Picker("Season", selection: $seasonInput) {
-                            if !settingsOptions.isEmpty {
-                                ForEach(settingsOptions[0].seasons, id: \.self) { season in
-                                    Text(season)
-                                        .tag(season)
-                                }
-                            } else {
-                                Text(seasonInput)
-                                    .tag(seasonInput)
-                            }
-                        }
-#if !os(watchOS)
-                        .pickerStyle(.menu)
-#endif
-                        .onChange(of: seasonInput) { value in
-                            UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(
-                                seasonInput, forKey: "season")
+                        } else {
+                            Text(teamNumberInput)
+                                .tag(teamNumberInput)
                         }
                     }
-                    Section {
 #if !os(watchOS)
-                        Toggle("Use all data for match predictions. This setting can be useful for the early matches of a competition, but is **not reccomended beyond the halfway point** unless prediction data is extremely inaccurate.", isOn: $allData)
-                            .onChange(of: allData) { value in
-                                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(allData, forKey: "useAllCompData")
-                            }
+                    .pickerStyle(.menu)
 #endif
-                        Toggle("Dark Mode", isOn: $darkMode)
-                            .onChange(of: darkMode) { value in
-                                UserDefaults(suiteName: "group.com.jayagra.beartracks")?.set(darkMode, forKey: "darkMode")
-                                showAlert = true
+                    .onChange(of: teamNumberInput) { value in
+                        UserDefaults().set(teamNumberInput, forKey: "teamNumber")
+                    }
+                    Picker("Event Code", selection: $eventCodeInput) {
+                        if !settingsOptions.isEmpty {
+                            ForEach(settingsOptions[0].events, id: \.self) { event_code in
+                                Text(event_code)
+                                    .tag(event_code)
                             }
+                        } else {
+                            Text(eventCodeInput)
+                                .tag(eventCodeInput)
+                        }
                     }
 #if !os(watchOS)
-                    Section {
-                        NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
-                    }
+                    .pickerStyle(.menu)
 #endif
-                    Section {
-                        Button("Clear Cache") {
-                            URLCache.shared.removeAllCachedResponses()
-                        }
-                        Button("Log Out") {
-                            if let cookies = HTTPCookieStorage.shared.cookies(
-                                for: sharedSession.configuration.urlCache?.cachedResponse(
-                                    for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(
-                                        string: "https://beartracks.io")!)
-                            {
-                                for cookie in cookies {
-                                    sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
-                                }
-                                appState.loginRequired = true
-                            }
-                        }
-                        .foregroundColor(Color.pink)
+                    .onChange(of: eventCodeInput) { value in
+                        UserDefaults().set(eventCodeInput, forKey: "eventCode")
                     }
-                    Section {
-                        Button("Delete Account") {
-                            showConfirm = true
+                    Picker("Season", selection: $seasonInput) {
+                        if !settingsOptions.isEmpty {
+                            ForEach(settingsOptions[0].seasons, id: \.self) { season in
+                                Text(season)
+                                    .tag(season)
+                            }
+                        } else {
+                            Text(seasonInput)
+                                .tag(seasonInput)
                         }
-                        .foregroundStyle(Color.pink)
+                    }
+#if !os(watchOS)
+                    .pickerStyle(.menu)
+#endif
+                    .onChange(of: seasonInput) { value in
+                        UserDefaults().set(
+                            seasonInput, forKey: "season")
                     }
                 }
-                Spacer()
+                Section {
+#if !os(watchOS)
+                    Toggle("Use all data for match predictions. This setting can be useful for the early matches of a competition, but is **not reccomended beyond the halfway point** unless prediction data is extremely inaccurate.", isOn: $allData)
+                        .onChange(of: allData) { value in
+                            UserDefaults().set(allData, forKey: "useAllCompData")
+                        }
+#endif
+                    Toggle("Dark Mode", isOn: $darkMode)
+                        .onChange(of: darkMode) { value in
+                            UserDefaults().set(darkMode, forKey: "darkMode")
+                            showAlert = true
+                        }
+                }
+#if !os(watchOS)
+                Section {
+                    NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
+                }
+#endif
+                Section {
+                    Button("Clear Cache") {
+                        URLCache.shared.removeAllCachedResponses()
+                    }
+                    Button("Log Out") {
+                        if let cookies = HTTPCookieStorage.shared.cookies(
+                            for: sharedSession.configuration.urlCache?.cachedResponse(
+                                for: URLRequest(url: URL(string: "https://beartracks.io")!))?.response.url ?? URL(
+                                    string: "https://beartracks.io")!)
+                        {
+                            for cookie in cookies {
+                                sharedSession.configuration.httpCookieStorage?.deleteCookie(cookie)
+                            }
+                            appState.loginRequired = true
+                        }
+                    }
+                    .foregroundColor(Color.pink)
+                }
+                Section {
+                    Button("Delete Account") {
+                        showConfirm = true
+                    }
+                    .foregroundStyle(Color.pink)
+                }
             }
 #if !os(watchOS)
             .navigationTitle("Settings")
@@ -155,14 +152,18 @@ struct SettingsView: View {
                 },
                 message: {
                     Text("This action is irreversible.")
-                })
+                }
+            )
             .onAppear {
                 loadSettingsJson { result in
                     self.settingsOptions = result
                 }
             }
+#if os(watchOS)
             .ignoresSafeArea(edges: .bottom)
-        }.navigationViewStyle(StackNavigationViewStyle())
+#endif
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     func loadSettingsJson(completionBlock: @escaping ([DataMetadata]) -> Void) {

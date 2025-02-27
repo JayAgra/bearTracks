@@ -66,7 +66,7 @@ struct DataView: View {
                     }
                     .navigationTitle("Data")
                 } else {
-                    if self.loadFailed {
+                    if appState.dataJsonStatus.1 {
                         VStack {
                             Label("Failute", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
@@ -77,7 +77,7 @@ struct DataView: View {
                         }
                         .navigationTitle("Data")
                     } else {
-                        if self.loadComplete {
+                        if appState.dataJsonStatus.0 {
                             VStack {
                                 Label("None", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)

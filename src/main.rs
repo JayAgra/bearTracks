@@ -1,3 +1,10 @@
+use a2::{
+    client::ClientConfig,
+    DefaultNotificationBuilder,
+    Endpoint,
+    NotificationBuilder,
+    NotificationOptions
+};
 use actix_files::NamedFile;
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
@@ -7,7 +14,7 @@ use actix_web::{
     cookie::Key,
     dev::Payload,
     error,
-    http::{header, header::ContentType},
+    http::header::ContentType,
     middleware::{self, DefaultHeaders},
     web, App, Error as AWError, FromRequest, HttpRequest, HttpResponse, HttpServer, Responder,
 };
@@ -113,6 +120,13 @@ async fn auth_post_login(
 // delete account endpoint required for apple platforms
 async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginForm>, session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> Result<HttpResponse, AWError> {
     Ok(auth::delete_account(&db.auth, data, session, identity).await?)
+}
+
+async fn auth_post_insert_token(db: web::Data<Databases>, data: web::Json<db_auth::ApnTokenInsertRequest>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_auth::insert_apn_token(&db.auth, data.token.clone(), user).await?)
+    )
 }
 
 // destroy session endpoint
@@ -386,12 +400,32 @@ async fn manage_get_all_keys(db: web::Data<Databases>, user: db_auth::User) -> R
     }
 }
 
+async fn manage_get_all_apn_tokens(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(db_auth::get_all_apn_tokens(&db.auth).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
 // data dump
 async fn manage_data_dump(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
             .json(db_main::execute(&db.main, db_main::MainData::GetAllData, path).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
+async fn manage_refresh_cache(user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(cache_first_data().await?))
     } else {
         Ok(unauthorized_response())
     }
@@ -653,21 +687,7 @@ async fn return_discontinued_gone(_req: HttpRequest) -> Result<HttpResponse, AWE
     Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
 }
 
-include!(concat!(env!("OUT_DIR"), "/generated.rs"));
-
-#[actix_web::main]
-async fn main() -> io::Result<()> {
-    // load environment variables from .env file
-    dotenv().ok();
-
-    // don't log all that shit when in release mode
-    if cfg!(debug_assertions) {
-        env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-    } else {
-        env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
-        println!("[OK] starting in release mode");
-    }
-
+async fn cache_first_data() -> Result<bool, std::io::Error> {
     // cache all possible files
     let seasons = env::var("SEASONS")
         .unwrap_or_else(|_| "0".to_string())
@@ -736,6 +756,26 @@ async fn main() -> io::Result<()> {
         }
     }
 
+    Ok(true)
+}
+
+include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+
+#[actix_web::main]
+async fn main() -> io::Result<()> {
+    // load environment variables from .env file
+    dotenv().ok();
+
+    // don't log all that shit when in release mode
+    if cfg!(debug_assertions) {
+        env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    } else {
+        env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
+        println!("[OK] starting in release mode");
+    }
+
+    let _cache_ok = cache_first_data().await;
+
     // hashmap w: web::Data<RwLock<Sessions>>ith user sessions in it
     let sessions: web::Data<RwLock<Sessions>> = web::Data::new(RwLock::new(Sessions { user_map: HashMap::new() }));
 
@@ -794,7 +834,7 @@ async fn main() -> io::Result<()> {
     // let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url).unwrap().bytes().unwrap();
     // let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
     // builder.add_extra_chain_cert(intermediate_cert).unwrap();
-
+    
     // config done. now, create the new HttpServer
     log::info!("[OK] starting bearTracks on port 443 and 80");
 
@@ -814,6 +854,7 @@ async fn main() -> io::Result<()> {
             // add webauthn to app data
             .app_data(passkey::setup_passkeys())
             // apn client
+            .app_data(a2::Client::token(&mut fs::File::open("./ssl/APN.p8").unwrap(), env::var("APN_KEY_ID").unwrap_or_else(|_| "".to_string()), env::var("APN_TEAM_ID").unwrap_or_else(|_| "".to_string()), ClientConfig::new(Endpoint::Production)).unwrap())
             // use governor ratelimiting as middleware
             .wrap(Governor::new(&governor_conf))
             // use cookie id system middleware
@@ -837,11 +878,11 @@ async fn main() -> io::Result<()> {
                     )
                     .build(),
             )
-            // default headers for caching. overridden on most all api endpoints
+            // default headers for caching. overridden on most all api endpoints (7 days cache)
             .wrap(
                 DefaultHeaders::new()
-                    .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-bearTracks", "6.0.1")),
+                    .add(("Cache-Control", "public, max-age=604800"))
+                    .add(("X-bearTracks", "6.0.2")),
             )
             /* src  endpoints */
             // GET individual files
@@ -888,6 +929,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/auth/delete")
                     .route(web::post().to(auth_post_delete)),
+            )
+            .service(
+                web::resource("/api/v1/auth/apn/insert_token")
+                    .route(web::post().to(auth_post_insert_token))
             )
             .service(
                 web::resource("/api/v1/auth/passkey/register_start")
@@ -999,8 +1044,16 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(manage_get_all_keys)),
             )
             .service(
+                web::resource("/api/v1/manage/all_apn_tokens")
+                    .route(web::get().to(manage_get_all_apn_tokens))
+            )
+            .service(
                 web::resource("/api/v1/manage/data_dump/{args}*")
                     .route(web::get().to(manage_data_dump)),
+            )
+            .service(
+                web::resource("/api/v1/manage/refresh_cache")
+                    .route(web::get().to(manage_refresh_cache))
             )
             // DELETE
             .service(

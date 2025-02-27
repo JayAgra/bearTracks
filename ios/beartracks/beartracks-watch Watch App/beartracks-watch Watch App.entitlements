@@ -6,9 +6,5 @@
 	<array>
 		<string>webcredentials:beartracks.io</string>
 	</array>
-	<key>com.apple.security.application-groups</key>
-	<array>
-		<string>group.com.jayagra.beartracks</string>
-	</array>
 </dict>
 </plist>

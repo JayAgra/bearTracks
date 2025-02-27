@@ -17,6 +17,8 @@ PASSKEY_RP_ID
 TEAMS
 EVENTS
 SEASONS
+APN_KEY_ID
+APN_TEAM_ID
 ```
 + **FRC_API_KEY** FRC API credentials, in base64. standard encoding (`username:token`), and omit the "Basic " occasionally prepended to the string. obtain a key: https://frc-events.firstinspires.org/services/API. (default: `NONE`)<br>
 + **MY_TEAM** your team number (default: `766`)<br>
@@ -25,6 +27,8 @@ SEASONS
 + **TEAMS** is a comma separated list of all teams registered to use this instance of the app<br>
 + **EVENTS** is a comma separated list of all events the app should use<br>
 + **SEASONS** is a comma separated list of all seasons this app has been used
++ **APN_KEY_ID** the ID of the APN key in the ssl folder (filename APN.p8)
++ **APN_TEAM_ID** the team ID of the APN key
 ### ssl
 use cloudflare ssl in full strict mode. place certificate and key in `ssl/cert.pem` and `ssl/key.pem`.
 ### running server

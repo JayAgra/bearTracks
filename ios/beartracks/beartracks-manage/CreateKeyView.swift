@@ -21,10 +21,15 @@ struct CreateKeyView: View {
                             TextField("Team", text: $teamNumber)
                                 .keyboardType(.numberPad)
                                 .textFieldStyle(.roundedBorder)
+                                .onChange(of: teamNumber) {
+                                    teamNumber = String(teamNumber.prefix(5))
+                                }
                             TextField("Key", text: $teamKey)
                                 .keyboardType(.numberPad)
                                 .textFieldStyle(.roundedBorder)
-                            
+                                .onChange(of: teamKey) {
+                                    teamKey = String(teamKey.prefix(5))
+                                }
                             Button("Create") {
                                 requestStatus.0 = true
                                 createTeamKey()
