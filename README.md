@@ -3,11 +3,6 @@ a webapp for frc scouting<br><br>
 ![GitHub](https://img.shields.io/github/license/JayAgra/bearTracks) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/bearTracks) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/bearTracks)
 
 ## setup
-### script
-set up bearTracks using the shell script.
-```sh
-curl -fSsl "https://raw.githubusercontent.com/JayAgra/bearTracks/main/setup.sh" | sudo sh
-```
 ### environment variables
 ```
 FRC_API_KEY

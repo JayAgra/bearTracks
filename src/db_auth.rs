@@ -481,7 +481,7 @@ pub async fn insert_apn_token(pool: &Pool, token: ApnTokenInsertRequest, user: U
 }
 
 fn insert_apn_token_sql(conn: Connection, token: ApnTokenInsertRequest, user: User) -> Result<String, rusqlite::Error> {
-    let mut stmt = conn.prepare("INSERT INTO apnTokens (token, app_bundle, user_id, user_team, user_username, user_name) VALUES (?, ?, ?, ?, ?, ?);")?;
+    let mut stmt = conn.prepare("INSERT OR IGNORE INTO apnTokens (token, app_bundle, user_id, user_team, user_username, user_name) VALUES (?, ?, ?, ?, ?, ?);")?;
     stmt.execute(params![token.token, token.app_bundle, user.id, user.team, user.username, user.full_name])?;
     Ok("success".to_string())
 }
