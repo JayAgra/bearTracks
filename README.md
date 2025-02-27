@@ -4,7 +4,7 @@ a webapp for frc scouting<br><br>
 
 ## setup
 ### script
-set up bearTracks using the simple shell script.
+set up bearTracks using the shell script.
 ```sh
 curl -fSsl "https://raw.githubusercontent.com/JayAgra/bearTracks/main/setup.sh" | sudo sh
 ```
@@ -52,9 +52,9 @@ The clients are broken into 3 apps- Data, Scout, and Manage. Manage is intended 
 | watchOS 9-11| ❌    | ✅     | ❌      |
 | visionOS 2  | ❌    | ✅     | ❌      |
 | App Store   | ✅    | ✅     | ❌      |
-| Web (PWA)   | ✅    | ❌     | ❌      |
+| Web (PWA)   | ✅    | ✅     | ❌      |
 
-<small>android users may use web</small>
+<small>android users may use web.<br>web data access is not as complete as iOS access.</small>
 
 [Data iOS](https://apps.apple.com/app/beartracks-data/id6475752596)<br>
 [Data macOS](https://apps.apple.com/app/beartracks-data/id6475752596)<br>

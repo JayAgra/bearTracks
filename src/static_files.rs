@@ -20,6 +20,8 @@ const SCOUTS_HTML: &str = include_str!("../static/scouts.html");
 const SETTINGS_HTML: &str = include_str!("../static/settings.html");
 const SITE_WEBMANIFEST: &str = include_str!("../static/site.webmanifest");
 const SPIN_HTML: &str = include_str!("../static/spin.html");
+const DATA_HTML: &str = include_str!("../static/data.html");
+const TEAM_HTML: &str = include_str!("../static/team.html");
 // favicon isn't utf8 so it needs include bytes instead
 const ANDROID_CHROME_192: &[u8] = include_bytes!("../static/android-chrome-192x192.png");
 const ANDROID_CHROME_512: &[u8] = include_bytes!("../static/android-chrome-512x512.png");
@@ -92,6 +94,14 @@ pub async fn static_webmanifest() -> HttpResponse {
 
 pub async fn static_spin() -> HttpResponse {
     HttpResponse::Ok().content_type(ContentType::html()).body(SPIN_HTML)
+}
+
+pub async fn static_data() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(DATA_HTML)
+}
+
+pub async fn static_team() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(TEAM_HTML)
 }
 
 // serve static favicons

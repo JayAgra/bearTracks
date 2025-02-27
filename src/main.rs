@@ -7,7 +7,7 @@ use actix_web::{
     cookie::Key,
     dev::Payload,
     error,
-    http::header::ContentType,
+    http::{header, header::ContentType},
     middleware::{self, DefaultHeaders},
     web, App, Error as AWError, FromRequest, HttpRequest, HttpResponse, HttpServer, Responder,
 };
@@ -683,51 +683,54 @@ async fn main() -> io::Result<()> {
     for i in 0..seasons.len() {
         fs::create_dir_all(format!("cache/images/{}", seasons[i]))?;
         for j in 0..events.len() {
-            // cache team list
-            let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
-            let team_client = Client::new();
-            let team_response = team_client
-                .request(actix_http::Method::GET, team_target_url)
-                .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
-                .send()
-                .await;
+            // prevent my test schedules from being thrown away
+            if events[j] != "TEST" {
+                // cache team list
+                let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
+                let team_client = Client::new();
+                let team_response = team_client
+                    .request(actix_http::Method::GET, team_target_url)
+                    .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
+                    .send()
+                    .await;
 
-            match team_response {
-                Ok(response) => {
-                    if response.status() == 200 {
-                        fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
-                        fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), response.text().await.unwrap())
-                            .expect(format!("Failed to cache {}/{} team JSON. Could not write file.", seasons[i], events[j]).as_str());
-                    } else {
-                        log::error!("Failed to cache {}/{} team JSON. Response status {}.", seasons[i], events[j], response.status());
+                match team_response {
+                    Ok(response) => {
+                        if response.status() == 200 {
+                            fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
+                            fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), response.text().await.unwrap())
+                                .expect(format!("Failed to cache {}/{} team JSON. Could not write file.", seasons[i], events[j]).as_str());
+                        } else {
+                            log::error!("Failed to cache {}/{} team JSON. Response status {}.", seasons[i], events[j], response.status());
+                        }
+                    }
+                    Err(_) => {
+                        log::error!("Failed to cache {}/{} team JSON. Response was not OK.", seasons[i], events[j]);
                     }
                 }
-                Err(_) => {
-                    log::error!("Failed to cache {}/{} team JSON. Response was not OK.", seasons[i], events[j]);
-                }
-            }
 
-            let match_target_url =
-                format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
-            let match_client = Client::new();
-            let match_response = match_client
-                .request(actix_http::Method::GET, match_target_url)
-                .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
-                .send()
-                .await;
+                let match_target_url =
+                    format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
+                let match_client = Client::new();
+                let match_response = match_client
+                    .request(actix_http::Method::GET, match_target_url)
+                    .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
+                    .send()
+                    .await;
 
-            match match_response {
-                Ok(response) => {
-                    if response.status() == 200 {
-                        fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
-                        fs::write(format!("cache/frc_api/{}/{}/matches.json", seasons[i], events[j]), response.text().await.unwrap())
-                            .expect(format!("Failed to cache {}/{} match JSON. Could not write file.", seasons[i], events[j]).as_str());
-                    } else {
-                        log::error!("Failed to cache {}/{} match JSON. Response status {}.", seasons[i], events[j], response.status());
+                match match_response {
+                    Ok(response) => {
+                        if response.status() == 200 {
+                            fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
+                            fs::write(format!("cache/frc_api/{}/{}/matches.json", seasons[i], events[j]), response.text().await.unwrap())
+                                .expect(format!("Failed to cache {}/{} match JSON. Could not write file.", seasons[i], events[j]).as_str());
+                        } else {
+                            log::error!("Failed to cache {}/{} match JSON. Response status {}.", seasons[i], events[j], response.status());
+                        }
                     }
-                }
-                Err(_) => {
-                    log::error!("Failed to cache {}/{} match JSON. Response was not OK.", seasons[i], events[j]);
+                    Err(_) => {
+                        log::error!("Failed to cache {}/{} match JSON. Response was not OK.", seasons[i], events[j]);
+                    }
                 }
             }
         }
@@ -838,7 +841,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-bearTracks", "6.0.0")),
+                    .add(("X-bearTracks", "6.0.1")),
             )
             /* src  endpoints */
             // GET individual files
@@ -855,6 +858,8 @@ async fn main() -> io::Result<()> {
             .route("/settings", web::get().to(static_files::static_settings))
             .route("/site.webmanifest", web::get().to(static_files::static_webmanifest))
             .route("/spin", web::get().to(static_files::static_spin))
+            .route("/data", web::get().to(static_files::static_data))
+            .route("/data/team", web::get().to(static_files::static_team))
             .route("/android-chrome-192x192.png", web::get().to(static_files::static_android_chrome_192))
             .route("/android-chrome-512x512.png", web::get().to(static_files::static_android_chrome_512))
             .route("/apple-touch-icon.png", web::get().to(static_files::static_apple_touch_icon))
