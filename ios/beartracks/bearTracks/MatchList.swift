@@ -9,8 +9,6 @@ import SwiftUI
 
 struct MatchList: View {
     @EnvironmentObject var appState: AppState
-    @State private var loadFailed: Bool = false
-    @State private var loadComplete: Bool = false
     @State private var myTeamOnly = false
     @State var selectedMatch: Int? = nil
     
@@ -73,16 +71,20 @@ struct MatchList: View {
                                 Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
                                     .padding()
                             }
+                            .onAppear { appState.fetchMatchJson() }
                         } else {
                             if appState.matchJsonStatus.0 {
                                 VStack {
-                                    Label("none", systemImage: "questionmark.app.dashed")
-                                        .padding(.bottom)
-                                        .labelStyle(.iconOnly)
-                                        .foregroundStyle(Color.pink)
                                     Text("The match list returned was empty. This is not an error. If matches are already available online, please **clear network cache in settings**.")
                                         .padding()
+                                    Button(label: {
+                                        Label("Retry", systemImage: "arrow.clockwise")
+                                    }, action: {
+                                        URLCache.shared.removeAllCachedResponses()
+                                        appState.fetchMatchJson()
+                                    })
                                 }
+                                .onAppear { appState.fetchMatchJson() }
                             } else {
                                 VStack {
                                     Label("Loading", systemImage: "hourglass")

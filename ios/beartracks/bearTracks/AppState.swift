@@ -71,8 +71,9 @@ class AppState: ObservableObject {
                     let decoder = JSONDecoder()
                     let result = try decoder.decode(MatchData.self, from: data)
                     DispatchQueue.main.async {
-                        self.matchJsonStatus = (true, false)
+                        self.matchJson = []
                         self.matchJson = result.Schedule
+                        self.matchJsonStatus = (true, false)
                     }
                 } catch {
                     print("parse error")
