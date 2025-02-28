@@ -566,8 +566,6 @@ pub async fn send_notification_to_user(pool: &Pool, user_id: i64, notification: 
 }
 
 pub fn get_all_apn_tokens_entry_for_user(conn: Connection, user_id: i64) -> Result<Vec<ApnTokens>, rusqlite::Error> {
-    let mut stmt = conn.prepare("UPDATE users SET score = score - 25 WHERE id = ?1;")?;
-    stmt.execute(params![user_id])?;
     let mut stmt = conn.prepare("SELECT * FROM apnTokens WHERE user_id=?1;")?;
     stmt.query_map([user_id], |row| {
         Ok(ApnTokens {
