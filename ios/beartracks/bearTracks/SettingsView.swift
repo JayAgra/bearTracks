@@ -11,8 +11,8 @@ struct SettingsView: View {
     @State private var teamNumberInput: String = UserDefaults().string(forKey: "teamNumber") ?? ""
     @State private var eventCodeInput: String = UserDefaults().string(forKey: "eventCode") ?? ""
     @State private var seasonInput: String = UserDefaults().string(forKey: "season") ?? ""
-    @State private var darkMode: Bool = UserDefaults().bool(forKey: "darkMode") ?? true
-    @State private var allData: Bool = UserDefaults().bool(forKey: "useAllCompData") ?? false
+    @State private var darkMode: Bool = UserDefaults().bool(forKey: "darkMode")
+    @State private var allData: Bool = UserDefaults().bool(forKey: "useAllCompData")
     @State private var showAlert = false
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false

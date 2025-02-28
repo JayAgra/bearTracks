@@ -71,7 +71,6 @@ class AppState: ObservableObject {
                     let decoder = JSONDecoder()
                     let result = try decoder.decode(MatchData.self, from: data)
                     DispatchQueue.main.async {
-                        self.matchJson = []
                         self.matchJson = result.Schedule
                         self.matchJsonStatus = (true, false)
                     }
@@ -174,13 +173,13 @@ struct MatchData: Codable {
 
 struct Match: Codable, Identifiable {
     var id = UUID()
-    let description: String
-    let startTime: String
-    let matchNumber: Int
-    let field: String
-    let tournamentLevel: String
-    let teams: [Team]
-    
+    var description: String
+    var startTime: String
+    var matchNumber: Int
+    var field: String
+    var tournamentLevel: String
+    var teams: [Team]
+
     private enum CodingKeys: String, CodingKey {
         case description, startTime, matchNumber, field, tournamentLevel, teams
     }

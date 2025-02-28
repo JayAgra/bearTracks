@@ -535,7 +535,7 @@ pub async fn send_notification_to_user(pool: &Pool, user_id: i64, notification: 
                                 ..Default::default()
                             };
                             let payload = notification.clone().build(&token.token, options);
-                            let response = client.send(payload).await;
+                            let response: Result<a2::Response, a2::Error> = client.send(payload).await;
                             match response {
                                 Ok(response_content) => {
                                     if response_content.code == 410 {
@@ -545,6 +545,7 @@ pub async fn send_notification_to_user(pool: &Pool, user_id: i64, notification: 
                                     }
                                 }
                                 Err(e) => {
+                                    
                                     log::error!("APN send error:\n{}", e)
                                 }
                             }

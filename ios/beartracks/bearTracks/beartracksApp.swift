@@ -15,7 +15,7 @@ public enum Tab {
 @main
 struct beartracksApp: App {
     let settingsManager = SettingsManager.shared
-    var darkMode: Bool = UserDefaults().bool(forKey: "darkMode") ?? true
+    var darkMode: Bool = UserDefaults().bool(forKey: "darkMode")
     @StateObject public var appState = AppState()
     let notificationCenter = UNUserNotificationCenter.current()
     @UIApplicationDelegateAdaptor private var appDelegate: NotificationDelegate

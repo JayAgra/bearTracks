@@ -13,105 +13,103 @@ struct MatchList: View {
     @State var selectedMatch: Int? = nil
     
     var body: some View {
-            NavigationView {
-                VStack {
-                    if !appState.matchJson.isEmpty {
-                        List {
-                            ForEach(0..<appState.matchJson.count, id: \.self) { index in
-                                if !myTeamOnly || checkMatch(match: appState.matchJson[index]) {
-                                    NavigationLink(tag: index, selection: self.$selectedMatch, destination: {
-                                        MatchDetailView(match: appState.matchJson[index].matchNumber)
-                                            .navigationTitle("Match \(appState.matchJson[index].matchNumber)")
-                                            .environmentObject(appState)
-                                    }, label: {
-                                        VStack {
-                                            Text(String(appState.matchJson[index].description))
-                                                .font(.title3)
-                                            HStack {
-                                                Spacer()
-                                                TeamNumberStack(match: appState.matchJson[index], num: 0)
-                                                Spacer()
-                                                TeamNumberStack(match: appState.matchJson[index], num: 1)
-                                                Spacer()
-                                                TeamNumberStack(match: appState.matchJson[index], num: 2)
-                                                Spacer()
-                                            }
-                                        }
-                                    })
-#if os(iOS)
-                                    .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
-#elseif targetEnvironment(macCatalyst)
-                                    .listRowBackground(Color.primary.colorInvert())
-#endif
-                                }
-                            }
-                        }
-                        .toolbar {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button(action: {
-                                    self.myTeamOnly.toggle()
-                                }, label: {
-                                    if myTeamOnly {
-                                        Label("Show Mine", systemImage: "line.3.horizontal.decrease.circle.fill")
-                                            .labelStyle(.iconOnly)
-                                    } else {
-                                        Label("Show All", systemImage: "line.3.horizontal.decrease.circle")
-                                            .labelStyle(.iconOnly)
-                                    }
-                                })
-                            }
-                        }
-                    } else {
-                        if appState.matchJsonStatus.1 {
+        NavigationView {
+            if !appState.matchJson.isEmpty {
+                List {
+                    ForEach(Array(appState.matchJson.enumerated()), id: \.element.id) { index, match in
+                        NavigationLink(tag: index, selection: self.$selectedMatch, destination: {
+                            MatchDetailView(match: match.matchNumber)
+                                .navigationTitle("Match \(match.matchNumber)")
+                                .environmentObject(appState)
+                        }, label: {
                             VStack {
-                                Label("Failed", systemImage: "xmark.seal.fill")
-                                    .padding(.bottom)
-                                    .labelStyle(.iconOnly)
-                                    .foregroundStyle(Color.pink)
-                                Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
-                                    .padding()
-                            }
-                            .onAppear { appState.fetchMatchJson() }
-                        } else {
-                            if appState.matchJsonStatus.0 {
-                                VStack {
-                                    Text("The match list returned was empty. This is not an error. If matches are already available online, please **clear network cache in settings**.")
-                                        .padding()
-                                    Button(label: {
-                                        Label("Retry", systemImage: "arrow.clockwise")
-                                    }, action: {
-                                        URLCache.shared.removeAllCachedResponses()
-                                        appState.fetchMatchJson()
-                                    })
-                                }
-                                .onAppear { appState.fetchMatchJson() }
-                            } else {
-                                VStack {
-                                    Label("Loading", systemImage: "hourglass")
-                                        .padding(.bottom)
-                                        .labelStyle(.iconOnly)
-                                    Text("Loading...")
-                                        .padding(.bottom)
+                                Text(String(match.description))
+                                    .font(.title3)
+                                HStack {
+                                    Spacer()
+                                    TeamNumberStack(match: match, num: 0)
+                                    Spacer()
+                                    TeamNumberStack(match: match, num: 1)
+                                    Spacer()
+                                    TeamNumberStack(match: match, num: 2)
+                                    Spacer()
                                 }
                             }
-                        }
+                        })
+#if os(iOS)
+                        .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
+#elseif targetEnvironment(macCatalyst)
+                        .listRowBackground(Color.primary.colorInvert())
+#endif
                     }
                 }
                 .refreshable { appState.fetchMatchJson() }
                 .onAppear { appState.fetchMatchJson() }
                 .navigationTitle("Matches")
-            }
-    }
-    
-    private func checkMatch(match: Match) -> Bool {
-        let myteam = UserDefaults().string(forKey: "teamNumber") ?? "766";
-        var isOk = false;
-        match.teams.forEach { team in
-            if String(team.teamNumber) == myteam {
-                isOk = true
+            } else {
+                if appState.matchJsonStatus.1 {
+                    VStack {
+                        Label("Failed", systemImage: "xmark.seal.fill")
+                            .padding(.bottom)
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(Color.pink)
+                        Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
+                            .padding()
+                        Button(action: {
+                            URLCache.shared.removeAllCachedResponses()
+                            appState.fetchMatchJson()
+                        }, label: {
+                            Label("Retry", systemImage: "arrow.clockwise")
+                        })
+                        .padding()
+                    }
+                    .navigationTitle("Matches")
+                } else {
+                    if appState.matchJsonStatus.0 {
+                        VStack {
+                            Text("The match list returned was empty. This is not an error. If matches are already available online, please **clear network cache in settings**.")
+                                .padding()
+                            Button(action: {
+                                URLCache.shared.removeAllCachedResponses()
+                                appState.fetchMatchJson()
+                            }, label: {
+                                Label("Retry", systemImage: "arrow.clockwise")
+                            })
+                            .padding()
+                        }
+                        .navigationTitle("Matches")
+                    } else {
+                        VStack {
+                            ProgressView()
+                            Text("Loading...")
+                                .padding(.bottom)
+                        }
+                        .navigationTitle("Matches")
+                        .onAppear { appState.fetchMatchJson() }
+                    }
+                }
             }
         }
-        return isOk;
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    self.myTeamOnly.toggle()
+                }, label: {
+                    if !appState.matchJson.isEmpty {
+                        if myTeamOnly {
+                            Label("Show Mine", systemImage: "line.3.horizontal.decrease.circle.fill")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Show All", systemImage: "line.3.horizontal.decrease.circle")
+                                .labelStyle(.iconOnly)
+                        }
+                    } else {
+                        Label("Loading...", systemImage: "hourglass")
+                            .labelStyle(.iconOnly)
+                    }
+                })
+            }
+        }
     }
 }
 
