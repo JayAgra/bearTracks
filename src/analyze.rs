@@ -405,7 +405,7 @@ fn season_2025(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
             // 15 = auto not algae (coral?)
             _ => {}
         }
-        if time.score_type == 0 || time.score_type == 1 || time.score_type == 9 {
+        if time.score_type >= 4 && time.score_type <= 8 {
             intake_time += time.intake;
             travel_time += time.travel;
             outtake_time += time.outtake;

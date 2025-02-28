@@ -223,7 +223,7 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
         let execution = stmt.query_row(params![target_id.parse::<i64>().unwrap()], |row| Ok(db_main::Id { id: row.get(0)? }));
         if execution.is_ok() {
             // get the user id from the execution result
-            let id: i64 = execution.unwrap().id;
+            let id: i64 = execution.unwrap_or(db_main::Id { id: 0 }).id;
             // insert transaction to deduct user points
             if db_transact::insert_transaction(
                 transact_conn,
@@ -238,7 +238,7 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
             .is_ok()
             {
                 // deduct user points
-                if db_auth::update_points(auth_conn, id, -25).is_ok() {
+                if db_auth::update_points(auth_conn, id, -50).is_ok() {
                     Ok(format!("{},{}", target_id, id))
                 } else {
                     Ok("{\"status\":3208}".to_string())
@@ -258,7 +258,7 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
         Ok(result_string) => {
             if result_string.contains(",") {
                 let (form_id_str, user_id_str) = result_string.split_once(",").unwrap_or(("", ""));
-                let user_id: i64 = user_id_str.parse::<i64>().unwrap_or(999999999);
+                let user_id: i64 = user_id_str.parse::<i64>().unwrap_or(0);
                 let message: String = format!("Your pit form submission with ID {} was deleted by an administrator.", form_id_str);
                 let str_message: &str = message.as_str();
                 let builder = DefaultNotificationBuilder::new()

@@ -535,7 +535,7 @@ pub async fn send_notification_to_user(pool: &Pool, user_id: i64, notification: 
                                 ..Default::default()
                             };
                             let payload = notification.clone().build(&token.token, options);
-                            let response = client.send(payload).await;
+                            let response: Result<a2::Response, a2::Error> = client.send(payload).await;
                             match response {
                                 Ok(response_content) => {
                                     if response_content.code == 410 {
@@ -545,6 +545,9 @@ pub async fn send_notification_to_user(pool: &Pool, user_id: i64, notification: 
                                     }
                                 }
                                 Err(e) => {
+                                    let new_pool = pool.clone();
+                                    let new_conn = web::block(move || new_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+                                    let _deleted: Result<String, rusqlite::Error> = delete_apn_key(new_conn, token.token.clone());
                                     log::error!("APN send error:\n{}", e)
                                 }
                             }

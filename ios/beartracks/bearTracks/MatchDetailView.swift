@@ -292,7 +292,7 @@ struct MatchDetailView: View {
     
     func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
         guard
-            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults().bool(forKey: "useAllCompData") ?? false ? "ALL" : UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(String(team))")
+            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults().bool(forKey: "useAllCompData") ? "ALL" : UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(String(team))")
         else {
             return
         }

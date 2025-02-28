@@ -10,7 +10,7 @@ import UIKit
 
 class ScoutingController: ObservableObject {
     // login state
-    @Published public var loginRequired: Int = 1
+    @Published public var loginRequired: Int = 2
     // tab selection
     @Published public var currentTab: Tab = .start
     // basic meta
