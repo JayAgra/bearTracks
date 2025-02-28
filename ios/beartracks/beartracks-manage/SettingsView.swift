@@ -34,7 +34,7 @@ struct SettingsView: View {
                         }
                         
                         Button("Refresh FRC API Data") {
-                            guard let url = URL(string: "/api/v1/manage/refresh_cache") else { return }
+                            guard let url = URL(string: "https://beartracks.io/api/v1/manage/refresh_cache") else { return }
                             var request = URLRequest(url: url)
                             request.httpMethod = "GET"
                             request.httpShouldHandleCookies = true
@@ -69,7 +69,7 @@ struct SettingsView: View {
                         .pickerStyle(.menu)
                         
                         Button("Thank Scouts (dont misclick)") {
-                            guard let url = URL(string: "/api/v1/manage/notify/thank_scouts/\(season)/\(eventCode)/0") else { return }
+                            guard let url = URL(string: "https://beartracks.io/api/v1/manage/notify/thank_scouts/\(season)/\(eventCode)/0") else { return }
                             var request = URLRequest(url: url)
                             request.httpMethod = "GET"
                             request.httpShouldHandleCookies = true

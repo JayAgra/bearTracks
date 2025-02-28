@@ -607,6 +607,26 @@ async fn manage_post_access_key(req: HttpRequest, db: web::Data<Databases>, user
     }
 }
 
+async fn manage_post_team_message(db: web::Data<Databases>, user: db_auth::User, data: web::Json<apn::NotificationSendTeam>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(apn::send_general_notification_to_team_members(&db.auth, data, client.client.clone()).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
+async fn manage_post_global_message(db: web::Data<Databases>, user: db_auth::User, data: web::Json<apn::NotificationSendTeam>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(apn::send_general_notification_to_all(&db.auth, data, client.client.clone()).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
 // get transactions, used in /pointRecords
 async fn misc_get_transact_me(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
@@ -1123,6 +1143,14 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/manage/access_key/create/{key}/{team}")
                     .route(web::post().to(manage_post_access_key)),
+            )
+            .service(
+                web::resource("/api/v1/manage/notify/team_message")
+                    .route(web::post().to(manage_post_team_message))
+            )
+            .service(
+                web::resource("/api/v1/manage/notify/global_message")
+                    .route(web::post().to(manage_post_global_message))
             )
             /* user endpoints */
             /* casino endpoints */

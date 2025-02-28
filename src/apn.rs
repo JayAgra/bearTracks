@@ -1,5 +1,6 @@
 use a2::{Client, DefaultNotificationBuilder};
 use actix_web::{web, Error};
+use serde::Deserialize;
 use std::{collections::HashSet, sync::Arc};
 use tokio::sync::Mutex;
 
@@ -37,5 +38,54 @@ pub async fn thank_event_scouts(pool: &db_main::Pool, auth_pool: &db_auth::Pool,
         }
     }
     
+    Ok(true)
+}
+
+#[derive(Deserialize)]
+pub struct NotificationSendTeam {
+    pub team: i64,
+    pub title: String,
+    pub body: String,
+}
+
+pub async fn send_general_notification_to_team_members(auth_pool: &db_auth::Pool, data: web::Json<NotificationSendTeam>, client: Arc<Mutex<Client>>) -> Result<bool, Error> {
+    let team_members = db_auth::execute_get_users_mgmt(&auth_pool.clone(), db_auth::UserQueryType::Team, db_auth::User { id: 0, username: "".to_string(), current_challenge: "".to_string(), full_name: "".to_string(), team: 0, data: "".to_string(), pass_hash: "".to_string(), admin: "".to_string(), team_admin: data.team, access_ok: "".to_string(), score: 0 }).await;
+    match team_members {
+        Ok(members) => {
+            let builder = DefaultNotificationBuilder::new()
+                .set_title(&data.title)
+                .set_body(&data.body)
+                .set_sound("default")
+                .set_badge(0u32);
+            for user in members {
+                let _notification_send = db_auth::send_notification_to_user(&auth_pool, user.id, builder.clone(), client.lock().await).await;
+            }
+        }
+        Err(e) => {
+            return Err(e)
+        }
+    }
+
+    Ok(true)
+}
+
+pub async fn send_general_notification_to_all(auth_pool: &db_auth::Pool, data: web::Json<NotificationSendTeam>, client: Arc<Mutex<Client>>) -> Result<bool, Error> {
+    let all_members = db_auth::execute_scores(&auth_pool.clone(), db_auth::AuthData::GetUserScores).await;
+    match all_members {
+        Ok(members) => {
+            let builder = DefaultNotificationBuilder::new()
+                .set_title(&data.title)
+                .set_body(&data.body)
+                .set_sound("default")
+                .set_badge(0u32);
+            for user in members {
+                let _notification_send = db_auth::send_notification_to_user(&auth_pool, user.id, builder.clone(), client.lock().await).await;
+            }
+        }
+        Err(e) => {
+            return Err(e)
+        }
+    }
+
     Ok(true)
 }
