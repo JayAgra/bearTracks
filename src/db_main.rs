@@ -1,18 +1,9 @@
-use a2::{
-    Client,
-    client::ClientConfig,
-    DefaultNotificationBuilder,
-    Endpoint,
-    NotificationBuilder,
-    NotificationOptions
-};
+use a2::DefaultNotificationBuilder;
 use actix_web::{error, web, Error};
 use regex::Regex;
 use rusqlite::{params, Statement};
 use serde::{Deserialize, Serialize};
-use tokio::task;
 
-use crate::auth;
 use crate::db_auth;
 use crate::db_transact;
 

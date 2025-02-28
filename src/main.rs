@@ -22,11 +22,12 @@ use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, f32::consts::E, fs, io, pin::Pin, sync::{Arc, RwLock}};
-use tokio::sync::{mpsc, Mutex};
+use std::{collections::HashMap, env, fs, io, pin::Pin, sync::{Arc, RwLock}};
+use tokio::sync::Mutex;
 use webauthn_rs::prelude::*;
 
 mod analyze;
+mod apn;
 mod auth;
 mod casino;
 mod db_auth;
@@ -434,6 +435,16 @@ async fn manage_refresh_cache(user: db_auth::User) -> Result<HttpResponse, AWErr
     }
 }
 
+async fn manage_thank_event_scouts(db: web::Data<Databases>, path: web::Path<String>, user: db_auth::User, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(apn::thank_event_scouts(&db.main, &db.auth, path, client.client.clone()).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
 // DELETE endpoint to remove a submission. used in /manage
 async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
@@ -445,11 +456,11 @@ async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User,
     }
 }
 
-async fn manage_delete_pit_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
+async fn manage_delete_pit_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .body(db_pit::delete_by_id(&db.pit, &db.transact, &db.auth, path).await?))
+            .body(db_pit::delete_by_id(&db.pit, &db.transact, &db.auth, path, client.client.lock().await).await?))
     } else {
         Ok(unauthorized_response())
     }
@@ -1065,6 +1076,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/manage/refresh_cache")
                     .route(web::get().to(manage_refresh_cache))
+            )
+            .service(
+                web::resource("/api/v1/manage/notify/thank_scouts/{args}*")
+                    .route(web::get().to(manage_thank_event_scouts))
             )
             // DELETE
             .service(

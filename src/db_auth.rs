@@ -1,12 +1,8 @@
 use a2::{
-    Client,
-    client::ClientConfig,
-    DefaultNotificationBuilder,
-    Endpoint,
     NotificationBuilder,
     NotificationOptions
 };
-use actix_web::{error, web::{self, to}, Error};
+use actix_web::{error, web, Error};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2,

@@ -1,3 +1,4 @@
+use a2::DefaultNotificationBuilder;
 use actix_web::{error, web, Error};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use hex;
@@ -202,18 +203,18 @@ pub async fn get_pit_data(pool: &Pool, season: String, event: String, team: Stri
 }
 
 // function to delete data for users with admin access
-pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, path: web::Path<String>) -> Result<String, actix_web::Error> {
+pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, path: web::Path<String>, client: tokio::sync::MutexGuard<'_, a2::Client>) -> Result<String, actix_web::Error> {
     // clone pools for all three databases
     let pool = pool.clone();
     let transact_pool = transact_pool.clone();
-    let auth_pool = auth_pool.clone();
+    let auth_pool_first = auth_pool.clone();
 
     // get connections to all databases
     let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
     let transact_conn = web::block(move || transact_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
-    let auth_conn = web::block(move || auth_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+    let auth_conn = web::block(move || auth_pool_first.get()).await?.map_err(error::ErrorInternalServerError)?;
 
-    web::block(move || {
+    let result = web::block(move || {
         // get the target id from request path
         let target_id = path.into_inner();
         // prepare statement
@@ -238,13 +239,12 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
             {
                 // deduct user points
                 if db_auth::update_points(auth_conn, id, -25).is_ok() {
-                    // again, it doesn't really matter if points failed. send success anyways
-                    Ok("{\"status\":3203}".to_string())
+                    Ok(format!("{},{}", target_id, id))
                 } else {
-                    Ok("{\"status\":3203}".to_string())
+                    Ok("{\"status\":3208}".to_string())
                 }
             } else {
-                Ok("{\"status\":3203}".to_string())
+                Ok("{\"status\":3208}".to_string())
             }
         } else {
             // query failed, send error
@@ -252,5 +252,30 @@ pub async fn delete_by_id(pool: &Pool, transact_pool: &Pool, auth_pool: &Pool, p
         }
     })
     .await?
-    .map_err(error::ErrorInternalServerError::<rusqlite::Error>)
+    .map_err(error::ErrorInternalServerError::<rusqlite::Error>);
+
+    match result {
+        Ok(result_string) => {
+            if result_string.contains(",") {
+                let (form_id_str, user_id_str) = result_string.split_once(",").unwrap_or(("", ""));
+                let user_id: i64 = user_id_str.parse::<i64>().unwrap_or(999999999);
+                let message: String = format!("Your pit form submission with ID {} was deleted by an administrator.", form_id_str);
+                let str_message: &str = message.as_str();
+                let builder = DefaultNotificationBuilder::new()
+                    .set_title("Data Rejection Notice")
+                    .set_body(str_message)
+                    .set_sound("default")
+                    .set_badge(0u32);
+                let _notification_send = db_auth::send_notification_to_user(&auth_pool, user_id, builder, client).await;
+            } else {
+                return Ok(result_string);
+            }
+        }
+        Err(e) => {
+            log::error!("Pit data deletion error:\n{}", e);
+            return Ok("{\"status\":8002}".to_string())
+        }
+    }
+
+    Ok("{\"status\":8002}".to_string())
 }
