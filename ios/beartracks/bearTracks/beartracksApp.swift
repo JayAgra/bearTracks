@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 public enum Tab {
   case teams, matches, data, settings
@@ -14,8 +15,10 @@ public enum Tab {
 @main
 struct beartracksApp: App {
     let settingsManager = SettingsManager.shared
-    var darkMode: Bool = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.bool(forKey: "darkMode") ?? true
+    var darkMode: Bool = UserDefaults().bool(forKey: "darkMode") ?? true
     @StateObject public var appState = AppState()
+    let notificationCenter = UNUserNotificationCenter.current()
+    @UIApplicationDelegateAdaptor private var appDelegate: NotificationDelegate
     
     var body: some Scene {
         WindowGroup {
@@ -54,6 +57,14 @@ struct beartracksApp: App {
                 .preferredColorScheme(darkMode ? .dark : .light)
                 .onAppear {
                     appState.checkLoginState()
+                    Task {
+                        do {
+                            try await notificationCenter.requestAuthorization(options: [.alert, .badge, .sound])
+                        } catch {
+                            print("failed to request notification auth")
+                        }
+                    }
+                    appDelegate.app = self
                 }
                 .environmentObject(appState)
 #else
@@ -86,6 +97,16 @@ struct beartracksApp: App {
                 .preferredColorScheme(darkMode ? .dark : .light)
                 .onAppear {
                     appState.checkLoginState()
+#if os(iOS)
+                    Task {
+                        do {
+                            try await notificationCenter.requestAuthorization(options: [.alert, .badge, .sound])
+                        } catch {
+                            print("failed to request notification auth")
+                        }
+                    }
+                    appDelegate.app = self
+#endif
                 }
                 .environmentObject(appState)
 #endif

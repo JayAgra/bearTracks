@@ -16,98 +16,93 @@ struct MatchList: View {
     
     var body: some View {
             NavigationView {
-                if !appState.matchJson.isEmpty {
-                    List {
-                        ForEach(0..<appState.matchJson.count, id: \.self) { index in
-                            if !myTeamOnly || checkMatch(match: appState.matchJson[index]) {
-                                NavigationLink(tag: index, selection: self.$selectedMatch, destination: {
-                                    MatchDetailView(match: appState.matchJson[index].matchNumber)
-                                        .navigationTitle("Match \(appState.matchJson[index].matchNumber)")
-                                        .environmentObject(appState)
-                                }, label: {
-                                    VStack {
-                                        Text(String(appState.matchJson[index].description))
-                                            .font(.title3)
-                                        HStack {
-                                            Spacer()
-                                            TeamNumberStack(match: appState.matchJson[index], num: 0)
-                                            Spacer()
-                                            TeamNumberStack(match: appState.matchJson[index], num: 1)
-                                            Spacer()
-                                            TeamNumberStack(match: appState.matchJson[index], num: 2)
-                                            Spacer()
+                VStack {
+                    if !appState.matchJson.isEmpty {
+                        List {
+                            ForEach(0..<appState.matchJson.count, id: \.self) { index in
+                                if !myTeamOnly || checkMatch(match: appState.matchJson[index]) {
+                                    NavigationLink(tag: index, selection: self.$selectedMatch, destination: {
+                                        MatchDetailView(match: appState.matchJson[index].matchNumber)
+                                            .navigationTitle("Match \(appState.matchJson[index].matchNumber)")
+                                            .environmentObject(appState)
+                                    }, label: {
+                                        VStack {
+                                            Text(String(appState.matchJson[index].description))
+                                                .font(.title3)
+                                            HStack {
+                                                Spacer()
+                                                TeamNumberStack(match: appState.matchJson[index], num: 0)
+                                                Spacer()
+                                                TeamNumberStack(match: appState.matchJson[index], num: 1)
+                                                Spacer()
+                                                TeamNumberStack(match: appState.matchJson[index], num: 2)
+                                                Spacer()
+                                            }
                                         }
-                                    }
-                                })
+                                    })
 #if os(iOS)
-                                .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
+                                    .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
 #elseif targetEnvironment(macCatalyst)
-                                .listRowBackground(Color.primary.colorInvert())
+                                    .listRowBackground(Color.primary.colorInvert())
 #endif
+                                }
                             }
                         }
-                    }
-                    .navigationTitle("Matches")
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button(action: {
-                                self.myTeamOnly.toggle()
-                            }, label: {
-                                if myTeamOnly {
-                                    Label("Show Mine", systemImage: "line.3.horizontal.decrease.circle.fill")
-                                        .labelStyle(.iconOnly)
-                                } else {
-                                    Label("Show All", systemImage: "line.3.horizontal.decrease.circle")
-                                        .labelStyle(.iconOnly)
-                                }
-                            })
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button(action: {
+                                    self.myTeamOnly.toggle()
+                                }, label: {
+                                    if myTeamOnly {
+                                        Label("Show Mine", systemImage: "line.3.horizontal.decrease.circle.fill")
+                                            .labelStyle(.iconOnly)
+                                    } else {
+                                        Label("Show All", systemImage: "line.3.horizontal.decrease.circle")
+                                            .labelStyle(.iconOnly)
+                                    }
+                                })
+                            }
                         }
-                    }
-                } else {
-                    if appState.matchJsonStatus.1 {
-                        VStack {
-                            Label("Failed", systemImage: "xmark.seal.fill")
-                                .padding(.bottom)
-                                .labelStyle(.iconOnly)
-                                .foregroundStyle(Color.pink)
-                            Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
-                                .padding(.bottom)
-                        }
-                        .navigationTitle("Matches")
                     } else {
-                        if appState.matchJsonStatus.0 {
+                        if appState.matchJsonStatus.1 {
                             VStack {
-                                Label("none", systemImage: "questionmark.app.dashed")
+                                Label("Failed", systemImage: "xmark.seal.fill")
                                     .padding(.bottom)
                                     .labelStyle(.iconOnly)
                                     .foregroundStyle(Color.pink)
-                                Text("The match list returned was empty. This is not an error. If matches are already available online, the server will cache them upon restarting nightly.")
-                                    .padding(.bottom)
+                                Text("The match list for the selected competition was not loaded properly, most likely due to a client failure. Please try again. If the problem persists, contact the developers or your team lead.")
+                                    .padding()
                             }
-                            .navigationTitle("Matches")
                         } else {
-                            VStack {
-                                Label("Loading", systemImage: "hourglass")
-                                    .padding(.bottom)
-                                    .labelStyle(.iconOnly)
-                                Text("Loading...")
-                                    .padding(.bottom)
+                            if appState.matchJsonStatus.0 {
+                                VStack {
+                                    Label("none", systemImage: "questionmark.app.dashed")
+                                        .padding(.bottom)
+                                        .labelStyle(.iconOnly)
+                                        .foregroundStyle(Color.pink)
+                                    Text("The match list returned was empty. This is not an error. If matches are already available online, please **clear network cache in settings**.")
+                                        .padding()
+                                }
+                            } else {
+                                VStack {
+                                    Label("Loading", systemImage: "hourglass")
+                                        .padding(.bottom)
+                                        .labelStyle(.iconOnly)
+                                    Text("Loading...")
+                                        .padding(.bottom)
+                                }
                             }
-                            .navigationTitle("Matches")
                         }
                     }
                 }
-            }
-            .refreshable {
-                appState.fetchMatchJson()
-            }
-            .onAppear {
-                appState.fetchMatchJson()
+                .refreshable { appState.fetchMatchJson() }
+                .onAppear { appState.fetchMatchJson() }
+                .navigationTitle("Matches")
             }
     }
     
     private func checkMatch(match: Match) -> Bool {
-        let myteam = UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "teamNumber") ?? "766";
+        let myteam = UserDefaults().string(forKey: "teamNumber") ?? "766";
         var isOk = false;
         match.teams.forEach { team in
             if String(team.teamNumber) == myteam {

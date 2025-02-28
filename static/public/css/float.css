@@ -1,3 +1,13 @@
+.VStack {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.HStack {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
 body {
     --fieldsetColor: rgba(0,0,0,0);
     --defaultInputColor: #fff;
@@ -50,8 +60,8 @@ body.gruvbox {
     --checkAccent: #fe8019;
 }
 @font-face {
-    font-family: 'raleway-300';
-    src: url('fonts/Raleway-300.ttf') format('truetype');
+    font-family: 'figtree';
+    src: url('fonts/Figtree.ttf') format('truetype');
     font-display: swap;
 }
 @font-face {
@@ -61,7 +71,8 @@ body.gruvbox {
 }
 body,
 html {
-    font-family: 'raleway-300', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 300;
 }
 body {
     background-color: var(--bodyColor);
@@ -161,7 +172,7 @@ code {
     font-family:'SF Mono', SFMono-Regular, ui-monospace, Menlo, courier new, monospace;
 }
 label {
-    font-weight: 700;
+    font-weight: 500;
 }
 .uiButton {
     border-radius: 0.5rem;

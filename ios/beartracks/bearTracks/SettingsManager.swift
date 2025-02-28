@@ -18,6 +18,6 @@ class SettingsManager {
             "darkMode": true,
             "useAllCompData": false,
         ]
-        UserDefaults(suiteName: "group.com.jayagra.beartracks")?.register(defaults: defaults)
+        UserDefaults().register(defaults: defaults)
     }
 }

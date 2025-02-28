@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>bearTracks - Data</title>
+        <meta name="robots" content="nositelinkssearchbox, nofollow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#282828" id="themeMeta">
+        <meta name="full-screen" content="yes">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=504">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=504">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=504">
+        <link rel="manifest" href="/site.webmanifest?v=504">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg?v=504" color="#009698">
+        <link rel="shortcut icon" href="/favicon.ico?v=504">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-title" content="bearTracks">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="application-name" content="bearTracks">
+        <link rel="stylesheet" href="static/css/float.min.css" type="text/css">
+        <link rel="stylesheet" href="static/css/table.min.css" type="text/css">
+        <link rel="stylesheet" href="static/css/supplement.min.css" type="text/css">
+        <script src="static/js/form/form.min.js"></script>
+    </head>
+    <body class="gruvbox">
+        <script>themeHandle()</script>
+        <div class="container">
+            <div class="offlineAlert" id="offlineAlert" style="display: none"><span class="closeAlert" onclick="this.parentElement.classList.add('fadeout');">&times;</span> You are offline</div>
+            <div>
+                <h1 class="w3">bearTracks<br><span class="gametitle">REEFSCAPE</span></h1>
+                <button type="button" class="uiButton actionButton" disabled>Teams</button>
+                <button type="button" class="uiButton actionButton">Matches</button>
+                <div class="VStack form_pages" style="align-items: center; justify-content: center; display: flex;">
+                    <h2>Loading...</h2>
+                </div>
+                <div class="VStack form_pages" style="align-items: center; justify-content: center; display: none;">
+                    <br><table><tr id="preInsert"><th>Team</th><th>Weight</th></tr></table><br>
+                    <button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Back</button><br><br>
+                </div>
+                <div class="VStack form_pages" style="align-items: center; justify-content: center; display: none;">
+                    <br><div id="preInsertMatch"></div>
+                    <button type="button" class="uiButton returnButton" onclick="window.location.href='/'">Back</button><br><br>
+                </div>
+            </div>
+        </div>
+        <script type="module" src="static/js/data/data.min.js"></script>
+    </body>
+</html>

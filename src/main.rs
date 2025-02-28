@@ -1,3 +1,8 @@
+use a2::{
+    Client,
+    client::ClientConfig,
+    Endpoint,
+};
 use actix_files::NamedFile;
 use actix_governor::{Governor, GovernorConfigBuilder};
 use actix_http::StatusCode;
@@ -15,12 +20,14 @@ use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
-use reqwest::Client;
+use reqwest;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock};
+use std::{collections::HashMap, env, fs, io, pin::Pin, sync::{Arc, RwLock}};
+use tokio::sync::Mutex;
 use webauthn_rs::prelude::*;
 
 mod analyze;
+mod apn;
 mod auth;
 mod casino;
 mod db_auth;
@@ -39,6 +46,10 @@ mod stats;
 #[derive(Serialize, Deserialize, Default, Clone)]
 struct Sessions {
     user_map: HashMap<String, db_auth::User>,
+}
+
+struct ApnClient {
+    client: Arc<Mutex<Client>>
 }
 
 // gets a user object from requests. needed for db_auth::User param in handlers
@@ -113,6 +124,13 @@ async fn auth_post_login(
 // delete account endpoint required for apple platforms
 async fn auth_post_delete(db: web::Data<Databases>, data: web::Json<auth::LoginForm>, session: web::Data<RwLock<crate::Sessions>>, identity: Identity) -> Result<HttpResponse, AWError> {
     Ok(auth::delete_account(&db.auth, data, session, identity).await?)
+}
+
+async fn auth_post_insert_token(db: web::Data<Databases>, data: web::Json<db_auth::ApnTokenInsertRequest>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    Ok(HttpResponse::Ok()
+        .insert_header(("Cache-Control", "no-cache"))
+        .json(db_auth::insert_apn_token(&db.auth, data.clone(), user).await?)
+    )
 }
 
 // destroy session endpoint
@@ -386,6 +404,16 @@ async fn manage_get_all_keys(db: web::Data<Databases>, user: db_auth::User) -> R
     }
 }
 
+async fn manage_get_all_apn_tokens(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(db_auth::get_all_apn_tokens(&db.auth).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
 // data dump
 async fn manage_data_dump(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
@@ -397,22 +425,42 @@ async fn manage_data_dump(db: web::Data<Databases>, user: db_auth::User, path: w
     }
 }
 
-// DELETE endpoint to remove a submission. used in /manage
-async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
+async fn manage_refresh_cache(user: db_auth::User) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .body(db_main::delete_by_id(&db.main, &db.transact, &db.auth, path).await?))
+            .json(cache_first_data().await?))
     } else {
         Ok(unauthorized_response())
     }
 }
 
-async fn manage_delete_pit_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
+async fn manage_thank_event_scouts(db: web::Data<Databases>, path: web::Path<String>, user: db_auth::User, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .body(db_pit::delete_by_id(&db.pit, &db.transact, &db.auth, path).await?))
+            .json(apn::thank_event_scouts(&db.main, &db.auth, path, client.client.clone()).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
+// DELETE endpoint to remove a submission. used in /manage
+async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body(db_main::delete_by_id(&db.main, &db.transact, &db.auth, path, client.client.lock().await).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
+async fn manage_delete_pit_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .body(db_pit::delete_by_id(&db.pit, &db.transact, &db.auth, path, client.client.lock().await).await?))
     } else {
         Ok(unauthorized_response())
     }
@@ -559,6 +607,26 @@ async fn manage_post_access_key(req: HttpRequest, db: web::Data<Databases>, user
     }
 }
 
+async fn manage_post_team_message(db: web::Data<Databases>, user: db_auth::User, data: web::Json<apn::NotificationSendTeam>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(apn::send_general_notification_to_team_members(&db.auth, data, client.client.clone()).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
+async fn manage_post_global_message(db: web::Data<Databases>, user: db_auth::User, data: web::Json<apn::NotificationSendTeam>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(apn::send_general_notification_to_all(&db.auth, data, client.client.clone()).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
 // get transactions, used in /pointRecords
 async fn misc_get_transact_me(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
@@ -653,21 +721,7 @@ async fn return_discontinued_gone(_req: HttpRequest) -> Result<HttpResponse, AWE
     Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
 }
 
-include!(concat!(env!("OUT_DIR"), "/generated.rs"));
-
-#[actix_web::main]
-async fn main() -> io::Result<()> {
-    // load environment variables from .env file
-    dotenv().ok();
-
-    // don't log all that shit when in release mode
-    if cfg!(debug_assertions) {
-        env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-    } else {
-        env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
-        println!("[OK] starting in release mode");
-    }
-
+async fn cache_first_data() -> Result<bool, std::io::Error> {
     // cache all possible files
     let seasons = env::var("SEASONS")
         .unwrap_or_else(|_| "0".to_string())
@@ -683,55 +737,78 @@ async fn main() -> io::Result<()> {
     for i in 0..seasons.len() {
         fs::create_dir_all(format!("cache/images/{}", seasons[i]))?;
         for j in 0..events.len() {
-            // cache team list
-            let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
-            let team_client = Client::new();
-            let team_response = team_client
-                .request(actix_http::Method::GET, team_target_url)
-                .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
-                .send()
-                .await;
+            // prevent my test schedules from being thrown away
+            if events[j] != "TEST" {
+                // cache team list
+                let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
+                let team_client = reqwest::Client::new();
+                let team_response = team_client
+                    .request(actix_http::Method::GET, team_target_url)
+                    .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
+                    .send()
+                    .await;
 
-            match team_response {
-                Ok(response) => {
-                    if response.status() == 200 {
-                        fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
-                        fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), response.text().await.unwrap())
-                            .expect(format!("Failed to cache {}/{} team JSON. Could not write file.", seasons[i], events[j]).as_str());
-                    } else {
-                        log::error!("Failed to cache {}/{} team JSON. Response status {}.", seasons[i], events[j], response.status());
+                match team_response {
+                    Ok(response) => {
+                        if response.status() == 200 {
+                            fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
+                            fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), response.text().await.unwrap())
+                                .expect(format!("Failed to cache {}/{} team JSON. Could not write file.", seasons[i], events[j]).as_str());
+                        } else {
+                            log::error!("Failed to cache {}/{} team JSON. Response status {}.", seasons[i], events[j], response.status());
+                        }
+                    }
+                    Err(_) => {
+                        log::error!("Failed to cache {}/{} team JSON. Response was not OK.", seasons[i], events[j]);
                     }
                 }
-                Err(_) => {
-                    log::error!("Failed to cache {}/{} team JSON. Response was not OK.", seasons[i], events[j]);
-                }
-            }
 
-            let match_target_url =
-                format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
-            let match_client = Client::new();
-            let match_response = match_client
-                .request(actix_http::Method::GET, match_target_url)
-                .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
-                .send()
-                .await;
+                let match_target_url =
+                    format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
+                let match_client = reqwest::Client::new();
+                let match_response = match_client
+                    .request(actix_http::Method::GET, match_target_url)
+                    .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
+                    .send()
+                    .await;
 
-            match match_response {
-                Ok(response) => {
-                    if response.status() == 200 {
-                        fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
-                        fs::write(format!("cache/frc_api/{}/{}/matches.json", seasons[i], events[j]), response.text().await.unwrap())
-                            .expect(format!("Failed to cache {}/{} match JSON. Could not write file.", seasons[i], events[j]).as_str());
-                    } else {
-                        log::error!("Failed to cache {}/{} match JSON. Response status {}.", seasons[i], events[j], response.status());
+                match match_response {
+                    Ok(response) => {
+                        if response.status() == 200 {
+                            fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
+                            fs::write(format!("cache/frc_api/{}/{}/matches.json", seasons[i], events[j]), response.text().await.unwrap())
+                                .expect(format!("Failed to cache {}/{} match JSON. Could not write file.", seasons[i], events[j]).as_str());
+                        } else {
+                            log::error!("Failed to cache {}/{} match JSON. Response status {}.", seasons[i], events[j], response.status());
+                        }
                     }
-                }
-                Err(_) => {
-                    log::error!("Failed to cache {}/{} match JSON. Response was not OK.", seasons[i], events[j]);
+                    Err(_) => {
+                        log::error!("Failed to cache {}/{} match JSON. Response was not OK.", seasons[i], events[j]);
+                    }
                 }
             }
         }
     }
+
+    Ok(true)
+}
+
+include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+
+#[actix_web::main]
+async fn main() -> io::Result<()> {
+    // load environment variables from .env file
+    dotenv().ok();
+
+    // don't log all that shit when in release mode
+    if cfg!(debug_assertions) {
+        env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    } else {
+        env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
+        println!("[OK] starting in release mode");
+    }
+
+    let _cache_ok = cache_first_data().await;
 
     // hashmap w: web::Data<RwLock<Sessions>>ith user sessions in it
     let sessions: web::Data<RwLock<Sessions>> = web::Data::new(RwLock::new(Sessions { user_map: HashMap::new() }));
@@ -791,9 +868,15 @@ async fn main() -> io::Result<()> {
     // let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url).unwrap().bytes().unwrap();
     // let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
     // builder.add_extra_chain_cert(intermediate_cert).unwrap();
-
+    
     // config done. now, create the new HttpServer
     log::info!("[OK] starting bearTracks on port 443 and 80");
+
+    let environment = if env::var("APN_ENDPOINT").unwrap_or_else(|_| "SANDBOX".to_string()) == "SANDBOX".to_string() {
+        Endpoint::Sandbox
+    } else {
+        Endpoint::Production
+    };
 
     HttpServer::new(move || {
         // generated resources from actix_web_files
@@ -806,11 +889,14 @@ async fn main() -> io::Result<()> {
                 transact: trans_db_pool.clone(),
                 pit: pit_db_pool.clone()
             }))
+            // apn client
+            .app_data(web::Data::new(ApnClient {
+                client: Arc::new(Mutex::new(Client::token(&mut fs::File::open("./ssl/APN.p8").unwrap(), env::var("APN_KEY_ID").unwrap_or_else(|_| "".to_string()), env::var("APN_TEAM_ID").unwrap_or_else(|_| "".to_string()), ClientConfig::new(environment.clone())).unwrap()))
+            }))
             // add sessions to app data
             .app_data(sessions.clone())
             // add webauthn to app data
             .app_data(passkey::setup_passkeys())
-            // apn client
             // use governor ratelimiting as middleware
             .wrap(Governor::new(&governor_conf))
             // use cookie id system middleware
@@ -834,11 +920,11 @@ async fn main() -> io::Result<()> {
                     )
                     .build(),
             )
-            // default headers for caching. overridden on most all api endpoints
+            // default headers for caching. overridden on most all api endpoints (7 days cache)
             .wrap(
                 DefaultHeaders::new()
-                    .add(("Cache-Control", "public, max-age=23328000"))
-                    .add(("X-bearTracks", "6.0.0")),
+                    .add(("Cache-Control", "public, max-age=604800"))
+                    .add(("X-bearTracks", "6.0.2")),
             )
             /* src  endpoints */
             // GET individual files
@@ -855,6 +941,10 @@ async fn main() -> io::Result<()> {
             .route("/settings", web::get().to(static_files::static_settings))
             .route("/site.webmanifest", web::get().to(static_files::static_webmanifest))
             .route("/spin", web::get().to(static_files::static_spin))
+            .route("/data", web::get().to(static_files::static_data))
+            .route("/data/team", web::get().to(static_files::static_team))
+            .route("/data/detail", web::get().to(static_files::static_detail))
+            .route("/data/pit", web::get().to(static_files::static_pit))
             .route("/android-chrome-192x192.png", web::get().to(static_files::static_android_chrome_192))
             .route("/android-chrome-512x512.png", web::get().to(static_files::static_android_chrome_512))
             .route("/apple-touch-icon.png", web::get().to(static_files::static_apple_touch_icon))
@@ -881,6 +971,10 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/auth/delete")
                     .route(web::post().to(auth_post_delete)),
+            )
+            .service(
+                web::resource("/api/v1/auth/apn/insert_token")
+                    .route(web::post().to(auth_post_insert_token))
             )
             .service(
                 web::resource("/api/v1/auth/passkey/register_start")
@@ -992,8 +1086,20 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(manage_get_all_keys)),
             )
             .service(
+                web::resource("/api/v1/manage/all_apn_tokens")
+                    .route(web::get().to(manage_get_all_apn_tokens))
+            )
+            .service(
                 web::resource("/api/v1/manage/data_dump/{args}*")
                     .route(web::get().to(manage_data_dump)),
+            )
+            .service(
+                web::resource("/api/v1/manage/refresh_cache")
+                    .route(web::get().to(manage_refresh_cache))
+            )
+            .service(
+                web::resource("/api/v1/manage/notify/thank_scouts/{args}*")
+                    .route(web::get().to(manage_thank_event_scouts))
             )
             // DELETE
             .service(
@@ -1037,6 +1143,14 @@ async fn main() -> io::Result<()> {
             .service(
                 web::resource("/api/v1/manage/access_key/create/{key}/{team}")
                     .route(web::post().to(manage_post_access_key)),
+            )
+            .service(
+                web::resource("/api/v1/manage/notify/team_message")
+                    .route(web::post().to(manage_post_team_message))
+            )
+            .service(
+                web::resource("/api/v1/manage/notify/global_message")
+                    .route(web::post().to(manage_post_global_message))
             )
             /* user endpoints */
             /* casino endpoints */

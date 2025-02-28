@@ -20,7 +20,7 @@ class PitDataController: ObservableObject {
     
     func fetchPitData() {
         pitDataState = 0
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/pit/2025/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST")/\(String(teamNumber))") else { return }
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/pit/2025/\(UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(String(teamNumber))") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

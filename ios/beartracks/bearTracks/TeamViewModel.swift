@@ -28,7 +28,7 @@ class TeamViewModel: ObservableObject {
         guard
             let url = URL(
                 string:
-                    "https://beartracks.io/api/v1/data/brief/team/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2025")/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode") ?? "TEST")/\(targetTeam)"
+                    "https://beartracks.io/api/v1/data/brief/team/\(UserDefaults().string(forKey: "season") ?? "2025")/\(UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(targetTeam)"
             )
         else {
             return
@@ -74,7 +74,7 @@ class TeamViewModel: ObservableObject {
         guard
             let url = URL(
                 string:
-                    "https://api.statbotics.io/v2/team_event/\(targetTeam)/\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "season") ?? "2025")\(UserDefaults(suiteName: "group.com.jayagra.beartracks")?.string(forKey: "eventCode")?.lowercased() ?? "TEST")"
+                    "https://api.statbotics.io/v2/team_event/\(targetTeam)/\(UserDefaults().string(forKey: "season") ?? "2025")\(UserDefaults().string(forKey: "eventCode")?.lowercased() ?? "TEST")"
             )
         else {
             return

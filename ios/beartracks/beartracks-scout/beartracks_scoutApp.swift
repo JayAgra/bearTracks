@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 public enum Tab {
     case start, game, end, review, settings
@@ -16,6 +17,8 @@ struct beartracks_scoutApp: App {
     let settingsManager = SettingsManager.shared
     var darkMode: Bool = UserDefaults.standard.bool(forKey: "darkMode")
     @StateObject var scoutFormController: ScoutingController = ScoutingController()
+    let notificationCenter = UNUserNotificationCenter.current()
+    @UIApplicationDelegateAdaptor private var appDelegate: NotificationDelegate
     
     var body: some Scene {
         WindowGroup {
@@ -48,12 +51,21 @@ struct beartracks_scoutApp: App {
                     scoutFormController.getMatches { result in
                         scoutFormController.matchList = result
                     }
+                    Task {
+                        do {
+                            try await notificationCenter.requestAuthorization(options: [.alert, .badge, .sound])
+                        } catch {
+                            print("failed to request notification auth")
+                        }
+                    }
+                    appDelegate.app = self
                 }
                 .environmentObject(scoutFormController)
             } else if scoutFormController.loginRequired == 2 {
                 LoginView()
                     .preferredColorScheme(darkMode ? .dark : .light)
                     .environmentObject(scoutFormController)
+                    .onAppear { scoutFormController.checkLoginState() }
             } else {
                 VStack {
                     ProgressView()

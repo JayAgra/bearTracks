@@ -342,7 +342,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.1.0;
+				MARKETING_VERSION = 6.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage.SystemStatus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -370,7 +370,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.1.0;
+				MARKETING_VERSION = 6.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.jayagra.beartracks-manage.SystemStatus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

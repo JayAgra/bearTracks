@@ -20,6 +20,10 @@ const SCOUTS_HTML: &str = include_str!("../static/scouts.html");
 const SETTINGS_HTML: &str = include_str!("../static/settings.html");
 const SITE_WEBMANIFEST: &str = include_str!("../static/site.webmanifest");
 const SPIN_HTML: &str = include_str!("../static/spin.html");
+const DATA_HTML: &str = include_str!("../static/data.html");
+const TEAM_HTML: &str = include_str!("../static/team.html");
+const DETAIL_HTML: &str = include_str!("../static/detail.html");
+const PIT_HTML: &str = include_str!("../static/pit.html");
 // favicon isn't utf8 so it needs include bytes instead
 const ANDROID_CHROME_192: &[u8] = include_bytes!("../static/android-chrome-192x192.png");
 const ANDROID_CHROME_512: &[u8] = include_bytes!("../static/android-chrome-512x512.png");
@@ -34,7 +38,7 @@ pub async fn static_index(req: HttpRequest) -> HttpResponse {
         443 => {
             HttpResponse::Ok()
                 .content_type(ContentType::html())
-                .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(23328000u32)]))
+                .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(604800u32)]))
                 .body(INDEX_HTML)
         }
         _ => {
@@ -94,45 +98,61 @@ pub async fn static_spin() -> HttpResponse {
     HttpResponse::Ok().content_type(ContentType::html()).body(SPIN_HTML)
 }
 
+pub async fn static_data() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(DATA_HTML)
+}
+
+pub async fn static_team() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(TEAM_HTML)
+}
+
+pub async fn static_detail() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(DETAIL_HTML)
+}
+
+pub async fn static_pit() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(PIT_HTML)
+}
+
 // serve static favicons
 pub async fn static_android_chrome_192() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/png"))
-        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(604800u32)]))
         .body(ANDROID_CHROME_192)
 }
 
 pub async fn static_android_chrome_512() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/png"))
-        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(604800u32)]))
         .body(ANDROID_CHROME_512)
 }
 
 pub async fn static_apple_touch_icon() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/png"))
-        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(604800u32)]))
         .body(APPLE_TOUCH_ICON)
 }
 
 pub async fn static_favicon_16() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/png"))
-        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(604800u32)]))
         .body(FAVICON_16)
 }
 
 pub async fn static_favicon_32() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/png"))
-        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(604800u32)]))
         .body(FAVICON_32)
 }
 
 pub async fn static_favicon() -> HttpResponse {
     HttpResponse::Ok()
         .append_header(("Content-Type", "image/x-icon"))
-        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(4838400u32)]))
+        .insert_header(CacheControl(vec![CacheDirective::Public, CacheDirective::MaxAge(604800u32)]))
         .body(FAVICON_ICO)
 }

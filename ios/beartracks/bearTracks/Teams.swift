@@ -11,7 +11,6 @@ import SwiftUI
 struct Teams: View {
     @EnvironmentObject var appState: AppState
     @State private var performanceValue: Int = 0
-    @State var firstPaint = true
     @State var selectedTeam: Int? = nil
     
     var body: some View {
@@ -127,6 +126,16 @@ struct Teams: View {
                         .navigationTitle("Teams")
                     } else {
                         if appState.teamsLoadStatus.2 {
+                            VStack {
+                                Label("None", systemImage: "questionmark.app.dashed")
+                                    .padding(.bottom)
+                                    .labelStyle(.iconOnly)
+                                    .foregroundStyle(Color.pink)
+                                Text("No data for this event")
+                                    .padding(.bottom)
+                            }
+                            .navigationTitle("Teams")
+#if os(watchOS)
                             Form {
                                 Label("None", systemImage: "questionmark.app.dashed")
                                     .padding(.bottom)
@@ -134,7 +143,6 @@ struct Teams: View {
                                     .foregroundStyle(Color.pink)
                                 Text("No data")
                                     .padding(.bottom)
-#if os(watchOS)
                                 Section {
                                     VStack {
                                         NavigationLink(destination: SettingsView()) {
@@ -149,9 +157,9 @@ struct Teams: View {
                                     }
                                     .padding([.leading, .trailing])
                                 }
-#endif
                             }
                             .navigationTitle("Teams")
+#endif
                         } else {
                             VStack {
                                 Label("Loading", systemImage: "hourglass")
@@ -170,10 +178,7 @@ struct Teams: View {
             appState.fetchTeamsJson()
         }
         .onAppear {
-            if firstPaint {
-                appState.fetchTeamsJson()
-                firstPaint = false
-            }
+            appState.fetchTeamsJson()
         }
     }
 }
