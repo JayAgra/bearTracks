@@ -1,9 +1,7 @@
 use a2::{
+    Client,
     client::ClientConfig,
-    DefaultNotificationBuilder,
     Endpoint,
-    NotificationBuilder,
-    NotificationOptions
 };
 use actix_files::NamedFile;
 use actix_governor::{Governor, GovernorConfigBuilder};
@@ -22,9 +20,10 @@ use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
-use reqwest::Client;
+use reqwest;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, fs, io, pin::Pin, sync::RwLock};
+use std::{collections::HashMap, env, f32::consts::E, fs, io, pin::Pin, sync::{Arc, RwLock}};
+use tokio::sync::{mpsc, Mutex};
 use webauthn_rs::prelude::*;
 
 mod analyze;
@@ -46,6 +45,10 @@ mod stats;
 #[derive(Serialize, Deserialize, Default, Clone)]
 struct Sessions {
     user_map: HashMap<String, db_auth::User>,
+}
+
+struct ApnClient {
+    client: Arc<Mutex<Client>>
 }
 
 // gets a user object from requests. needed for db_auth::User param in handlers
@@ -432,11 +435,11 @@ async fn manage_refresh_cache(user: db_auth::User) -> Result<HttpResponse, AWErr
 }
 
 // DELETE endpoint to remove a submission. used in /manage
-async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
+async fn manage_delete_submission(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .body(db_main::delete_by_id(&db.main, &db.transact, &db.auth, path).await?))
+            .body(db_main::delete_by_id(&db.main, &db.transact, &db.auth, path, client.client.lock().await).await?))
     } else {
         Ok(unauthorized_response())
     }
@@ -707,7 +710,7 @@ async fn cache_first_data() -> Result<bool, std::io::Error> {
             if events[j] != "TEST" {
                 // cache team list
                 let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
-                let team_client = Client::new();
+                let team_client = reqwest::Client::new();
                 let team_response = team_client
                     .request(actix_http::Method::GET, team_target_url)
                     .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
@@ -731,7 +734,7 @@ async fn cache_first_data() -> Result<bool, std::io::Error> {
 
                 let match_target_url =
                     format!("https://frc-api.firstinspires.org/v3.0/{}/schedule/{}?tournamentLevel=qualification", seasons[i], events[j]);
-                let match_client = Client::new();
+                let match_client = reqwest::Client::new();
                 let match_response = match_client
                     .request(actix_http::Method::GET, match_target_url)
                     .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
@@ -838,6 +841,12 @@ async fn main() -> io::Result<()> {
     // config done. now, create the new HttpServer
     log::info!("[OK] starting bearTracks on port 443 and 80");
 
+    let environment = if env::var("APN_ENDPOINT").unwrap_or_else(|_| "SANDBOX".to_string()) == "SANDBOX".to_string() {
+        Endpoint::Sandbox
+    } else {
+        Endpoint::Production
+    };
+
     HttpServer::new(move || {
         // generated resources from actix_web_files
         let generated = generate();
@@ -849,12 +858,14 @@ async fn main() -> io::Result<()> {
                 transact: trans_db_pool.clone(),
                 pit: pit_db_pool.clone()
             }))
+            // apn client
+            .app_data(web::Data::new(ApnClient {
+                client: Arc::new(Mutex::new(Client::token(&mut fs::File::open("./ssl/APN.p8").unwrap(), env::var("APN_KEY_ID").unwrap_or_else(|_| "".to_string()), env::var("APN_TEAM_ID").unwrap_or_else(|_| "".to_string()), ClientConfig::new(environment.clone())).unwrap()))
+            }))
             // add sessions to app data
             .app_data(sessions.clone())
             // add webauthn to app data
             .app_data(passkey::setup_passkeys())
-            // apn client
-            .app_data(a2::Client::token(&mut fs::File::open("./ssl/APN.p8").unwrap(), env::var("APN_KEY_ID").unwrap_or_else(|_| "".to_string()), env::var("APN_TEAM_ID").unwrap_or_else(|_| "".to_string()), ClientConfig::new(Endpoint::Production)).unwrap())
             // use governor ratelimiting as middleware
             .wrap(Governor::new(&governor_conf))
             // use cookie id system middleware

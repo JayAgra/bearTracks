@@ -9,6 +9,7 @@
 `0xc85`&emsp;`3205`&emsp;`account created`<br>
 `0xc86`&emsp;`3206`&emsp;`access updated`<br>
 `0xc87`&emsp;`3207`&emsp;`key revoked`<br>
+`0xc88`&emsp;`3208`&emsp;`partial success`<br>
 ### 204 no content
 `0xcc0`&emsp;`3264`&emsp;`no content`<br>
 `0xcc1`&emsp;`3265`&emsp;`no query results`<br>

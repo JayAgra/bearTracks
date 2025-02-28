@@ -1,4 +1,12 @@
-use actix_web::{error, web, Error};
+use a2::{
+    Client,
+    client::ClientConfig,
+    DefaultNotificationBuilder,
+    Endpoint,
+    NotificationBuilder,
+    NotificationOptions
+};
+use actix_web::{error, web::{self, to}, Error};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2,
@@ -511,3 +519,79 @@ fn get_all_apn_tokens_entry(conn: Connection) -> Result<Vec<ApnTokens>, rusqlite
     }).and_then(Iterator::collect)
 }
 
+pub async fn send_notification_to_user(pool: &Pool, user_id: i64, notification: a2::DefaultNotificationBuilder<'_>, client: tokio::sync::MutexGuard<'_, a2::Client>) -> Result<bool, Error> {
+    let first_pool = pool.clone();
+
+    let conn = web::block(move || first_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+
+    let tokens: Result<Vec<ApnTokens>, Error> = web::block(move || get_all_apn_tokens_entry_for_user(conn, user_id))
+        .await?
+        .map_err(error::ErrorInternalServerError);
+
+    match tokens {
+        Ok(token_list) => {
+            if token_list.len() > 0 {
+                for i in 0..(token_list.len()) {
+                    match token_list.get(i) {
+                        Some(token) => {
+                            let options = NotificationOptions {
+                                apns_topic: Some(token.app_bundle.as_str()),
+                                ..Default::default()
+                            };
+                            let payload = notification.clone().build(&token.token, options);
+                            let response = client.send(payload).await;
+                            match response {
+                                Ok(response_content) => {
+                                    if response_content.code == 410 {
+                                        let new_pool = pool.clone();
+                                        let new_conn = web::block(move || new_pool.get()).await?.map_err(error::ErrorInternalServerError)?;
+                                        let _deleted: Result<String, rusqlite::Error> = delete_apn_key(new_conn, token.token.clone());
+                                    }
+                                }
+                                Err(e) => {
+                                    log::error!("APN send error:\n{}", e)
+                                }
+                            }
+                        }
+                        None => {}
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            return Err(e)
+        }
+    }
+
+    Ok(true)
+}
+
+pub fn get_all_apn_tokens_entry_for_user(conn: Connection, user_id: i64) -> Result<Vec<ApnTokens>, rusqlite::Error> {
+    let mut stmt = conn.prepare("UPDATE users SET score = score - 25 WHERE id = ?1;")?;
+    stmt.execute(params![user_id])?;
+    let mut stmt = conn.prepare("SELECT * FROM apnTokens WHERE user_id=?1;")?;
+    stmt.query_map([user_id], |row| {
+        Ok(ApnTokens {
+            id: row.get(0)?,
+            token: row.get(1)?,
+            app_bundle: row.get(2)?,
+            user_id: row.get(3)?,
+            user_team: row.get(4)?,
+            user_username: row.get(5)?,
+            user_name: row.get(6)?
+        })
+    }).and_then(Iterator::collect)
+}
+
+fn delete_apn_key(connection: Connection, token: String) -> Result<String, rusqlite::Error> {
+    let stmt = connection.prepare("DELETE FROM apnTokens WHERE token=?1;")?;
+    execute_delete_apn_key(stmt, token)
+}
+
+fn execute_delete_apn_key(mut statement: Statement, token: String) -> Result<String, rusqlite::Error> {
+    if statement.execute(params![token]).is_ok() {
+        Ok("{\"status\":3206}".to_string())
+    } else {
+        Ok("{\"status\":8002}".to_string())
+    }
+}
