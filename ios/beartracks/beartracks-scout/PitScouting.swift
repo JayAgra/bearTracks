@@ -76,6 +76,12 @@ struct PitTeamSelection: View {
                 Text("Failed to load teams")
                     .font(.title)
                     .padding()
+                Button(action: {
+                    dismiss()
+                }, label: {
+                    Label("Back", systemImage: "xmark")
+                        .labelStyle(.titleOnly)
+                }).buttonStyle(.bordered).padding()
                 Spacer()
             } else {
                 Spacer()
@@ -105,7 +111,7 @@ struct PitDataInput: View {
     var body: some View {
         VStack {
             Form {
-                Text("Pit Scouting • Team \(controller.selectedTeam)").padding()
+                Text("Pit Scouting • Team \(String(controller.selectedTeam))").padding()
                 Section {
                     Text("Capabilities")
                     Toggle("Algae Processor", isOn: $controller.booleans.0)
@@ -201,7 +207,7 @@ struct PitDataInput: View {
                         }
                     }
                 }
-                Text("Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account.").foregroundStyle(Color.yellow)
+                Text("Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account.").foregroundStyle(Color.yellow).onTapGesture { activeBox = nil }
                 Section {
                     Text("Notes")
                     TextEditor(text: $controller.notes)
@@ -214,39 +220,38 @@ struct PitDataInput: View {
                         .focused($activeBox, equals: .notes)
                         .onTapGesture { activeBox = .notes }
                 }
+                .onTapGesture {
+                    activeBox = nil
+                }
                 VStack {
-                    if controller.notes.isEmpty {
-                        Text("Please complete the entire form, including notes, before continuing.")
-                    } else {
-                        Button(action: {
-                            controller.state = .images
-                        }, label: {
-                            Label("Continue to Images", systemImage: "camera")
-                                .labelStyle(.titleOnly)
-                                .frame(maxWidth: .infinity).padding()
-                        })
-                        .buttonStyle(.borderedProminent).padding([.top, .horizontal])
-                        .onTapGesture {
-                            controller.state = .images
+                    Section {
+                        if controller.notes.isEmpty {
+                            Text("Please complete the entire form, including notes, before continuing.")
+                        } else {
+                            Button(action: {
+                                controller.state = .images
+                            }, label: {
+                                Label("Continue to Images", systemImage: "camera")
+                                    .labelStyle(.titleOnly)
+                                    .frame(maxWidth: .infinity).padding()
+                            })
+                            .buttonStyle(.borderedProminent).padding([.top, .horizontal])
                         }
                     }
-                    Button(action: {
-                        controller.state = .teamSelection
-                    }, label: {
-                        Label("Return", systemImage: "camera")
-                            .labelStyle(.titleOnly)
-                            .frame(maxWidth: .infinity)
-                    })
-                    .buttonStyle(.bordered).padding()
+                    Section {
+                        Button(action: {
+                            controller.state = .teamSelection
+                        }, label: {
+                            Label("Return", systemImage: "camera")
+                                .labelStyle(.titleOnly)
+                                .frame(maxWidth: .infinity)
+                        })
+                        .buttonStyle(.bordered).padding()
+                    }
                 }
-                .padding()
                 .listRowInsets(EdgeInsets())
                 .background(Color(UIColor.systemGroupedBackground))
-                .frame(maxWidth: .infinity)
             }
-        }
-        .onTapGesture {
-            activeBox = nil
         }
     }
 }

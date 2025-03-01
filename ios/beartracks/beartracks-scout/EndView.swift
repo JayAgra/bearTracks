@@ -106,6 +106,12 @@ struct EndView: View {
                 } else {
                     Text("Please select a match and team number on the start tab.")
                         .padding()
+                    Button(action: {
+                        controller.advanceToTab(tab: .start)
+                    }, label: {
+                        Label("To Start", systemImage: "1.circle").labelStyle(.titleOnly)
+                    })
+                    .buttonStyle(.bordered)
                 }
             }
             .navigationTitle("Match Scouting")
