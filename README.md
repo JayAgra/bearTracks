@@ -1,6 +1,5 @@
 # bearTracks
 a webapp for frc scouting<br><br>
-![GitHub](https://img.shields.io/github/license/JayAgra/bearTracks) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/jayagra/bearTracks) ![GitHub last commit](https://img.shields.io/github/last-commit/jayagra/bearTracks)
 
 ## setup
 ### environment variables
@@ -36,7 +35,8 @@ To stop bearTracks, run
 ```sh
 ./service.sh stop
 ```
-
+### license
+There is no license (Copyright © 2025 Jayen Agrawal. All rights reserved.). Email dev@jayagra.com for inquiries. By the GitHub TOS, you are permitted to view and fork the code. Everything beyond that, including but not limited to modification (public or private, even in your fork), distribution, and use in any form is prohibited without written permission.
 
 ## iOS & macOS apps
 

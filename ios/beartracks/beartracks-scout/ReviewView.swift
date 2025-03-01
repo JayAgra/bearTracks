@@ -20,6 +20,12 @@ struct ReviewView: View {
                     if controller.getTeamNumber() == "--" || controller.getMatchNumber() == 0 {
                         Text("Please select a match and team number on the start tab.")
                             .padding()
+                        Button(action: {
+                            controller.advanceToTab(tab: .start)
+                        }, label: {
+                            Label("To Start", systemImage: "1.circle").labelStyle(.titleOnly)
+                        })
+                        .buttonStyle(.bordered).padding()
                     } else if controller.getDefenseResponse() == "" || controller.getDrivingResponse() == "" || controller.getOverallResponse() == "" {
                         Text("Please fill in all three long form responses.")
                             .padding()
@@ -28,6 +34,12 @@ struct ReviewView: View {
                                     controller.defense = "No"
                                 }
                             }
+                        Button(action: {
+                            controller.advanceToTab(tab: .end)
+                        }, label: {
+                            Label("To End Responses", systemImage: "3.circle").labelStyle(.titleOnly)
+                        })
+                        .buttonStyle(.bordered).padding()
                     } else {
                         Text("Match \(controller.getMatchNumber()) • Team \(controller.getTeamNumber())\n\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST") (\(UserDefaults.standard.string(forKey: "season") ?? "2025"))")
                         .padding(.leading)

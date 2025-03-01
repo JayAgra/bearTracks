@@ -195,10 +195,12 @@ class PitScoutingController: ObservableObject {
     }
 
     
-    func getAllTeams() {
+    func getScoutedTeams() {
         self.scoutedTeams = (0, [])
         guard let url = URL(string:"https://beartracks.io/api/v1/data/pit_scouted/\(UserDefaults.standard.string(forKey: "season") ?? "2025")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST")")
         else { return }
+        
+        URLCache.shared.removeAllCachedResponses()
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -213,6 +215,7 @@ class PitScoutingController: ObservableObject {
                         self.scoutedTeams = (1, result)
                     }
                 } catch {
+                    print(error)
                     DispatchQueue.main.sync {
                         self.scoutedTeams = (2, [])
                     }
@@ -226,7 +229,7 @@ class PitScoutingController: ObservableObject {
         requestTask.resume()
     }
     
-    func getScoutedTeams() {
+    func getAllTeams() {
         self.allTeams = PitScoutingAllTeams(status: 0, teams: [])
         guard let url = URL(string:"https://beartracks.io/api/v1/events/teams/\(UserDefaults.standard.string(forKey: "season") ?? "2025")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST")")
         else { return }
@@ -244,6 +247,7 @@ class PitScoutingController: ObservableObject {
                         self.allTeams = PitScoutingAllTeams(status: 1, teams: result.teams.map{ PitScoutingBasicTeam(number: $0.teamNumber, nameShort: $0.nameShort) })
                     }
                 } catch {
+                    print(error)
                     DispatchQueue.main.sync {
                         self.allTeams = PitScoutingAllTeams(status: 2, teams: [])
                     }
@@ -269,6 +273,7 @@ struct TeamListTeamEntry: Codable {
     let nameFull, nameShort: String
     let city, stateProv, country: String
     let rookieYear: Int
-    let robotName, schoolName, website, homeCMP: String
+    let robotName, schoolName, website: String
+    let homeCMP: String?
 }
 
