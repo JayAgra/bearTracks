@@ -200,6 +200,8 @@ class PitScoutingController: ObservableObject {
         guard let url = URL(string:"https://beartracks.io/api/v1/data/pit_scouted/\(UserDefaults.standard.string(forKey: "season") ?? "2025")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST")")
         else { return }
         
+        URLCache.shared.removeAllCachedResponses()
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.httpShouldHandleCookies = true
