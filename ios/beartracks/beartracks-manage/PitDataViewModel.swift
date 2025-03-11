@@ -27,7 +27,7 @@ class PitDataViewModel: ObservableObject {
     }
     
     func fetchDataJson(completionBlock: @escaping ([PitData]) -> Void) {
-        guard let url = URL(string: "https://beartracks.io/api/v1/data/pit/2025/TEST/ALL") else { return }
+        guard let url = URL(string: "https://beartracks.io/api/v1/data/pit/2025/ALL/ALL") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

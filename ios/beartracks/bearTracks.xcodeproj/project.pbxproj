@@ -60,6 +60,8 @@
 		F5B8D1C92B96779400D3F230 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E5D2B52FF3F0033DB0D /* LoginView.swift */; };
 		F5BDD40A2B96CD570099C7A7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE2E522B527E170033DB0D /* SettingsView.swift */; };
 		F5C346C12BB796CB00087B69 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5C346C02BB796CB00087B69 /* PrivacyInfo.xcprivacy */; };
+		F5C9B8402D7FA1090069A64A /* AllianceSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C9B83F2D7FA1090069A64A /* AllianceSimulator.swift */; };
+		F5C9B8422D7FA2710069A64A /* AllianceSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C9B8412D7FA2710069A64A /* AllianceSelection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,6 +157,8 @@
 		F5B8D1C82B96762D00D3F230 /* beartracks-watch Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "beartracks-watch Watch App.entitlements"; sourceTree = "<group>"; };
 		F5BDD4092B96B78D0099C7A7 /* beartracks-watch-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "beartracks-watch-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		F5C346C02BB796CB00087B69 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F5C9B83F2D7FA1090069A64A /* AllianceSimulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllianceSimulator.swift; sourceTree = "<group>"; };
+		F5C9B8412D7FA2710069A64A /* AllianceSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllianceSelection.swift; sourceTree = "<group>"; };
 		F5D3D3402B5A098D00A88A00 /* bearTracks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = bearTracks.entitlements; sourceTree = "<group>"; };
 		F5D3D3452B5A17AE00A88A00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -256,6 +260,8 @@
 				F597AFFD2D6E74CF006CF1A5 /* CarouselView.swift */,
 				F59F8F7A2B7D292700D35A56 /* TeamViewStats.swift */,
 				F532B0322D4BE6D900B7C127 /* RegionalPoints.swift */,
+				F5C9B83F2D7FA1090069A64A /* AllianceSimulator.swift */,
+				F5C9B8412D7FA2710069A64A /* AllianceSelection.swift */,
 				F5AE2E592B5288FB0033DB0D /* URLSessionConfiguration.swift */,
 				F54E76C52B527D97003C65A2 /* Assets.xcassets */,
 				F5C346C02BB796CB00087B69 /* PrivacyInfo.xcprivacy */,
@@ -477,6 +483,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5C9B8402D7FA1090069A64A /* AllianceSimulator.swift in Sources */,
 				F5AE2E532B527E170033DB0D /* Teams.swift in Sources */,
 				F59F8F7B2B7D292700D35A56 /* TeamViewStats.swift in Sources */,
 				F5475D8E2D53CC0D00E81F49 /* PitDataView.swift in Sources */,
@@ -491,6 +498,7 @@
 				F5475D912D53CCCE00E81F49 /* PitDataController.swift in Sources */,
 				F59F8F7D2B7D2AD600D35A56 /* TeamStatController.swift in Sources */,
 				F597AFFE2D6E74E0006CF1A5 /* CarouselView.swift in Sources */,
+				F5C9B8422D7FA2710069A64A /* AllianceSelection.swift in Sources */,
 				F5081BA22B741D15001497DB /* AppState.swift in Sources */,
 				F5346CAC2D710D3400EBAC99 /* NotificationDelegate.swift in Sources */,
 				F540A13D2B549D2500611384 /* TeamView.swift in Sources */,
@@ -553,14 +561,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "sitckers StickerPackExtension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_NSStickerSharingLevel = OS;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -577,14 +585,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "sitckers StickerPackExtension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_NSStickerSharingLevel = OS;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.stickers;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -600,7 +608,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-matches/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -613,7 +621,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -630,7 +638,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-matches/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -643,7 +651,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -781,7 +789,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -802,7 +810,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = xros;
@@ -826,7 +834,7 @@
 				CODE_SIGN_ENTITLEMENTS = bearTracks/bearTracks.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_ASSET_PATHS = "\"bearTracks/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -847,7 +855,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = xros;
@@ -870,7 +878,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -883,7 +891,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -902,7 +910,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "beartracks-watch Watch App/beartracks-watch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 104;
+				CURRENT_PROJECT_VERSION = 105;
 				DEVELOPMENT_ASSET_PATHS = "\"beartracks-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = D6MFYYVHA8;
 				ENABLE_PREVIEWS = YES;
@@ -915,7 +923,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.0.3;
+				MARKETING_VERSION = 6.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jayagra.beartracks.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;

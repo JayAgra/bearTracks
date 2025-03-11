@@ -209,7 +209,7 @@ struct PitDataInput: View {
                 }
                 Text("Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account.").foregroundStyle(Color.yellow).onTapGesture { activeBox = nil }
                 Section {
-                    Text("Notes")
+                    Text("Notable Features")
                     TextEditor(text: $controller.notes)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)

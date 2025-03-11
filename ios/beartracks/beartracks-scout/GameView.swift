@@ -17,10 +17,11 @@ public enum ReleaseState {
 }
 
 struct GameView: View {
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
-        NavigationView {
+        VStack {
             if controller.getTeamNumber() != "--" && controller.getMatchNumber() != 0 {
                 VStack {
                     GeometryReader { geometry in
@@ -47,16 +48,22 @@ struct GameView: View {
             } else {
                 Text("Please select a match and team number on the start tab.")
                     .padding()
-                    .navigationTitle("Match Scouting")
+                Button(action: {
+                    controller.advanceToTab(tab: .start)
+                }, label: {
+                    Label("To Start", systemImage: "1.circle").labelStyle(.titleOnly)
+                })
+                .buttonStyle(.bordered).padding()
+                .navigationTitle("Match Scouting")
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
 struct GameViewButtonTimer: View {
     var geometry: GeometryProxy
     var controller: ScoutingController
+    @Environment(\.colorScheme) var colorScheme
     @State var holdLengths: (TimeInterval, TimeInterval, TimeInterval) = (0.0, 0.0, 0.0)
     @State var timer: Timer?
     @State var actionState: ActionState = .neutral
@@ -133,13 +140,10 @@ struct GameViewButtonTimer: View {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
                     if value == .intake {
                         self.holdLengths.0 += 0.1
-                        controller.times[0] = self.holdLengths.0
                     } else if value == .travel {
                         self.holdLengths.1 += 0.1
-                        controller.times[1] = self.holdLengths.1
                     } else if value == .outtake {
                         self.holdLengths.2 += 0.1
-                        controller.times[2] = self.holdLengths.2
                     }
                 }
                 UIImpactFeedbackGenerator(style: .soft).impactOccurred()
@@ -149,11 +153,12 @@ struct GameViewButtonTimer: View {
             HStack {
                 Spacer()
                 Button(action: {
+                    controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2];
                     controller.clearScore(scoreType: 4); self.holdLengths = (0, 0, 0)
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
                 }, label: {
                     Label("Algae", systemImage: "leaf.fill")
-                        .foregroundStyle(Color.init(red: 177 / 255, green: 98 / 255, blue: 134 / 255))
+                        .foregroundStyle(Color.init(red: 184 / 255, green: 187 / 255, blue: 38 / 255))
                         .labelStyle(.iconOnly)
                         .font(.custom("button", size: geometry.size.width * 0.125))
                         .frame(width: geometry.size.width * 0.35, height: geometry.size.width * 0.4)
@@ -161,44 +166,57 @@ struct GameViewButtonTimer: View {
                 Spacer()
                 VStack {
                     Button(action: {
+                        controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2];
                         controller.clearScore(scoreType: 5); self.holdLengths = (0, 0, 0)
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 1", systemImage: "1.circle.fill")
-                            .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )
                             .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
                     }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
                     Button(action: {
+                        controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2];
                         controller.clearScore(scoreType: 7); self.holdLengths = (0, 0, 0)
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 3", systemImage: "3.circle.fill")
-                            .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
-                            .labelStyle(.iconOnly)
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )                            .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
                     }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
                 }
                 VStack {
                     Button(action: {
+                        controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2];
                         controller.clearScore(scoreType: 6); self.holdLengths = (0, 0, 0)
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 2", systemImage: "2.circle.fill")
-                            .foregroundStyle(Color.init(red: 104 / 255, green: 157 / 255, blue: 106 / 255))
-                            .labelStyle(.iconOnly)
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )                            .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
                     }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
                     Button(action: {
+                        controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2];
                         controller.clearScore(scoreType: 8); self.holdLengths = (0, 0, 0)
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 4", systemImage: "4.circle.fill")
-                            .foregroundStyle(Color.init(red: 69 / 255, green: 133 / 255, blue: 136 / 255))
-                            .labelStyle(.iconOnly)
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )                            .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
                     }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
@@ -338,18 +356,23 @@ struct GameViewShifterTimer: View {
                             case .neutral:
                                 return;
                             case .l0:
+                                controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2]
                                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                                 controller.clearScore(scoreType: 5); self.holdLengths = (0, 0, 0)
                             case .l1:
+                                controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2]
                                 UINotificationFeedbackGenerator().notificationOccurred(.warning)
                                 controller.clearScore(scoreType: 6); self.holdLengths = (0, 0, 0)
                             case .l2:
+                                controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2]
                                 UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                                 controller.clearScore(scoreType: 7); self.holdLengths = (0, 0, 0)
                             case .l3:
+                                controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2]
                                 UINotificationFeedbackGenerator().notificationOccurred(.warning)
                                 controller.clearScore(scoreType: 8); self.holdLengths = (0, 0, 0)
                             case .net:
+                                controller.times = [self.holdLengths.0, self.holdLengths.1, self.holdLengths.2]
                                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                                 controller.clearScore(scoreType: 4); self.holdLengths = (0, 0, 0)
                             }
@@ -362,16 +385,13 @@ struct GameViewShifterTimer: View {
         .padding(.bottom)
         .onChange(of: actionState) { value in
             self.timer?.invalidate()
-            self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in
                 if value == .intake {
-                    self.holdLengths.0 += 0.1
-                    controller.times[0] = self.holdLengths.0
+                    self.holdLengths.0 += 0.01
                 } else if value == .travel {
-                    self.holdLengths.1 += 0.1
-                    controller.times[1] = self.holdLengths.1
+                    self.holdLengths.1 += 0.01
                 } else if value == .outtake {
-                    self.holdLengths.2 += 0.1
-                    controller.times[2] = self.holdLengths.2
+                    self.holdLengths.2 += 0.01
                 }
             }
             UIImpactFeedbackGenerator(style: .soft).impactOccurred()

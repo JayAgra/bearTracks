@@ -18,46 +18,50 @@ struct TeamView: View {
 #if !os(watchOS)
                     Section {
                         VStack {
-                            HStack {
-                                VStack {
-                                    Text(String(dataItems.teamData.first?.wins ?? 0))
-                                        .font(.title)
-                                    Text("Wins")
+                            if dataItems.teamData.isEmpty {
+                                HStack { Spacer(); ProgressView(); Spacer(); }
+                            } else {
+                                HStack {
+                                    VStack {
+                                        Text(String(dataItems.teamData.first?.record?.qual?.wins ?? 0))
+                                            .font(.title)
+                                        Text("Wins")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    VStack {
+                                        Text(String(dataItems.teamData.first?.record?.qual?.losses ?? 0))
+                                            .font(.title)
+                                        Text("Losses")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    VStack {
+                                        Text(String(dataItems.teamData.first?.record?.qual?.ties ?? 0))
+                                            .font(.title)
+                                        Text("Ties")
+                                    }
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity)
-                                VStack {
-                                    Text(String(dataItems.teamData.first?.losses ?? 0))
-                                        .font(.title)
-                                    Text("Losses")
+                                .padding(.bottom)
+                                HStack {
+                                    VStack {
+                                        Text(String(dataItems.teamData.first?.record?.qual?.rank ?? 99))
+                                            .font(.title)
+                                        Text("Rank")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    VStack {
+                                        Text(String(dataItems.teamData.first?.record?.qual?.rps ?? 0))
+                                            .font(.title)
+                                        Text("RPs")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    VStack {
+                                        Text(String(format: "%.1f", dataItems.teamData.first?.record?.qual?.rps_per_match ?? 0.0))
+                                            .font(.title)
+                                        Text("RPs / match")
+                                    }
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity)
-                                VStack {
-                                    Text(String(dataItems.teamData.first?.ties ?? 0))
-                                        .font(.title)
-                                    Text("Ties")
-                                }
-                                .frame(maxWidth: .infinity)
-                            }
-                            .padding(.bottom)
-                            HStack {
-                                VStack {
-                                    Text(String(dataItems.teamData.first?.rank ?? 99))
-                                        .font(.title)
-                                    Text("Rank")
-                                }
-                                .frame(maxWidth: .infinity)
-                                VStack {
-                                    Text(String(dataItems.teamData.first?.rps ?? 0))
-                                        .font(.title)
-                                    Text("RPs")
-                                }
-                                .frame(maxWidth: .infinity)
-                                VStack {
-                                    Text(String(format: "%.1f", divideNotZero(num: dataItems.teamData.first?.rps ?? 0, denom: dataItems.teamData.first?.count ?? 1)))
-                                        .font(.title)
-                                    Text("RPs / match")
-                                }
-                                .frame(maxWidth: .infinity)
                             }
                         }
                     }

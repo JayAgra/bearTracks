@@ -111,7 +111,7 @@ struct EndView: View {
                     }, label: {
                         Label("To Start", systemImage: "1.circle").labelStyle(.titleOnly)
                     })
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.bordered).padding()
                 }
             }
             .navigationTitle("Match Scouting")

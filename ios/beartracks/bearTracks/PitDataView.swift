@@ -27,6 +27,7 @@ struct PitDataView: View {
             .onAppear {
                 controller.fetchPitData()
             }
+            .navigationTitle("\(String(teamNumber)) Pit Data")
         )
         case 1: (
             VStack {
@@ -73,7 +74,7 @@ struct PitDataView: View {
                                 }
                                 Section {
                                     ForEach(mergedData.notes.indices, id: \.self) { index in
-                                        Text("\(mergedData.notes[index])\n\n\(mergedData.name[index]) (\(mergedData.from_team[index]))")
+                                        Text("\(mergedData.notes[index])\n\n\(mergedData.name[index]) (\(String(mergedData.from_team[index]))")
                                     }
                                 }
                                 CarouselView(imagesUrls: mergedData.image_ids)
@@ -88,6 +89,7 @@ struct PitDataView: View {
                     }
                 }
             }
+                .navigationTitle("\(String(teamNumber)) Pit Data")
         )
         case _: (
             VStack {
@@ -105,6 +107,7 @@ struct PitDataView: View {
                     .padding()
                 Spacer()
             }
+                .navigationTitle("\(String(teamNumber)) Pit Data")
         )
         }
     }
@@ -177,7 +180,7 @@ struct PitDataIntViewer: View {
                         HStack {
                             Text(String("\(mergedData.id[index]) • \(mergedData.name[index]) (\(mergedData.from_team[index]))"))
                             Spacer()
-                            Text(String(textOptions[data[index]]))
+                            Text(String(textOptions[index]))
                         }
                     }
                 }

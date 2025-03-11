@@ -16,7 +16,7 @@ struct MatchDetailView: View {
     @State private var eventCodeInput: String = UserDefaults().string(forKey: "eventCode") ?? ""
     @State private var settingsOptions: [DataMetadata] = []
     // dont even talk to me about this one
-    let emptyTeamStat = TeamStats(team: 0, leave: 0.0, park: 0.0, shallow_cage: 0.0, deep_cage: 0.0, intake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), travel_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), outtake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), algae: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_0: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_1: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_2: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_3: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), score: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_scores: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0))
+    public var emptyTeamStat = TeamStats(team: 0, leave: 0.0, park: 0.0, shallow_cage: 0.0, deep_cage: 0.0, intake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), travel_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), outtake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), algae: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_0: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_1: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_2: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_3: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), score: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_scores: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0))
 
     
     var body: some View {
@@ -27,6 +27,7 @@ struct MatchDetailView: View {
                     ScrollView {
                         Text("Match \(String(match))")
                             .font(.largeTitle)
+                            .padding()
                         Text("+\(calculateWinner().0)%")
                             .font(.title)
                             .foregroundStyle(calculateWinner().1 ? Color.red : Color.blue)
@@ -179,6 +180,7 @@ struct MatchDetailView: View {
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             EventSelectButton
+                                .tint(Color.primary)
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button(action: {
@@ -188,6 +190,7 @@ struct MatchDetailView: View {
                                 Label("", systemImage: "chevron.left")
                             })
                             .disabled(match == 1)
+                            .tint(Color.primary)
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button(action: {
@@ -195,6 +198,7 @@ struct MatchDetailView: View {
                             }, label: {
                                 Label("", systemImage: "arrow.clockwise")
                             })
+                            .tint(Color.primary)
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button(action: {
@@ -204,6 +208,7 @@ struct MatchDetailView: View {
                                 Label("", systemImage: "chevron.right")
                             })
                             .disabled(match ==  appState.matchJson.count)
+                            .tint(Color.primary)
                         }
                     }
                     .onAppear {
@@ -217,11 +222,6 @@ struct MatchDetailView: View {
                         ProgressView()
                             .padding()
                         Spacer()
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            EventSelectButton
-                        }
                     }
                     .onAppear {
                         loadData()
@@ -263,8 +263,8 @@ struct MatchDetailView: View {
         Button(action: {
             loadSettingsJson { result in
                 self.settingsOptions = result
+                moveEvent()
             }
-            moveEvent()
         }, label: {
             Label(UserDefaults().string(forKey: "eventCode") ?? "TEST", systemImage: "flag.checkered")
                 .labelStyle(.titleOnly)
@@ -273,26 +273,26 @@ struct MatchDetailView: View {
     
     func moveEvent() {
         if !settingsOptions.isEmpty && !settingsOptions[0].events.isEmpty {
-            if !settingsOptions[0].events.contains(UserDefaults().string(forKey: "eventCode") ?? "XXXX") {
-                UserDefaults().set(settingsOptions[0].events[0], forKey: "eventCode")
+            if !settingsOptions[0].events.contains(UserDefaults().string(forKey: "eventCode") ?? "TEST") {
+                UserDefaults().set(settingsOptions.first?.events.first ?? "TEST", forKey: "eventCode")
             } else {
                 let ci = (settingsOptions[0].events.firstIndex{$0 == UserDefaults().string(forKey: "eventCode") ?? "TEST"} ?? 0)
                 if ci == settingsOptions[0].events.count - 1 {
-                    UserDefaults().set(settingsOptions[0].events[0], forKey: "eventCode")
+                    UserDefaults().set(settingsOptions.first?.events.first ?? "TEST", forKey: "eventCode")
                 } else {
-                    UserDefaults().set(settingsOptions[0].events[ci + 1], forKey: "eventCode")
+                    UserDefaults().set(settingsOptions.first?.events[ci + 1] ?? "TEST", forKey: "eventCode")
                 }
             }
             match = 1
+            appState.matchJsonStatus = (false, false)
             appState.fetchMatchJson()
-            while appState.matchJsonStatus.0 == false {if appState.matchJsonStatus.1 == true {return}}
             self.loadData()
         }
     }
     
     func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
         guard
-            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults().bool(forKey: "useAllCompData") ? "ALL" : UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(String(team))")
+            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(String(team))")
         else {
             return
         }
@@ -324,8 +324,9 @@ struct MatchDetailView: View {
         
     private func loadData() {
         var teamSet = TeamSet()
+        self.teams = []
         var local: [TeamStats] = []
-        if !appState.matchJson.isEmpty && appState.matchJson.count > 0 {
+        if !appState.matchJson.isEmpty && appState.matchJson.count >= match {
             fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
                 teamSet.Red1 = Red1Data
                 fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in

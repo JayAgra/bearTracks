@@ -42,7 +42,7 @@ class TeamStatController: ObservableObject {
     }
 }
 
-struct TeamStats: Codable {
+public struct TeamStats: Codable {
     let team: Int
     let leave, park, shallow_cage, deep_cage: Double?
     let intake_time, travel_time, outtake_time, algae, level_0, level_1, level_2, level_3, score, auto_scores: DataStats
