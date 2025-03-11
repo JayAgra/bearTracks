@@ -73,7 +73,7 @@ struct PitDataView: View {
                                 }
                                 Section {
                                     ForEach(mergedData.notes.indices, id: \.self) { index in
-                                        Text("\(mergedData.notes[index])\n\n\(mergedData.name[index]) (\(mergedData.from_team[index]))")
+                                        Text("\(mergedData.notes[index])\n\n\(mergedData.name[index]) (\(String(mergedData.from_team[index]))")
                                     }
                                 }
                                 CarouselView(imagesUrls: mergedData.image_ids)
@@ -177,7 +177,7 @@ struct PitDataIntViewer: View {
                         HStack {
                             Text(String("\(mergedData.id[index]) • \(mergedData.name[index]) (\(mergedData.from_team[index]))"))
                             Spacer()
-                            Text(String(textOptions[data[index]]))
+                            Text(String(textOptions[index]))
                         }
                     }
                 }

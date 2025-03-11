@@ -17,6 +17,10 @@ class SettingsManager {
             "season": "2025",
             "darkMode": true,
             "useAllCompData": false,
+            "pickListSeason": 2025,
+            "pickListComp": "",
+            "pickList": "",
+            "pickListStatus": ""
         ]
         UserDefaults().register(defaults: defaults)
     }
