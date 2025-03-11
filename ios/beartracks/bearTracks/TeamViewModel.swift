@@ -20,7 +20,7 @@ class TeamViewModel: ObservableObject {
         self.targetTeam = team
         self.teamMatches = []
         self.teamData = []
-        self.reload()
+        self.loadData()
     }
     
     func fetchTeamMatchesJson(completionBlock: @escaping ([DataEntry]) -> Void) {
@@ -108,7 +108,7 @@ class TeamViewModel: ObservableObject {
         requestTask.resume()
     }
     
-    func reload() {
+    func loadData() {
         self.fetchTeamMatchesJson { (output) in
             self.teamMatches = output
         }

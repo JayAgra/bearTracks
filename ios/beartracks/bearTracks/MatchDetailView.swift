@@ -180,6 +180,7 @@ struct MatchDetailView: View {
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             EventSelectButton
+                                .tint(Color.primary)
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button(action: {
@@ -189,6 +190,7 @@ struct MatchDetailView: View {
                                 Label("", systemImage: "chevron.left")
                             })
                             .disabled(match == 1)
+                            .tint(Color.primary)
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button(action: {
@@ -196,6 +198,7 @@ struct MatchDetailView: View {
                             }, label: {
                                 Label("", systemImage: "arrow.clockwise")
                             })
+                            .tint(Color.primary)
                         }
                         ToolbarItem(placement: .topBarTrailing) {
                             Button(action: {
@@ -205,6 +208,7 @@ struct MatchDetailView: View {
                                 Label("", systemImage: "chevron.right")
                             })
                             .disabled(match ==  appState.matchJson.count)
+                            .tint(Color.primary)
                         }
                     }
                     .onAppear {
@@ -218,11 +222,6 @@ struct MatchDetailView: View {
                         ProgressView()
                             .padding()
                         Spacer()
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            EventSelectButton
-                        }
                     }
                     .onAppear {
                         loadData()
@@ -264,8 +263,8 @@ struct MatchDetailView: View {
         Button(action: {
             loadSettingsJson { result in
                 self.settingsOptions = result
+                moveEvent()
             }
-            moveEvent()
         }, label: {
             Label(UserDefaults().string(forKey: "eventCode") ?? "TEST", systemImage: "flag.checkered")
                 .labelStyle(.titleOnly)
@@ -274,26 +273,26 @@ struct MatchDetailView: View {
     
     func moveEvent() {
         if !settingsOptions.isEmpty && !settingsOptions[0].events.isEmpty {
-            if !settingsOptions[0].events.contains(UserDefaults().string(forKey: "eventCode") ?? "XXXX") {
-                UserDefaults().set(settingsOptions[0].events[0], forKey: "eventCode")
+            if !settingsOptions[0].events.contains(UserDefaults().string(forKey: "eventCode") ?? "TEST") {
+                UserDefaults().set(settingsOptions.first?.events.first ?? "TEST", forKey: "eventCode")
             } else {
                 let ci = (settingsOptions[0].events.firstIndex{$0 == UserDefaults().string(forKey: "eventCode") ?? "TEST"} ?? 0)
                 if ci == settingsOptions[0].events.count - 1 {
-                    UserDefaults().set(settingsOptions[0].events[0], forKey: "eventCode")
+                    UserDefaults().set(settingsOptions.first?.events.first ?? "TEST", forKey: "eventCode")
                 } else {
-                    UserDefaults().set(settingsOptions[0].events[ci + 1], forKey: "eventCode")
+                    UserDefaults().set(settingsOptions.first?.events[ci + 1] ?? "TEST", forKey: "eventCode")
                 }
             }
             match = 1
+            appState.matchJsonStatus = (false, false)
             appState.fetchMatchJson()
-            while appState.matchJsonStatus.0 == false {if appState.matchJsonStatus.1 == true {return}}
             self.loadData()
         }
     }
     
     func fetchTeamStats(team: Int, completionBlock: @escaping (TeamStats?) -> Void) {
         guard
-            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults().bool(forKey: "useAllCompData") ? "ALL" : UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(String(team))")
+            let url = URL(string: "https://beartracks.io/api/v1/game/team_data/2025/\(UserDefaults().string(forKey: "eventCode") ?? "TEST")/\(String(team))")
         else {
             return
         }
@@ -325,8 +324,9 @@ struct MatchDetailView: View {
         
     private func loadData() {
         var teamSet = TeamSet()
+        self.teams = []
         var local: [TeamStats] = []
-        if !appState.matchJson.isEmpty && appState.matchJson.count > 0 {
+        if !appState.matchJson.isEmpty && appState.matchJson.count >= match {
             fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
                 teamSet.Red1 = Red1Data
                 fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in

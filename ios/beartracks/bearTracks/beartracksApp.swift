@@ -71,7 +71,8 @@ struct beartracksApp: App {
                     appDelegate.app = self
                 }
                 .environmentObject(appState)
-#else
+#endif
+#if !targetEnvironment(macCatalyst)
                 TabView(selection: $appState.selectedTab) {
                     Teams()
                         .environmentObject(appState)
@@ -101,6 +102,7 @@ struct beartracksApp: App {
                 .preferredColorScheme(darkMode ? .dark : .light)
                 .onAppear {
                     appState.checkLoginState()
+#endif
 #if os(iOS)
                     Task {
                         do {
@@ -111,6 +113,7 @@ struct beartracksApp: App {
                     }
                     appDelegate.app = self
 #endif
+#if !targetEnvironment(macCatalyst)
                 }
                 .environmentObject(appState)
 #endif
