@@ -27,6 +27,7 @@ struct PitDataView: View {
             .onAppear {
                 controller.fetchPitData()
             }
+            .navigationTitle("\(String(teamNumber)) Pit Data")
         )
         case 1: (
             VStack {
@@ -88,6 +89,7 @@ struct PitDataView: View {
                     }
                 }
             }
+                .navigationTitle("\(String(teamNumber)) Pit Data")
         )
         case _: (
             VStack {
@@ -105,6 +107,7 @@ struct PitDataView: View {
                     .padding()
                 Spacer()
             }
+                .navigationTitle("\(String(teamNumber)) Pit Data")
         )
         }
     }

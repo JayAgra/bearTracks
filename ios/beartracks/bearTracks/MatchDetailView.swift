@@ -27,6 +27,7 @@ struct MatchDetailView: View {
                     ScrollView {
                         Text("Match \(String(match))")
                             .font(.largeTitle)
+                            .padding()
                         Text("+\(calculateWinner().0)%")
                             .font(.title)
                             .foregroundStyle(calculateWinner().1 ? Color.red : Color.blue)

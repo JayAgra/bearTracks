@@ -20,13 +20,18 @@ struct AllianceSelection: View {
     @State private var searchText = ""
     
     var body: some View {
-        NavigationView {
+        VStack {
             VStack {
                 if !allTeams.teams.isEmpty {
                     List {
                         if !pickListObjs.isEmpty {
+#if targetEnvironment(macCatalyst)
                             Section {
-                                ForEach(pickListObjs.filter { $0.status == 0 }) { team in
+                                Text("Use of the pick list is **not advisable** on macOS.")
+                            }
+#endif
+                            Section {
+                                ForEach(searchResults.filter { $0.status == 0 }) { team in
                                     HStack {
                                         Text(String(team.teamNumber))
                                         Spacer()
@@ -57,7 +62,7 @@ struct AllianceSelection: View {
                                 }
                             }
                             Section {
-                                ForEach(pickListObjs.filter { $0.status == 1 }) { team in
+                                ForEach(searchResults.filter { $0.status == 1 }) { team in
                                     HStack {
                                         Text(String(team.teamNumber))
                                         Spacer()
@@ -93,7 +98,7 @@ struct AllianceSelection: View {
                                 }
                             }
                             Section {
-                                ForEach(pickListObjs.filter { $0.status == 2 }) { team in
+                                ForEach(searchResults.filter { $0.status == 2 }) { team in
                                     HStack {
                                         Text(String(team.teamNumber))
                                         Spacer()
@@ -141,12 +146,64 @@ struct AllianceSelection: View {
                         dismiss()
                     }
                 }
+                
             }
             .onAppear {
+                disableSwipeBack()
                 getAllTeams()
             }
+            .onDisappear {
+                enableSwipeBack()
+            }
             .navigationTitle("Alliance Selection")
-            .searchable(text: $searchText)
+            .searchable(text: $searchText).keyboardType(.numberPad)
+        }
+        
+        .navigationBarBackButtonHidden(true)
+    }
+    
+    private func disableSwipeBack() {
+        DispatchQueue.main.async {
+            if let navigationController = findNavigationController() {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = false
+            }
+        }
+    }
+
+    private func enableSwipeBack() {
+        DispatchQueue.main.async {
+            if let navigationController = findNavigationController() {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = true
+            }
+        }
+    }
+
+    private func findNavigationController() -> UINavigationController? {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = scene.windows.first,
+              let rootViewController = window.rootViewController else {
+            return nil
+        }
+        return findNavigationController(from: rootViewController)
+    }
+    
+    private func findNavigationController(from viewController: UIViewController) -> UINavigationController? {
+        if let navController = viewController as? UINavigationController {
+            return navController
+        }
+        for child in viewController.children {
+            if let navController = findNavigationController(from: child) {
+                return navController
+            }
+        }
+        return nil
+    }
+    
+    var searchResults: [TeamStatus] {
+        if searchText.isEmpty {
+            return pickListObjs
+        } else {
+            return pickListObjs.filter { String($0.teamNumber).contains(searchText) }
         }
     }
     

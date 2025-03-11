@@ -26,13 +26,13 @@ struct beartracksApp: App {
 #if targetEnvironment(macCatalyst)
                 NavigationView {
                     List(selection: $appState.selectedTab) {
-                        Label("teams", systemImage: "list.number")
+                        Label("Teams", systemImage: "list.number")
                             .tag(Tab.teams)
-                        Label("matches", systemImage: "calendar")
+                        Label("Matches", systemImage: "calendar")
                             .tag(Tab.matches)
-                        Label("data", systemImage: "magnifyingglass")
+                        Label("Data", systemImage: "magnifyingglass")
                             .tag(Tab.data)
-                        Label("settings", systemImage: "gear")
+                        Label("Settings", systemImage: "gear")
                             .tag(Tab.settings)
                     }
                     .navigationTitle("bearTracks")
@@ -40,15 +40,19 @@ struct beartracksApp: App {
                     case .teams:
                         Teams()
                             .environmentObject(appState)
+                            .navigationTitle("Teams")
                     case .matches:
                         MatchList()
                             .environmentObject(appState)
+                            .navigationTitle("Matches")
                     case .data:
                         DataView()
                             .environmentObject(appState)
+                            .navigationTitle("Data")
                     case .settings:
                         SettingsView()
                             .environmentObject(appState)
+                            .navigationTitle("Settings")
                     case nil:
                         LoginView()
                             .environmentObject(appState)

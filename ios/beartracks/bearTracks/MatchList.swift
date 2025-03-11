@@ -35,6 +35,9 @@ struct MatchList: View {
                                     Spacer()
                                 }
                             }
+#if targetEnvironment(macCatalyst)
+                            .padding(.vertical)
+#endif
                         })
 #if os(iOS)
                         .listRowBackground(UIDevice.current.userInterfaceIdiom == .pad ? Color.primary.colorInvert() : nil)
@@ -84,7 +87,6 @@ struct MatchList: View {
                             Text("Loading...")
                                 .padding(.bottom)
                         }
-                        .navigationTitle("Matches")
                         .onAppear { appState.fetchMatchJson() }
                     }
                 }

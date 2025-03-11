@@ -121,7 +121,7 @@ struct TeamViewStats: View {
                     Spacer()
                 }
             }
-            .navigationTitle("\(teamDetail.teamNumber) stats")
+            .navigationTitle("\(teamDetail.teamNumber) Stats")
         }
     }
     

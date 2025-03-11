@@ -23,7 +23,7 @@ struct AllianceSimulator: View {
     @State private var eventCodeInput: String = UserDefaults().string(forKey: "eventCode") ?? ""
     
     var body: some View {
-        NavigationView {
+        VStack {
             VStack {
                 if allTeams.status == 0 {
                     Spacer()
@@ -201,6 +201,7 @@ struct AllianceSimulator: View {
             }
             .navigationTitle("Alliance Simulator")
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     func getAllTeams() {

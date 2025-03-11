@@ -94,23 +94,8 @@ struct SettingsView: View {
 #if !os(watchOS)
                 Section {
                     NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
-                    Button(action: {
-                        showAllianceCover.toggle()
-                    }, label: {
-                        Label("Alliance Simulator", systemImage: "slider.horizontal.3").labelStyle(.titleOnly)
-                    })
-                    .fullScreenCover(isPresented: $showAllianceCover) {
-                        AllianceSimulator()
-                            .environmentObject(appState)
-                    }
-                    Button(action: {
-                        showSelectionCover.toggle()
-                    }, label: {
-                        Label("Alliance Selection", systemImage: "checklist").labelStyle(.titleOnly)
-                    })
-                    .fullScreenCover(isPresented: $showSelectionCover) {
-                        AllianceSelection()
-                    }
+                    NavigationLink(destination: AllianceSimulator(), label: { Label("Alliance Simulator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
+                    NavigationLink(destination: AllianceSelection(), label: { Label("Alliance Selection", systemImage: "arrow.forward").labelStyle(.titleOnly) })
                 }
 #endif
                 Section {
