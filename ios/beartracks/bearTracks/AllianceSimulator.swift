@@ -11,6 +11,8 @@ enum SimulationType {
     case alliance, match
 }
 
+// this file is disgusting but i am too lazy to fix it
+
 struct AllianceSimulator: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var appState: AppState

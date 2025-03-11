@@ -17,6 +17,7 @@ public enum ReleaseState {
 }
 
 struct GameView: View {
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
@@ -47,7 +48,13 @@ struct GameView: View {
             } else {
                 Text("Please select a match and team number on the start tab.")
                     .padding()
-                    .navigationTitle("Match Scouting")
+                Button(action: {
+                    controller.advanceToTab(tab: .start)
+                }, label: {
+                    Label("To Start", systemImage: "1.circle").labelStyle(.titleOnly)
+                })
+                .buttonStyle(.bordered).padding()
+                .navigationTitle("Match Scouting")
             }
         }
     }
@@ -56,6 +63,7 @@ struct GameView: View {
 struct GameViewButtonTimer: View {
     var geometry: GeometryProxy
     var controller: ScoutingController
+    @Environment(\.colorScheme) var colorScheme
     @State var holdLengths: (TimeInterval, TimeInterval, TimeInterval) = (0.0, 0.0, 0.0)
     @State var timer: Timer?
     @State var actionState: ActionState = .neutral
@@ -163,7 +171,10 @@ struct GameViewButtonTimer: View {
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 1", systemImage: "1.circle.fill")
-                            .foregroundStyle(Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255))
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )
                             .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
@@ -174,8 +185,10 @@ struct GameViewButtonTimer: View {
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 3", systemImage: "3.circle.fill")
-                            .foregroundStyle(Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255))
-                            .labelStyle(.iconOnly)
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )                            .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
                     }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
@@ -187,8 +200,10 @@ struct GameViewButtonTimer: View {
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 2", systemImage: "2.circle.fill")
-                            .foregroundStyle(Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255))
-                            .labelStyle(.iconOnly)
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )                            .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
                     }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
@@ -198,8 +213,10 @@ struct GameViewButtonTimer: View {
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }, label: {
                         Label("Level 4", systemImage: "4.circle.fill")
-                            .foregroundStyle(Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255))
-                            .labelStyle(.iconOnly)
+                            .foregroundStyle(
+                                colorScheme == .dark ? Color.init(red: 251 / 255, green: 241 / 255, blue: 199 / 255) :
+                                Color.init(red: 29 / 255, green: 32 / 255, blue: 33 / 255)
+                            )                            .labelStyle(.iconOnly)
                             .font(.custom("button", size: geometry.size.width * 0.1))
                             .frame(width: geometry.size.width * 0.175, height: geometry.size.width * 0.175)
                     }).buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 5))
