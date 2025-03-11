@@ -89,3 +89,14 @@ pub async fn send_general_notification_to_all(auth_pool: &db_auth::Pool, data: w
 
     Ok(true)
 }
+
+pub async fn send_general_notification_to_user(auth_pool: &db_auth::Pool, data: web::Json<NotificationSendTeam>, client: Arc<Mutex<Client>>) -> Result<bool, Error> {
+    let builder = DefaultNotificationBuilder::new()
+        .set_title(&data.title)
+        .set_body(&data.body)
+        .set_sound("default")
+        .set_badge(0u32);
+    let _notification_send = db_auth::send_notification_to_user(&auth_pool, data.team, builder.clone(), client.lock().await).await;
+
+    Ok(true)
+}

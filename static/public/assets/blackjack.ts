@@ -92,10 +92,8 @@ function setupBoard() {
     (document.getElementsByClassName("player1")[0] as HTMLImageElement).src = `${(document.getElementById("deck") as HTMLInputElement).value}card_back.png`;
     (document.getElementsByClassName("player2")[0] as HTMLImageElement).src = `${(document.getElementById("deck") as HTMLInputElement).value}card_back.png`;
 
-    if ((document.getElementById("deck") as HTMLInputElement).value === "static/assets/gruvcards/") {
-        document.body.classList.add("gruvboxBlackjack");
-        (document.getElementById("themeMeta") as HTMLMetaElement).content = "#10131d";
-    }
+    document.body.classList.add("gruvboxBlackjack");
+    (document.getElementById("themeMeta") as HTMLMetaElement).content = "#10131d";
 }
 
 function drawCard(src: string, card: string) {
@@ -106,4 +104,8 @@ function playSound(type: string) {
     const number = type === "tie" ? Math.floor(Math.random() * 6) : Math.floor(Math.random() * 12);
     var clip = new Audio("static/assets/sounds/min/" + type + "_" + number + ".min.mp3");
     clip.play();
+}
+
+document.onload = () => {
+    console.log(`%c bearTracks                                      "What's 18 U.S.C. § 1955?"\n   █████████    █████████    █████████  █████ ██████   █████    ███████   \n  ███░░░░░███  ███░░░░░███  ███░░░░░███░░███ ░░██████ ░░███   ███░░░░░███ \n ███     ░░░  ░███    ░███ ░███    ░░░  ░███  ░███░███ ░███  ███     ░░███\n░███          ░███████████ ░░█████████  ░███  ░███░░███░███ ░███      ░███\n░███          ░███░░░░░███  ░░░░░░░░███ ░███  ░███ ░░██████ ░███      ░███\n░░███     ███ ░███    ░███  ███    ░███ ░███  ░███  ░░█████ ░░███     ███ \n ░░█████████  █████   █████░░█████████  █████ █████  ░░█████ ░░░███████░  \n  ░░░░░░░░░  ░░░░░   ░░░░░  ░░░░░░░░░  ░░░░░ ░░░░░    ░░░░░    ░░░░░░░    \nEducational Gambling℠                            proudly rigged since 2023`, 'font-family: monospace;');
 }

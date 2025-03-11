@@ -264,7 +264,7 @@ pub async fn get_team_numbers(pool: &Pool, season: String) -> Result<Vec<i64>, E
     .map_err(error::ErrorInternalServerError)
 }
 
-pub async fn get_team_numbers_by_event(pool: &Pool, season: String, event: String) -> Result<Vec<i64>, Error> {
+pub async fn _get_team_numbers_by_event(pool: &Pool, season: String, event: String) -> Result<Vec<i64>, Error> {
     // clone pool
     let pool = pool.clone();
 

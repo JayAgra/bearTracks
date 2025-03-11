@@ -1,9 +1,9 @@
 use actix_web::{error, web, Error};
-use rand::seq::SliceRandom;
+// use rand::seq::SliceRandom;
 use rusqlite::Statement;
 use serde::{Deserialize, Serialize};
 
-use crate::db_auth;
+// use crate::db_auth;
 use crate::db_main;
 use crate::stats;
 
@@ -62,6 +62,7 @@ pub struct FrcApiTeams {
     pub teams: Vec<FrcApiTeam>,
 }
 
+/*
 pub async fn get_owned_cards(pool: &db_auth::Pool, user: db_auth::User) -> Result<ClientInfo, Error> {
     let user_updated = db_auth::get_user_id(pool, user.id.to_string()).await?;
     if user_updated.data == "" {
@@ -210,12 +211,14 @@ pub async fn open_loot_box(auth_pool: &db_auth::Pool, main_pool: &db_main::Pool,
         Ok(-1)
     }
 }
+*/
 
 #[derive(Serialize, Deserialize)]
 pub struct CardsPostData {
     cards: Vec<i64>,
 }
 
+/*
 pub async fn set_held_cards(auth_pool: &db_auth::Pool, user_param: db_auth::User, data: &web::Json<CardsPostData>) -> Result<CardsPostData, Error> {
     let user_queried = db_auth::get_user_id(auth_pool, user_param.id.to_string()).await;
     if !user_queried.is_ok() {
@@ -247,6 +250,7 @@ pub async fn set_held_cards(auth_pool: &db_auth::Pool, user_param: db_auth::User
         }
     }
 }
+*/
 
 // 2024 only
 

@@ -36,7 +36,7 @@ To stop bearTracks, run
 ./service.sh stop
 ```
 ### license
-There is no license (Copyright © 2025 Jayen Agrawal. All rights reserved.). Email dev@jayagra.com for inquiries. By the GitHub TOS, you are permitted to view and fork the code. Everything beyond that, including but not limited to modification (public or private, even in your fork), distribution, and use in any form is prohibited without written permission.
+Copyright © 2025 Jayen Agrawal. All rights reserved. Email dev@jayagra.com for inquiries. By the GitHub TOS, you are permitted to view and fork the code. Everything beyond that, including but not limited to modification (public or private, even in your fork), distribution, and use in any form is prohibited without written permission.
 
 ## iOS & macOS apps
 
