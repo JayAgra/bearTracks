@@ -68,7 +68,7 @@ struct DataView: View {
                 } else {
                     if appState.dataJsonStatus.1 {
                         VStack {
-                            Label("Failute", systemImage: "xmark.seal.fill")
+                            Label("Failure", systemImage: "xmark.seal.fill")
                                 .padding(.bottom)
                                 .labelStyle(.iconOnly)
                                 .foregroundStyle(Color.pink)

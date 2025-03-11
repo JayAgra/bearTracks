@@ -53,7 +53,7 @@ struct ReviewView: View {
                                 VStack {
                                     Divider()
                                     ForEach($controller.matchTimes) { $matchTime in
-                                        if matchTime.score_type >= 4 && matchTime.score_type <= 8 {
+                                        if (matchTime.score_type >= 4 && matchTime.score_type <= 8) || matchTime.score_type == 31 {
                                             VStack {
                                                 HStack {
                                                     Picker("Type", selection: $matchTime.score_type) {

@@ -17,6 +17,8 @@ struct SettingsView: View {
     @State private var settingsOptions: [DataMetadata] = []
     @State private var showConfirm = false
     @State private var deletionData: (String, String) = ("", "")
+    @State private var showAllianceCover: Bool = false
+    @State private var showSelectionCover: Bool = false
     @EnvironmentObject var appState: AppState
     
     var body: some View {
@@ -92,6 +94,23 @@ struct SettingsView: View {
 #if !os(watchOS)
                 Section {
                     NavigationLink(destination: RegionalPoints(), label: { Label("Regional Points Calculator", systemImage: "arrow.forward").labelStyle(.titleOnly) })
+                    Button(action: {
+                        showAllianceCover.toggle()
+                    }, label: {
+                        Label("Alliance Simulator", systemImage: "slider.horizontal.3").labelStyle(.titleOnly)
+                    })
+                    .fullScreenCover(isPresented: $showAllianceCover) {
+                        AllianceSimulator()
+                            .environmentObject(appState)
+                    }
+                    Button(action: {
+                        showSelectionCover.toggle()
+                    }, label: {
+                        Label("Alliance Selection", systemImage: "checklist").labelStyle(.titleOnly)
+                    })
+                    .fullScreenCover(isPresented: $showSelectionCover) {
+                        AllianceSelection()
+                    }
                 }
 #endif
                 Section {
