@@ -9,6 +9,19 @@ use tokio;
 use crate::db_transact;
 use crate::{db_auth, Databases};
 
+
+/*  bearTracks                                      "What's 18 U.S.C. § 1955?"  */
+/*     █████████    █████████    █████████  █████ ██████   █████    ███████     */
+/*    ███░░░░░███  ███░░░░░███  ███░░░░░███░░███ ░░██████ ░░███   ███░░░░░███   */
+/*   ███     ░░░  ░███    ░███ ░███    ░░░  ░███  ░███░███ ░███  ███     ░░███  */
+/*  ░███          ░███████████ ░░█████████  ░███  ░███░░███░███ ░███      ░███  */
+/*  ░███          ░███░░░░░███  ░░░░░░░░███ ░███  ░███ ░░██████ ░███      ░███  */
+/*  ░░███     ███ ░███    ░███  ███    ░███ ░███  ░███  ░░█████ ░░███     ███   */
+/*   ░░█████████  █████   █████░░█████████  █████ █████  ░░█████ ░░░███████░    */
+/*    ░░░░░░░░░  ░░░░░   ░░░░░  ░░░░░░░░░  ░░░░░ ░░░░░    ░░░░░    ░░░░░░░      */
+/*  Educational Gambling℠                            proudly rigged since 2023  */
+
+
 const SPIN_THING_SPINS: [i64; 12] = [10, 20, 50, -15, -25, -35, -100, -50, 100, 250, -1000, 1250];
 
 pub async fn spin_thing(auth_pool: &db_auth::Pool, transact_pool: &db_transact::Pool, user: db_auth::User) -> Result<String, Error> {
@@ -151,7 +164,7 @@ impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError
                             self.game.player.hand = game_state.game.player.hand;
                             self.game.player.score = new_score;
                             // end game if player score is above or equal to 21
-                            if self.game.player.score >= 21 {
+                            if self.game.player.score > 21 {
                                 self.end_game(ctx);
                             }
                         }
@@ -270,6 +283,7 @@ impl BlackjackSession {
 
     // new card function
     fn new_card(&self) -> Card {
+        // actually random since the scout revolution of mid-2023 (just you wait)
         Card {
             // pick random suit
             suit: SUITS.choose(&mut rand::thread_rng()).unwrap().to_string(),

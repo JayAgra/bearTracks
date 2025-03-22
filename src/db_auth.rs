@@ -246,17 +246,17 @@ pub fn update_points(conn: Connection, user_id: i64, inc: i64) -> Result<db_main
     })
 }
 
-pub async fn update_user_data(pool: &Pool, user_id: i64, new_data: String) -> Result<db_main::Id, Error> {
+pub async fn _update_user_data(pool: &Pool, user_id: i64, new_data: String) -> Result<db_main::Id, Error> {
     let pool = pool.clone();
 
     let conn = web::block(move || pool.get()).await?.map_err(error::ErrorInternalServerError)?;
 
-    web::block(move || update_user_data_transaction(conn, user_id, new_data))
+    web::block(move || _update_user_data_transaction(conn, user_id, new_data))
         .await?
         .map_err(error::ErrorInternalServerError)
 }
 
-pub fn update_user_data_transaction(conn: Connection, user_id: i64, new_data: String) -> Result<db_main::Id, rusqlite::Error> {
+pub fn _update_user_data_transaction(conn: Connection, user_id: i64, new_data: String) -> Result<db_main::Id, rusqlite::Error> {
     let mut stmt: Statement<'_> = conn.prepare("UPDATE users SET data = ?1 WHERE id = ?2;")?;
     stmt.execute(params![new_data, user_id])?;
     Ok(db_main::Id {

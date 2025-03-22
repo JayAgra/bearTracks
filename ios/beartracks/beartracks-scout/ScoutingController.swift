@@ -39,6 +39,7 @@ class ScoutingController: ObservableObject {
          6 -
          */
     )
+    @Published public var cards: (Bool, Bool) = (false, false)
     // submit sheet
     @Published public var showSubmitSheet: Bool = false
     @Published public var submitSheetType: SubmitSheetType = .waiting

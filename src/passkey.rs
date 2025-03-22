@@ -21,33 +21,33 @@ type WebauthnResult<T> = Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
-    Unknown(WebauthnError),
-    SessionGet(SessionGetError),
-    SessionInsert(SessionInsertError),
+    Unknown,
+    SessionGet,
+    SessionInsert,
     CorruptSession,
-    BadRequest(WebauthnError),
+    BadRequest,
     UserNotFound,
     UserHasNoCredentials,
 }
 
 impl From<SessionGetError> for Error {
-    fn from(value: SessionGetError) -> Self {
-        Self::SessionGet(value)
+    fn from(_value: SessionGetError) -> Self {
+        Self::SessionGet
     }
 }
 
 impl From<SessionInsertError> for Error {
-    fn from(value: SessionInsertError) -> Self {
-        Self::SessionInsert(value)
+    fn from(_value: SessionInsertError) -> Self {
+        Self::SessionInsert
     }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Error::Unknown(_) => write!(f, "unknown webauthn error"),
-            Error::SessionGet(_) | Error::SessionInsert(_) => write!(f, "bad session"),
-            Error::BadRequest(_) => write!(f, "bad request"),
+            Error::Unknown => write!(f, "unknown webauthn error"),
+            Error::SessionGet | Error::SessionInsert => write!(f, "bad session"),
+            Error::BadRequest => write!(f, "bad request"),
             Error::UserNotFound => write!(f, "bad user"),
             Error::UserHasNoCredentials => write!(f, "no passkey registered"),
             Error::CorruptSession => write!(f, "bad session"),
@@ -83,12 +83,12 @@ pub async fn webauthn_start_registration(
         .start_passkey_registration(Uuid::from_u128(user.id as u128), &user.username, &user.username, existing_keys)
         .map_err(|err| {
             info!("challenge_register_start → {:?}", err);
-            Error::Unknown(err)
+            Error::Unknown
         })?;
 
     if let Err(err) = session.insert("reg_state", &reg_state) {
-        error!("Failed to save reg_state to session storage!");
-        return Err(Error::SessionInsert(err));
+        error!("Failed to save reg_state to session storage!\n{:?}", err);
+        return Err(Error::SessionInsert);
     };
 
     info!("[PASSKEY] registration challenge creation success");
@@ -111,12 +111,12 @@ pub async fn webauthn_finish_registration(
 
     let new_passkey = webauthn.finish_passkey_registration(&data, &reg_state).map_err(|e| {
         info!("challenge_register_finish → {:?}", e);
-        Error::BadRequest(e)
+        Error::BadRequest
     })?;
 
     let insert = db_auth::set_passkey(auth_pool, new_passkey, user.id).await;
     if insert.is_err() {
-        return Err(Error::Unknown(WebauthnError::CredentialPersistenceError));
+        return Err(Error::Unknown);
     }
 
     info!("[PASSKEY] register success");
@@ -145,8 +145,8 @@ pub async fn webauthn_start_authentication(
     }
 
     let (rcr, auth_state) = webauthn.start_passkey_authentication(&user_credentials).map_err(|e| {
-        info!("challenge_authenticate_start → {:?}", e);
-        Error::Unknown(e)
+        error!("challenge_authenticate_start → {:?}", e);
+        Error::Unknown
     })?;
 
     session.insert("auth_state", (username, auth_state))?;
@@ -168,14 +168,14 @@ pub async fn webauthn_finish_authentication(
 
     let _auth_result = webauthn.finish_passkey_authentication(&cred, &auth_state).map_err(|e| {
         info!("challenge_authenticate_finish → {:?}", e);
-        Error::BadRequest(e)
+        Error::BadRequest
     })?;
 
     identity.remember(username.clone());
 
     let target_user_temp = db_auth::get_user_username(&auth_pool, username.clone()).await;
     if target_user_temp.is_err() {
-        return Err(Error::BadRequest(WebauthnError::UserNotPresent));
+        return Err(Error::BadRequest);
     }
     let target_user = target_user_temp.unwrap();
 

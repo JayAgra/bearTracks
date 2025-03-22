@@ -27,6 +27,8 @@ class PitDataViewModel: ObservableObject {
     }
     
     func fetchDataJson(completionBlock: @escaping ([PitData]) -> Void) {
+        URLCache.shared.removeAllCachedResponses()
+        
         guard let url = URL(string: "https://beartracks.io/api/v1/data/pit/2025/ALL/ALL") else { return }
         
         var request = URLRequest(url: url)

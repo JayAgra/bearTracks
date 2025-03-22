@@ -607,6 +607,16 @@ async fn manage_post_access_key(req: HttpRequest, db: web::Data<Databases>, user
     }
 }
 
+async fn manage_post_user_message(db: web::Data<Databases>, user: db_auth::User, data: web::Json<apn::NotificationSendTeam>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
+    if user.admin == "true" {
+        Ok(HttpResponse::Ok()
+            .insert_header(("Cache-Control", "no-cache"))
+            .json(apn::send_general_notification_to_user(&db.auth, data, client.client.clone()).await?))
+    } else {
+        Ok(unauthorized_response())
+    }
+}
+
 async fn manage_post_team_message(db: web::Data<Databases>, user: db_auth::User, data: web::Json<apn::NotificationSendTeam>, client: web::Data<ApnClient>) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
@@ -675,6 +685,7 @@ async fn debug_health(session: web::Data<RwLock<Sessions>>) -> Result<HttpRespon
 
 // *** code retained if game-like features are relevant in future *** //
 
+/*
 // get all user's owned cards
 async fn _game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
@@ -684,25 +695,26 @@ async fn _game_get_cards(db: web::Data<Databases>, user: db_auth::User) -> Resul
 
 // get all user's owned cards (by a username)
 // ** NO AUTH **
-async fn _game_get_cards_by_username(db: web::Data<Databases>, req: HttpRequest) -> Result<HttpResponse, AWError> {
+async fn game_get_cards_by_username(db: web::Data<Databases>, req: HttpRequest) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::get_owned_cards_by_user(&db.auth, req.match_info().get("user").unwrap().parse().unwrap()).await?))
 }
 
 // get random team from scouted teams
-async fn _game_open_lootbox(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn game_open_lootbox(req: HttpRequest, db: web::Data<Databases>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::open_loot_box(&db.auth, &db.main, user, req.match_info().get("event").unwrap().parse().unwrap()).await?))
 }
 
 // set player's hand
-async fn _game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn game_set_hand(db: web::Data<Databases>, data: web::Json<game_api::CardsPostData>, user: db_auth::User) -> Result<HttpResponse, AWError> {
     Ok(HttpResponse::Ok()
         .insert_header(("Cache-Control", "no-cache"))
         .json(game_api::set_held_cards(&db.auth, user, &data).await?))
 }
+*/
 
 // ** NO AUTH **
 async fn game_get_team(req: HttpRequest, db: web::Data<Databases>, _user: db_auth::User) -> Result<HttpResponse, AWError> {
@@ -924,7 +936,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=604800"))
-                    .add(("X-bearTracks", "6.0.2")),
+                    .add(("X-bearTracks", "6.1.0")),
             )
             /* src  endpoints */
             // GET individual files
@@ -1142,7 +1154,11 @@ async fn main() -> io::Result<()> {
             // POST
             .service(
                 web::resource("/api/v1/manage/access_key/create/{key}/{team}")
-                    .route(web::post().to(manage_post_access_key)),
+                    .route(web::post().to(manage_post_access_key))
+            )
+            .service(
+                web::resource("/api/v1/manage/notify/user_message")
+                    .route(web::post().to(manage_post_user_message))
             )
             .service(
                 web::resource("/api/v1/manage/notify/team_message")
