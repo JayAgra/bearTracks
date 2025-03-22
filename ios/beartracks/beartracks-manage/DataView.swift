@@ -26,7 +26,7 @@ struct DataView: View {
                                         .font(.title)
                                         .padding(.leading)
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("match \(String(entry.Brief.match_num))")
+                                    Text("\(String(entry.Brief.match_num)) @ \(entry.Brief.event)")
                                         .font(.title)
                                         .padding(.trailing)
                                         .frame(maxWidth: .infinity, alignment: .trailing)

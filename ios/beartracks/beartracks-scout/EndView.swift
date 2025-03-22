@@ -27,8 +27,28 @@ struct EndView: View {
                         VStack {
                             VStack {
                                 Toggle("Park", isOn: $controller.switches.0)
+                                    .onChange(of: controller.switches.0) { _ in
+                                        if controller.switches.0 && (controller.switches.1 || controller.switches.2) {
+                                            controller.switches.1 = false; controller.switches.2 = false;
+                                        }
+                                    }
                                 Toggle("Shallow Cage", isOn: $controller.switches.1)
+                                    .onChange(of: controller.switches.1) { _ in
+                                        if controller.switches.1 && (controller.switches.0 || controller.switches.2) {
+                                            controller.switches.0 = false; controller.switches.2 = false;
+                                        }
+                                    }
                                 Toggle("Deep Cage", isOn: $controller.switches.2)
+                                    .padding(.bottom)
+                                    .onChange(of: controller.switches.2) { _ in
+                                        if controller.switches.2 && (controller.switches.0 || controller.switches.1) {
+                                            controller.switches.0 = false; controller.switches.1 = false;
+                                        }
+                                    }
+//                                Toggle("Yellow Card", isOn: $controller.cards.0)
+//                                    .tint(Color.yellow)
+//                                Toggle("Red Card", isOn: $controller.cards.1)
+//                                    .tint(Color.red)
                             }
                             .padding()
                             Text("Remember that the responses you type are public and visible by the team you are writing about. Responses are associated with your account.").padding().foregroundStyle(Color.yellow)

@@ -161,7 +161,7 @@ struct PitDataInput: View {
                     Picker("Cage", selection: $controller.numericals.4) {
                         Text("N/A").tag(0)
                         Text("Shallow").tag(1)
-                        Text("Deep").tag(1)
+                        Text("Deep").tag(2)
                     }
                     .pickerStyle(.menu)
                 }

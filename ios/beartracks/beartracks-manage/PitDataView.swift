@@ -22,14 +22,14 @@ struct PitDataView: View {
                         ForEach(dataItems.dataEntries, id: \.id) { entry in
                             VStack {
                                 HStack {
-                                    Text("\(String(entry.team))")
+                                    Text("\(String(entry.team)) @ \(entry.event)")
                                         .font(.title)
                                         .padding(.leading)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 HStack {
                                     Text(
-                                        "#\(String(entry.id)) • from \(String(entry.from_team)) (\(entry.name), #\(entry.user_id))"
+                                        "#\(String(entry.id)) • from \(String(entry.from_team)) (\(entry.name))"
                                     )
                                     .padding(.leading)
                                     .frame(maxWidth: .infinity, alignment: .leading)
