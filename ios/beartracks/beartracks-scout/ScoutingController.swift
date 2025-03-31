@@ -69,13 +69,13 @@ class ScoutingController: ObservableObject {
     func clearScore(scoreType: Int) {
         if times[0] != 0 || times[1] != 0 || times[2] != 0 {
             matchTimes.append(
-                MatchTime(score_type: scoreType, intake: times[0], travel: times[1], outtake: times[2]))
+                MatchTime(score_type: scoreType, intake: Double(round(10000 * times[0]) / 10000), travel: Double(round(10000 * times[1]) / 10000), outtake: Double(round(10000 * times[2]) / 10000)))
             times = [0, 0, 0]
         }
     }
     
     func addEndgameValue(type: Int, value: Double) {
-        matchTimes.append(MatchTime(score_type: type, intake: value, travel: value, outtake: value))
+        matchTimes.append(MatchTime(score_type: type, intake: Double(value), travel: Double(value), outtake: Double(value)))
     }
     
     func submitData(completionBlock: @escaping ((SubmitSheetType, String)) -> Void) {

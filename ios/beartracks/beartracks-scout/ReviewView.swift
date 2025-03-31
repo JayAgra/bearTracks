@@ -92,7 +92,7 @@ struct ReviewView: View {
                                         }
                                     }
                                     if controller.matchTimes.isEmpty {
-                                        Text("⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, do NOT submit the data and ensure you enter cycles for your next match. Application administrators will be notified of this submission, identifying you and your team as the submitter.")
+                                        Text("⚠️ You did not enter any cycles. If the robot completed no cycles, this is ok. Otherwise, DO NOT SUBMIT the data and ensure you enter cycles for your next match. Application administrators will be notified of this submission, identifying you and your team as the submitter.")
                                     }
                                 }
                                 .padding([.leading, .trailing, .bottom])

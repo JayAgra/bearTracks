@@ -16,7 +16,7 @@ class SettingsManager {
             "season": "2025",
             "darkMode": true,
             "leftHand": false,
-            "gameInterface2025": 0
+            "gameInterface2025": 1
         ]
         UserDefaults.standard.register(defaults: defaults)
     }
