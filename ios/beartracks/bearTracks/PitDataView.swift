@@ -180,7 +180,7 @@ struct PitDataIntViewer: View {
                         HStack {
                             Text(String("\(mergedData.id[index]) • \(mergedData.name[index]) (\(mergedData.from_team[index]))"))
                             Spacer()
-                            Text(String(textOptions[index]))
+                            Text(String(textOptions[safe: index] ?? "Invalid Data"))
                         }
                     }
                 }
@@ -195,7 +195,7 @@ struct PitDataIntViewer: View {
             HStack {
                 Text(label)
                 Spacer()
-                Label(String(textOptions[0]), systemImage: "exclamationmark.triangle.fill")
+                Label(String(textOptions[safe: data.first ?? 255] ?? "Invalid Data"), systemImage: "exclamationmark.triangle.fill")
                     .labelStyle(.titleOnly)
             }
         }
@@ -204,4 +204,10 @@ struct PitDataIntViewer: View {
 
 #Preview {
     PitDataView(teamNumber: 766)
+}
+
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        indices.contains(index) ? self[index] : nil
+    }
 }
