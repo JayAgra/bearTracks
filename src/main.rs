@@ -415,14 +415,14 @@ async fn manage_get_all_apn_tokens(db: web::Data<Databases>, user: db_auth::User
 }
 
 // data dump
-async fn manage_data_dump(db: web::Data<Databases>, user: db_auth::User, path: web::Path<String>) -> Result<HttpResponse, AWError> {
-    if user.admin == "true" {
+async fn manage_data_dump(db: web::Data<Databases>, /* user: db_auth::User,*/ path: web::Path<String>) -> Result<HttpResponse, AWError> {
+    // if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
             .json(db_main::execute(&db.main, db_main::MainData::GetAllData, path).await?))
-    } else {
-        Ok(unauthorized_response())
-    }
+    // } else {
+    //     Ok(unauthorized_response())
+    // }
 }
 
 async fn manage_refresh_cache(user: db_auth::User) -> Result<HttpResponse, AWError> {
@@ -936,7 +936,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=604800"))
-                    .add(("X-bearTracks", "6.1.0")),
+                    .add(("X-bearTracks", "6.1.1")),
             )
             /* src  endpoints */
             // GET individual files

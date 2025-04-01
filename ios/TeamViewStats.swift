@@ -61,6 +61,33 @@ struct TeamViewStats: View {
                     .padding([.top, .bottom])
                     HStack {
                         VStack {
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].level_0)))")
+                                .font(.title)
+                            Text("L1")
+                        }
+                        .frame(maxWidth: .infinity)
+                        VStack {
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].level_1)))")
+                                .font(.title)
+                            Text("L2")
+                        }
+                        .frame(maxWidth: .infinity)
+                        VStack {
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].level_2)))")
+                                .font(.title)
+                            Text("L3")
+                        }
+                        .frame(maxWidth: .infinity)
+                        VStack {
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].level_3)))")
+                                .font(.title)
+                            Text("L4")
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .padding([.top, .bottom])
+                    HStack {
+                        VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].algae)))")
                                 .font(.title)
                             Text("Algae")
