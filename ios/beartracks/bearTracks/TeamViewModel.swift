@@ -71,14 +71,7 @@ class TeamViewModel: ObservableObject {
     
     func fetchStatboticsTeamJson(completionBlock: @escaping (StatboticsTeamData) -> Void) {
         self.loadComplete.1 = false
-        guard
-            let url = URL(
-                string:
-                    "https://api.statbotics.io/v3/team_event/\(targetTeam)/\(UserDefaults().string(forKey: "season") ?? "2025")\(UserDefaults().string(forKey: "eventCode")?.lowercased() ?? "TEST")"
-            )
-        else {
-            return
-        }
+        guard let url = URL(string: "https://api.statbotics.io/v3/team_event/\(targetTeam)/\(UserDefaults().string(forKey: "season") ?? "2025")\(UserDefaults().string(forKey: "eventCode")?.lowercased() ?? "TEST")") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

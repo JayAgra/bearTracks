@@ -579,31 +579,6 @@ struct BarThingyViewAlliance: View {
     }
 }
 
-public struct AllTeamsList: Codable {
-    let status: Int
-    let teams: [BasicTeam]
-}
-
-public struct BasicTeam: Codable {
-    let number: Int
-    let nameShort: String
-}
-
-struct TeamList: Codable {
-    let teamCountTotal, teamCountPage: Int
-    let pageCurrent, pageTotal: Int
-    let teams: [TeamListTeamEntry]
-}
-
-struct TeamListTeamEntry: Codable {
-    let teamNumber: Int
-    let nameFull, nameShort: String
-    let city, stateProv, country: String
-    let rookieYear: Int
-    let robotName, schoolName, website: String
-    let homeCMP: String?
-}
-
 #Preview {
     AllianceSimulator()
 }

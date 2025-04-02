@@ -68,13 +68,13 @@ struct PitDataView: View {
                                 }
                                 Section {
                                     Text("Team's Estimations").bold()
-                                    PitDataIntViewer(data: mergedData.estimated_cycles, textOptions: mergedData.estimated_cycles.map { String($0) }, label: "Cycles/Game", mergedData: mergedData)
-                                    PitDataIntViewer(data: mergedData.estimated_cycles, textOptions: mergedData.auto_algae.map { String($0) }, label: "Auto Algae", mergedData: mergedData)
-                                    PitDataIntViewer(data: mergedData.estimated_cycles, textOptions: mergedData.auto_coral.map { String($0) }, label: "Auto Coral", mergedData: mergedData)
+                                    PitDataIntViewer(data: mergedData.estimated_cycles.indices.map { $0 }, textOptions: mergedData.estimated_cycles.map { String($0) }, label: "Cycles/Game", mergedData: mergedData)
+                                    PitDataIntViewer(data: mergedData.estimated_cycles.indices.map { $0 }, textOptions: mergedData.auto_algae.map { String($0) }, label: "Auto Algae", mergedData: mergedData)
+                                    PitDataIntViewer(data: mergedData.estimated_cycles.indices.map { $0 }, textOptions: mergedData.auto_coral.map { String($0) }, label: "Auto Coral", mergedData: mergedData)
                                 }
                                 Section {
                                     ForEach(mergedData.notes.indices, id: \.self) { index in
-                                        Text("\(mergedData.notes[index])\n\n\(mergedData.name[index]) (\(String(mergedData.from_team[index]))")
+                                        Text("\(mergedData.notes[index])\n\n\(mergedData.name[index]) (\(String(mergedData.from_team[index])))")
                                     }
                                 }
                                 CarouselView(imagesUrls: mergedData.image_ids)

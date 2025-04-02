@@ -25,9 +25,6 @@ struct MatchDetailView: View {
             if appState.matchJson.count != 0 && appState.matchJson.count >= match {
                 if teams.count == 6 {
                     ScrollView {
-                        Text("Match \(String(match))")
-                            .font(.largeTitle)
-                            .padding()
                         Text("+\(calculateWinner().0)%")
                             .font(.title)
                             .foregroundStyle(calculateWinner().1 ? Color.red : Color.blue)
