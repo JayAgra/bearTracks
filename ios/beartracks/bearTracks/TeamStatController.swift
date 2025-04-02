@@ -8,7 +8,7 @@
 import Foundation
 
 enum StatType {
-  case mean, first, median, third, decay
+    case mean, first, median, third, decay
 }
 
 class TeamStatController: ObservableObject {

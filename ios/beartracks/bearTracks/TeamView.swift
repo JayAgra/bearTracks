@@ -73,6 +73,15 @@ struct TeamView: View {
                             Text("Pit Scouting Data")
                         }
                     }
+                    if #available(iOS 18.0, *) {
+                        NavigationLink(destination: TeamHistoryGraph(teamNumber: Int(dataItems.targetTeam) ?? 0).navigationTitle("Charts")) {
+                            HStack {
+                                Text("Graphs")
+                            }
+                        }
+                    } else {
+                        Text("Upgrade to iOS 18 or later to see graphs.")
+                    }
 #endif
                     NavigationLink(destination: TeamViewStats(teamNum: dataItems.targetTeam).environmentObject(appState).navigationBarTitleDisplayMode(.automatic)) {
                         HStack {
