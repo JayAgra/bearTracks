@@ -158,7 +158,7 @@ class ScoutingController: ObservableObject {
     }
     
     func resetControllerData() {
-        self.switches = (false, false, false, 0, 0, 0, 0)
+        self.switches = (false, false, false, 0, 0, 0, 0, false)
         self.teamNumber = "--"
         self.times = [0, 0, 0]
         self.matchTimes = []
