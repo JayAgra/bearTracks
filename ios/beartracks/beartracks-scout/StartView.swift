@@ -62,6 +62,8 @@ struct StartView: View {
                         if controller.matchNumber != 0 && controller.teamNumber != "--" {
                             Section {
                                 Text("Autonomous Period")
+                                Toggle("Leave", isOn: $controller.switches.7)
+                                    .padding(.bottom)
                                 Stepper {
                                     Text("Coral handled (\(controller.switches.5))")
                                 } onIncrement: {
