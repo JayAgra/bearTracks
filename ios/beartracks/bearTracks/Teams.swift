@@ -177,15 +177,15 @@ struct Teams: View {
                                     .padding(.bottom)
                             }
                             .navigationTitle("Teams")
+                            .onAppear {
+                                appState.fetchTeamsJson()
+                            }
                         }
                     }
                 }
             }
         }
         .refreshable {
-            appState.fetchTeamsJson()
-        }
-        .onAppear {
             appState.fetchTeamsJson()
         }
     }

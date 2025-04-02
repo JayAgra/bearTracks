@@ -74,6 +74,7 @@ struct SettingsView: View {
                         }
                         .pickerStyle(.navigationLink)
                         .onChange(of: eventCodeInput) { value in
+                            appState.fetchTeamsJson()
                             UserDefaults().set(eventCodeInput, forKey: "eventCode")
                         }
                     } else {
@@ -92,6 +93,7 @@ struct SettingsView: View {
                         .pickerStyle(.menu)
 #endif
                         .onChange(of: eventCodeInput) { value in
+                            appState.fetchTeamsJson()
                             UserDefaults().set(eventCodeInput, forKey: "eventCode")
                         }
                     }
