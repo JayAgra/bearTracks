@@ -8,6 +8,22 @@
 import Combine
 import Foundation
 
+public struct AllTeamListStatus {
+    let status: Int
+    let teams: [FrcApiBasicTeam]
+}
+
+extension Array where Element == FrcApiBasicTeam {
+    func nameShort(for team: Int) -> String {
+        return self.first(where: { $0.number == team })?.nameShort ?? "Team \(String(team))"
+    }
+}
+
+public struct FrcApiBasicTeam {
+    let number: Int
+    let nameShort: String
+}
+
 class AppState: ObservableObject {
 #if targetEnvironment(macCatalyst)
     @Published public var selectedTab: Tab? = .teams
@@ -15,6 +31,7 @@ class AppState: ObservableObject {
 #else
     @Published public var selectedTab: Tab = .teams
 #endif
+    @Published public var allTeams: [FrcApiBasicTeam] = []
     @Published public var loginRequired: Bool = true
     @Published public var matchJson: [Match] = []
     @Published public var dataEntries: [DataEntry] = []
@@ -133,6 +150,7 @@ class AppState: ObservableObject {
     }
     
     func fetchTeamsJson() {
+        self.teamsLoadStatus = (false, false, false)
         guard let url = URL(string: "https://beartracks.io/api/v1/data/teams/\(UserDefaults().string(forKey: "season") ?? "2025")/\(UserDefaults().string(forKey: "eventCode") ?? "TEST")") else { return }
         
         sharedSession.dataTask(with: url) { data, _, error in
@@ -148,8 +166,8 @@ class AppState: ObservableObject {
                         }
                     }
                     DispatchQueue.main.async {
-                        self.teamsLoadStatus = (self.teamsLoadStatus.0, false, true)
                         self.teamsList = [result]
+                        self.getAllTeams()
                     }
                 } catch {
                     print("parse error \(error)")
@@ -164,6 +182,45 @@ class AppState: ObservableObject {
                 }
             }
         }.resume()
+    }
+    
+    func getAllTeams() {
+        self.allTeams = []
+        guard let url = URL(string:"https://beartracks.io/api/v1/events/teams/\(UserDefaults.standard.string(forKey: "season") ?? "2025")/\(UserDefaults.standard.string(forKey: "eventCode") ?? "TEST")")
+        else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.httpShouldHandleCookies = true
+        let requestTask = sharedSession.dataTask(with: request) {
+            (data: Data?, response: URLResponse?, error: Error?) in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let result = try decoder.decode(TeamList.self, from: data)
+                    DispatchQueue.main.async {
+                        self.allTeams = result.teams.map{ FrcApiBasicTeam(number: $0.teamNumber, nameShort: $0.nameShort) }
+                        let allTeamSet =  Set(self.teamsList[0].map { $0.team.team })
+                        for registeredTeam in self.allTeams {
+                            if !allTeamSet.contains(registeredTeam.number) {
+                                self.teamsList[0].append(TeamElement(team: TeamEl(id: registeredTeam.number, team: registeredTeam.number, weight: "0,0,0,0,0,0")))
+                            }
+                        }
+                        self.teamsLoadStatus = (false, false, true)
+                    }
+                } catch {
+                    print(error)
+                    DispatchQueue.main.sync {
+                        self.teamsLoadStatus.1 = true
+                    }
+                }
+            } else {
+                DispatchQueue.main.sync {
+                    self.teamsLoadStatus.1 = true
+                }
+            }
+        }
+        requestTask.resume()
     }
 }
 
@@ -250,3 +307,28 @@ struct TeamEl: Codable {
 }
 
 typealias TeamData = [TeamElement]
+
+public struct AllTeamsList: Codable {
+    let status: Int
+    let teams: [BasicTeam]
+}
+
+public struct BasicTeam: Codable {
+    let number: Int
+    let nameShort: String
+}
+
+struct TeamList: Codable {
+    let teamCountTotal, teamCountPage: Int
+    let pageCurrent, pageTotal: Int
+    let teams: [TeamListTeamEntry]
+}
+
+struct TeamListTeamEntry: Codable {
+    let teamNumber: Int
+    let nameFull, nameShort: String
+    let city, stateProv, country: String
+    let rookieYear: Int
+    let robotName, schoolName, website: String
+    let homeCMP: String?
+}

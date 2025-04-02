@@ -25,39 +25,77 @@ struct SettingsView: View {
         NavigationView {
             Form {
                 Section {
-                    Picker("Team Number", selection: $teamNumberInput) {
-                        if !settingsOptions.isEmpty {
-                            ForEach(settingsOptions[0].teams, id: \.self) { team in
-                                Text(team)
-                                    .tag(team)
+                    if #available(iOS 16.0, *) {
+                        Picker("Team Number", selection: $teamNumberInput) {
+                            if !settingsOptions.isEmpty {
+                                ForEach(settingsOptions[0].teams, id: \.self) { team in
+                                    Text(team)
+                                        .tag(team)
+                                }
+                            } else {
+                                Text(teamNumberInput)
+                                    .tag(teamNumberInput)
                             }
-                        } else {
-                            Text(teamNumberInput)
-                                .tag(teamNumberInput)
+                        }
+                        .pickerStyle(.navigationLink)
+                        .onChange(of: teamNumberInput) { value in
+                            UserDefaults().set(teamNumberInput, forKey: "teamNumber")
+                        }
+                    } else {
+                        Picker("Team Number", selection: $teamNumberInput) {
+                            if !settingsOptions.isEmpty {
+                                ForEach(settingsOptions[0].teams, id: \.self) { team in
+                                    Text(team)
+                                        .tag(team)
+                                }
+                            } else {
+                                Text(teamNumberInput)
+                                    .tag(teamNumberInput)
+                            }
+                        }
+#if !os(watchOS)
+                        .pickerStyle(.menu)
+#endif
+                        .onChange(of: teamNumberInput) { value in
+                            UserDefaults().set(teamNumberInput, forKey: "teamNumber")
                         }
                     }
-#if !os(watchOS)
-                    .pickerStyle(.menu)
-#endif
-                    .onChange(of: teamNumberInput) { value in
-                        UserDefaults().set(teamNumberInput, forKey: "teamNumber")
-                    }
-                    Picker("Event Code", selection: $eventCodeInput) {
-                        if !settingsOptions.isEmpty {
-                            ForEach(settingsOptions[0].events, id: \.self) { event_code in
-                                Text(event_code)
-                                    .tag(event_code)
+                    if #available(iOS 16.0, *) {
+                        Picker("Event Code", selection: $eventCodeInput) {
+                            if !settingsOptions.isEmpty {
+                                ForEach(settingsOptions[0].events, id: \.self) { event_code in
+                                    Text(event_code)
+                                        .tag(event_code)
+                                }
+                            } else {
+                                Text(eventCodeInput)
+                                    .tag(eventCodeInput)
                             }
-                        } else {
-                            Text(eventCodeInput)
-                                .tag(eventCodeInput)
                         }
-                    }
+                        .pickerStyle(.navigationLink)
+                        .onChange(of: eventCodeInput) { value in
+                            appState.fetchTeamsJson()
+                            UserDefaults().set(eventCodeInput, forKey: "eventCode")
+                        }
+                    } else {
+                        Picker("Event Code", selection: $eventCodeInput) {
+                            if !settingsOptions.isEmpty {
+                                ForEach(settingsOptions[0].events, id: \.self) { event_code in
+                                    Text(event_code)
+                                        .tag(event_code)
+                                }
+                            } else {
+                                Text(eventCodeInput)
+                                    .tag(eventCodeInput)
+                            }
+                        }
 #if !os(watchOS)
-                    .pickerStyle(.menu)
+                        .pickerStyle(.menu)
 #endif
-                    .onChange(of: eventCodeInput) { value in
-                        UserDefaults().set(eventCodeInput, forKey: "eventCode")
+                        .onChange(of: eventCodeInput) { value in
+                            appState.fetchTeamsJson()
+                            UserDefaults().set(eventCodeInput, forKey: "eventCode")
+                        }
                     }
                     Picker("Season", selection: $seasonInput) {
                         if !settingsOptions.isEmpty {
@@ -74,8 +112,7 @@ struct SettingsView: View {
                     .pickerStyle(.menu)
 #endif
                     .onChange(of: seasonInput) { value in
-                        UserDefaults().set(
-                            seasonInput, forKey: "season")
+                        UserDefaults().set(seasonInput, forKey: "season")
                     }
                 }
                 Section {

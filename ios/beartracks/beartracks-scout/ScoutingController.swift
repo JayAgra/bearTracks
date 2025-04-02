@@ -27,8 +27,8 @@ class ScoutingController: ObservableObject {
     @Published public var defense: String = "No"
     @Published public var driving: String = ""
     @Published public var overall: String = ""
-    @Published public var switches: (Bool, Bool, Bool, Int, Int, Int, Int) = (
-        false, false, false, 0, 0, 0, 0
+    @Published public var switches: (Bool, Bool, Bool, Int, Int, Int, Int, Bool) = (
+        false, false, false, 0, 0, 0, 0, false
         /*
          0 - park
          1 - climb
@@ -37,6 +37,7 @@ class ScoutingController: ObservableObject {
          4 - coral handled, auto period
          5 - auto period scores
          6 -
+         7 - auto leave bool
          */
     )
     @Published public var cards: (Bool, Bool) = (false, false)
@@ -83,6 +84,7 @@ class ScoutingController: ObservableObject {
         localTimeCopy.append(MatchTime(score_type: 9, intake: switches.0 ? 1 : 0, travel: switches.0 ? 1 : 0, outtake: switches.0 ? 1 : 0)) // park
         localTimeCopy.append(MatchTime(score_type: 10, intake: switches.1 ? 1 : 0, travel: switches.1 ? 1 : 0, outtake: switches.1 ? 1 : 0)) // climb
         localTimeCopy.append(MatchTime(score_type: 11, intake: switches.2 ? 1 : 0, travel: switches.2 ? 1 : 0, outtake: switches.2 ? 1 : 0)) // climb deep
+        localTimeCopy.append(MatchTime(score_type: 12, intake: switches.7 ? 1 : 0, travel: switches.7 ? 1 : 0, outtake: switches.7 ? 1 : 0)) // auto leave
         localTimeCopy.append(MatchTime(score_type: 14, intake: Double(switches.4), travel: Double(switches.4), outtake: Double(switches.4))) // algae handled auto
         localTimeCopy.append(MatchTime(score_type: 15, intake: Double(switches.5), travel: Double(switches.5), outtake: Double(switches.5))) // coral handled
         localTimeCopy.append(MatchTime(score_type: 13, intake: Double(switches.6), travel: Double(switches.6), outtake: Double(switches.6))) // auto scores
@@ -156,7 +158,7 @@ class ScoutingController: ObservableObject {
     }
     
     func resetControllerData() {
-        self.switches = (false, false, false, 0, 0, 0, 0)
+        self.switches = (false, false, false, 0, 0, 0, 0, false)
         self.teamNumber = "--"
         self.times = [0, 0, 0]
         self.matchTimes = []

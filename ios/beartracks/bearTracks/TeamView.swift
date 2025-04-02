@@ -13,73 +13,84 @@ struct TeamView: View {
     
     var body: some View {
         VStack {
-            if !dataItems.teamMatches.isEmpty {
-                List {
+            
+            List {
 #if !os(watchOS)
-                    Section {
-                        VStack {
-                            if dataItems.teamData.isEmpty {
-                                HStack { Spacer(); ProgressView(); Spacer(); }
-                            } else {
-                                HStack {
-                                    VStack {
-                                        Text(String(dataItems.teamData.first?.record?.qual?.wins ?? 0))
-                                            .font(.title)
-                                        Text("Wins")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    VStack {
-                                        Text(String(dataItems.teamData.first?.record?.qual?.losses ?? 0))
-                                            .font(.title)
-                                        Text("Losses")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    VStack {
-                                        Text(String(dataItems.teamData.first?.record?.qual?.ties ?? 0))
-                                            .font(.title)
-                                        Text("Ties")
-                                    }
-                                    .frame(maxWidth: .infinity)
+                Text("\(appState.allTeams.nameShort(for: Int(dataItems.targetTeam) ?? 0))")
+                Section {
+                    VStack {
+                        if dataItems.teamData.isEmpty {
+                            HStack { Spacer(); VStack { ProgressView(); Text("Loading third-party data..."); }; Spacer(); }
+                        } else {
+                            HStack {
+                                VStack {
+                                    Text(String(dataItems.teamData.first?.record?.qual?.wins ?? 0))
+                                        .font(.title)
+                                    Text("Wins")
                                 }
-                                .padding(.bottom)
-                                HStack {
-                                    VStack {
-                                        Text(String(dataItems.teamData.first?.record?.qual?.rank ?? 99))
-                                            .font(.title)
-                                        Text("Rank")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    VStack {
-                                        Text(String(dataItems.teamData.first?.record?.qual?.rps ?? 0))
-                                            .font(.title)
-                                        Text("RPs")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    VStack {
-                                        Text(String(format: "%.1f", dataItems.teamData.first?.record?.qual?.rps_per_match ?? 0.0))
-                                            .font(.title)
-                                        Text("RPs / match")
-                                    }
-                                    .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text(String(dataItems.teamData.first?.record?.qual?.losses ?? 0))
+                                        .font(.title)
+                                    Text("Losses")
                                 }
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text(String(dataItems.teamData.first?.record?.qual?.ties ?? 0))
+                                        .font(.title)
+                                    Text("Ties")
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .padding(.bottom)
+                            HStack {
+                                VStack {
+                                    Text(String(dataItems.teamData.first?.record?.qual?.rank ?? 99))
+                                        .font(.title)
+                                    Text("Rank")
+                                }
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text(String(dataItems.teamData.first?.record?.qual?.rps ?? 0))
+                                        .font(.title)
+                                    Text("RPs")
+                                }
+                                .frame(maxWidth: .infinity)
+                                VStack {
+                                    Text(String(format: "%.1f", dataItems.teamData.first?.record?.qual?.rps_per_match ?? 0.0))
+                                        .font(.title)
+                                    Text("RPs / match")
+                                }
+                                .frame(maxWidth: .infinity)
                             }
                         }
                     }
-                    Section {
+                }
+                Section {
 #if !os(watchOS)
-                        NavigationLink(destination: PitDataView(teamNumber: Int(dataItems.targetTeam) ?? 0)) {
-                            HStack {
-                                Text("Pit Scouting Data")
-                            }
-                        }
-#endif
-                        NavigationLink(destination: TeamViewStats(teamNum: dataItems.targetTeam).environmentObject(appState).navigationBarTitleDisplayMode(.automatic)) {
-                            HStack {
-                                Text("Additional Details")
-                            }
+                    NavigationLink(destination: PitDataView(teamNumber: Int(dataItems.targetTeam) ?? 0)) {
+                        HStack {
+                            Text("Pit Scouting Data")
                         }
                     }
+                    if #available(iOS 18.0, *) {
+                        NavigationLink(destination: TeamHistoryGraph(teamNumber: Int(dataItems.targetTeam) ?? 0).navigationTitle("Charts")) {
+                            HStack {
+                                Text("Graphs")
+                            }
+                        }
+                    } else {
+                        Text("Upgrade to iOS 18 or later to see graphs.")
+                    }
 #endif
+                    NavigationLink(destination: TeamViewStats(teamNum: dataItems.targetTeam).environmentObject(appState).navigationBarTitleDisplayMode(.automatic)) {
+                        HStack {
+                            Text("Additional Details")
+                        }
+                    }
+                }
+#endif
+                if !dataItems.teamMatches.isEmpty {
                     Section {
                         ForEach(0..<dataItems.teamMatches.count, id: \.self) { index in
                             NavigationLink(destination: {
@@ -120,14 +131,15 @@ struct TeamView: View {
 #endif
                         }
                     }
-                }
-            } else {
-                if dataItems.loadComplete.0 && dataItems.loadComplete.1 && (dataItems.teamData.isEmpty || dataItems.teamMatches.isEmpty) {
-                    Label("Loading failed", systemImage: "xmark.seal.fill").navigationTitle("Team \(String(dataItems.targetTeam))")
                 } else {
-                    Text("Loading team...").navigationTitle("Team \(String(dataItems.targetTeam))")
+                    if dataItems.loadComplete.0 && dataItems.loadComplete.1 && (dataItems.teamData.isEmpty || dataItems.teamMatches.isEmpty) {
+                        Label("Match data loading failed, or there was no data found for this team.", systemImage: "xmark.seal.fill").navigationTitle("Team \(String(dataItems.targetTeam))")
+                    } else {
+                        HStack { Spacer(); ProgressView(); Spacer(); }
+                    }
                 }
             }
+            
         }
         .navigationTitle("Team \(String(dataItems.targetTeam))")
     }

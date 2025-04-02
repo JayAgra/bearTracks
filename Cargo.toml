@@ -1,6 +1,6 @@
 [package]
 name = "bear_tracks"
-version = "6.1.0"
+version = "6.1.1"
 edition = "2021"
 authors = ["Jayen Agrawal"]
 description = "a scouting app for frc"

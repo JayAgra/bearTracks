@@ -16,7 +16,7 @@ struct Teams: View {
     var body: some View {
         VStack {
             NavigationView {
-                if !appState.teamsList.isEmpty && !appState.teamsList[0].isEmpty {
+                if !appState.teamsList.isEmpty && !appState.teamsList[0].isEmpty && !appState.allTeams.isEmpty {
                     List {
                         ForEach(Array(appState.teamsList[0].enumerated()), id: \.element.team.team) { index, team in
                             NavigationLink(tag: index, selection: self.$selectedTeam, destination: {
@@ -42,6 +42,14 @@ struct Teams: View {
                                             .padding(.trailing)
                                             .frame(maxWidth: .infinity, alignment: .trailing)
                                     }
+#if !os(watchOS)
+                                    HStack {
+                                        Spacer()
+                                        Text("\(appState.allTeams.nameShort(for: team.team.team))")
+                                            .font(.body)
+                                            .padding(.trailing)
+                                    }
+#endif
                                     HStack {
                                         ProgressView(
                                             value: max(team.performanceValue(type: performanceValue) ?? 0, 0),
@@ -169,6 +177,9 @@ struct Teams: View {
                                     .padding(.bottom)
                             }
                             .navigationTitle("Teams")
+                            .onAppear {
+                                appState.fetchTeamsJson()
+                            }
                         }
                     }
                 }
@@ -177,9 +188,11 @@ struct Teams: View {
         .refreshable {
             appState.fetchTeamsJson()
         }
+#if targetEnvironment(macCatalyst)
         .onAppear {
             appState.fetchTeamsJson()
         }
+#endif
     }
 }
 
