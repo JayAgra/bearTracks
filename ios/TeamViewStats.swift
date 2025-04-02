@@ -95,13 +95,14 @@ struct TeamViewStats: View {
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(Int(((teamDetail.teamData[0].leave ?? 0) * 100).rounded()))%")
-                            Text("Auto leave")
+                            Text("Auto Leave")
+                                .font(.title)
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(String(getRelevantData(item: teamDetail.teamData[0].auto_scores)))")
                                 .font(.title)
-                            Text("Auto scores")
+                            Text("Auto Scores")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -129,9 +130,9 @@ struct TeamViewStats: View {
                     .padding([.top, .bottom])
                     HStack {
                         VStack {
-                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].score))) pts")
+                            Text("\(String(getRelevantData(item: teamDetail.teamData[0].score)))")
                                 .font(.title)
-                            Text("Performance rating")
+                            Text("Performance Rating")
                         }
                         .frame(maxWidth: .infinity)
                     }

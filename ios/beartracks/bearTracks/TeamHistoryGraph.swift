@@ -31,7 +31,7 @@ struct TeamHistoryGraph: View {
                                 y: .value("Level 1", value[8])
                             )
                         }
-                    }.padding([.horizontal, .bottom]).chartYScale(domain: 0...1)
+                    }.padding([.horizontal, .bottom])
                     Text("Level 2 Coral").font(.title2).padding([.horizontal, .top])
                     Chart {
                         ForEach(sortedData(), id: \.0) { key, value in
@@ -40,7 +40,7 @@ struct TeamHistoryGraph: View {
                                 y: .value("Level 2", value[9])
                             )
                         }
-                    }.padding([.horizontal, .bottom]).chartYScale(domain: 0...1)
+                    }.padding([.horizontal, .bottom])
                     Text("Level 3 Coral").font(.title2).padding([.horizontal, .top])
                     Chart {
                         ForEach(sortedData(), id: \.0) { key, value in
@@ -49,7 +49,7 @@ struct TeamHistoryGraph: View {
                                 y: .value("Level 3", value[10])
                             )
                         }
-                    }.padding([.horizontal, .bottom]).chartYScale(domain: 0...1)
+                    }.padding([.horizontal, .bottom])
                     Text("Level 4 Coral").font(.title2).padding([.horizontal, .top])
                     Chart {
                         ForEach(sortedData(), id: \.0) { key, value in
@@ -58,7 +58,7 @@ struct TeamHistoryGraph: View {
                                 y: .value("Level 4", value[11])
                             )
                         }
-                    }.padding([.horizontal, .bottom]).chartYScale(domain: 0...1)
+                    }.padding([.horizontal, .bottom])
                     Text("Algae").font(.title2).padding([.horizontal, .top])
                     Chart {
                         ForEach(sortedData(), id: \.0) { key, value in
@@ -67,7 +67,7 @@ struct TeamHistoryGraph: View {
                                 y: .value("Algae", value[7])
                             )
                         }
-                    }.padding([.horizontal, .bottom]).chartYScale(domain: 0...1)
+                    }.padding([.horizontal, .bottom])
                     Text("Auto Leave").font(.title2).padding([.horizontal, .top])
                     Chart {
                         ForEach(sortedData(), id: \.0) { key, value in
