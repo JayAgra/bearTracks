@@ -95,8 +95,8 @@ struct TeamViewStats: View {
                         .frame(maxWidth: .infinity)
                         VStack {
                             Text("\(Int(((teamDetail.teamData[0].leave ?? 0) * 100).rounded()))%")
-                            Text("Auto Leave")
                                 .font(.title)
+                            Text("Auto Leave")
                         }
                         .frame(maxWidth: .infinity)
                         VStack {
