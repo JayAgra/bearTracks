@@ -188,6 +188,11 @@ struct Teams: View {
         .refreshable {
             appState.fetchTeamsJson()
         }
+#if targetEnvironment(macCatalyst)
+        .onAppear {
+            appState.fetchTeamsJson()
+        }
+#endif
     }
 }
 
