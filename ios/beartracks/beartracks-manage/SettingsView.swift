@@ -33,8 +33,8 @@ struct SettingsView: View {
                             }
                         }
                         
-                        Button("Refresh FRC API Data") {
-                            guard let url = URL(string: "https://beartracks.io/api/v1/manage/refresh_cache") else { return }
+                        Button("Refresh FRC API Data Season") {
+                            guard let url = URL(string: "https://beartracks.io/api/v1/manage/refresh_cache/true") else { return }
                             var request = URLRequest(url: url)
                             request.httpMethod = "GET"
                             request.httpShouldHandleCookies = true
@@ -49,7 +49,25 @@ struct SettingsView: View {
                             }
                             requestTask.resume()
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.bordered).padding()
+                        
+                        Button("Refresh FRC API Data All") {
+                            guard let url = URL(string: "https://beartracks.io/api/v1/manage/refresh_cache/false") else { return }
+                            var request = URLRequest(url: url)
+                            request.httpMethod = "GET"
+                            request.httpShouldHandleCookies = true
+                            
+                            let requestTask = sharedSession.dataTask(with: request) {
+                                (data: Data?, response: URLResponse?, error: Error?) in
+                                if let data = data {
+                                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                                } else if let error = error {
+                                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                                }
+                            }
+                            requestTask.resume()
+                        }
+                        .buttonStyle(.bordered).padding()
                         
                         Picker("Event Code", selection: $eventCode) {
                             if !settingsOptions.isEmpty {
@@ -84,7 +102,7 @@ struct SettingsView: View {
                             }
                             requestTask.resume()
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.bordered).padding()
                         
                         Button("Log Out") {
                             if let cookies = HTTPCookieStorage.shared.cookies(
