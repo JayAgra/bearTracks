@@ -22,7 +22,7 @@ use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, fs, io, pin::Pin, sync::{Arc, RwLock}};
+use std::{collections::HashMap, env, fs, io, ops::Deref, pin::Pin, sync::{Arc, RwLock}};
 use tokio::sync::Mutex;
 use webauthn_rs::prelude::*;
 
@@ -425,11 +425,11 @@ async fn manage_data_dump(db: web::Data<Databases>, /* user: db_auth::User,*/ pa
     // }
 }
 
-async fn manage_refresh_cache(user: db_auth::User) -> Result<HttpResponse, AWError> {
+async fn manage_refresh_cache(user: db_auth::User, req: HttpRequest) -> Result<HttpResponse, AWError> {
     if user.admin == "true" {
         Ok(HttpResponse::Ok()
             .insert_header(("Cache-Control", "no-cache"))
-            .json(cache_first_data().await?))
+            .json(cache_first_data(req.match_info().get("current_only").unwrap().parse::<bool>().unwrap_or(true)).await?))
     } else {
         Ok(unauthorized_response())
     }
@@ -733,9 +733,9 @@ async fn return_discontinued_gone(_req: HttpRequest) -> Result<HttpResponse, AWE
     Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
 }
 
-async fn cache_first_data() -> Result<bool, std::io::Error> {
+async fn cache_first_data(current_only: bool) -> Result<bool, std::io::Error> {
     // cache all possible files
-    let seasons = env::var("SEASONS")
+    let mut seasons = env::var("SEASONS")
         .unwrap_or_else(|_| "0".to_string())
         .split(",")
         .map(|s| s.to_string())
@@ -745,6 +745,12 @@ async fn cache_first_data() -> Result<bool, std::io::Error> {
         .split(",")
         .map(|s| s.to_string())
         .collect::<Vec<String>>();
+
+    if current_only {
+        let current: Vec<String> = seasons.clone();
+        seasons.clear();
+        seasons.push(current.last().unwrap_or(&"default".to_string()).clone());
+    }
 
     for i in 0..seasons.len() {
         fs::create_dir_all(format!("cache/images/{}", seasons[i]))?;
@@ -820,7 +826,7 @@ async fn main() -> io::Result<()> {
         println!("[OK] starting in release mode");
     }
 
-    let _cache_ok = cache_first_data().await;
+    let _cache_ok = cache_first_data(true).await;
 
     // hashmap w: web::Data<RwLock<Sessions>>ith user sessions in it
     let sessions: web::Data<RwLock<Sessions>> = web::Data::new(RwLock::new(Sessions { user_map: HashMap::new() }));
@@ -1106,7 +1112,7 @@ async fn main() -> io::Result<()> {
                     .route(web::get().to(manage_data_dump)),
             )
             .service(
-                web::resource("/api/v1/manage/refresh_cache")
+                web::resource("/api/v1/manage/refresh_cache/{current_only}")
                     .route(web::get().to(manage_refresh_cache))
             )
             .service(
