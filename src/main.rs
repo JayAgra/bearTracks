@@ -22,7 +22,7 @@ use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, env, fs, io, ops::Deref, pin::Pin, sync::{Arc, RwLock}};
+use std::{collections::HashMap, env, fs, io, pin::Pin, sync::{Arc, RwLock}};
 use tokio::sync::Mutex;
 use webauthn_rs::prelude::*;
 
@@ -733,6 +733,33 @@ async fn return_discontinued_gone(_req: HttpRequest) -> Result<HttpResponse, AWE
     Err(error::ErrorGone("{\"status\": \"discontinued\"}"))
 }
 
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
+struct FrcApiTeam {
+    team_number: i64,
+    name_full: String,
+    name_short: String,
+    city: String,
+    state_prov: String,
+    country: String,
+    rookie_year: i64,
+    robot_name: String,
+    district_code: Option<String>,
+    school_name: String,
+    website: String,
+    home_c_m_p: Option<String> /* lazy way to camelCase convert to homeCMP */
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "camelCase"))]
+struct FrcApiTeamsList {
+    team_count_total: i64,
+    team_count_page: i64,
+    page_current: i64,
+    page_total: i64,
+    teams: Vec<FrcApiTeam>
+}
+
 async fn cache_first_data(current_only: bool) -> Result<bool, std::io::Error> {
     // cache all possible files
     let mut seasons = env::var("SEASONS")
@@ -758,26 +785,61 @@ async fn cache_first_data(current_only: bool) -> Result<bool, std::io::Error> {
             // prevent my test schedules from being thrown away
             if events[j] != "TEST" {
                 // cache team list
-                let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}", seasons[i], events[j]);
+                let team_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}&page=1", seasons[i], events[j]);
                 let team_client = reqwest::Client::new();
                 let team_response = team_client
                     .request(actix_http::Method::GET, team_target_url)
                     .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
                     .send()
                     .await;
-
+                
                 match team_response {
                     Ok(response) => {
                         if response.status() == 200 {
-                            fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
-                            fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), response.text().await.unwrap())
-                                .expect(format!("Failed to cache {}/{} team JSON. Could not write file.", seasons[i], events[j]).as_str());
+                            let main_response_deocde_attempt: Result<FrcApiTeamsList, serde_json::Error> = serde_json::from_str(response.text().await.unwrap_or("".to_string()).as_str());
+                            match main_response_deocde_attempt {
+                                Ok(mut main_response_store) => {
+                                    if main_response_store.page_total > 1 {
+                                        for k in 2..(main_response_store.page_total + 1) {
+                                            let team_page_target_url = format!("https://frc-api.firstinspires.org/v3.0/{}/teams?eventCode={}&page={}", seasons[i], events[j], k);
+                                            let team_page_response = team_client
+                                                .request(actix_http::Method::GET, team_page_target_url)
+                                                .header("Authorization", format!("Basic {}", env::var("FRC_API_KEY").unwrap_or_else(|_| "NONE".to_string())))
+                                                .send()
+                                                .await;
+                                            match team_page_response {
+                                                Ok(page_response) => {
+                                                    let team_page_decode_attempt: Result<FrcApiTeamsList, serde_json::Error> = serde_json::from_str(page_response.text().await.unwrap_or("".to_string()).as_str());
+                                                    match team_page_decode_attempt {
+                                                        Ok(mut page_response) => {
+                                                            main_response_store.teams.append(&mut page_response.teams);
+                                                        }
+                                                        Err(error) => {
+                                                            log::error!("Failed to decode page {} of {}/{} team JSON. Proceeding without the page. Response status: {}.", k, seasons[i], events[j], error.to_string());
+                                                        }
+                                                    }
+                                                }
+                                                Err(error) => {
+                                                    log::error!("Failed to cache page {} of {}/{} team JSON. Proceeding without the page. Error: {}.", k, seasons[i], events[j], error.to_string());
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    fs::create_dir_all(format!("cache/frc_api/{}/{}", seasons[i], events[j]))?;
+                                    fs::write(format!("cache/frc_api/{}/{}/teams.json", seasons[i], events[j]), serde_json::to_string(&main_response_store).unwrap_or("".to_string()))
+                                        .expect(format!("Failed to write file for {}/{} team JSON.", seasons[i], events[j]).as_str());
+                                }
+                                Err(error) => {
+                                    log::error!("Failed to get {}/{} team JSON. First page failed, skipping event. Error: {}", seasons[i], events[j], error.to_string());
+                                }
+                            }
                         } else {
-                            log::error!("Failed to cache {}/{} team JSON. Response status {}.", seasons[i], events[j], response.status());
+                            log::error!("Failed to decode {}/{} team JSON. Error: {}.", seasons[i], events[j], response.status());
                         }
                     }
-                    Err(_) => {
-                        log::error!("Failed to cache {}/{} team JSON. Response was not OK.", seasons[i], events[j]);
+                    Err(error) => {
+                        log::error!("Failed to cache {}/{} team JSON. Errir: {}.", seasons[i], events[j], error.to_string());
                     }
                 }
 
@@ -942,7 +1004,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=604800"))
-                    .add(("X-bearTracks", "6.1.1")),
+                    .add(("X-bearTracks", "6.1.2")),
             )
             /* src  endpoints */
             // GET individual files

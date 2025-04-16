@@ -1,12 +1,13 @@
 [package]
 name = "bear_tracks"
-version = "6.1.1"
+version = "6.1.2"
 edition = "2021"
 authors = ["Jayen Agrawal"]
 description = "a scouting app for frc"
 readme = "README.md"
 repository = "https://github.com/JayAgra/bearTracks/"
 build = "build.rs"
+license = "Copyright (c) 2025 Jayen Agrawal. All rights reserved."
 
 [dependencies]
 a2 = "0.10.0"

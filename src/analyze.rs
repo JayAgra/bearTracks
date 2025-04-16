@@ -117,7 +117,7 @@ fn season_2023(data: &web::Json<db_main::MainInsert>) -> Result<AnalysisResults,
                 }
                 _other => {}
             }
-        } else if score_index <= 17 && item != "0" {// #6T5ytSzWDn!L!U
+        } else if score_index <= 17 && item != "0" {
             mid += 1.0;
             match item {
                 "1" => {
