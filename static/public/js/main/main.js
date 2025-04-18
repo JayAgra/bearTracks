@@ -150,9 +150,9 @@ function submit() {
     cycle_data.push({ score_type: 9, intake: Number(document.querySelector("[name=park]").checked), travel: Number(document.querySelector("[name=park]").checked), outtake: Number(document.querySelector("[name=park]").checked) });
     cycle_data.push({ score_type: 10, intake: Number(document.querySelector("[name=shallow_cage]").checked), travel: Number(document.querySelector("[name=shallow_cage]").checked), outtake: Number(document.querySelector("[name=shallow_cage]").checked) });
     cycle_data.push({ score_type: 11, intake: Number(document.querySelector("[name=deep_cage]").checked), travel: Number(document.querySelector("[name=deep_cage]").checked), outtake: Number(document.querySelector("[name=deep_cage]").checked) });
-    cycle_data.push({ score_type: 14, intake: Number(document.querySelector("[name=auto_algae]").checked), travel: Number(document.querySelector("[name=auto_algae]").checked), outtake: Number(document.querySelector("[name=auto_algae]").checked) });
-    cycle_data.push({ score_type: 15, intake: Number(document.querySelector("[name=auto_coral]").checked), travel: Number(document.querySelector("[name=auto_coral]").checked), outtake: Number(document.querySelector("[name=auto_coral]").checked) });
-    cycle_data.push({ score_type: 13, intake: Number(document.querySelector("[name=auto_scores]").checked), travel: Number(document.querySelector("[name=auto_scores]").checked), outtake: Number(document.querySelector("[name=auto_scores]").checked) });
+    cycle_data.push({ score_type: 14, intake: Number(document.querySelector("[name=auto_algae]").value), travel: Number(document.querySelector("[name=auto_algae]").value), outtake: Number(document.querySelector("[name=auto_algae]").value) });
+    cycle_data.push({ score_type: 15, intake: Number(document.querySelector("[name=auto_coral]").value), travel: Number(document.querySelector("[name=auto_coral]").value), outtake: Number(document.querySelector("[name=auto_coral]").value) });
+    cycle_data.push({ score_type: 13, intake: Number(document.querySelector("[name=auto_scores]").value), travel: Number(document.querySelector("[name=auto_scores]").value), outtake: Number(document.querySelector("[name=auto_scores]").value) });
     const data = {
         season: 2025,
         event: getEventCookie(),
@@ -194,6 +194,11 @@ function reset() {
     document.querySelector("[name=deep_cage]").checked = false;
     document.getElementById("submit_page").style.display = "none";
     document.getElementById("form_content").style.display = "block";
+    timer_id = [0, 0, 0];
+    timer_times = [0, 0, 0];
+    timer_displays[0].innerText = "0.0";
+    timer_displays[1].innerText = "0.0";
+    timer_displays[2].innerText = "0.0";
     let pages = Array.from(document.getElementsByClassName("form_pages"));
     document.getElementsByClassName("continue_button")[0].disabled = true;
     document.getElementsByClassName("continue_button")[2].disabled = true;

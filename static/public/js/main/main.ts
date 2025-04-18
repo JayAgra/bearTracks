@@ -183,9 +183,9 @@ function submit() {
     cycle_data.push({ score_type: 9, intake: Number((document.querySelector("[name=park]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=park]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=park]") as HTMLInputElement).checked) });
     cycle_data.push({ score_type: 10, intake: Number((document.querySelector("[name=shallow_cage]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=shallow_cage]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=shallow_cage]") as HTMLInputElement).checked) });
     cycle_data.push({ score_type: 11, intake: Number((document.querySelector("[name=deep_cage]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=deep_cage]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=deep_cage]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 14, intake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 15, intake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).checked) });
-    cycle_data.push({ score_type: 13, intake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).checked) });
+    cycle_data.push({ score_type: 14, intake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).value), travel: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).value), outtake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).value) });
+    cycle_data.push({ score_type: 15, intake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).value), travel: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).value), outtake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).value) });
+    cycle_data.push({ score_type: 13, intake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).value), travel: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).value), outtake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).value) });
 
     const data = {
         season: 2025,
@@ -229,6 +229,11 @@ function reset() {
     (document.querySelector("[name=deep_cage]") as HTMLInputElement).checked = false;
     (document.getElementById("submit_page") as HTMLFormElement).style.display = "none";
     (document.getElementById("form_content") as HTMLFormElement).style.display = "block";
+    timer_id = [0, 0, 0];
+    timer_times = [0, 0, 0];
+    timer_displays[0].innerText = "0.0";
+    timer_displays[1].innerText = "0.0";
+    timer_displays[2].innerText = "0.0";
     let pages = Array.from(document.getElementsByClassName("form_pages")) as Array<HTMLDivElement>;
     (document.getElementsByClassName("continue_button")![0] as HTMLButtonElement).disabled = true;
     (document.getElementsByClassName("continue_button")![2] as HTMLButtonElement).disabled = true;
