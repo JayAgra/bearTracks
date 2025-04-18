@@ -153,6 +153,7 @@ function submit() {
     cycle_data.push({ score_type: 14, intake: Number(document.querySelector("[name=auto_algae]").value), travel: Number(document.querySelector("[name=auto_algae]").value), outtake: Number(document.querySelector("[name=auto_algae]").value) });
     cycle_data.push({ score_type: 15, intake: Number(document.querySelector("[name=auto_coral]").value), travel: Number(document.querySelector("[name=auto_coral]").value), outtake: Number(document.querySelector("[name=auto_coral]").value) });
     cycle_data.push({ score_type: 13, intake: Number(document.querySelector("[name=auto_scores]").value), travel: Number(document.querySelector("[name=auto_scores]").value), outtake: Number(document.querySelector("[name=auto_scores]").value) });
+    cycle_data.push({ score_type: 12, intake: Number(document.querySelector("[name=auto_leave]").checked), travel: Number(document.querySelector("[name=auto_leave]").checked), outtake: Number(document.querySelector("[name=auto_leave]").checked) });
     const data = {
         season: 2025,
         event: getEventCookie(),

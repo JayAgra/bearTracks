@@ -186,6 +186,7 @@ function submit() {
     cycle_data.push({ score_type: 14, intake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).value), travel: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).value), outtake: Number((document.querySelector("[name=auto_algae]") as HTMLInputElement).value) });
     cycle_data.push({ score_type: 15, intake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).value), travel: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).value), outtake: Number((document.querySelector("[name=auto_coral]") as HTMLInputElement).value) });
     cycle_data.push({ score_type: 13, intake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).value), travel: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).value), outtake: Number((document.querySelector("[name=auto_scores]") as HTMLInputElement).value) });
+    cycle_data.push({ score_type: 12, intake: Number((document.querySelector("[name=auto_leave]") as HTMLInputElement).checked), travel: Number((document.querySelector("[name=auto_leave]") as HTMLInputElement).checked), outtake: Number((document.querySelector("[name=auto_leave]") as HTMLInputElement).checked) });
 
     const data = {
         season: 2025,

@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="static/css/float.min.css" type="text/css">
         <link rel="stylesheet" href="static/css/homepage.min.css" type="text/css">
         <link rel="stylesheet" href="static/css/main_form.min.css" type="text/css">
-        <script src="static/js/form/form.min.js"></script>
+        <script src="static/js/form/form.min.js?v=612002"></script>
     </head>
     <body class="gruvbox" style="width: 100vw;">
         <script>themeHandle()</script>
@@ -56,6 +56,11 @@
                         <fieldset>
                             <label>Autonomous Scores</label><br><input type="tel" name="auto_scores" style="width: 60vw;">
                         </fieldset>
+                        <div class="HStack">
+                            <p style="width: 9em; margin-top: 5px; text-align: left;">Auto Leave</p>
+                            <div style="width: calc(80vw - 9em - 46px);"></div>
+                            <label class="ios-switch"><input type="checkbox" name="auto_leave"><i></i></label>
+                        </div>
                     </div>
                     <button type="button" class="continue_button" disabled><h2>continue</h2></button>
                 </div>
