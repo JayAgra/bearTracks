@@ -209,7 +209,16 @@ impl StreamHandler<Result<actix_http::ws::Message, actix_http::ws::ProtocolError
 impl BlackjackSession {
     // draw starting cards
     fn starting_cards(&mut self, ctx: &mut ws::WebsocketContext<Self>) {
-        // TODO put bet subtraction here
+        let auth_pool_clone = self.auth_db.clone();
+        let transact_pool_clone = self.transact_db.clone();
+        let user_id_clone = self.user_id.clone();
+
+        tokio::spawn(async move {
+            credit_points(auth_pool_clone, transact_pool_clone, user_id_clone, -10)
+                .await
+                .unwrap_or("bad".to_string());
+        });
+
         // first player card
         let card1: Card = self.new_card();
         // add to player hand
@@ -356,7 +365,6 @@ impl BlackjackSession {
             });
         // if dealer score is more than player score
         } else if self.game.player.score < self.game.dealer.score {
-            result = "LS".to_string();
         // draw
         } else {
             result = "DR".to_string();
