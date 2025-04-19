@@ -365,6 +365,7 @@ impl BlackjackSession {
             });
         // if dealer score is more than player score
         } else if self.game.player.score < self.game.dealer.score {
+            result = "LS".to_string();
         // draw
         } else {
             result = "DR".to_string();
