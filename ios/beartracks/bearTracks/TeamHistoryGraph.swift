@@ -129,7 +129,7 @@ struct TeamHistoryGraph: View {
 
 #Preview {
     if #available(iOS 18.0, *) {
-        TeamHistoryGraph(teamNumber: 766)
+        TeamHistoryGraph(teamNumber: 1)
     } else {
         Text("Only available on iOS 18 and later.")
     }

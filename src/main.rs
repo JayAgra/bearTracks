@@ -18,7 +18,6 @@ use actix_web::{
 };
 use actix_web_static_files::ResourceFiles;
 use dotenv::dotenv;
-use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use r2d2_sqlite::{self, SqliteConnectionManager};
 use reqwest;
 use serde::{Deserialize, Serialize};
@@ -780,6 +779,7 @@ async fn cache_first_data(current_only: bool) -> Result<bool, std::io::Error> {
     }
 
     for i in 0..seasons.len() {
+        println!("  →  Loading Season Data for {}", seasons[i]);
         fs::create_dir_all(format!("cache/images/{}", seasons[i]))?;
         for j in 0..events.len() {
             // prevent my test schedules from being thrown away
@@ -870,6 +870,7 @@ async fn cache_first_data(current_only: bool) -> Result<bool, std::io::Error> {
         }
     }
 
+    println!("  ✓  Finished Loading Season Data");
     Ok(true)
 }
 
@@ -935,19 +936,6 @@ async fn main() -> io::Result<()> {
         .burst_size(25000)
         .finish()
         .unwrap();
-
-    /*
-     *  generate a self-signed certificate for localhost (run from bearTracks directory):
-     *  openssl req -x509 -newkey rsa:4096 -nodes -keyout ./ssl/key.pem -out ./ssl/cert.pem -days 365 -subj '/CN=localhost'
-     */
-    // create ssl builder for tls config
-    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-    builder.set_private_key_file("./ssl/key.pem", SslFiletype::PEM).unwrap();
-    builder.set_certificate_chain_file("./ssl/cert.pem").unwrap();
-    // let intermediate_cert_url = "https://letsencrypt.org/certs/lets-encrypt-r3.der";
-    // let intermediate_bytes = reqwest::blocking::get(intermediate_cert_url).unwrap().bytes().unwrap();
-    // let intermediate_cert = X509::from_der(&intermediate_bytes).unwrap();
-    // builder.add_extra_chain_cert(intermediate_cert).unwrap();
     
     // config done. now, create the new HttpServer
     log::info!("[OK] starting bearTracks on port 443 and 80");
@@ -1322,8 +1310,7 @@ async fn main() -> io::Result<()> {
                     .route(web::post().to(return_discontinued_gone))
             )
     })
-    .bind_openssl(format!("{}:443", env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string())), builder)?
-    .bind((env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()), 80))?
+    .bind(format!("0.0.0.0:{}", env::var("PORT").unwrap_or_else(|_| "80".to_string())))?
     .workers(8)
     .run()
     .await

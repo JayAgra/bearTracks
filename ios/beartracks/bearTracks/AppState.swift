@@ -80,7 +80,7 @@ class AppState: ObservableObject {
     
     func fetchMatchJson() {
         self.matchJsonStatus = (false, false)
-        guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults().string(forKey: "season") ?? "2025")/\(UserDefaults().string(forKey: "eventCode") ?? "TEST")/qualification/\(UserDefaults().string(forKey: "teamNumber") ?? "766")") else { return }
+        guard let url = URL(string: "https://beartracks.io/api/v1/events/matches/\(UserDefaults().string(forKey: "season") ?? "2025")/\(UserDefaults().string(forKey: "eventCode") ?? "TEST")/qualification/\(UserDefaults().string(forKey: "teamNumber") ?? "1")") else { return }
         
         sharedSession.dataTask(with: url) { data, _, error in
             if let data = data {

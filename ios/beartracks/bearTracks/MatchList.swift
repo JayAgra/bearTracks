@@ -17,7 +17,7 @@ struct MatchList: View {
             if !appState.matchJson.isEmpty {
                 List {
                     ForEach(Array(appState.matchJson.enumerated()), id: \.element.id) { index, match in
-                        if !myTeamOnly || match.teams.contains(where: { $0.teamNumber == Int(UserDefaults().string(forKey: "teamNumber") ?? "766") ?? 766 }) {
+                        if !myTeamOnly || match.teams.contains(where: { $0.teamNumber == Int(UserDefaults().string(forKey: "teamNumber") ?? "1") ?? 1 }) {
                             NavigationLink(tag: index, selection: self.$selectedMatch, destination: {
                                 MatchDetailView(match: match.matchNumber)
                                     .navigationTitle("Match \(match.matchNumber)")
@@ -135,7 +135,7 @@ struct TeamNumberStack: View {
 #endif
                 .fontWeight(
                     String(match.teams[num].teamNumber)
-                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
+                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "1")
                     ? .bold : .regular
                 )
                 .foregroundColor(Color.red)
@@ -147,7 +147,7 @@ struct TeamNumberStack: View {
 #endif
                 .fontWeight(
                     String(match.teams[num + 3].teamNumber)
-                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "766")
+                    == (UserDefaults.standard.string(forKey: "teamNumber") ?? "1")
                     ? .bold : .regular
                 )
                 .foregroundColor(Color.blue)

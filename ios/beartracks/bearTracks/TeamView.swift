@@ -154,5 +154,5 @@ struct TeamView: View {
 }
 
 #Preview {
-    TeamView(dataItems: TeamViewModel(team: "766"))
+    TeamView(dataItems: TeamViewModel(team: "1"))
 }

@@ -18,97 +18,104 @@ struct LoginView: View {
     @EnvironmentObject var controller: ScoutingController
     
     var body: some View {
-        VStack {
-            Text("bearTracks")
-                .font(.title)
-            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "6") • 2025")
-            if !loading {
-                if !create {
-                    Text("Log In")
-                        .font(.title3)
-                        .padding(.top)
-                    HStack {
+        ZStack {
+            VStack {
+                Text("bearTracks")
+                    .font(.title)
+                Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "6") • 2025")
+                if !loading {
+                    if !create {
+                        Text("Log In")
+                            .font(.title3)
+                            .padding(.top)
+                        HStack {
+                            TextField("Username", text: $authData[0])
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .autocorrectionDisabled(true)
+                                .textInputAutocapitalization(.never)
+                                .textContentType(.username)
+                        }
+                        .padding(.horizontal)
+                        HStack {
+                            SecureField("Password", text: $authData[1])
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .autocorrectionDisabled(true)
+                                .textInputAutocapitalization(.never)
+                                .textContentType(.password)
+                        }.padding()
+                        Button("Log In") {
+                            authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
+                        }
+                        .buttonStyle(.bordered)
+                        .padding()
+                        Button("Create Account") {
+                            self.create = true
+                        }
+                    } else {
+                        Text("Create Account")
+                            .font(.title3)
+                            .padding(.top)
+                        TextField("Team code", text: $authData[3])
+                            .padding([.leading, .trailing])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .keyboardType(.numberPad)
+                            .onChange(of: authData[3]) { _ in
+                                authData[3] = String(authData[3].prefix(5))
+                            }
+                        TextField("Full name", text: $authData[2])
+                            .padding([.leading, .trailing])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .textContentType(.name)
                         TextField("Username", text: $authData[0])
+                            .padding([.leading, .trailing])
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
                             .textContentType(.username)
-                    }
-                    .padding(.horizontal)
-                    HStack {
                         SecureField("Password", text: $authData[1])
+                            .padding([.leading, .trailing])
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
-                            .textContentType(.password)
-                    }.padding()
-                    Button("Log In") {
-                        authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
-                    }
-                    .buttonStyle(.bordered)
-                    .padding()
-                    Button("Create Account") {
-                        self.create = true
+                            .textContentType(.newPassword)
+                        Button("Create Account") {
+                            authAction(
+                                type: "create",
+                                data: [
+                                    "access": authData[3], "full_name": authData[2], "username": authData[0],
+                                    "password": authData[1],
+                                ])
+                        }
+                        .padding()
+                        .buttonStyle(.bordered)
+                        Button("Log In") {
+                            self.create = false
+                        }
                     }
                 } else {
-                    Text("Create Account")
-                        .font(.title3)
-                        .padding(.top)
-                    TextField("Team code", text: $authData[3])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .keyboardType(.numberPad)
-                        .onChange(of: authData[3]) { _ in
-                            authData[3] = String(authData[3].prefix(5))
-                        }
-                    TextField("Full name", text: $authData[2])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .textContentType(.name)
-                    TextField("Username", text: $authData[0])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.username)
-                    SecureField("Password", text: $authData[1])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.newPassword)
-                    Button("Create Account") {
-                        authAction(
-                            type: "create",
-                            data: [
-                                "access": authData[3], "full_name": authData[2], "username": authData[0],
-                                "password": authData[1],
-                            ])
-                    }
-                    .padding()
-                    .buttonStyle(.bordered)
-                    Button("Log In") {
-                        self.create = false
-                    }
+                    Spacer()
+                    ProgressView()
+                        .controlSize(.large)
+                        .padding()
+                    Spacer()
                 }
-            } else {
+            }
+            .padding()
+            .alert(
+                isPresented: $showAlert,
+                content: {
+                    Alert(
+                        title: Text("Authentication Error"),
+                        message: Text(alertMessage),
+                        dismissButton: .default(Text("OK"))
+                    )
+                })
+            VStack {
                 Spacer()
-                ProgressView()
-                    .controlSize(.large)
-                    .padding()
-                Spacer()
+                Text("This application is not affiliated with FRC Team 766, and is maintained by independent FIRST alumni.").padding()
             }
         }
-        .padding()
-        .alert(
-            isPresented: $showAlert,
-            content: {
-                Alert(
-                    title: Text("Authentication Error"),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text("OK"))
-                )
-            })
+        //
     }
     
     private func authAction(type: String, data: [String: String]) {

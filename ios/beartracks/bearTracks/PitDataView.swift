@@ -203,7 +203,7 @@ struct PitDataIntViewer: View {
 }
 
 #Preview {
-    PitDataView(teamNumber: 766)
+    PitDataView(teamNumber: 1)
 }
 
 extension Collection {

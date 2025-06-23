@@ -16,109 +16,115 @@ struct LoginView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
-        VStack {
+        ZStack {
+            VStack {
 #if !os(watchOS)
-            Text("bearTracks")
-                .font(.title)
-            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "6") • 2025")
+                Text("bearTracks")
+                    .font(.title)
+                Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "6") • 2025")
 #endif
-            if !loading {
-                if !create {
+                if !loading {
+                    if !create {
 #if !os(watchOS)
-                    Text("Log In")
-                        .font(.title3)
-                        .padding(.top)
+                        Text("Log In")
+                            .font(.title3)
+                            .padding(.top)
 #endif
-                    TextField("Username", text: $authData[0])
+                        TextField("Username", text: $authData[0])
 #if !os(watchOS) && !os(tvOS)
-                        .padding([.leading, .trailing, .bottom])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding([.leading, .trailing, .bottom])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
 #endif
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.username)
-                    SecureField("Password", text: $authData[1])
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
+                            .textContentType(.username)
+                        SecureField("Password", text: $authData[1])
 #if !os(watchOS) && !os(tvOS)
-                        .padding()
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
 #endif
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.password)
-                    Button("Log In") {
-                        authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
-                    }
-#if !os(watchOS)
-                    .padding()
-#endif
-                    .font(.title3)
-                    .buttonStyle(.bordered)
-#if !os(watchOS)
-                    Button("Create") {
-                        self.create = true
-                    }.padding()
-#endif
-                } else {
-#if !os(watchOS) && !os(tvOS)
-                    Text("Create Account")
-                        .font(.title3)
-                        .padding(.top)
-                    TextField("Team code", text: $authData[3])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .keyboardType(.numberPad)
-                        .onChange(of: authData[3]) { _ in
-                            authData[3] = String(authData[3].prefix(5))
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
+                            .textContentType(.password)
+                        Button("Log In") {
+                            authAction(type: "login", data: ["username": authData[0], "password": authData[1]])
                         }
-                    TextField("Full name", text: $authData[2])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .textContentType(.name)
-                    TextField("Username", text: $authData[0])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.username)
-                    SecureField("Password", text: $authData[1])
-                        .padding([.leading, .trailing])
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        .textContentType(.newPassword)
-                    Button("Create") {
-                        authAction(type: "create", data: ["access": authData[3], "full_name": authData[2], "username": authData[0],"password": authData[1]])
-                    }
-                    .padding()
-                    .font(.title3)
-                    .buttonStyle(.bordered)
-                    Button("Log In") {
-                        self.create = false
-                    }
+#if !os(watchOS)
+                        .padding()
 #endif
-                }
-            } else {
-                Spacer()
-                ProgressView()
+                        .font(.title3)
+                        .buttonStyle(.bordered)
+#if !os(watchOS)
+                        Button("Create") {
+                            self.create = true
+                        }.padding()
+#endif
+                    } else {
+#if !os(watchOS) && !os(tvOS)
+                        Text("Create Account")
+                            .font(.title3)
+                            .padding(.top)
+                        TextField("Team code", text: $authData[3])
+                            .padding([.leading, .trailing])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .keyboardType(.numberPad)
+                            .onChange(of: authData[3]) { _ in
+                                authData[3] = String(authData[3].prefix(5))
+                            }
+                        TextField("Full name", text: $authData[2])
+                            .padding([.leading, .trailing])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .textContentType(.name)
+                        TextField("Username", text: $authData[0])
+                            .padding([.leading, .trailing])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
+                            .textContentType(.username)
+                        SecureField("Password", text: $authData[1])
+                            .padding([.leading, .trailing])
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .autocorrectionDisabled(true)
+                            .textInputAutocapitalization(.never)
+                            .textContentType(.newPassword)
+                        Button("Create") {
+                            authAction(type: "create", data: ["access": authData[3], "full_name": authData[2], "username": authData[0],"password": authData[1]])
+                        }
+                        .padding()
+                        .font(.title3)
+                        .buttonStyle(.bordered)
+                        Button("Log In") {
+                            self.create = false
+                        }
+#endif
+                    }
+                } else {
+                    Spacer()
+                    ProgressView()
 #if !os(tvOS)
-                    .controlSize(.large)
+                        .controlSize(.large)
 #endif
-                    .padding()
-                Spacer()
+                        .padding()
+                    Spacer()
+                }
             }
-        }
-        .padding()
-        .alert(
-            isPresented: $showAlert,
-            content: {
-                Alert(
-                    title: Text("Authentication Error"),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text("OK"))
-                )
-            })
-        .onAppear {
-            appState.checkLoginState()
+            .padding()
+            .alert(
+                isPresented: $showAlert,
+                content: {
+                    Alert(
+                        title: Text("Authentication Error"),
+                        message: Text(alertMessage),
+                        dismissButton: .default(Text("OK"))
+                    )
+                })
+            .onAppear {
+                appState.checkLoginState()
+            }
+            VStack {
+                Spacer()
+                Text("This application is not affiliated with FRC Team 766, and is maintained by independent FIRST alumni.").padding()
+            }
         }
     }
     

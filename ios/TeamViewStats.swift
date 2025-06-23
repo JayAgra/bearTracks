@@ -169,5 +169,5 @@ struct TeamViewStats: View {
 }
 
 #Preview {
-    TeamViewStats(teamNum: "766")
+    TeamViewStats(teamNum: "1")
 }
