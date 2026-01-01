@@ -123,7 +123,7 @@ struct LoginView: View {
             }
             VStack {
                 Spacer()
-                Text("This application is not affiliated with FRC Team 766, and is maintained by independent FIRST alumni.").padding()
+                Text("This application is not affiliated with FRC Team 766.").padding()
             }
         }
     }

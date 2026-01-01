@@ -194,13 +194,6 @@ struct AllianceSimulator: View {
                     }
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close", systemImage: "xmark") {
-                        dismiss()
-                    }
-                }
-            }
             .navigationTitle("Alliance Simulator")
         }
         .navigationViewStyle(StackNavigationViewStyle())

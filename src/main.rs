@@ -992,7 +992,7 @@ async fn main() -> io::Result<()> {
             .wrap(
                 DefaultHeaders::new()
                     .add(("Cache-Control", "public, max-age=604800"))
-                    .add(("X-bearTracks", "6.1.2")),
+                    .add(("X-bearTracks", "7.0.0")),
             )
             /* src  endpoints */
             // GET individual files
@@ -1013,6 +1013,8 @@ async fn main() -> io::Result<()> {
             .route("/data/team", web::get().to(static_files::static_team))
             .route("/data/detail", web::get().to(static_files::static_detail))
             .route("/data/pit", web::get().to(static_files::static_pit))
+            .route("/tos", web::get().to(static_files::static_tos))
+            .route("/privacy", web::get().to(static_files::static_privacy))
             .route("/android-chrome-192x192.png", web::get().to(static_files::static_android_chrome_192))
             .route("/android-chrome-512x512.png", web::get().to(static_files::static_android_chrome_512))
             .route("/apple-touch-icon.png", web::get().to(static_files::static_apple_touch_icon))

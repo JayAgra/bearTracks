@@ -115,6 +115,8 @@ impl App {
                                 </div>
                             </form><br/><br/>
                             <small style="text-align: center;" id="createAct" class="moveDown"><a href="create" class="actLink">{ "create account" }</a></small><br/>
+                            <small>{ "Copyright (c) 2022-2026 Jayen Agrawal. All rights reserved." }</small>
+                            <small>{ "By continuing, you agree to the " } <a href="tos" class="actLink">{ "Terms of Service" }</a> { " and " } <a href="privacy" class="actLink">{ "Privacy Policy" }</a></small>
                         </div>
                     </div>
                 </body>

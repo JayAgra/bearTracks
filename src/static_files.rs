@@ -24,6 +24,8 @@ const DATA_HTML: &str = include_str!("../static/data.html");
 const TEAM_HTML: &str = include_str!("../static/team.html");
 const DETAIL_HTML: &str = include_str!("../static/detail.html");
 const PIT_HTML: &str = include_str!("../static/pit.html");
+const TOS_HTML: &str = include_str!("../static/tos.html");
+const PRIVACY_HTML: &str = include_str!("../static/privacy.html");
 // favicon isn't utf8 so it needs include bytes instead
 const ANDROID_CHROME_192: &[u8] = include_bytes!("../static/android-chrome-192x192.png");
 const ANDROID_CHROME_512: &[u8] = include_bytes!("../static/android-chrome-512x512.png");
@@ -112,6 +114,14 @@ pub async fn static_detail() -> HttpResponse {
 
 pub async fn static_pit() -> HttpResponse {
     HttpResponse::Ok().content_type(ContentType::html()).body(PIT_HTML)
+}
+
+pub async fn static_tos() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(TOS_HTML)
+}
+
+pub async fn static_privacy() -> HttpResponse {
+    HttpResponse::Ok().content_type(ContentType::html()).body(PRIVACY_HTML)
 }
 
 // serve static favicons

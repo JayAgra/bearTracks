@@ -27,7 +27,7 @@ pub fn get_server_health(session: web::Data<RwLock<Sessions>>) -> HealthData {
     let mut system = sysinfo::System::new_all();
     system.refresh_all();
     HealthData {
-        team: env::var("MY_TEAM").unwrap_or_else(|_| "766".to_string()),
+        team: env::var("MY_TEAM").unwrap_or_else(|_| "1".to_string()),
         hostname: env::var("HOSTNAME").unwrap_or_else(|_| "localhost".to_string()),
         total_mem_kb: system.get_total_memory(),
         used_mem_kb: system.get_used_memory(),

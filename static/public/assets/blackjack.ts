@@ -9,6 +9,7 @@ const styleSheet = `<style>body,html{image-rendering: pixelated;}.bjContainer{ma
 document.head.insertAdjacentHTML("afterbegin", styleSheet);
 
 (window as any).disableInputs = false;
+(window as any).audio = null;
 
 var blackjackSocket: WebSocket;
 
@@ -35,36 +36,51 @@ function startBlackjack() {
             console.info("game over");
             switch (data.result) {
                 case "WN":
-                    playSound("win");
+                    (window as any).audio = playSound("win");
                     await waitMs(2000);
-                    alert("you win");
+                    promptNewGame("You won 10 points!)");
                     break;
                 case "LS":
-                    playSound("loss");
+                    (window as any).audio = playSound("loss");
                     await waitMs(2000);
-                    alert("you lose");
+                    promptNewGame("You lost 10 points.");
                     break;
                 case "LB":
-                    playSound("loss");
+                    (window as any).audio = playSound("loss");
                     await waitMs(2000);
-                    alert("you lose (bust)");
+                    promptNewGame("You lost 10 points (bust).");
                     break;
                 case "WD":
-                    playSound("win");
+                    (window as any).audio = playSound("win");
                     await waitMs(2000);
-                    alert("you win (dealer bust)");
+                    promptNewGame("You won 10 points (dealer bust)!");
                     break;
                 case "DR":
-                    playSound("tie");
+                    (window as any).audio = playSound("tie");
                     await waitMs(2000);
-                    alert("tie");
+                    promptNewGame("Draw! Your points balance remains unchanged.");
                     break;
                 default:
-                    alert("unknown error");
+                    alert("An error was encountered during the game. Your points balance may or may not have changed. This error has been logged.");
+                    goToHome();
                     break;
             }
         }
     };
+}
+
+function promptNewGame(message: string) {
+    if (confirm(message + " Play another round (OK to continue, Cancel to go back)?")) {
+        Array.from(document.getElementsByClassName("cardImg") as HTMLCollectionOf<HTMLImageElement>).forEach(element => {
+            element.src = "static/assets/blank.png";
+        });
+        blackjackSocket = null;
+        (window as any).audio.muted = true;
+        (window as any).audio.pause();
+        startBlackjack()
+    } else {
+        goToHome()
+    }
 }
 
 (document.getElementsByClassName("hit")[0] as HTMLElement).onclick = () => {
@@ -104,6 +120,7 @@ function playSound(type: string) {
     const number = type === "tie" ? Math.floor(Math.random() * 6) : Math.floor(Math.random() * 12);
     var clip = new Audio("static/assets/sounds/min/" + type + "_" + number + ".min.mp3");
     clip.play();
+    return clip
 }
 
 document.onload = () => {

@@ -14,14 +14,15 @@
         <script>themeHandle()</script>
         <div class="container" id="start" style="display: flex;">
             <div>
-                <h1 id="title" style="font-family: 'raleway-300'">bearTracks<br><span class="gametitle">Single-Player Blackjack</span></h1><br>
-                <p>Dealer hits until their total is 17 or more.<br>Bet is 10 points.</p>
+                <h1 id="title" class="w3">bearTracks<br><span class="gametitle">Simple Blackjack</span></h1><br>
+                <p>Dealer hits until their total is 17 or more.<br>Simple rules only; no splits, doubling down, etc.<br>Bet is 10 points.</p>
                 <select id="deck">
                     <option value="static/assets/stdcards/" selected>Default Cards</option>
                     <option value="static/assets/progcards/">Programming Cards</option>
                     <!--<option value="static/assets/gruvcards/">Gruvbox Cards (beta i guess)</option>-->
                 </select><br><br>
                 <button class="uiButton actionButton" onclick="startBlackjack()">Play</button><br><button  class="uiButton returnButton" onclick="window.location.href='/points'">Back</button>
+                <br><br><br><small>Copyright (c) 2022-2026 Jayen Agrawal. All rights reserved.</small>
             </div>
         </div>
         <div class="bjContainer" id="game" style="display: none;">
