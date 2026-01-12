@@ -12,7 +12,9 @@ pub fn setup_passkeys() -> web::Data<webauthn_rs::Webauthn> {
     let rp_origin = Url::parse(format!("https://{}", &rp_id).as_str()).expect("[PASSKEY] bad url");
     let builder = WebauthnBuilder::new(&rp_id.as_str(), &rp_origin).expect("[PASSKEY] bad config");
     let builder = builder.rp_name("bearTracks");
-    let webauthn = web::Data::new(builder.build().expect("[PASSKEY] bad config (at build step)"));
+    let webauthn = web::Data::new(builder
+        .build()
+        .expect("[PASSKEY] bad config (at build step)"));
 
     webauthn
 }

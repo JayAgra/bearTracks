@@ -112,6 +112,10 @@ struct SettingsView: View {
                         .foregroundStyle(Color.pink)
                     }
                     Section {
+                        Link("Terms of Service", destination: URL(string: "https://beartracks.io/tos")!)
+                        Link("Privacy Policy", destination: URL(string: "https://beartracks.io/privacy")!)
+                    }
+                    Section {
                         Button("Delete Account") {
                             showConfirm = true
                         }

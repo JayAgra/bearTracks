@@ -53,7 +53,8 @@ impl SessionStore for MemorySession {
             },
         );
 
-        Ok(SessionKey::try_from(session_key).map_err(|_| SaveError::Serialization(anyhow!("invalid session key")))?)
+        Ok(SessionKey::try_from(session_key)
+            .map_err(|_| SaveError::Serialization(anyhow!("invalid session key")))?)
     }
 
     async fn update(&self, session_key: SessionKey, session_state: HashMap<String, String>, ttl: &Duration) -> Result<SessionKey, UpdateError> {
@@ -72,7 +73,11 @@ impl SessionStore for MemorySession {
     }
 
     async fn update_ttl(&self, session_key: &SessionKey, ttl: &Duration) -> Result<(), anyhow::Error> {
-        if let Some(entry) = SESSION_STATES.lock().map_err(|_| anyhow!("poison error"))?.get_mut(session_key.as_ref()) {
+        if let Some(entry) = SESSION_STATES
+            .lock()
+            .map_err(|_| anyhow!("poison error"))?
+            .get_mut(session_key.as_ref())
+        {
             entry.valid_until = Utc::now().add(chrono::Duration::nanoseconds(ttl.whole_nanoseconds() as i64));
         }
 
@@ -80,7 +85,10 @@ impl SessionStore for MemorySession {
     }
 
     async fn delete(&self, session_key: &SessionKey) -> Result<(), anyhow::Error> {
-        SESSION_STATES.lock().map_err(|_| anyhow!("poison error"))?.remove(session_key.as_ref());
+        SESSION_STATES
+            .lock()
+            .map_err(|_| anyhow!("poison error"))?
+            .remove(session_key.as_ref());
 
         Ok(())
     }

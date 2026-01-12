@@ -53,75 +53,113 @@ pub async fn static_index() -> HttpResponse {
 
 // serve static html files
 pub async fn static_blackjack() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(BLACKJACK_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(BLACKJACK_HTML)
 }
 
 pub async fn static_create() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(CREATE_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(CREATE_HTML)
 }
 
 pub async fn static_main() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(MAIN_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(MAIN_HTML)
 }
 
 pub async fn static_login() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(LOGIN_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(LOGIN_HTML)
 }
 
 pub async fn static_passkey() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(PASSKEY_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(PASSKEY_HTML)
 }
 
 pub async fn static_point_records() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(POINT_RECORDS_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(POINT_RECORDS_HTML)
 }
 
 pub async fn static_points() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(POINTS_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+            .body(POINTS_HTML)
 }
 
 pub async fn static_safari_pinned() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::xml()).body(SAFARI_PINNED_SVG)
+    HttpResponse::Ok()
+        .content_type(ContentType::xml())
+        .body(SAFARI_PINNED_SVG)
 }
 
 pub async fn static_scouts() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(SCOUTS_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(SCOUTS_HTML)
 }
 
 pub async fn static_settings() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(SETTINGS_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(SETTINGS_HTML)
 }
 
 pub async fn static_webmanifest() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::json()).body(SITE_WEBMANIFEST)
+    HttpResponse::Ok()
+        .content_type(ContentType::json())
+        .body(SITE_WEBMANIFEST)
 }
 
 pub async fn static_spin() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(SPIN_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(SPIN_HTML)
 }
 
 pub async fn static_data() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(DATA_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(DATA_HTML)
 }
 
 pub async fn static_team() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(TEAM_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(TEAM_HTML)
 }
 
 pub async fn static_detail() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(DETAIL_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(DETAIL_HTML)
 }
 
 pub async fn static_pit() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(PIT_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(PIT_HTML)
 }
 
 pub async fn static_tos() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(TOS_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .insert_header(CacheControl(vec![CacheDirective::NoCache]))
+        .body(TOS_HTML)
 }
 
 pub async fn static_privacy() -> HttpResponse {
-    HttpResponse::Ok().content_type(ContentType::html()).body(PRIVACY_HTML)
+    HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .insert_header(CacheControl(vec![CacheDirective::NoCache]))
+        .body(PRIVACY_HTML)
 }
 
 // serve static favicons
