@@ -805,7 +805,7 @@
 				INFOPLIST_FILE = bearTracks/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Jayen Agrawal. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (c) 2022-2026 Jayen Agrawal. All rights reserved.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
@@ -850,7 +850,7 @@
 				INFOPLIST_FILE = bearTracks/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = bearTracks;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Jayen Agrawal. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (c) 2022-2026 Jayen Agrawal. All rights reserved.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";

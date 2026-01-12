@@ -123,7 +123,7 @@ struct LoginView: View {
             }
             VStack {
                 Spacer()
-                Text("This application is not affiliated with FRC Team 766.").padding()
+                Text("Copyright (c) 2022-2026 Jayen Agrawal. All rights reserved.").padding()
             }
         }
     }

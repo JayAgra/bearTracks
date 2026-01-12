@@ -3,7 +3,7 @@ name = "webauthn_login"
 version = "7.0.0"
 edition = "2021"
 authors = ["Jayen Agrawal"]
-license = "Copyright (c) 2023-2026 Jayen Agrawal. All rights reserved."
+license = "Copyright (c) 2022-2026 Jayen Agrawal. All rights reserved."
 
 [lib]
 crate-type = ["cdylib", "rlib"]
