@@ -15,7 +15,7 @@ pub fn setup_passkeys() -> web::Data<webauthn_rs::Webauthn> {
     let webauthn = web::Data::new(builder
         .build()
         .expect("[PASSKEY] bad config (at build step)"));
-
+    
     webauthn
 }
 
@@ -153,7 +153,7 @@ pub async fn webauthn_start_authentication(
 
     session.insert("auth_state", (username, auth_state))?;
 
-    info!("[PASSKEY] login challenge create success");
+    // info!("[PASSKEY] login challenge create success");
     Ok(web::Json(rcr))
 }
 

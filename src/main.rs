@@ -874,6 +874,7 @@ async fn cache_first_data(current_only: bool) -> Result<bool, std::io::Error> {
     Ok(true)
 }
 
+// TODO: Why does this compile just fine but dumb fucking editor shows an error?
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 #[actix_web::main]
@@ -882,6 +883,7 @@ async fn main() -> io::Result<()> {
     dotenv().ok();
 
     // don't log all that shit when in release mode
+    // TODO: Maybe add log levels?
     if cfg!(debug_assertions) {
         env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     } else {
@@ -894,18 +896,24 @@ async fn main() -> io::Result<()> {
     // hashmap w: web::Data<RwLock<Sessions>>ith user sessions in it
     let sessions: web::Data<RwLock<Sessions>> = web::Data::new(RwLock::new(Sessions { user_map: HashMap::new() }));
 
+    // TODO: the following three blocks look like shit pls fix
+
     // main database connection
     let main_db_manager = SqliteConnectionManager::file("data.db");
     let main_db_pool = db_main::Pool::new(main_db_manager).unwrap();
     let main_db_connection = main_db_pool.get().expect("main db: connection failed");
-    main_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("main db: WAL failed");
+    main_db_connection
+        .execute_batch("PRAGMA journal_mode=WAL;")
+        .expect("main db: WAL failed");
     drop(main_db_connection);
 
     // auth database connection
     let auth_db_manager = SqliteConnectionManager::file("data_auth.db");
     let auth_db_pool = db_main::Pool::new(auth_db_manager).unwrap();
     let auth_db_connection = auth_db_pool.get().expect("auth db: connection failed");
-    auth_db_connection.execute_batch("PRAGMA journal_mode=WAL;").expect("auth db: WAL failed");
+    auth_db_connection
+        .execute_batch("PRAGMA journal_mode=WAL;")
+        .expect("auth db: WAL failed");
     drop(auth_db_connection);
 
     // transaction database connection

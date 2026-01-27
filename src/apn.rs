@@ -22,13 +22,14 @@ pub async fn thank_event_scouts(pool: &db_main::Pool, auth_pool: &db_auth::Pool,
             }).collect();
             let unique_ids: HashSet<_> = participating_users.into_iter().collect();
             let unique_ids_vec: Vec<i64> = unique_ids.into_iter().collect();
-            let message: String = format!("Thank you for using bearTracks at {} {}! A total of {} match scouting data forms were submitted, from {} scouts.", args.get(1).unwrap_or(&"default"), args.get(0).unwrap_or(&"default"), count, unique_ids_vec.len());
+            let message: String = format!("Thank you for submitting data to the bearTracks system at {} {}! A total of {} match scouting data forms were submitted, from {} scouts.", args.get(1).unwrap_or(&"default"), args.get(0).unwrap_or(&"default"), count, unique_ids_vec.len());
             let str_message: &str = message.as_str();
             let builder = DefaultNotificationBuilder::new()
                 .set_title("Event Conclusion")
                 .set_body(str_message)
                 .set_sound("default")
                 .set_badge(0u32);
+            // TODO: Can we put this into a single network request?
             for user in unique_ids_vec {
                 let _notification_send = db_auth::send_notification_to_user(&auth_pool, user, builder.clone(), client.lock().await).await;
             }

@@ -325,18 +325,18 @@ struct MatchDetailView: View {
         var local: [TeamStats] = []
         if !appState.matchJson.isEmpty && appState.matchJson.count >= match {
             fetchTeamStats(team: appState.matchJson[match - 1].teams[0].teamNumber) { Red1Data in
-                teamSet.Red1 = Red1Data
+                teamSet.red1 = Red1Data
                 fetchTeamStats(team: appState.matchJson[match - 1].teams[1].teamNumber) { Red2Data in
-                    teamSet.Red2 = Red2Data
+                    teamSet.red2 = Red2Data
                     fetchTeamStats(team: appState.matchJson[match - 1].teams[2].teamNumber) { Red3Data in
-                        teamSet.Red3 = Red3Data
+                        teamSet.red3 = Red3Data
                         fetchTeamStats(team: appState.matchJson[match - 1].teams[3].teamNumber) { Blue1Data in
-                            teamSet.Blue1 = Blue1Data
+                            teamSet.blue1 = Blue1Data
                             fetchTeamStats(team: appState.matchJson[match - 1].teams[4].teamNumber) { Blue2Data in
-                                teamSet.Blue2 = Blue2Data
+                                teamSet.blue2 = Blue2Data
                                 fetchTeamStats(team: appState.matchJson[match - 1].teams[5].teamNumber) { Blue3Data in
-                                    teamSet.Blue3 = Blue3Data
-                                    local = [teamSet.Red1 ?? emptyTeamStat, teamSet.Red2 ?? emptyTeamStat, teamSet.Red3 ?? emptyTeamStat, teamSet.Blue1 ?? emptyTeamStat, teamSet.Blue2 ?? emptyTeamStat, teamSet.Blue3 ?? emptyTeamStat]
+                                    teamSet.blue3 = Blue3Data
+                                    local = [teamSet.red1 ?? emptyTeamStat, teamSet.red2 ?? emptyTeamStat, teamSet.red3 ?? emptyTeamStat, teamSet.blue1 ?? emptyTeamStat, teamSet.blue2 ?? emptyTeamStat, teamSet.blue3 ?? emptyTeamStat]
                                     local.forEach { result in
                                         if result.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.algae.mean }
                                         if result.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.level_0.mean }
@@ -404,7 +404,7 @@ struct MatchDetailView: View {
 }
 
 struct NumericalCompareView: View {
-    @State public var teams: [TeamStats]
+    @State public var teams: [TeamStats?]
     @State public var title: String
     
     var body: some View {
@@ -413,10 +413,10 @@ struct NumericalCompareView: View {
                 .font(.title3)
             HStack {
                 Spacer()
-                Text(String(teams[0][title].mean + teams[1][title].mean + teams[2][title].mean))
+                Text(String(teams[0]![title].mean + teams[1]![title].mean + teams[2]![title].mean))
                     .font(.largeTitle)
                 Spacer();Spacer();
-                Text(String(teams[3][title].mean + teams[4][title].mean + teams[5][title].mean))
+                Text(String(teams[3]![title].mean + teams[4]![title].mean + teams[5]![title].mean))
                     .font(.largeTitle)
                 Spacer()
             }
@@ -426,7 +426,7 @@ struct NumericalCompareView: View {
 }
 
 struct BarThingyView: View {
-    @State public var teams: [TeamStats]
+    @State public var teams: [TeamStats?]
     @State public var barMax: Int
     @State public var title: String
     
@@ -436,13 +436,13 @@ struct BarThingyView: View {
                 .font(.title3)
             HStack {
                 VStack {
-                    ForEach(Array(teams.prefix(3)), id: \.team) { team in
+                    ForEach([teams[0]!, teams[1]!, teams[2]!], id: \.team) { team in
                         ProgressView(value: Double(team[title].mean) / Double(barMax))
                             .tint(Color.red)
                     }
                 }
                 VStack {
-                    ForEach(Array(teams.suffix(3)), id: \.team) { team in
+                    ForEach([teams[3]!, teams[4]!, teams[5]!], id: \.team) { team in
                         ProgressView(value: Double(team[title].mean) / Double(barMax))
                             .tint(Color.blue)
                     }
@@ -455,8 +455,8 @@ struct BarThingyView: View {
 }
 
 struct TeamSet {
-    var Red1, Red2, Red3: TeamStats?
-    var Blue1, Blue2, Blue3: TeamStats?
+    var red1, red2, red3: TeamStats?
+    var blue1, blue2, blue3: TeamStats?
 }
 
 #if os(tvOS)

@@ -76,7 +76,7 @@ struct TeamView: View {
                     if #available(iOS 18.0, *) {
                         NavigationLink(destination: TeamHistoryGraph(teamNumber: Int(dataItems.targetTeam) ?? 0).navigationTitle("Charts")) {
                             HStack {
-                                Text("Graphs")
+                                Text("Charts")
                             }
                         }
                     } else {

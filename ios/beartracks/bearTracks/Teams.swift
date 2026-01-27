@@ -90,6 +90,7 @@ struct Teams: View {
                     }
                     .navigationTitle("Teams")
 #if !os(watchOS)
+                    // TODO: Why does liquid ass make this super long. Also fix the trillions of invalid JSON errors when scrolling this list. Maybe make it a pseudo-List?
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             Picker(selection: $performanceValue, content: {
@@ -106,7 +107,7 @@ struct Teams: View {
                                 Label("Defense", systemImage: "shield")
                                     .tag(5)
                             }, label: {
-                                Label("Type", systemImage: "line.3.horizontal.decrease.circle")
+                                Label("Sort", systemImage: "line.3.horizontal.decrease.circle")
                                     .labelStyle(.iconOnly)
                             })
                             .onChange(of: performanceValue) { _ in

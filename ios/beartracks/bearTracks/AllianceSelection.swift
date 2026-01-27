@@ -154,6 +154,9 @@ struct AllianceSelection: View {
             }
             .onDisappear {
                 enableSwipeBack()
+                writePickList()
+                writePickListStatus()
+                dismiss()
             }
             .navigationTitle("Alliance Selection")
             .searchable(text: $searchText).keyboardType(.numberPad)

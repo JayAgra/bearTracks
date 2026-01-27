@@ -8,7 +8,7 @@
 6. Expanded web access (absolute lowest priority possible because who really cares) (10 hours)
 ## Mid-Size
 1. Pull only event data that is not already on disk— check file sizes or something to prevent overwrites. Add a function to allow manual forced overwrites (0.5 hours)
-2. Ensure APNs are handled properly with multiple instances (1 hour) (req: L3)
+2. Ensure APNs are handled properly with multiple instances, maybe using a central instance (1 hour) (req: L3)
 3. Create a script to spin up a new instance automatically (1 hour) (req: L3)
 4. Fix iOS clients so they share basic files (the login view, some of the state control, etc.). Unify network request methods for easier reading. (3 hours)
 ## Small
@@ -21,14 +21,14 @@
 3. Fix login WASM, allow FIDO w/o username entry (1 hour)
 4. ~~Clarify copyright on code, all prior versions of code, all webpages, and all content.~~
 5. ~~Clarify in TOS that use of service & submission = surrendering ownership of UGC~~
-6. Fix the weird number thing on account creation page (0.5 hours)
+6. Fix the weird number thing on account creation page (0.5 hours) or delete it (0.0625 hours)
 
 other todo file from the notes app
 to fix
 
 data app (2 hours)
-- inconsistent X on alliance selection and simulator pages (remove x from sim)
-- reverse order of placing in rp calculator
+- ~~inconsistent X on alliance selection and simulator pages (remove x from sim)~~ 
+- ~~reverse order of placing in rp calculator~~ actually dont the way it is is best
 - allow number entry for team totals
 - option to save before exiting 
 - save alliance selection before exiting AUTOMATICALLY 
@@ -37,3 +37,6 @@ data app (2 hours)
 - use spinny thing for all loading (hour class is on some pages)
 - use more advantageous data structure for loading graphs & match prediction 
 - 
+
+
+use liquid ass  

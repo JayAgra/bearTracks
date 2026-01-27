@@ -11,16 +11,15 @@ enum SimulationType {
     case alliance, match
 }
 
-// this file is disgusting but i am too lazy to fix it
+// TODO: force fewer optionals
 
 struct AllianceSimulator: View {
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var appState: AppState
     @State private var simType: SimulationType = .alliance
     @State private var alliance: (Int?, Int?, Int?) = (nil, nil, nil)
     @State private var opposition: (Int?, Int?, Int?) = (nil, nil, nil)
     @State private var allTeams: AllTeamsList = AllTeamsList(status: 0, teams: [])
-    @State private var teams: [TeamStats] = []
+    @State private var teams: [TeamStats?] = Array(repeating: nil, count: 6)
     @State private var detailMaximums: (Int, Int, Int, Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1, 1, 1, 1)
     @State private var eventCodeInput: String = UserDefaults().string(forKey: "eventCode") ?? ""
     
@@ -42,14 +41,6 @@ struct AllianceSimulator: View {
                         .foregroundStyle(Color.pink)
                     Text("Encountered a fatal error when attempting to load team list.")
                         .padding(.bottom)
-                    Button(action: {
-                        dismiss()
-                    }, label: {
-                        Label("Back", systemImage: "xmark")
-                            .labelStyle(.titleOnly)
-                    })
-                    .buttonStyle(.bordered)
-                    .padding()
                     Spacer()
                 } else {
                     Picker("type", selection: $simType) {
@@ -236,10 +227,9 @@ struct MatchViewChonk: View {
     @EnvironmentObject var appState: AppState
     @Binding var alliance: (Int?, Int?, Int?)
     @Binding var opposition: (Int?, Int?, Int?)
-    @State var teams: [TeamStats] = []
+    @State var teams: [TeamStats?] = []
     @State var detailMaximums: (Int, Int, Int, Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1, 1, 1, 1)
     @State var loadingData: Bool = true
-    let emptyTeamStat = TeamStats(team: 0, leave: 0.0, park: 0.0, shallow_cage: 0.0, deep_cage: 0.0, intake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), travel_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), outtake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), algae: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_0: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_1: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_2: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_3: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), score: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_scores: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0))
     
     var body: some View {
         VStack {
@@ -252,7 +242,7 @@ struct MatchViewChonk: View {
                         .foregroundStyle(calculateWinner().1 ? Color.red : Color.blue)
                     HStack {
                         VStack {
-                            ForEach(Array(teams.prefix(3)), id: \.team) { team in
+                            ForEach([teams[0]!, teams[1]!, teams[2]!], id: \.team) { team in
                                 VStack {
                                     NavigationLink(destination: {
                                         TeamView(dataItems: TeamViewModel(team: String(team.team)))
@@ -275,7 +265,7 @@ struct MatchViewChonk: View {
                             }
                         }
                         VStack {
-                            ForEach(Array(teams.suffix(3)), id: \.team) { team in
+                            ForEach([teams[3]!, teams[4]!, teams[5]!], id: \.team) { team in
                                 VStack {
                                     NavigationLink(destination: {
                                         TeamView(dataItems: TeamViewModel(team: String(team.team)))
@@ -333,8 +323,8 @@ struct MatchViewChonk: View {
     }
     
     func calculateWinner() -> (Int, Bool) {
-        let redScore: Int = teams[0].score.mean + teams[1].score.mean + teams[2].score.mean;
-        let blueScore: Int = teams[3].score.mean + teams[4].score.mean + teams[5].score.mean;
+        let redScore: Int = (teams[0]?.score.mean ?? 0) + (teams[1]?.score.mean ?? 0) + (teams[2]?.score.mean ?? 0);
+        let blueScore: Int = (teams[3]?.score.mean ?? 0) + (teams[4]?.score.mean ?? 0) + (teams[5]?.score.mean ?? 0);
         var pcnt: Double = Double(max(redScore, blueScore)) / Double(min(max(redScore, 1), max(blueScore, 1)));
         pcnt = (pcnt - 1) * 50;
         if pcnt > 100 {
@@ -372,33 +362,33 @@ struct MatchViewChonk: View {
     
     func loadData() {
         loadingData = true
-        var teamSet = TeamSet()
-        var local: [TeamStats] = []
-        fetchTeamStats(team: alliance.0 ?? 0) { Red1Data in
-            teamSet.Red1 = Red1Data
-            fetchTeamStats(team: alliance.1 ?? 0) { Red2Data in
-                teamSet.Red2 = Red2Data
-                fetchTeamStats(team: alliance.2 ?? 0) { Red3Data in
-                    teamSet.Red3 = Red3Data
-                    fetchTeamStats(team: opposition.0 ?? 0) { Blue1Data in
-                        teamSet.Blue1 = Blue1Data
-                        fetchTeamStats(team: opposition.1 ?? 0) { Blue2Data in
-                            teamSet.Blue2 = Blue2Data
-                            fetchTeamStats(team: opposition.2 ?? 0) { Blue3Data in
-                                teamSet.Blue3 = Blue3Data
-                                local = [teamSet.Red1 ?? emptyTeamStat, teamSet.Red2 ?? emptyTeamStat, teamSet.Red3 ?? emptyTeamStat, teamSet.Blue1 ?? emptyTeamStat, teamSet.Blue2 ?? emptyTeamStat, teamSet.Blue3 ?? emptyTeamStat]
-                                local.forEach { result in
-                                    if result.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.algae.mean }
-                                    if result.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.level_0.mean }
-                                    if result.level_1.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.level_1.mean }
-                                    if result.level_2.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.level_2.mean }
-                                    if result.level_3.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.level_3.mean }
-                                    if result.intake_time.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.intake_time.mean }
-                                    if result.travel_time.mean > self.detailMaximums.6 { self.detailMaximums.6 = result.travel_time.mean }
-                                    if result.outtake_time.mean > self.detailMaximums.7 { self.detailMaximums.7 = result.outtake_time.mean }
-                                    if result.score.mean > self.detailMaximums.8 { self.detailMaximums.8 = result.score.mean }
+        var teams: [TeamStats?] = Array(repeating: nil, count: 6)
+        fetchTeamStats(team: alliance.0 ?? 0) { red1Data in
+            teams[0] = red1Data
+            fetchTeamStats(team: alliance.1 ?? 0) { red2Data in
+                teams[1] = red2Data
+                fetchTeamStats(team: alliance.2 ?? 0) { red3Data in
+                    teams[2] = red3Data
+                    fetchTeamStats(team: opposition.0 ?? 0) { blue1Data in
+                        teams[3] = blue1Data
+                        fetchTeamStats(team: opposition.1 ?? 0) { blue2Data in
+                            teams[4] = blue2Data
+                            fetchTeamStats(team: opposition.2 ?? 0) { blue3Data in
+                                teams[5] = blue3Data
+                                teams.forEach { r in
+                                    if r != nil {
+                                        if r!.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = r!.algae.mean }
+                                        if r!.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = r!.level_0.mean }
+                                        if r!.level_1.mean > self.detailMaximums.2 { self.detailMaximums.2 = r!.level_1.mean }
+                                        if r!.level_2.mean > self.detailMaximums.3 { self.detailMaximums.3 = r!.level_2.mean }
+                                        if r!.level_3.mean > self.detailMaximums.4 { self.detailMaximums.4 = r!.level_3.mean }
+                                        if r!.intake_time.mean > self.detailMaximums.5 { self.detailMaximums.5 = r!.intake_time.mean }
+                                        if r!.travel_time.mean > self.detailMaximums.6 { self.detailMaximums.6 = r!.travel_time.mean }
+                                        if r!.outtake_time.mean > self.detailMaximums.7 { self.detailMaximums.7 = r!.outtake_time.mean }
+                                        if r!.score.mean > self.detailMaximums.8 { self.detailMaximums.8 = r!.score.mean }
+                                    }
                                 }
-                                self.teams = local
+                                self.teams = teams
                                 loadingData = false
                             }
                         }
@@ -411,11 +401,9 @@ struct MatchViewChonk: View {
 
 struct AllianceChonk: View {
     @Binding var alliance: (Int?, Int?, Int?)
-    @State private var teams: [TeamStats] = []
+    @State private var teams: [TeamStats?] = []
     @State private var detailMaximums: (Int, Int, Int, Int, Int, Int, Int, Int, Int) = (1, 1, 1, 1, 1, 1, 1, 1, 1)
     @State private var loadingData: Bool = true
-    // dont even talk to me about this one
-    public var emptyTeamStat = TeamStats(team: 0, leave: 0.0, park: 0.0, shallow_cage: 0.0, deep_cage: 0.0, intake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), travel_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), outtake_time: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), algae: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_0: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_1: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_2: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), level_3: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), score: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0), auto_scores: DataStats(first: 0, median: 0, third: 0, mean: 0, decaying: 0))
     
     var body: some View {
         VStack {
@@ -502,28 +490,27 @@ struct AllianceChonk: View {
     
     private func loadData() {
         loadingData = true
-        var teamSet = TeamSet()
-        var local: [TeamStats] = []
-
+        var teams: [TeamStats?] = Array(repeating: nil, count: 6)
         fetchTeamStats(team: alliance.0 ?? 0) { Blue1Data in
-            teamSet.Blue1 = Blue1Data
+            teams[3] = Blue1Data
             fetchTeamStats(team: alliance.1 ?? 0) { Blue2Data in
-                teamSet.Blue2 = Blue2Data
+                teams[4] = Blue2Data
                 fetchTeamStats(team: alliance.2 ?? 0) { Blue3Data in
-                    teamSet.Blue3 = Blue3Data
-                    local = [teamSet.Blue1 ?? emptyTeamStat, teamSet.Blue2 ?? emptyTeamStat, teamSet.Blue3 ?? emptyTeamStat]
-                    local.forEach { result in
-                        if result.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = result.algae.mean }
-                        if result.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = result.level_0.mean }
-                        if result.level_1.mean > self.detailMaximums.2 { self.detailMaximums.2 = result.level_1.mean }
-                        if result.level_2.mean > self.detailMaximums.3 { self.detailMaximums.3 = result.level_2.mean }
-                        if result.level_3.mean > self.detailMaximums.4 { self.detailMaximums.4 = result.level_3.mean }
-                        if result.intake_time.mean > self.detailMaximums.5 { self.detailMaximums.5 = result.intake_time.mean }
-                        if result.travel_time.mean > self.detailMaximums.6 { self.detailMaximums.6 = result.travel_time.mean }
-                        if result.outtake_time.mean > self.detailMaximums.7 { self.detailMaximums.7 = result.outtake_time.mean }
-                        if result.score.mean > self.detailMaximums.8 { self.detailMaximums.8 = result.score.mean }
+                    teams[5] = Blue3Data
+                    teams.forEach { r in
+                        if r != nil {
+                            if r!.algae.mean > self.detailMaximums.0 { self.detailMaximums.0 = r!.algae.mean }
+                            if r!.level_0.mean > self.detailMaximums.1 { self.detailMaximums.1 = r!.level_0.mean }
+                            if r!.level_1.mean > self.detailMaximums.2 { self.detailMaximums.2 = r!.level_1.mean }
+                            if r!.level_2.mean > self.detailMaximums.3 { self.detailMaximums.3 = r!.level_2.mean }
+                            if r!.level_3.mean > self.detailMaximums.4 { self.detailMaximums.4 = r!.level_3.mean }
+                            if r!.intake_time.mean > self.detailMaximums.5 { self.detailMaximums.5 = r!.intake_time.mean }
+                            if r!.travel_time.mean > self.detailMaximums.6 { self.detailMaximums.6 = r!.travel_time.mean }
+                            if r!.outtake_time.mean > self.detailMaximums.7 { self.detailMaximums.7 = r!.outtake_time.mean }
+                            if r!.score.mean > self.detailMaximums.8 { self.detailMaximums.8 = r!.score.mean }
+                        }
                     }
-                    self.teams = local
+                    self.teams = teams
                     loadingData = false
                 }
             }
@@ -532,7 +519,7 @@ struct AllianceChonk: View {
 }
 
 struct NumericalCompareViewAlliance: View {
-    @State public var teams: [TeamStats]
+    @State public var teams: [TeamStats?]
     @State public var title: String
     
     var body: some View {
@@ -541,7 +528,7 @@ struct NumericalCompareViewAlliance: View {
                 .font(.caption)
             HStack {
                 Spacer()
-                Text(String(teams[0][title].mean + teams[1][title].mean + teams[2][title].mean))
+                Text(String(teams[0]![title].mean + teams[1]![title].mean + teams[2]![title].mean))
                     .font(.largeTitle)
                 Spacer()
             }
@@ -550,7 +537,7 @@ struct NumericalCompareViewAlliance: View {
 }
 
 struct BarThingyViewAlliance: View {
-    @State public var teams: [TeamStats]
+    @State public var teams: [TeamStats?]
     @State public var barMax: Int
     @State public var title: String
     
@@ -560,7 +547,8 @@ struct BarThingyViewAlliance: View {
                 .font(.title3)
             HStack {
                 VStack {
-                    ForEach(Array(teams.prefix(3)), id: \.team) { team in
+                    // TODO: this kinda nasty
+                    ForEach([teams[0]!, teams[1]!, teams[2]!], id: \.team) { team in
                         ProgressView(value: Double(team[title].mean) / Double(barMax))
                             .tint(Color.accentColor)
                     }
